@@ -32,6 +32,22 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Block .git access
+[[headers]]
+  for = "/.git/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[redirects]]
+  from = "/.git/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/.env"
+  to = "/404.html"
+  status = 404
+
 # Block bad bot IP
 [[edge_functions]]
   function = "block-bots"
