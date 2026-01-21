@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
     <!-- Google Tag Manager -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        'pageName': 'Home',
+        'pageType': 'Landing Page',
+        'siteName': 'SiegeStack'
+    });
+    </script>
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -86,6 +94,36 @@
             "Business Intelligence"
         ],
         "slogan": "Launch Your Business Fast"
+    }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://siegestack.com/"
+        }]
+    }
+    </script>
+
+    <!-- WebPage Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "SiegeStack - Home",
+        "description": "Full stack web development, data solutions, and reporting for any business model.",
+        "url": "https://siegestack.com/",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+        }
     }
     </script>
 
