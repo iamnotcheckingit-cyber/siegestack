@@ -52,8 +52,27 @@
 [[edge_functions]]
   function = "block-bots"
   path = "/*"
-[[redirects]] from = "/favicon.ico" to = "/favicon.svg" status = 200 
-[[redirects]] from = "/apple-touch-icon.png" to = "/favicon.svg" status = 200 
-[[redirects]] from = "/apple-touch-icon-precomposed.png" to = "/favicon.svg" status = 200 
-[[redirects]] from = "/apple-touch-icon-120x120.png" to = "/favicon.svg" status = 200 
-[[redirects]] from = "/apple-touch-icon-120x120-precomposed.png" to = "/favicon.svg" status = 200
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/apple-touch-icon-precomposed.png"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/apple-touch-icon-120x120.png"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/apple-touch-icon-120x120-precomposed.png"
+  to = "/favicon.svg"
+  status = 200
