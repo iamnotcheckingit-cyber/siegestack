@@ -48,10 +48,11 @@
   to = "/404.html"
   status = 404
 
-# Block bad bot IP
+# Block bad bots/subnets via edge function
 [[edge_functions]]
   function = "block-bots"
   path = "/*"
+  excludedPath = ["/.netlify/*"]
 [[redirects]]
   from = "/favicon.ico"
   to = "/favicon.svg"
