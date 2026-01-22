@@ -54,6 +54,11 @@
   path = "/*"
   excludedPath = ["/.netlify/*"]
 [[redirects]]
+  from = "/privacy-policy"
+  to = "/privacy-policy.html"
+  status = 200
+
+[[redirects]]
   from = "/favicon.ico"
   to = "/favicon.svg"
   status = 200
