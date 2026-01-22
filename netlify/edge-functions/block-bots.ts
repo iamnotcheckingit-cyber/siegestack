@@ -1,5 +1,14 @@
 import type { Context } from "https://edge.netlify.com";
 
+// Blocked individual IPs (exact match)
+const BLOCKED_IPS = [
+  "43.133.253.253",
+  "43.153.86.78",
+  "43.164.197.209",
+  "69.165.67.138",
+  "107.149.162.5",
+];
+
 // Blocked subnets (prefix match)
 const BLOCKED_SUBNETS = [
   "103.",    // 103.0.0.0/8
@@ -34,14 +43,19 @@ export default async (request: Request, context: Context) => {
     }
   }
 
-  // 2. Block bad subnets
+  // 2. Block specific IPs
+  if (BLOCKED_IPS.includes(clientIP)) {
+    return new Response("Access Denied", { status: 403 });
+  }
+
+  // 3. Block bad subnets
   for (const subnet of BLOCKED_SUBNETS) {
     if (clientIP.startsWith(subnet)) {
       return new Response("Access Denied", { status: 403 });
     }
   }
 
-  // 3. Geo block - only allow specific countries
+  // 4. Geo block - only allow specific countries
   if (country && !ALLOWED_COUNTRIES.includes(country)) {
     return new Response("Access Denied", { status: 403 });
   }
