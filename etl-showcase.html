@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        'pageName': 'ETL Showcase',
+        'pageType': 'Portfolio',
+        'siteName': 'SiegeStack'
+    });
+    </script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KKNXM7TW');</script>
+    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D9JTK6CC9J');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <title>ETL & Query Excellence | SiegeStack</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Production-grade ETL pipelines and SQL queries with bulletproof error handling. See how SiegeStack builds data systems that handle millions of records with zero downtime.">
+    <meta name="keywords" content="ETL pipeline, data extraction, data transformation, data loading, SQL queries, error handling, data engineering, production-ready code">
+    <meta name="author" content="SiegeStack">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://siegestack.com/etl-showcase">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/etl-showcase">
+    <meta property="og:title" content="ETL & Query Excellence | SiegeStack">
+    <meta property="og:description" content="Production-grade ETL pipelines with bulletproof error handling.">
+    <meta property="og:image" content="https://siegestack.com/og-image.png">
+
+    <meta name="theme-color" content="#0a192f">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy-dark: #0a192f;
+            --navy: #112240;
+            --navy-light: #1d3557;
+            --blue-accent: #64ffda;
+            --blue-bright: #57cbff;
+            --slate: #8892b0;
+            --light-slate: #a8b2d1;
+            --lightest-slate: #ccd6f6;
+            --white: #e6f1ff;
+            --red-soft: #ff6b6b;
+            --yellow-soft: #ffd93d;
+            --green-soft: #6bcb77;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--navy-dark);
+            color: var(--lightest-slate);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light-slate);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue-accent);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--blue-accent);
+            color: var(--navy-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-bright);
+            transform: translateY(-2px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light-slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .showcase-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        /* Header */
+        .showcase-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .showcase-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--blue-accent), var(--blue-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .showcase-header p {
+            font-size: 1.2rem;
+            color: var(--slate);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--slate);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            color: var(--light-slate);
+        }
+
+        .tab-btn.active {
+            color: var(--blue-accent);
+            border-bottom-color: var(--blue-accent);
+        }
+
+        .tab-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Pipeline Stage Cards */
+        .pipeline-stages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stage-card {
+            background: var(--navy);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stage-card:hover {
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+
+        .stage-card.active {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.15), rgba(87, 203, 255, 0.1));
+            border-color: var(--blue-accent);
+            box-shadow: 0 4px 20px rgba(100, 255, 218, 0.15);
+        }
+
+        .stage-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stage-card h3 {
+            color: var(--white);
+            font-size: 1.1rem;
+        }
+
+        .stage-card-header svg {
+            width: 20px;
+            height: 20px;
+            color: var(--blue-accent);
+        }
+
+        .stage-card p {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        /* Code Block */
+        .code-container {
+            background: var(--navy);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .code-header {
+            background: var(--navy-dark);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .code-filename {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--slate);
+        }
+
+        .code-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            color: var(--green-soft);
+        }
+
+        .code-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .code-block {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--lightest-slate);
+            white-space: pre;
+        }
+
+        /* Syntax highlighting approximation */
+        .code-block .keyword { color: #c792ea; }
+        .code-block .function { color: #82aaff; }
+        .code-block .string { color: #c3e88d; }
+        .code-block .comment { color: #546e7a; }
+        .code-block .number { color: #f78c6c; }
+
+        /* Error Handling Section */
+        .error-section {
+            background: var(--navy);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .error-section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+
+        .error-section-title svg {
+            width: 24px;
+            height: 24px;
+            color: var(--yellow-soft);
+        }
+
+        .error-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .error-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--navy-dark);
+            border-radius: 6px;
+        }
+
+        .error-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--red-soft);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .error-item-content {
+            flex: 1;
+        }
+
+        .error-type {
+            color: var(--red-soft);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .error-solution {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        .error-solution::before {
+            content: "→ ";
+            color: var(--blue-accent);
+        }
+
+        /* Query Cards */
+        .query-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .query-card {
+            background: var(--navy);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .query-card-header {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(87, 203, 255, 0.05));
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .query-card-header h3 {
+            color: var(--white);
+            font-size: 1.15rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .query-card-header p {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        .query-card .code-block {
+            background: var(--navy-dark);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.08), rgba(87, 203, 255, 0.05));
+            border-radius: 12px;
+            border: 1px solid rgba(100, 255, 218, 0.15);
+        }
+
+        .cta-section h3 {
+            font-size: 1.75rem;
+            color: var(--white);
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-section p {
+            color: var(--slate);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy-dark);
+            border-top: 1px solid rgba(100, 255, 218, 0.1);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--blue-accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .showcase-container {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .tab-nav {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .pipeline-stages {
+                grid-template-columns: 1fr;
+            }
+
+            .code-block pre {
+                font-size: 0.75rem;
+            }
+
+            .cta-section {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KKNXM7TW"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <div class="showcase-container">
+        <!-- Header -->
+        <div class="showcase-header">
+            <h1>ETL & Query Excellence</h1>
+            <p>Production-grade error handling for data pipelines</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="etl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                </svg>
+                ETL Pipeline
+            </button>
+            <button class="tab-btn" data-tab="queries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                SQL Queries
+            </button>
+        </div>
+
+        <!-- ETL Pipeline Tab -->
+        <div id="etl-tab" class="tab-content active">
+            <!-- Pipeline Stage Selector -->
+            <div class="pipeline-stages">
+                <div class="stage-card active" data-stage="extraction">
+                    <div class="stage-card-header">
+                        <h3>Data Extraction</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-stage="transformation">
+                    <div class="stage-card-header">
+                        <h3>Data Transformation</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-stage="loading">
+                    <div class="stage-card-header">
+                        <h3>Data Loading</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+            </div>
+
+            <!-- Code Display -->
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename" id="code-filename">extraction.js</span>
+                    <span class="code-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Production Ready
+                    </span>
+                </div>
+                <div class="code-block">
+                    <pre id="code-display">async function extractData(source) {
+  try {
+    const connection = await db.connect({
+      host: source.host,
+      timeout: 30000,
+      retries: 3
+    });
+
+    const data = await connection.query(
+      'SELECT * FROM orders WHERE updated_at > ?',
+      [lastSync]
+    );
+
+    return { success: true, data, count: data.length };
+
+  } catch (error) {
+    if (error.code === 'ETIMEDOUT') {
+      await notifySlack('DB timeout - switching to backup');
+      return await extractFromBackup(source);
+    }
+
+    logError('extraction', error);
+    throw new RetryableError(error);
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Error Handling Section -->
+            <div class="error-section">
+                <h3 class="error-section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Error Handling Strategies
+                </h3>
+                <div class="error-list" id="error-list">
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Connection timeout</div>
+                            <div class="error-solution">Auto-retry with exponential backoff</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Schema mismatch</div>
+                            <div class="error-solution">Dynamic field mapping with validation</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Data type conflicts</div>
+                            <div class="error-solution">Type coercion with fallback defaults</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SQL Queries Tab -->
+        <div id="queries-tab" class="tab-content">
+            <div class="query-list">
+                <div class="query-card">
+                    <div class="query-card-header">
+                        <h3>Complex Analytics Query</h3>
+                        <p>Revenue analysis with error-safe aggregations</p>
+                    </div>
+                    <div class="code-block">
+                        <pre>WITH daily_revenue AS (
+  SELECT
+    DATE(order_date) as day,
+    SUM(COALESCE(amount, 0)) as revenue,
+    COUNT(DISTINCT customer_id) as customers,
+    -- Handle NULL values safely
+    COUNT(CASE WHEN status = 'failed' THEN 1 END) as errors
+  FROM orders
+  WHERE order_date >= CURRENT_DATE - INTERVAL '90 days'
+    AND amount IS NOT NULL  -- Filter invalid data
+  GROUP BY DATE(order_date)
+)
+SELECT
+  day,
+  revenue,
+  customers,
+  -- Prevent division by zero
+  CASE
+    WHEN customers > 0
+    THEN revenue / customers
+    ELSE 0
+  END as avg_per_customer,
+  -- Safe percentage calculation
+  ROUND(
+    100.0 * errors / NULLIF(customers + errors, 0),
+    2
+  ) as error_rate_pct
+FROM daily_revenue
+ORDER BY day DESC;</pre>
+                    </div>
+                </div>
+
+                <div class="query-card">
+                    <div class="query-card-header">
+                        <h3>Data Quality Check</h3>
+                        <p>Validation query with anomaly detection</p>
+                    </div>
+                    <div class="code-block">
+                        <pre>SELECT
+  'Null Customer IDs' as issue,
+  COUNT(*) as count,
+  CURRENT_TIMESTAMP as checked_at
+FROM orders
+WHERE customer_id IS NULL
+
+UNION ALL
+
+SELECT
+  'Negative Amounts' as issue,
+  COUNT(*) as count,
+  CURRENT_TIMESTAMP
+FROM orders
+WHERE amount < 0
+
+UNION ALL
+
+SELECT
+  'Future Order Dates' as issue,
+  COUNT(*) as count,
+  CURRENT_TIMESTAMP
+FROM orders
+WHERE order_date > CURRENT_TIMESTAMP
+
+-- Alert if any issues found
+HAVING SUM(count) > 0;</pre>
+                    </div>
+                </div>
+
+                <div class="query-card">
+                    <div class="query-card-header">
+                        <h3>Incremental Sync Query</h3>
+                        <p>Safe delta extraction with watermarking</p>
+                    </div>
+                    <div class="code-block">
+                        <pre>-- Get last successful sync timestamp
+WITH last_sync AS (
+  SELECT COALESCE(
+    MAX(sync_timestamp),
+    TIMESTAMP '2024-01-01'  -- Safe default
+  ) as watermark
+  FROM etl_metadata
+  WHERE pipeline = 'orders'
+    AND status = 'success'
+)
+SELECT
+  o.order_id,
+  o.customer_id,
+  o.amount,
+  o.updated_at,
+  -- Include metadata for tracking
+  CURRENT_TIMESTAMP as extracted_at
+FROM orders o
+CROSS JOIN last_sync ls
+WHERE o.updated_at > ls.watermark
+  AND o.updated_at <= CURRENT_TIMESTAMP  -- Prevent clock skew issues
+ORDER BY o.updated_at
+LIMIT 100000;  -- Prevent memory overflow</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3>Need bulletproof data pipelines?</h3>
+            <p>We build ETL systems that handle millions of records with zero downtime</p>
+            <a href="/#schedule" class="btn btn-primary">Let's Talk Data Engineering</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 SiegeStack. All rights reserved.</p>
+        <p style="margin-top: 0.5rem;"><a href="mailto:info@siegestack.com">info@siegestack.com</a> | <a href="/privacy-policy">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+        // ETL Stage Data
+        const etlStages = {
+            extraction: {
+                filename: 'extraction.js',
+                code: `async function extractData(source) {
+  try {
+    const connection = await db.connect({
+      host: source.host,
+      timeout: 30000,
+      retries: 3
+    });
+
+    const data = await connection.query(
+      'SELECT * FROM orders WHERE updated_at > ?',
+      [lastSync]
+    );
+
+    return { success: true, data, count: data.length };
+
+  } catch (error) {
+    if (error.code === 'ETIMEDOUT') {
+      await notifySlack('DB timeout - switching to backup');
+      return await extractFromBackup(source);
+    }
+
+    logError('extraction', error);
+    throw new RetryableError(error);
+  }
+}`,
+                errors: [
+                    { type: 'Connection timeout', solution: 'Auto-retry with exponential backoff' },
+                    { type: 'Schema mismatch', solution: 'Dynamic field mapping with validation' },
+                    { type: 'Data type conflicts', solution: 'Type coercion with fallback defaults' }
+                ]
+            },
+            transformation: {
+                filename: 'transformation.js',
+                code: `function transformRecord(record) {
+  const errors = [];
+
+  // Validate required fields
+  const schema = {
+    customer_id: { type: 'number', required: true },
+    amount: { type: 'number', min: 0 },
+    email: { type: 'email', required: true }
+  };
+
+  const validated = validateSchema(record, schema);
+
+  if (!validated.valid) {
+    errors.push(...validated.errors);
+    record = applyDefaults(record, schema);
+  }
+
+  // Transform with error boundaries
+  try {
+    return {
+      id: record.customer_id,
+      revenue: parseFloat(record.amount) || 0,
+      email: normalizeEmail(record.email),
+      timestamp: new Date().toISOString(),
+      _errors: errors.length > 0 ? errors : null
+    };
+  } catch (error) {
+    quarantineRecord(record, error);
+    return null; // Skip bad records
+  }
+}`,
+                errors: [
+                    { type: 'Invalid data types', solution: 'Type validation with safe defaults' },
+                    { type: 'Missing required fields', solution: 'Quarantine bad records for review' },
+                    { type: 'Business logic violations', solution: 'Flag and route to exception queue' }
+                ]
+            },
+            loading: {
+                filename: 'loading.js',
+                code: `async function loadData(records, target) {
+  const batchSize = 1000;
+  const results = { success: 0, failed: 0, errors: [] };
+
+  for (let i = 0; i < records.length; i += batchSize) {
+    const batch = records.slice(i, i + batchSize);
+
+    try {
+      await target.transaction(async (tx) => {
+        await tx.bulkInsert('customers', batch);
+        results.success += batch.length;
+      });
+
+    } catch (error) {
+      // Try individual inserts to isolate failures
+      for (const record of batch) {
+        try {
+          await target.insert('customers', record);
+          results.success++;
+        } catch (err) {
+          results.failed++;
+          results.errors.push({
+            record_id: record.id,
+            error: err.message
+          });
+        }
+      }
+    }
+  }
+
+  await generateLoadReport(results);
+  return results;
+}`,
+                errors: [
+                    { type: 'Duplicate key violations', solution: 'Upsert logic with conflict resolution' },
+                    { type: 'Target system downtime', solution: 'Queue records for replay' },
+                    { type: 'Partial batch failures', solution: 'Individual record fallback with tracking' }
+                ]
+            }
+        };
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+
+                // Update button states
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(tab + '-tab').classList.add('active');
+            });
+        });
+
+        // Stage switching
+        function updateStage(stage) {
+            const data = etlStages[stage];
+
+            // Update active state
+            document.querySelectorAll('.stage-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.stage === stage);
+            });
+
+            // Update code display
+            document.getElementById('code-filename').textContent = data.filename;
+            document.getElementById('code-display').textContent = data.code;
+
+            // Update error list
+            const errorList = document.getElementById('error-list');
+            errorList.innerHTML = data.errors.map(error => `
+                <div class="error-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <div class="error-item-content">
+                        <div class="error-type">${error.type}</div>
+                        <div class="error-solution">${error.solution}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.stage-card').forEach(card => {
+            card.addEventListener('click', function() {
+                updateStage(this.dataset.stage);
+            });
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const links = document.querySelector('.nav-links');
+            if (links.style.display === 'flex') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'flex';
+                links.style.flexDirection = 'column';
+                links.style.position = 'absolute';
+                links.style.top = '100%';
+                links.style.left = '0';
+                links.style.right = '0';
+                links.style.background = 'rgba(10, 25, 47, 0.98)';
+                links.style.padding = '1rem';
+                links.style.gap = '1rem';
+            }
+        });
+    </script>
+</body>
+</html>
