@@ -214,6 +214,72 @@
             color: var(--slate);
         }
 
+        /* Value Propositions */
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .value-prop-card {
+            background: var(--navy);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            padding: 1.75rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .value-prop-card:hover {
+            border-color: rgba(100, 255, 218, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .value-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .value-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--blue-accent);
+        }
+
+        .value-prop-card h3 {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .value-prop-card p {
+            color: var(--slate);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Showcase Intro */
+        .showcase-intro {
+            background: rgba(100, 255, 218, 0.05);
+            border-left: 3px solid var(--blue-accent);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .showcase-intro p {
+            color: var(--light-slate);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
         /* Tab Navigation */
         .tab-nav {
             display: flex;
@@ -491,6 +557,31 @@
             font-size: 1.05rem;
         }
 
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--blue-accent);
+            color: var(--blue-accent);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .cta-note {
+            font-size: 0.85rem !important;
+            color: var(--slate) !important;
+            margin-bottom: 0 !important;
+            opacity: 0.8;
+        }
+
         /* Footer */
         footer {
             background: var(--navy-dark);
@@ -574,8 +665,47 @@
     <div class="showcase-container">
         <!-- Header -->
         <div class="showcase-header">
-            <h1>Full-Stack Code Excellence</h1>
-            <p>Production-grade error handling for data pipelines, APIs, and web services</p>
+            <h1>Systems That Just Work</h1>
+            <p>See how we build software that handles the unexpected, so you don't have to</p>
+        </div>
+
+        <!-- Value Proposition Section -->
+        <div class="value-props">
+            <div class="value-prop-card">
+                <div class="value-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h3>Bulletproof Reliability</h3>
+                <p>Every system we build anticipates failures before they happen. Your data stays safe, your integrations stay connected, and your business keeps running.</p>
+            </div>
+            <div class="value-prop-card">
+                <div class="value-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <h3>Zero Downtime</h3>
+                <p>Graceful error recovery means problems get logged and fixed automatically. No 3 AM phone calls, no lost transactions, no angry customers.</p>
+            </div>
+            <div class="value-prop-card">
+                <div class="value-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <h3>Scales With You</h3>
+                <p>Built to handle millions of records from day one. As your business grows, your systems grow with you - no expensive rewrites needed.</p>
+            </div>
+        </div>
+
+        <!-- Intro Text -->
+        <div class="showcase-intro">
+            <p>Below you'll see real examples of how we write code. Not demo projects - actual patterns we use in production. Click through to see how we handle the tricky stuff that separates amateur code from enterprise-grade systems.</p>
         </div>
 
         <!-- Tab Navigation -->
@@ -1175,9 +1305,13 @@ function createServer(config = {}) {
 
         <!-- CTA Section -->
         <div class="cta-section">
-            <h3>Need production-grade systems?</h3>
-            <p>We build data pipelines, APIs, and services that handle millions of requests with zero downtime</p>
-            <a href="/#schedule" class="btn btn-primary">Let's Talk</a>
+            <h3>Like What You See?</h3>
+            <p>This is how we build every system. Your project gets the same attention to detail, the same bulletproof error handling, the same production-ready code.</p>
+            <div class="cta-buttons">
+                <a href="/#schedule" class="btn btn-primary">Schedule a Call</a>
+                <a href="/" class="btn btn-outline">Learn More About Us</a>
+            </div>
+            <p class="cta-note">Feel free to share this page with your technical team for review</p>
         </div>
     </div>
 
