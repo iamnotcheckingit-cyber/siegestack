@@ -28,11 +28,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
-    <title>ETL & Query Excellence | SiegeStack</title>
+    <title>ETL, API & Query Excellence | SiegeStack</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Production-grade ETL pipelines and SQL queries with bulletproof error handling. See how SiegeStack builds data systems that handle millions of records with zero downtime.">
-    <meta name="keywords" content="ETL pipeline, data extraction, data transformation, data loading, SQL queries, error handling, data engineering, production-ready code">
+    <meta name="description" content="Production-grade ETL pipelines, API integrations, and SQL queries with bulletproof error handling. See how SiegeStack builds data systems that handle millions of records with zero downtime.">
+    <meta name="keywords" content="ETL pipeline, data extraction, data transformation, data loading, SQL queries, API integration, REST API, webhook handling, rate limiting, error handling, data engineering, production-ready code">
     <meta name="author" content="SiegeStack">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://siegestack.com/etl-showcase">
@@ -40,8 +40,8 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://siegestack.com/etl-showcase">
-    <meta property="og:title" content="ETL & Query Excellence | SiegeStack">
-    <meta property="og:description" content="Production-grade ETL pipelines with bulletproof error handling.">
+    <meta property="og:title" content="ETL, API & Query Excellence | SiegeStack">
+    <meta property="og:description" content="Production-grade ETL pipelines and API integrations with bulletproof error handling.">
     <meta property="og:image" content="https://siegestack.com/og-image.png">
 
     <meta name="theme-color" content="#0a192f">
@@ -538,8 +538,8 @@
     <div class="showcase-container">
         <!-- Header -->
         <div class="showcase-header">
-            <h1>ETL & Query Excellence</h1>
-            <p>Production-grade error handling for data pipelines</p>
+            <h1>ETL, API & Query Excellence</h1>
+            <p>Production-grade error handling for data pipelines and integrations</p>
         </div>
 
         <!-- Tab Navigation -->
@@ -558,6 +558,14 @@
                     <polyline points="8 6 2 12 8 18"></polyline>
                 </svg>
                 SQL Queries
+            </button>
+            <button class="tab-btn" data-tab="api">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 11a9 9 0 0 1 9 9"></path>
+                    <path d="M4 4a16 16 0 0 1 16 16"></path>
+                    <circle cx="5" cy="19" r="1"></circle>
+                </svg>
+                API Integration
             </button>
         </div>
 
@@ -795,6 +803,169 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             </div>
         </div>
 
+        <!-- API Integration Tab -->
+        <div id="api-tab" class="tab-content">
+            <!-- API Pattern Selector -->
+            <div class="pipeline-stages">
+                <div class="stage-card active" data-api="rest-client">
+                    <div class="stage-card-header">
+                        <h3>REST Client</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-api="webhook-handler">
+                    <div class="stage-card-header">
+                        <h3>Webhook Handler</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-api="rate-limiter">
+                    <div class="stage-card-header">
+                        <h3>Rate Limiting</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+            </div>
+
+            <!-- API Code Display -->
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename" id="api-code-filename">rest-client.js</span>
+                    <span class="code-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Production Ready
+                    </span>
+                </div>
+                <div class="code-block">
+                    <pre id="api-code-display">class APIClient {
+  constructor(baseURL, options = {}) {
+    this.baseURL = baseURL;
+    this.timeout = options.timeout || 30000;
+    this.retries = options.retries || 3;
+    this.backoffMs = options.backoffMs || 1000;
+  }
+
+  async request(endpoint, options = {}) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= this.retries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(
+          () => controller.abort(),
+          this.timeout
+        );
+
+        const response = await fetch(`${this.baseURL}${endpoint}`, {
+          ...options,
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new APIError(response.status, await response.text());
+        }
+
+        return await response.json();
+
+      } catch (error) {
+        lastError = error;
+
+        if (error.name === 'AbortError') {
+          console.warn(`Request timeout, attempt ${attempt}/${this.retries}`);
+        }
+
+        if (attempt < this.retries && this.isRetryable(error)) {
+          await this.sleep(this.backoffMs * Math.pow(2, attempt - 1));
+          continue;
+        }
+
+        throw error;
+      }
+    }
+  }
+
+  isRetryable(error) {
+    if (error.name === 'AbortError') return true;
+    if (error instanceof APIError) {
+      return [408, 429, 500, 502, 503, 504].includes(error.status);
+    }
+    return error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT';
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- API Error Handling Section -->
+            <div class="error-section">
+                <h3 class="error-section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Error Handling Strategies
+                </h3>
+                <div class="error-list" id="api-error-list">
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Network timeouts</div>
+                            <div class="error-solution">Exponential backoff with configurable retries</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Rate limit exceeded (429)</div>
+                            <div class="error-solution">Automatic retry with Retry-After header respect</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Server errors (5xx)</div>
+                            <div class="error-solution">Circuit breaker pattern with fallback</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- CTA Section -->
         <div class="cta-section">
             <h3>Need bulletproof data pipelines?</h3>
@@ -927,6 +1098,231 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             }
         };
 
+        // API Stage Data
+        const apiStages = {
+            'rest-client': {
+                filename: 'rest-client.js',
+                code: `class APIClient {
+  constructor(baseURL, options = {}) {
+    this.baseURL = baseURL;
+    this.timeout = options.timeout || 30000;
+    this.retries = options.retries || 3;
+    this.backoffMs = options.backoffMs || 1000;
+  }
+
+  async request(endpoint, options = {}) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= this.retries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(
+          () => controller.abort(),
+          this.timeout
+        );
+
+        const response = await fetch(\`\${this.baseURL}\${endpoint}\`, {
+          ...options,
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new APIError(response.status, await response.text());
+        }
+
+        return await response.json();
+
+      } catch (error) {
+        lastError = error;
+
+        if (error.name === 'AbortError') {
+          console.warn(\`Request timeout, attempt \${attempt}/\${this.retries}\`);
+        }
+
+        if (attempt < this.retries && this.isRetryable(error)) {
+          await this.sleep(this.backoffMs * Math.pow(2, attempt - 1));
+          continue;
+        }
+
+        throw error;
+      }
+    }
+  }
+
+  isRetryable(error) {
+    if (error.name === 'AbortError') return true;
+    if (error instanceof APIError) {
+      return [408, 429, 500, 502, 503, 504].includes(error.status);
+    }
+    return error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT';
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}`,
+                errors: [
+                    { type: 'Network timeouts', solution: 'Exponential backoff with configurable retries' },
+                    { type: 'Rate limit exceeded (429)', solution: 'Automatic retry with Retry-After header respect' },
+                    { type: 'Server errors (5xx)', solution: 'Circuit breaker pattern with fallback' }
+                ]
+            },
+            'webhook-handler': {
+                filename: 'webhook-handler.js',
+                code: `async function handleWebhook(req, res) {
+  const signature = req.headers['x-webhook-signature'];
+  const payload = req.body;
+
+  // Verify webhook authenticity
+  if (!verifySignature(payload, signature, WEBHOOK_SECRET)) {
+    console.error('Invalid webhook signature');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  // Idempotency check - prevent duplicate processing
+  const eventId = req.headers['x-event-id'];
+  if (await isEventProcessed(eventId)) {
+    console.log(\`Event \${eventId} already processed, skipping\`);
+    return res.status(200).json({ status: 'already_processed' });
+  }
+
+  try {
+    // Process within transaction for atomicity
+    await db.transaction(async (tx) => {
+      // Mark event as processing
+      await tx.insert('webhook_events', {
+        event_id: eventId,
+        status: 'processing',
+        payload: JSON.stringify(payload),
+        received_at: new Date()
+      });
+
+      // Route to appropriate handler
+      const handler = webhookHandlers[payload.type];
+      if (!handler) {
+        throw new Error(\`Unknown webhook type: \${payload.type}\`);
+      }
+
+      await handler(payload.data, tx);
+
+      // Mark as completed
+      await tx.update('webhook_events', eventId, {
+        status: 'completed',
+        processed_at: new Date()
+      });
+    });
+
+    return res.status(200).json({ status: 'processed' });
+
+  } catch (error) {
+    await logWebhookError(eventId, error);
+
+    // Return 200 to prevent retries for non-retryable errors
+    if (error instanceof ValidationError) {
+      return res.status(200).json({ status: 'invalid_payload' });
+    }
+
+    // Return 500 to trigger webhook retry
+    return res.status(500).json({ error: 'Processing failed' });
+  }
+}`,
+                errors: [
+                    { type: 'Invalid signatures', solution: 'HMAC verification with constant-time comparison' },
+                    { type: 'Duplicate deliveries', solution: 'Idempotency keys with event deduplication' },
+                    { type: 'Processing failures', solution: 'Dead letter queue with manual retry interface' }
+                ]
+            },
+            'rate-limiter': {
+                filename: 'rate-limiter.js',
+                code: `class RateLimiter {
+  constructor(redis, options = {}) {
+    this.redis = redis;
+    this.windowMs = options.windowMs || 60000;  // 1 minute
+    this.maxRequests = options.maxRequests || 100;
+    this.keyPrefix = options.keyPrefix || 'ratelimit:';
+  }
+
+  async checkLimit(identifier) {
+    const key = \`\${this.keyPrefix}\${identifier}\`;
+    const now = Date.now();
+    const windowStart = now - this.windowMs;
+
+    // Use Redis sorted set for sliding window
+    const pipeline = this.redis.pipeline();
+
+    // Remove old entries outside the window
+    pipeline.zremrangebyscore(key, 0, windowStart);
+
+    // Count requests in current window
+    pipeline.zcard(key);
+
+    // Add current request
+    pipeline.zadd(key, now, \`\${now}-\${Math.random()}\`);
+
+    // Set expiry to clean up old keys
+    pipeline.expire(key, Math.ceil(this.windowMs / 1000) + 1);
+
+    const results = await pipeline.exec();
+    const requestCount = results[1][1];
+
+    if (requestCount >= this.maxRequests) {
+      // Calculate retry-after
+      const oldestRequest = await this.redis.zrange(key, 0, 0, 'WITHSCORES');
+      const retryAfter = oldestRequest.length
+        ? Math.ceil((parseInt(oldestRequest[1]) + this.windowMs - now) / 1000)
+        : Math.ceil(this.windowMs / 1000);
+
+      return {
+        allowed: false,
+        remaining: 0,
+        retryAfter,
+        limit: this.maxRequests
+      };
+    }
+
+    return {
+      allowed: true,
+      remaining: this.maxRequests - requestCount - 1,
+      retryAfter: null,
+      limit: this.maxRequests
+    };
+  }
+}
+
+// Middleware usage
+function rateLimitMiddleware(limiter) {
+  return async (req, res, next) => {
+    const identifier = req.ip || req.headers['x-forwarded-for'];
+    const result = await limiter.checkLimit(identifier);
+
+    res.setHeader('X-RateLimit-Limit', result.limit);
+    res.setHeader('X-RateLimit-Remaining', result.remaining);
+
+    if (!result.allowed) {
+      res.setHeader('Retry-After', result.retryAfter);
+      return res.status(429).json({
+        error: 'Too many requests',
+        retryAfter: result.retryAfter
+      });
+    }
+
+    next();
+  };
+}`,
+                errors: [
+                    { type: 'Distributed rate limiting', solution: 'Redis sliding window with atomic operations' },
+                    { type: 'Burst traffic spikes', solution: 'Token bucket algorithm with refill rate' },
+                    { type: 'Client identification', solution: 'Multi-factor identification (IP, API key, user ID)' }
+                ]
+            }
+        };
+
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -972,9 +1368,45 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             `).join('');
         }
 
-        document.querySelectorAll('.stage-card').forEach(card => {
+        document.querySelectorAll('.stage-card[data-stage]').forEach(card => {
             card.addEventListener('click', function() {
                 updateStage(this.dataset.stage);
+            });
+        });
+
+        // API Stage switching
+        function updateApiStage(stage) {
+            const data = apiStages[stage];
+
+            // Update active state for API cards only
+            document.querySelectorAll('.stage-card[data-api]').forEach(card => {
+                card.classList.toggle('active', card.dataset.api === stage);
+            });
+
+            // Update code display
+            document.getElementById('api-code-filename').textContent = data.filename;
+            document.getElementById('api-code-display').textContent = data.code;
+
+            // Update error list
+            const errorList = document.getElementById('api-error-list');
+            errorList.innerHTML = data.errors.map(error => `
+                <div class="error-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <div class="error-item-content">
+                        <div class="error-type">${error.type}</div>
+                        <div class="error-solution">${error.solution}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.stage-card[data-api]').forEach(card => {
+            card.addEventListener('click', function() {
+                updateApiStage(this.dataset.api);
             });
         });
 
