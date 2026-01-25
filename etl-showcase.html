@@ -749,7 +749,7 @@
             <div class="pipeline-stages">
                 <div class="stage-card active" data-stage="extraction">
                     <div class="stage-card-header">
-                        <h3>Data Extraction</h3>
+                        <h3>Salesforce CRM Sync</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -759,7 +759,7 @@
                 </div>
                 <div class="stage-card" data-stage="transformation">
                     <div class="stage-card-header">
-                        <h3>Data Transformation</h3>
+                        <h3>Shopify Order Processing</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -769,7 +769,7 @@
                 </div>
                 <div class="stage-card" data-stage="loading">
                     <div class="stage-card-header">
-                        <h3>Data Loading</h3>
+                        <h3>Data Warehouse Load</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -983,7 +983,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             <div class="pipeline-stages">
                 <div class="stage-card active" data-api="rest-client">
                     <div class="stage-card-header">
-                        <h3>REST Client</h3>
+                        <h3>Stripe Payments</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -993,7 +993,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
                 </div>
                 <div class="stage-card" data-api="webhook-handler">
                     <div class="stage-card-header">
-                        <h3>Webhook Handler</h3>
+                        <h3>Shopify Webhooks</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1003,7 +1003,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
                 </div>
                 <div class="stage-card" data-api="rate-limiter">
                     <div class="stage-card-header">
-                        <h3>Rate Limiting</h3>
+                        <h3>Inventory Aggregation</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1146,7 +1146,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             <div class="pipeline-stages">
                 <div class="stage-card active" data-service="express-server">
                     <div class="stage-card-header">
-                        <h3>Express Server</h3>
+                        <h3>E-commerce Checkout</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1156,7 +1156,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
                 </div>
                 <div class="stage-card" data-service="auth-middleware">
                     <div class="stage-card-header">
-                        <h3>Auth Middleware</h3>
+                        <h3>Multi-Tenant SaaS</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1166,7 +1166,7 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
                 </div>
                 <div class="stage-card" data-service="health-monitoring">
                     <div class="stage-card-header">
-                        <h3>Health & Monitoring</h3>
+                        <h3>Real-time Order Tracking</h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1325,116 +1325,169 @@ function createServer(config = {}) {
         // ETL Stage Data
         const etlStages = {
             extraction: {
-                filename: 'extraction.js',
-                code: `async function extractData(source) {
-  try {
-    const connection = await db.connect({
-      host: source.host,
-      timeout: 30000,
-      retries: 3
-    });
+                filename: 'salesforce-sync.js',
+                code: `// Real-world: Syncing Salesforce CRM data to your data warehouse
+async function syncSalesforceContacts(lastSyncDate) {
+  const sf = new SalesforceClient(process.env.SF_CREDENTIALS);
 
-    const data = await connection.query(
-      'SELECT * FROM orders WHERE updated_at > ?',
-      [lastSync]
-    );
+  // Handle Salesforce API pagination (they limit to 2000 per request)
+  let allRecords = [];
+  let queryLocator = null;
 
-    return { success: true, data, count: data.length };
+  do {
+    try {
+      const result = queryLocator
+        ? await sf.queryMore(queryLocator)
+        : await sf.query(\`
+            SELECT Id, Email, FirstName, LastName, Account.Name,
+                   Account.Industry, LeadSource, CreatedDate, LastModifiedDate
+            FROM Contact
+            WHERE LastModifiedDate > \${lastSyncDate.toISOString()}
+            ORDER BY LastModifiedDate ASC
+          \`);
 
-  } catch (error) {
-    if (error.code === 'ETIMEDOUT') {
-      await notifySlack('DB timeout - switching to backup');
-      return await extractFromBackup(source);
+      allRecords.push(...result.records);
+      queryLocator = result.nextRecordsUrl;
+
+      // Checkpoint progress every 5000 records (resume if job fails)
+      if (allRecords.length % 5000 === 0) {
+        await saveCheckpoint('sf_contacts', result.records.slice(-1)[0].LastModifiedDate);
+      }
+
+    } catch (error) {
+      if (error.errorCode === 'REQUEST_LIMIT_EXCEEDED') {
+        // Salesforce daily API limit hit - schedule for tomorrow
+        await scheduleRetry('sf_contacts', { resumeFrom: queryLocator });
+        throw new DeferredError('Salesforce API limit reached');
+      }
+      throw error;
     }
+  } while (queryLocator);
 
-    logError('extraction', error);
-    throw new RetryableError(error);
-  }
+  return { records: allRecords, source: 'salesforce', syncedAt: new Date() };
 }`,
                 errors: [
-                    { type: 'Connection timeout', solution: 'Auto-retry with exponential backoff' },
-                    { type: 'Schema mismatch', solution: 'Dynamic field mapping with validation' },
-                    { type: 'Data type conflicts', solution: 'Type coercion with fallback defaults' }
+                    { type: 'Salesforce API rate limits', solution: 'Checkpoint progress and schedule retry for next day' },
+                    { type: 'Session token expiration', solution: 'Auto-refresh OAuth tokens before expiry' },
+                    { type: 'Deleted records sync', solution: 'Query Salesforce Recycle Bin for soft deletes' }
                 ]
             },
             transformation: {
-                filename: 'transformation.js',
-                code: `function transformRecord(record) {
-  const errors = [];
+                filename: 'shopify-orders.js',
+                code: `// Real-world: Transforming Shopify orders for financial reporting
+function transformShopifyOrder(order) {
+  const issues = [];
 
-  // Validate required fields
-  const schema = {
-    customer_id: { type: 'number', required: true },
-    amount: { type: 'number', min: 0 },
-    email: { type: 'email', required: true }
-  };
+  // Handle Shopify's nested structure and currency edge cases
+  const lineItems = order.line_items.map(item => {
+    // Shopify sometimes returns price as string, sometimes number
+    const unitPrice = parseFloat(item.price) || 0;
+    const quantity = parseInt(item.quantity) || 1;
 
-  const validated = validateSchema(record, schema);
+    // Handle refunded/partially fulfilled items
+    const refundedQty = item.refunded_quantity || 0;
+    const netQuantity = quantity - refundedQty;
 
-  if (!validated.valid) {
-    errors.push(...validated.errors);
-    record = applyDefaults(record, schema);
-  }
+    if (item.variant_id === null) {
+      issues.push({ type: 'deleted_product', sku: item.sku, order: order.name });
+    }
 
-  // Transform with error boundaries
-  try {
     return {
-      id: record.customer_id,
-      revenue: parseFloat(record.amount) || 0,
-      email: normalizeEmail(record.email),
-      timestamp: new Date().toISOString(),
-      _errors: errors.length > 0 ? errors : null
+      sku: item.sku || \`UNKNOWN-\${item.product_id}\`,
+      product_name: item.title,
+      unit_price: unitPrice,
+      quantity: netQuantity,
+      line_total: unitPrice * netQuantity,
+      tax: parseFloat(item.tax_lines?.[0]?.price) || 0,
+      discount_allocated: parseFloat(item.discount_allocations?.[0]?.amount) || 0
     };
-  } catch (error) {
-    quarantineRecord(record, error);
-    return null; // Skip bad records
-  }
+  }).filter(item => item.quantity > 0);
+
+  // Multi-currency handling - convert to base currency
+  const exchangeRate = order.currency === 'USD'
+    ? 1
+    : await getExchangeRate(order.currency, order.created_at);
+
+  return {
+    order_id: order.id,
+    order_number: order.name,
+    customer_email: order.email?.toLowerCase() || order.customer?.email?.toLowerCase(),
+    subtotal_usd: parseFloat(order.subtotal_price) * exchangeRate,
+    tax_usd: parseFloat(order.total_tax) * exchangeRate,
+    shipping_usd: parseFloat(order.shipping_lines?.[0]?.price || 0) * exchangeRate,
+    total_usd: parseFloat(order.total_price) * exchangeRate,
+    original_currency: order.currency,
+    line_items: lineItems,
+    source: 'shopify',
+    _issues: issues.length > 0 ? issues : null
+  };
 }`,
                 errors: [
-                    { type: 'Invalid data types', solution: 'Type validation with safe defaults' },
-                    { type: 'Missing required fields', solution: 'Quarantine bad records for review' },
-                    { type: 'Business logic violations', solution: 'Flag and route to exception queue' }
+                    { type: 'Multi-currency orders', solution: 'Historical exchange rate lookup with fallback' },
+                    { type: 'Deleted product variants', solution: 'Flag for review, use SKU as fallback identifier' },
+                    { type: 'Partial refunds mid-sync', solution: 'Recalculate line totals, emit adjustment records' }
                 ]
             },
             loading: {
-                filename: 'loading.js',
-                code: `async function loadData(records, target) {
-  const batchSize = 1000;
-  const results = { success: 0, failed: 0, errors: [] };
+                filename: 'warehouse-load.js',
+                code: `// Real-world: Loading data into Snowflake/BigQuery with CDC
+async function loadToWarehouse(records, config) {
+  const warehouse = new WarehouseClient(config.connection);
+  const stagingTable = \`staging_\${config.table}_\${Date.now()}\`;
+  const results = { inserted: 0, updated: 0, failed: 0, errors: [] };
 
-  for (let i = 0; i < records.length; i += batchSize) {
-    const batch = records.slice(i, i + batchSize);
+  try {
+    // 1. Bulk load to staging table (fast - no constraints)
+    await warehouse.createTempTable(stagingTable, config.schema);
+    await warehouse.bulkLoad(stagingTable, records, { format: 'JSON' });
 
-    try {
-      await target.transaction(async (tx) => {
-        await tx.bulkInsert('customers', batch);
-        results.success += batch.length;
-      });
+    // 2. Merge into production with proper CDC handling
+    const mergeResult = await warehouse.execute(\`
+      MERGE INTO \${config.table} AS target
+      USING \${stagingTable} AS source
+      ON target.\${config.primaryKey} = source.\${config.primaryKey}
 
-    } catch (error) {
-      // Try individual inserts to isolate failures
-      for (const record of batch) {
-        try {
-          await target.insert('customers', record);
-          results.success++;
-        } catch (err) {
-          results.failed++;
-          results.errors.push({
-            record_id: record.id,
-            error: err.message
-          });
-        }
-      }
+      WHEN MATCHED AND source._deleted = true THEN
+        UPDATE SET _deleted_at = CURRENT_TIMESTAMP, _active = false
+
+      WHEN MATCHED AND source._updated_at > target._updated_at THEN
+        UPDATE SET \${config.columns.map(c => \`\${c} = source.\${c}\`).join(', ')},
+                   _updated_at = CURRENT_TIMESTAMP,
+                   _version = target._version + 1
+
+      WHEN NOT MATCHED THEN
+        INSERT (\${config.columns.join(', ')}, _created_at, _version)
+        VALUES (\${config.columns.map(c => \`source.\${c}\`).join(', ')}, CURRENT_TIMESTAMP, 1)
+    \`);
+
+    results.inserted = mergeResult.rowsInserted;
+    results.updated = mergeResult.rowsUpdated;
+
+    // 3. Update high-water mark for next incremental sync
+    await warehouse.execute(\`
+      UPDATE etl_watermarks
+      SET last_value = (SELECT MAX(_source_updated_at) FROM \${stagingTable}),
+          last_run = CURRENT_TIMESTAMP,
+          records_processed = \${records.length}
+      WHERE pipeline = '\${config.pipeline}'
+    \`);
+
+  } catch (error) {
+    if (error.code === 'WAREHOUSE_SUSPENDED') {
+      await warehouse.resume();
+      return loadToWarehouse(records, config); // Retry after resume
     }
+    throw error;
+  } finally {
+    await warehouse.dropTable(stagingTable);
   }
 
-  await generateLoadReport(results);
   return results;
 }`,
                 errors: [
-                    { type: 'Duplicate key violations', solution: 'Upsert logic with conflict resolution' },
-                    { type: 'Target system downtime', solution: 'Queue records for replay' },
-                    { type: 'Partial batch failures', solution: 'Individual record fallback with tracking' }
+                    { type: 'Warehouse auto-suspend', solution: 'Detect suspended state, auto-resume before retry' },
+                    { type: 'Schema drift', solution: 'Dynamic column detection with ALTER TABLE' },
+                    { type: 'Duplicate key on merge', solution: 'Dedup in staging before merge, keep latest version' }
                 ]
             }
         };
@@ -1442,224 +1495,222 @@ function createServer(config = {}) {
         // API Stage Data
         const apiStages = {
             'rest-client': {
-                filename: 'rest-client.js',
-                code: `class APIClient {
-  constructor(baseURL, options = {}) {
-    this.baseURL = baseURL;
-    this.timeout = options.timeout || 30000;
-    this.retries = options.retries || 3;
-    this.backoffMs = options.backoffMs || 1000;
-  }
-
-  async request(endpoint, options = {}) {
-    let lastError;
-
-    for (let attempt = 1; attempt <= this.retries; attempt++) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(
-          () => controller.abort(),
-          this.timeout
-        );
-
-        const response = await fetch(\`\${this.baseURL}\${endpoint}\`, {
-          ...options,
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-          }
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new APIError(response.status, await response.text());
-        }
-
-        return await response.json();
-
-      } catch (error) {
-        lastError = error;
-
-        if (error.name === 'AbortError') {
-          console.warn(\`Request timeout, attempt \${attempt}/\${this.retries}\`);
-        }
-
-        if (attempt < this.retries && this.isRetryable(error)) {
-          await this.sleep(this.backoffMs * Math.pow(2, attempt - 1));
-          continue;
-        }
-
-        throw error;
-      }
-    }
-  }
-
-  isRetryable(error) {
-    if (error.name === 'AbortError') return true;
-    if (error instanceof APIError) {
-      return [408, 429, 500, 502, 503, 504].includes(error.status);
-    }
-    return error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT';
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}`,
-                errors: [
-                    { type: 'Network timeouts', solution: 'Exponential backoff with configurable retries' },
-                    { type: 'Rate limit exceeded (429)', solution: 'Automatic retry with Retry-After header respect' },
-                    { type: 'Server errors (5xx)', solution: 'Circuit breaker pattern with fallback' }
-                ]
-            },
-            'webhook-handler': {
-                filename: 'webhook-handler.js',
-                code: `async function handleWebhook(req, res) {
-  const signature = req.headers['x-webhook-signature'];
-  const payload = req.body;
-
-  // Verify webhook authenticity
-  if (!verifySignature(payload, signature, WEBHOOK_SECRET)) {
-    console.error('Invalid webhook signature');
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
-
-  // Idempotency check - prevent duplicate processing
-  const eventId = req.headers['x-event-id'];
-  if (await isEventProcessed(eventId)) {
-    console.log(\`Event \${eventId} already processed, skipping\`);
-    return res.status(200).json({ status: 'already_processed' });
-  }
+                filename: 'stripe-payments.js',
+                code: `// Real-world: Processing payments with Stripe (handling all the edge cases)
+async function processPayment(order, paymentMethod) {
+  const idempotencyKey = \`order_\${order.id}_\${order.updated_at}\`;
 
   try {
-    // Process within transaction for atomicity
-    await db.transaction(async (tx) => {
-      // Mark event as processing
-      await tx.insert('webhook_events', {
-        event_id: eventId,
-        status: 'processing',
-        payload: JSON.stringify(payload),
-        received_at: new Date()
-      });
-
-      // Route to appropriate handler
-      const handler = webhookHandlers[payload.type];
-      if (!handler) {
-        throw new Error(\`Unknown webhook type: \${payload.type}\`);
-      }
-
-      await handler(payload.data, tx);
-
-      // Mark as completed
-      await tx.update('webhook_events', eventId, {
-        status: 'completed',
-        processed_at: new Date()
-      });
-    });
-
-    return res.status(200).json({ status: 'processed' });
-
-  } catch (error) {
-    await logWebhookError(eventId, error);
-
-    // Return 200 to prevent retries for non-retryable errors
-    if (error instanceof ValidationError) {
-      return res.status(200).json({ status: 'invalid_payload' });
+    // 1. Create or retrieve customer (handle guest checkout)
+    let customer;
+    if (order.customer_id) {
+      customer = await stripe.customers.retrieve(order.stripe_customer_id);
+    } else {
+      customer = await stripe.customers.create({
+        email: order.email,
+        metadata: { guest: true, order_id: order.id }
+      }, { idempotencyKey: \`customer_\${idempotencyKey}\` });
     }
 
-    // Return 500 to trigger webhook retry
-    return res.status(500).json({ error: 'Processing failed' });
-  }
-}`,
-                errors: [
-                    { type: 'Invalid signatures', solution: 'HMAC verification with constant-time comparison' },
-                    { type: 'Duplicate deliveries', solution: 'Idempotency keys with event deduplication' },
-                    { type: 'Processing failures', solution: 'Dead letter queue with manual retry interface' }
-                ]
-            },
-            'rate-limiter': {
-                filename: 'rate-limiter.js',
-                code: `class RateLimiter {
-  constructor(redis, options = {}) {
-    this.redis = redis;
-    this.windowMs = options.windowMs || 60000;  // 1 minute
-    this.maxRequests = options.maxRequests || 100;
-    this.keyPrefix = options.keyPrefix || 'ratelimit:';
-  }
+    // 2. Create PaymentIntent with proper error handling
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(order.total * 100), // Stripe uses cents
+      currency: order.currency.toLowerCase(),
+      customer: customer.id,
+      payment_method: paymentMethod.id,
+      confirm: true,
+      metadata: {
+        order_id: order.id,
+        order_number: order.number
+      },
+      // Handle 3D Secure / SCA requirements
+      return_url: \`\${process.env.APP_URL}/orders/\${order.id}/confirm\`,
+    }, { idempotencyKey });
 
-  async checkLimit(identifier) {
-    const key = \`\${this.keyPrefix}\${identifier}\`;
-    const now = Date.now();
-    const windowStart = now - this.windowMs;
-
-    // Use Redis sorted set for sliding window
-    const pipeline = this.redis.pipeline();
-
-    // Remove old entries outside the window
-    pipeline.zremrangebyscore(key, 0, windowStart);
-
-    // Count requests in current window
-    pipeline.zcard(key);
-
-    // Add current request
-    pipeline.zadd(key, now, \`\${now}-\${Math.random()}\`);
-
-    // Set expiry to clean up old keys
-    pipeline.expire(key, Math.ceil(this.windowMs / 1000) + 1);
-
-    const results = await pipeline.exec();
-    const requestCount = results[1][1];
-
-    if (requestCount >= this.maxRequests) {
-      // Calculate retry-after
-      const oldestRequest = await this.redis.zrange(key, 0, 0, 'WITHSCORES');
-      const retryAfter = oldestRequest.length
-        ? Math.ceil((parseInt(oldestRequest[1]) + this.windowMs - now) / 1000)
-        : Math.ceil(this.windowMs / 1000);
-
+    // 3. Handle various payment states
+    if (paymentIntent.status === 'requires_action') {
       return {
-        allowed: false,
-        remaining: 0,
-        retryAfter,
-        limit: this.maxRequests
+        success: false,
+        requires_action: true,
+        client_secret: paymentIntent.client_secret,
+        message: 'Additional authentication required'
       };
     }
 
-    return {
-      allowed: true,
-      remaining: this.maxRequests - requestCount - 1,
-      retryAfter: null,
-      limit: this.maxRequests
-    };
-  }
-}
-
-// Middleware usage
-function rateLimitMiddleware(limiter) {
-  return async (req, res, next) => {
-    const identifier = req.ip || req.headers['x-forwarded-for'];
-    const result = await limiter.checkLimit(identifier);
-
-    res.setHeader('X-RateLimit-Limit', result.limit);
-    res.setHeader('X-RateLimit-Remaining', result.remaining);
-
-    if (!result.allowed) {
-      res.setHeader('Retry-After', result.retryAfter);
-      return res.status(429).json({
-        error: 'Too many requests',
-        retryAfter: result.retryAfter
+    if (paymentIntent.status === 'succeeded') {
+      await db.orders.update(order.id, {
+        payment_status: 'paid',
+        stripe_payment_id: paymentIntent.id,
+        paid_at: new Date()
       });
+      await triggerFulfillment(order.id);
+      return { success: true, payment_id: paymentIntent.id };
     }
 
-    next();
-  };
+    throw new PaymentError(\`Unexpected status: \${paymentIntent.status}\`);
+
+  } catch (error) {
+    // Stripe-specific error handling
+    if (error.type === 'StripeCardError') {
+      return { success: false, error: error.message, code: error.decline_code };
+    }
+    if (error.type === 'StripeInvalidRequestError') {
+      logger.error('Stripe config error', { error, order_id: order.id });
+      throw error; // This is a bug, not a user error
+    }
+    throw error;
+  }
 }`,
                 errors: [
-                    { type: 'Distributed rate limiting', solution: 'Redis sliding window with atomic operations' },
-                    { type: 'Burst traffic spikes', solution: 'Token bucket algorithm with refill rate' },
-                    { type: 'Client identification', solution: 'Multi-factor identification (IP, API key, user ID)' }
+                    { type: 'Card declined', solution: 'Return user-friendly message with decline code' },
+                    { type: '3D Secure required', solution: 'Return client_secret for frontend authentication flow' },
+                    { type: 'Duplicate charges', solution: 'Idempotency keys prevent double-charging on retries' }
+                ]
+            },
+            'webhook-handler': {
+                filename: 'shopify-webhooks.js',
+                code: `// Real-world: Processing Shopify order webhooks for fulfillment system
+async function handleShopifyOrderWebhook(req, res) {
+  // CRITICAL: Respond quickly - Shopify times out after 5 seconds
+  // Process async, acknowledge immediately
+  const webhookId = req.headers['x-shopify-webhook-id'];
+  const topic = req.headers['x-shopify-topic'];
+  const shop = req.headers['x-shopify-shop-domain'];
+
+  // 1. Verify webhook is from Shopify (prevent spoofing)
+  const hmac = req.headers['x-shopify-hmac-sha256'];
+  const verified = crypto.timingSafeEqual(
+    Buffer.from(hmac),
+    Buffer.from(
+      crypto.createHmac('sha256', process.env.SHOPIFY_WEBHOOK_SECRET)
+        .update(req.rawBody)
+        .digest('base64')
+    )
+  );
+
+  if (!verified) {
+    logger.warn('Invalid Shopify webhook signature', { shop, topic });
+    return res.status(401).send('Invalid signature');
+  }
+
+  // 2. Idempotency - Shopify retries, don't double-process
+  const existing = await redis.get(\`webhook:\${webhookId}\`);
+  if (existing) {
+    return res.status(200).send('Already processed');
+  }
+  await redis.set(\`webhook:\${webhookId}\`, 'processing', 'EX', 86400);
+
+  // 3. Acknowledge immediately, process async
+  res.status(200).send('Accepted');
+
+  // 4. Now handle the actual business logic
+  try {
+    const order = req.body;
+
+    if (topic === 'orders/create') {
+      // Check inventory across multiple warehouses
+      const inventoryCheck = await checkMultiWarehouseInventory(order.line_items);
+
+      if (inventoryCheck.canFulfill) {
+        await createFulfillmentOrder(order, inventoryCheck.warehouse);
+        await updateShopifyFulfillment(shop, order.id, 'in_progress');
+      } else {
+        // Backorder flow
+        await createBackorder(order, inventoryCheck.shortages);
+        await notifyCustomerServiceTeam(order, 'inventory_shortage');
+      }
+    }
+
+    if (topic === 'orders/cancelled') {
+      await cancelFulfillmentIfNotShipped(order.id);
+      await restoreInventory(order.line_items);
+    }
+
+    await redis.set(\`webhook:\${webhookId}\`, 'completed', 'EX', 86400);
+
+  } catch (error) {
+    await redis.set(\`webhook:\${webhookId}\`, 'failed', 'EX', 86400);
+    await deadLetterQueue.add({ webhookId, error: error.message, payload: req.body });
+  }
+}`,
+                errors: [
+                    { type: 'Shopify 5-second timeout', solution: 'Acknowledge immediately, process asynchronously' },
+                    { type: 'Duplicate webhook deliveries', solution: 'Idempotency check with Redis TTL' },
+                    { type: 'Multi-store webhook routing', solution: 'Extract shop domain, route to correct tenant' }
+                ]
+            },
+            'rate-limiter': {
+                filename: 'inventory-aggregator.js',
+                code: `// Real-world: Aggregating inventory from multiple vendors/warehouses
+async function getUnifiedInventory(sku) {
+  const vendors = [
+    { name: 'warehouse_east', api: new WarehouseAPI('east'), priority: 1 },
+    { name: 'warehouse_west', api: new WarehouseAPI('west'), priority: 2 },
+    { name: 'supplier_acme', api: new SupplierAPI('acme'), priority: 3 },
+    { name: 'dropship_partner', api: new DropshipAPI(), priority: 4 }
+  ];
+
+  // Query all sources in parallel with individual timeouts
+  const results = await Promise.allSettled(
+    vendors.map(async (vendor) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+
+      try {
+        const inventory = await vendor.api.checkStock(sku, {
+          signal: controller.signal
+        });
+
+        return {
+          vendor: vendor.name,
+          priority: vendor.priority,
+          available: inventory.quantity,
+          reserved: inventory.reserved || 0,
+          inbound: inventory.incoming_shipments || 0,
+          updated_at: inventory.last_updated
+        };
+      } finally {
+        clearTimeout(timeout);
+      }
+    })
+  );
+
+  // Process results - handle partial failures gracefully
+  const inventory = { sources: [], totalAvailable: 0, errors: [] };
+
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      inventory.sources.push(result.value);
+      inventory.totalAvailable += Math.max(0, result.value.available - result.value.reserved);
+    } else {
+      // Log failure but don't fail the whole request
+      inventory.errors.push({
+        vendor: vendors[index].name,
+        error: result.reason.message
+      });
+      logger.warn(\`Inventory check failed for \${vendors[index].name}\`, {
+        sku, error: result.reason.message
+      });
+    }
+  });
+
+  // Sort by priority for fulfillment routing
+  inventory.sources.sort((a, b) => a.priority - b.priority);
+
+  // Add recommendation for fulfillment
+  inventory.recommendedSource = inventory.sources.find(s => s.available > s.reserved);
+  inventory.canFulfill = inventory.totalAvailable > 0;
+  inventory.isPartialData = inventory.errors.length > 0;
+
+  // Cache result briefly (inventory changes frequently)
+  await redis.setex(\`inventory:\${sku}\`, 30, JSON.stringify(inventory));
+
+  return inventory;
+}`,
+                errors: [
+                    { type: 'Vendor API timeout', solution: 'Individual timeouts with Promise.allSettled for partial results' },
+                    { type: 'Inconsistent data formats', solution: 'Normalize responses with vendor-specific adapters' },
+                    { type: 'Stale inventory data', solution: 'Short TTL cache with staleness indicator for UI' }
                 ]
             }
         };
@@ -1667,268 +1718,259 @@ function rateLimitMiddleware(limiter) {
         // Web Service Stage Data
         const serviceStages = {
             'express-server': {
-                filename: 'server.js',
-                code: `const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
+                filename: 'checkout-api.js',
+                code: `// Real-world: E-commerce checkout with inventory reservation
+app.post('/api/checkout', authenticate, async (req, res) => {
+  const { cart_id, shipping_address, payment_method } = req.body;
+  const checkoutId = crypto.randomUUID();
 
-function createServer(config = {}) {
-  const app = express();
-
-  // Security middleware
-  app.use(helmet());
-  app.use(cors(config.corsOptions));
-  app.use(express.json({ limit: '10mb' }));
-
-  // Request ID for tracing
-  app.use((req, res, next) => {
-    req.id = req.headers['x-request-id'] || crypto.randomUUID();
-    res.setHeader('x-request-id', req.id);
-    next();
-  });
-
-  // Request logging
-  app.use((req, res, next) => {
-    const start = Date.now();
-    res.on('finish', () => {
-      logger.info({
-        requestId: req.id,
-        method: req.method,
-        path: req.path,
-        status: res.statusCode,
-        duration: Date.now() - start
+  try {
+    // 1. Validate cart hasn't changed since user started checkout
+    const cart = await Cart.findById(cart_id);
+    if (cart.version !== req.body.cart_version) {
+      return res.status(409).json({
+        error: 'Cart was modified',
+        code: 'CART_CHANGED',
+        current_version: cart.version
       });
-    });
-    next();
-  });
+    }
 
-  // Global error handler
-  app.use((err, req, res, next) => {
-    const status = err.status || 500;
-    const isOperational = err.isOperational || false;
-
-    logger.error({
-      requestId: req.id,
-      error: err.message,
-      stack: isOperational ? undefined : err.stack,
-      status
+    // 2. Reserve inventory with timeout (hold for 10 minutes)
+    const reservation = await inventoryService.reserve({
+      items: cart.items,
+      checkout_id: checkoutId,
+      expires_at: new Date(Date.now() + 10 * 60 * 1000)
     });
 
-    res.status(status).json({
-      error: isOperational ? err.message : 'Internal server error',
-      requestId: req.id
+    if (!reservation.success) {
+      return res.status(400).json({
+        error: 'Some items are no longer available',
+        code: 'INVENTORY_UNAVAILABLE',
+        unavailable_items: reservation.failures
+      });
+    }
+
+    // 3. Calculate final totals (tax, shipping, discounts)
+    const totals = await pricingService.calculate({
+      items: cart.items,
+      shipping_address,
+      customer_id: req.user.id,
+      coupon_code: cart.coupon_code
     });
-  });
 
-  // Graceful shutdown
-  const server = app.listen(config.port || 3000);
+    // 4. Process payment (in try/finally to ensure inventory release on failure)
+    try {
+      const payment = await paymentService.charge({
+        amount: totals.grand_total,
+        currency: totals.currency,
+        payment_method,
+        metadata: { checkout_id: checkoutId, customer_id: req.user.id }
+      });
 
-  process.on('SIGTERM', async () => {
-    logger.info('SIGTERM received, shutting down gracefully');
-    server.close(() => {
-      logger.info('Server closed');
-      process.exit(0);
-    });
-  });
+      // 5. Create order (payment succeeded)
+      const order = await Order.create({
+        checkout_id: checkoutId,
+        customer_id: req.user.id,
+        items: cart.items,
+        totals,
+        payment_id: payment.id,
+        shipping_address,
+        status: 'confirmed'
+      });
 
-  return { app, server };
-}`,
+      // 6. Commit inventory reservation
+      await inventoryService.commitReservation(checkoutId);
+
+      // 7. Trigger async processes (don't block response)
+      eventBus.emit('order.created', { order_id: order.id });
+
+      return res.status(201).json({ order_id: order.id, order_number: order.number });
+
+    } catch (paymentError) {
+      // Payment failed - release inventory reservation
+      await inventoryService.releaseReservation(checkoutId);
+      throw paymentError;
+    }
+
+  } catch (error) {
+    logger.error('Checkout failed', { checkoutId, error: error.message });
+    throw error;
+  }
+});`,
                 errors: [
-                    { type: 'Unhandled exceptions', solution: 'Global error handler with structured logging' },
-                    { type: 'Process termination', solution: 'Graceful shutdown with connection draining' },
-                    { type: 'Request tracing failures', solution: 'Correlation IDs with distributed tracing' }
+                    { type: 'Cart modified during checkout', solution: 'Optimistic locking with version check' },
+                    { type: 'Inventory sold out mid-checkout', solution: 'Temporary reservation with auto-release timeout' },
+                    { type: 'Payment fails after inventory reserved', solution: 'Release reservation in catch block' }
                 ]
             },
             'auth-middleware': {
-                filename: 'auth.js',
-                code: `const jwt = require('jsonwebtoken');
+                filename: 'multi-tenant.js',
+                code: `// Real-world: Multi-tenant SaaS with organization scoping
+async function tenantMiddleware(req, res, next) {
+  try {
+    // 1. Extract tenant from subdomain or header
+    const tenantSlug = req.subdomains[0] || req.headers['x-tenant-id'];
 
-function authMiddleware(options = {}) {
-  const { secret, algorithms = ['HS256'], optional = false } = options;
-
-  return async (req, res, next) => {
-    try {
-      const authHeader = req.headers.authorization;
-
-      if (!authHeader) {
-        if (optional) return next();
-        throw new AuthError('No authorization header', 401);
-      }
-
-      const [scheme, token] = authHeader.split(' ');
-
-      if (scheme !== 'Bearer' || !token) {
-        throw new AuthError('Invalid authorization format', 401);
-      }
-
-      // Verify token
-      const decoded = jwt.verify(token, secret, { algorithms });
-
-      // Check token expiration with clock tolerance
-      const now = Math.floor(Date.now() / 1000);
-      if (decoded.exp && decoded.exp < now - 30) {
-        throw new AuthError('Token expired', 401);
-      }
-
-      // Check if token was revoked
-      if (await isTokenRevoked(decoded.jti)) {
-        throw new AuthError('Token revoked', 401);
-      }
-
-      // Attach user to request
-      req.user = {
-        id: decoded.sub,
-        email: decoded.email,
-        roles: decoded.roles || [],
-        tokenId: decoded.jti
-      };
-
-      next();
-
-    } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
-        return res.status(401).json({
-          error: 'Invalid token',
-          code: 'INVALID_TOKEN'
-        });
-      }
-
-      if (error instanceof AuthError) {
-        return res.status(error.status).json({
-          error: error.message,
-          code: error.code
-        });
-      }
-
-      next(error);
-    }
-  };
-}
-
-// Role-based access control
-function requireRoles(...roles) {
-  return (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Authentication required' });
+    if (!tenantSlug) {
+      return res.status(400).json({ error: 'Tenant not specified' });
     }
 
-    const hasRole = roles.some(role => req.user.roles.includes(role));
+    // 2. Load tenant config (cached)
+    const tenant = await getTenantBySlug(tenantSlug);
 
-    if (!hasRole) {
-      logger.warn(\`Access denied for user \${req.user.id} - required: \${roles}\`);
-      return res.status(403).json({ error: 'Insufficient permissions' });
+    if (!tenant) {
+      return res.status(404).json({ error: 'Tenant not found' });
     }
+
+    if (tenant.status === 'suspended') {
+      return res.status(403).json({
+        error: 'Account suspended',
+        reason: tenant.suspension_reason,
+        contact: 'billing@yourapp.com'
+      });
+    }
+
+    // 3. Verify user belongs to this tenant
+    if (req.user && !req.user.tenant_ids.includes(tenant.id)) {
+      logger.warn('Cross-tenant access attempt', {
+        user_id: req.user.id,
+        attempted_tenant: tenant.id,
+        user_tenants: req.user.tenant_ids
+      });
+      return res.status(403).json({ error: 'Access denied to this organization' });
+    }
+
+    // 4. Set up tenant-scoped database connection
+    req.tenant = tenant;
+    req.db = createTenantConnection(tenant.database_schema);
+
+    // 5. Apply tenant-specific feature flags
+    req.features = await getFeatureFlags(tenant.plan, tenant.feature_overrides);
+
+    // 6. Set tenant context for logging and auditing
+    logger.setContext({ tenant_id: tenant.id, tenant_name: tenant.name });
 
     next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Ensure queries never leak data between tenants
+function scopeToTenant(model) {
+  return {
+    find: (query) => model.find({ ...query, tenant_id: req.tenant.id }),
+    create: (data) => model.create({ ...data, tenant_id: req.tenant.id }),
+    update: (id, data) => model.update(
+      { _id: id, tenant_id: req.tenant.id }, // Always include tenant_id!
+      data
+    ),
+    delete: (id) => model.delete({ _id: id, tenant_id: req.tenant.id })
   };
 }`,
                 errors: [
-                    { type: 'Invalid/expired tokens', solution: 'JWT verification with clock tolerance' },
-                    { type: 'Token revocation', solution: 'Token blacklist with Redis cache' },
-                    { type: 'Missing permissions', solution: 'Role-based access control middleware' }
+                    { type: 'Cross-tenant data leaks', solution: 'Always scope queries with tenant_id, audit access attempts' },
+                    { type: 'Suspended account access', solution: 'Check tenant status before processing requests' },
+                    { type: 'User accessing wrong tenant', solution: 'Verify user membership, log suspicious attempts' }
                 ]
             },
             'health-monitoring': {
-                filename: 'health.js',
-                code: `class HealthChecker {
-  constructor() {
-    this.checks = new Map();
-    this.status = 'starting';
+                filename: 'order-tracking.js',
+                code: `// Real-world: Real-time order tracking with WebSocket updates
+class OrderTrackingService {
+  constructor(io) {
+    this.io = io;
+    this.activeTrackers = new Map(); // order_id -> Set of socket ids
   }
 
-  addCheck(name, checkFn, options = {}) {
-    this.checks.set(name, {
-      fn: checkFn,
-      critical: options.critical ?? true,
-      timeout: options.timeout ?? 5000,
-      interval: options.interval ?? 30000,
-      lastResult: null,
-      lastCheck: null
-    });
-  }
-
-  async runChecks() {
-    const results = {};
-    let healthy = true;
-
-    for (const [name, check] of this.checks) {
-      try {
-        const start = Date.now();
-
-        const result = await Promise.race([
-          check.fn(),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), check.timeout)
-          )
-        ]);
-
-        results[name] = {
-          status: 'healthy',
-          latency: Date.now() - start,
-          ...result
-        };
-
-        check.lastResult = results[name];
-        check.lastCheck = new Date();
-
-      } catch (error) {
-        results[name] = {
-          status: 'unhealthy',
-          error: error.message
-        };
-
-        if (check.critical) healthy = false;
-
-        logger.error(\`Health check failed: \${name}\`, { error: error.message });
-      }
+  // Customer subscribes to order updates
+  async subscribeToOrder(socket, orderId) {
+    // Verify customer owns this order
+    const order = await Order.findById(orderId);
+    if (!order || order.customer_id !== socket.user.id) {
+      socket.emit('error', { code: 'ORDER_NOT_FOUND' });
+      return;
     }
 
-    this.status = healthy ? 'healthy' : 'unhealthy';
-    return { status: this.status, checks: results, timestamp: new Date() };
+    // Add to tracking room
+    socket.join(\`order:\${orderId}\`);
+
+    if (!this.activeTrackers.has(orderId)) {
+      this.activeTrackers.set(orderId, new Set());
+    }
+    this.activeTrackers.get(orderId).add(socket.id);
+
+    // Send current status immediately
+    socket.emit('order:status', await this.getOrderStatus(orderId));
+
+    // Clean up on disconnect
+    socket.on('disconnect', () => {
+      this.activeTrackers.get(orderId)?.delete(socket.id);
+      if (this.activeTrackers.get(orderId)?.size === 0) {
+        this.activeTrackers.delete(orderId);
+      }
+    });
   }
 
-  // Express routes
-  routes() {
-    const router = express.Router();
+  // Called by fulfillment system when order status changes
+  async broadcastUpdate(orderId, update) {
+    const status = await this.getOrderStatus(orderId);
 
-    // Liveness - is the process running?
-    router.get('/live', (req, res) => {
-      res.json({ status: 'alive', uptime: process.uptime() });
+    // Push to all connected customers watching this order
+    this.io.to(\`order:\${orderId}\`).emit('order:status', status);
+
+    // Also send push notification for important updates
+    if (['shipped', 'out_for_delivery', 'delivered'].includes(update.status)) {
+      const order = await Order.findById(orderId);
+      await pushNotificationService.send(order.customer_id, {
+        title: this.getNotificationTitle(update.status),
+        body: update.message,
+        data: { order_id: orderId, status: update.status }
+      });
+    }
+
+    // Log for analytics
+    await EventLog.create({
+      type: 'order_status_change',
+      order_id: orderId,
+      old_status: update.previous_status,
+      new_status: update.status,
+      source: update.source, // 'warehouse', 'carrier', 'system'
+      timestamp: new Date()
     });
-
-    // Readiness - can we serve traffic?
-    router.get('/ready', async (req, res) => {
-      const health = await this.runChecks();
-      const status = health.status === 'healthy' ? 200 : 503;
-      res.status(status).json(health);
-    });
-
-    // Detailed health for monitoring
-    router.get('/health', async (req, res) => {
-      const health = await this.runChecks();
-      health.memory = process.memoryUsage();
-      health.cpu = process.cpuUsage();
-      res.json(health);
-    });
-
-    return router;
   }
-}
 
-// Usage
-const health = new HealthChecker();
-health.addCheck('database', async () => {
-  await db.query('SELECT 1');
-  return { connections: db.pool.totalCount };
-});
-health.addCheck('redis', async () => {
-  await redis.ping();
-  return { connected: true };
-});`,
+  async getOrderStatus(orderId) {
+    const [order, shipments, timeline] = await Promise.all([
+      Order.findById(orderId),
+      Shipment.findByOrderId(orderId),
+      OrderTimeline.findByOrderId(orderId)
+    ]);
+
+    return {
+      order_number: order.number,
+      status: order.status,
+      shipments: shipments.map(s => ({
+        carrier: s.carrier,
+        tracking_number: s.tracking_number,
+        tracking_url: s.tracking_url,
+        status: s.status,
+        estimated_delivery: s.estimated_delivery,
+        last_location: s.last_location
+      })),
+      timeline: timeline.map(t => ({
+        status: t.status,
+        message: t.message,
+        timestamp: t.created_at
+      })),
+      updated_at: order.updated_at
+    };
+  }
+}`,
                 errors: [
-                    { type: 'Dependency failures', solution: 'Individual health checks with timeouts' },
-                    { type: 'Cascading outages', solution: 'Critical vs non-critical check separation' },
-                    { type: 'Load balancer detection', solution: 'Separate liveness and readiness probes' }
+                    { type: 'WebSocket disconnections', solution: 'Auto-reconnect with exponential backoff, room-based cleanup' },
+                    { type: 'Unauthorized order access', solution: 'Verify ownership before subscribing to updates' },
+                    { type: 'Missed updates during reconnect', solution: 'Send full current state on subscription' }
                 ]
             }
         };
