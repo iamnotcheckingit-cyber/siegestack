@@ -265,6 +265,91 @@
             line-height: 1.6;
         }
 
+        /* Integration Systems Section */
+        .integrations-section {
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background: var(--navy);
+            border-radius: 12px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .integrations-title {
+            color: var(--white);
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .integrations-subtitle {
+            color: var(--slate);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .integration-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .integration-category {
+            background: var(--navy-dark);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100, 255, 218, 0.05);
+        }
+
+        .integration-category h3 {
+            color: var(--blue-accent);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-desc {
+            color: var(--slate);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .integration-logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .integration-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(100, 255, 218, 0.08);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .integration-name {
+            color: var(--lightest-slate);
+        }
+
+        .integration-check {
+            color: var(--blue-accent);
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .integrations-note {
+            text-align: center;
+            color: var(--light-slate);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
         /* Showcase Intro */
         .showcase-intro {
             background: rgba(100, 255, 218, 0.05);
@@ -703,9 +788,100 @@
             </div>
         </div>
 
+        <!-- Integration Systems Section -->
+        <div class="integrations-section">
+            <h2 class="integrations-title">Systems We Work With Every Day</h2>
+            <p class="integrations-subtitle">We've built integrations with these platforms dozens of times. We know where the gotchas are, what the APIs don't tell you, and how to make them work reliably.</p>
+
+            <div class="integration-categories">
+                <div class="integration-category">
+                    <h3>CRM Platforms</h3>
+                    <p class="category-desc">Sync your customer data, automate workflows, and keep your sales team in the loop.</p>
+                    <div class="integration-logos">
+                        <div class="integration-item">
+                            <span class="integration-name">Salesforce</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">HubSpot</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Zoho CRM</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Pipedrive</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Microsoft Dynamics</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="integration-category">
+                    <h3>ERP & Accounting</h3>
+                    <p class="category-desc">Connect your financial systems, automate reporting, and eliminate manual data entry.</p>
+                    <div class="integration-logos">
+                        <div class="integration-item">
+                            <span class="integration-name">NetSuite</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">QuickBooks</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">SAP</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Xero</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Sage</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="integration-category">
+                    <h3>E-commerce & Retail</h3>
+                    <p class="category-desc">Unify your sales channels, sync inventory, and automate order fulfillment.</p>
+                    <div class="integration-logos">
+                        <div class="integration-item">
+                            <span class="integration-name">Shopify</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">WooCommerce</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">BigCommerce</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Amazon</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                        <div class="integration-item">
+                            <span class="integration-name">Square</span>
+                            <span class="integration-check">&#10003;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="integrations-note">Don't see your system? We've integrated with 50+ platforms. If it has an API, we can connect it.</p>
+        </div>
+
         <!-- Intro Text -->
         <div class="showcase-intro">
-            <p>Below you'll see real examples of how we write code. Not demo projects - actual patterns we use in production. Click through to see how we handle the tricky stuff that separates amateur code from enterprise-grade systems.</p>
+            <p>Want to see how we actually build these integrations? Below are real code examples - the same patterns we use in production. Share this with your technical team if you'd like them to review our approach.</p>
         </div>
 
         <!-- Tab Navigation -->
