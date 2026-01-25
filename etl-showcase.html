@@ -28,11 +28,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
-    <title>ETL, API & Query Excellence | SiegeStack</title>
+    <title>ETL, API, Web Services & Query Excellence | SiegeStack</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Production-grade ETL pipelines, API integrations, and SQL queries with bulletproof error handling. See how SiegeStack builds data systems that handle millions of records with zero downtime.">
-    <meta name="keywords" content="ETL pipeline, data extraction, data transformation, data loading, SQL queries, API integration, REST API, webhook handling, rate limiting, error handling, data engineering, production-ready code">
+    <meta name="description" content="Production-grade ETL pipelines, API integrations, web services, and SQL queries with bulletproof error handling. See how SiegeStack builds systems that handle millions of records with zero downtime.">
+    <meta name="keywords" content="ETL pipeline, data extraction, data transformation, data loading, SQL queries, API integration, REST API, webhook handling, rate limiting, web services, Express.js, Node.js, authentication, middleware, error handling, data engineering, production-ready code">
     <meta name="author" content="SiegeStack">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://siegestack.com/etl-showcase">
@@ -40,8 +40,8 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://siegestack.com/etl-showcase">
-    <meta property="og:title" content="ETL, API & Query Excellence | SiegeStack">
-    <meta property="og:description" content="Production-grade ETL pipelines and API integrations with bulletproof error handling.">
+    <meta property="og:title" content="ETL, API, Web Services & Query Excellence | SiegeStack">
+    <meta property="og:description" content="Production-grade ETL pipelines, API integrations, and web services with bulletproof error handling.">
     <meta property="og:image" content="https://siegestack.com/og-image.png">
 
     <meta name="theme-color" content="#0a192f">
@@ -51,8 +51,8 @@
     {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": "ETL, API & Query Excellence - Production-Grade Code Examples",
-        "description": "Production-grade ETL pipelines, API integrations, and SQL queries with bulletproof error handling. Code examples for data extraction, transformation, loading, REST clients, webhooks, and rate limiting.",
+        "headline": "ETL, API, Web Services & Query Excellence - Production-Grade Code Examples",
+        "description": "Production-grade ETL pipelines, API integrations, web services, and SQL queries with bulletproof error handling. Code examples for data extraction, transformation, loading, REST clients, webhooks, rate limiting, Express servers, authentication, and health monitoring.",
         "author": {
             "@type": "Organization",
             "name": "SiegeStack",
@@ -72,11 +72,13 @@
         "about": [
             "ETL Pipeline Development",
             "API Integration",
+            "Web Services Development",
             "SQL Query Optimization",
             "Error Handling",
-            "Data Engineering"
+            "Data Engineering",
+            "Node.js Development"
         ],
-        "keywords": "ETL, API integration, SQL queries, data pipeline, error handling, webhooks, rate limiting"
+        "keywords": "ETL, API integration, web services, SQL queries, data pipeline, error handling, webhooks, rate limiting, Express.js, authentication, middleware"
     }
     </script>
 
@@ -572,8 +574,8 @@
     <div class="showcase-container">
         <!-- Header -->
         <div class="showcase-header">
-            <h1>ETL, API & Query Excellence</h1>
-            <p>Production-grade error handling for data pipelines and integrations</p>
+            <h1>Full-Stack Code Excellence</h1>
+            <p>Production-grade error handling for data pipelines, APIs, and web services</p>
         </div>
 
         <!-- Tab Navigation -->
@@ -600,6 +602,14 @@
                     <circle cx="5" cy="19" r="1"></circle>
                 </svg>
                 API Integration
+            </button>
+            <button class="tab-btn" data-tab="webservice">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Web Services
             </button>
         </div>
 
@@ -1000,11 +1010,174 @@ LIMIT 100000;  -- Prevent memory overflow</pre>
             </div>
         </div>
 
+        <!-- Web Services Tab -->
+        <div id="webservice-tab" class="tab-content">
+            <!-- Web Service Pattern Selector -->
+            <div class="pipeline-stages">
+                <div class="stage-card active" data-service="express-server">
+                    <div class="stage-card-header">
+                        <h3>Express Server</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-service="auth-middleware">
+                    <div class="stage-card-header">
+                        <h3>Auth Middleware</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+                <div class="stage-card" data-service="health-monitoring">
+                    <div class="stage-card-header">
+                        <h3>Health & Monitoring</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                    <p>3 error patterns handled</p>
+                </div>
+            </div>
+
+            <!-- Web Service Code Display -->
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename" id="service-code-filename">server.js</span>
+                    <span class="code-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Production Ready
+                    </span>
+                </div>
+                <div class="code-block">
+                    <pre id="service-code-display">const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+
+function createServer(config = {}) {
+  const app = express();
+
+  // Security middleware
+  app.use(helmet());
+  app.use(cors(config.corsOptions));
+  app.use(express.json({ limit: '10mb' }));
+
+  // Request ID for tracing
+  app.use((req, res, next) => {
+    req.id = req.headers['x-request-id'] || crypto.randomUUID();
+    res.setHeader('x-request-id', req.id);
+    next();
+  });
+
+  // Request logging
+  app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+      logger.info({
+        requestId: req.id,
+        method: req.method,
+        path: req.path,
+        status: res.statusCode,
+        duration: Date.now() - start
+      });
+    });
+    next();
+  });
+
+  // Global error handler
+  app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    const isOperational = err.isOperational || false;
+
+    logger.error({
+      requestId: req.id,
+      error: err.message,
+      stack: isOperational ? undefined : err.stack,
+      status
+    });
+
+    res.status(status).json({
+      error: isOperational ? err.message : 'Internal server error',
+      requestId: req.id
+    });
+  });
+
+  // Graceful shutdown
+  const server = app.listen(config.port || 3000);
+
+  process.on('SIGTERM', async () => {
+    logger.info('SIGTERM received, shutting down gracefully');
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(0);
+    });
+  });
+
+  return { app, server };
+}</pre>
+                </div>
+            </div>
+
+            <!-- Web Service Error Handling Section -->
+            <div class="error-section">
+                <h3 class="error-section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Error Handling Strategies
+                </h3>
+                <div class="error-list" id="service-error-list">
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Unhandled exceptions</div>
+                            <div class="error-solution">Global error handler with structured logging</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Process termination</div>
+                            <div class="error-solution">Graceful shutdown with connection draining</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Request tracing failures</div>
+                            <div class="error-solution">Correlation IDs with distributed tracing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- CTA Section -->
         <div class="cta-section">
-            <h3>Need bulletproof data pipelines?</h3>
-            <p>We build ETL systems that handle millions of records with zero downtime</p>
-            <a href="/#schedule" class="btn btn-primary">Let's Talk Data Engineering</a>
+            <h3>Need production-grade systems?</h3>
+            <p>We build data pipelines, APIs, and services that handle millions of requests with zero downtime</p>
+            <a href="/#schedule" class="btn btn-primary">Let's Talk</a>
         </div>
     </div>
 
@@ -1357,6 +1530,275 @@ function rateLimitMiddleware(limiter) {
             }
         };
 
+        // Web Service Stage Data
+        const serviceStages = {
+            'express-server': {
+                filename: 'server.js',
+                code: `const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+
+function createServer(config = {}) {
+  const app = express();
+
+  // Security middleware
+  app.use(helmet());
+  app.use(cors(config.corsOptions));
+  app.use(express.json({ limit: '10mb' }));
+
+  // Request ID for tracing
+  app.use((req, res, next) => {
+    req.id = req.headers['x-request-id'] || crypto.randomUUID();
+    res.setHeader('x-request-id', req.id);
+    next();
+  });
+
+  // Request logging
+  app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+      logger.info({
+        requestId: req.id,
+        method: req.method,
+        path: req.path,
+        status: res.statusCode,
+        duration: Date.now() - start
+      });
+    });
+    next();
+  });
+
+  // Global error handler
+  app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    const isOperational = err.isOperational || false;
+
+    logger.error({
+      requestId: req.id,
+      error: err.message,
+      stack: isOperational ? undefined : err.stack,
+      status
+    });
+
+    res.status(status).json({
+      error: isOperational ? err.message : 'Internal server error',
+      requestId: req.id
+    });
+  });
+
+  // Graceful shutdown
+  const server = app.listen(config.port || 3000);
+
+  process.on('SIGTERM', async () => {
+    logger.info('SIGTERM received, shutting down gracefully');
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(0);
+    });
+  });
+
+  return { app, server };
+}`,
+                errors: [
+                    { type: 'Unhandled exceptions', solution: 'Global error handler with structured logging' },
+                    { type: 'Process termination', solution: 'Graceful shutdown with connection draining' },
+                    { type: 'Request tracing failures', solution: 'Correlation IDs with distributed tracing' }
+                ]
+            },
+            'auth-middleware': {
+                filename: 'auth.js',
+                code: `const jwt = require('jsonwebtoken');
+
+function authMiddleware(options = {}) {
+  const { secret, algorithms = ['HS256'], optional = false } = options;
+
+  return async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader) {
+        if (optional) return next();
+        throw new AuthError('No authorization header', 401);
+      }
+
+      const [scheme, token] = authHeader.split(' ');
+
+      if (scheme !== 'Bearer' || !token) {
+        throw new AuthError('Invalid authorization format', 401);
+      }
+
+      // Verify token
+      const decoded = jwt.verify(token, secret, { algorithms });
+
+      // Check token expiration with clock tolerance
+      const now = Math.floor(Date.now() / 1000);
+      if (decoded.exp && decoded.exp < now - 30) {
+        throw new AuthError('Token expired', 401);
+      }
+
+      // Check if token was revoked
+      if (await isTokenRevoked(decoded.jti)) {
+        throw new AuthError('Token revoked', 401);
+      }
+
+      // Attach user to request
+      req.user = {
+        id: decoded.sub,
+        email: decoded.email,
+        roles: decoded.roles || [],
+        tokenId: decoded.jti
+      };
+
+      next();
+
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          error: 'Invalid token',
+          code: 'INVALID_TOKEN'
+        });
+      }
+
+      if (error instanceof AuthError) {
+        return res.status(error.status).json({
+          error: error.message,
+          code: error.code
+        });
+      }
+
+      next(error);
+    }
+  };
+}
+
+// Role-based access control
+function requireRoles(...roles) {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const hasRole = roles.some(role => req.user.roles.includes(role));
+
+    if (!hasRole) {
+      logger.warn(\`Access denied for user \${req.user.id} - required: \${roles}\`);
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+
+    next();
+  };
+}`,
+                errors: [
+                    { type: 'Invalid/expired tokens', solution: 'JWT verification with clock tolerance' },
+                    { type: 'Token revocation', solution: 'Token blacklist with Redis cache' },
+                    { type: 'Missing permissions', solution: 'Role-based access control middleware' }
+                ]
+            },
+            'health-monitoring': {
+                filename: 'health.js',
+                code: `class HealthChecker {
+  constructor() {
+    this.checks = new Map();
+    this.status = 'starting';
+  }
+
+  addCheck(name, checkFn, options = {}) {
+    this.checks.set(name, {
+      fn: checkFn,
+      critical: options.critical ?? true,
+      timeout: options.timeout ?? 5000,
+      interval: options.interval ?? 30000,
+      lastResult: null,
+      lastCheck: null
+    });
+  }
+
+  async runChecks() {
+    const results = {};
+    let healthy = true;
+
+    for (const [name, check] of this.checks) {
+      try {
+        const start = Date.now();
+
+        const result = await Promise.race([
+          check.fn(),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), check.timeout)
+          )
+        ]);
+
+        results[name] = {
+          status: 'healthy',
+          latency: Date.now() - start,
+          ...result
+        };
+
+        check.lastResult = results[name];
+        check.lastCheck = new Date();
+
+      } catch (error) {
+        results[name] = {
+          status: 'unhealthy',
+          error: error.message
+        };
+
+        if (check.critical) healthy = false;
+
+        logger.error(\`Health check failed: \${name}\`, { error: error.message });
+      }
+    }
+
+    this.status = healthy ? 'healthy' : 'unhealthy';
+    return { status: this.status, checks: results, timestamp: new Date() };
+  }
+
+  // Express routes
+  routes() {
+    const router = express.Router();
+
+    // Liveness - is the process running?
+    router.get('/live', (req, res) => {
+      res.json({ status: 'alive', uptime: process.uptime() });
+    });
+
+    // Readiness - can we serve traffic?
+    router.get('/ready', async (req, res) => {
+      const health = await this.runChecks();
+      const status = health.status === 'healthy' ? 200 : 503;
+      res.status(status).json(health);
+    });
+
+    // Detailed health for monitoring
+    router.get('/health', async (req, res) => {
+      const health = await this.runChecks();
+      health.memory = process.memoryUsage();
+      health.cpu = process.cpuUsage();
+      res.json(health);
+    });
+
+    return router;
+  }
+}
+
+// Usage
+const health = new HealthChecker();
+health.addCheck('database', async () => {
+  await db.query('SELECT 1');
+  return { connections: db.pool.totalCount };
+});
+health.addCheck('redis', async () => {
+  await redis.ping();
+  return { connected: true };
+});`,
+                errors: [
+                    { type: 'Dependency failures', solution: 'Individual health checks with timeouts' },
+                    { type: 'Cascading outages', solution: 'Critical vs non-critical check separation' },
+                    { type: 'Load balancer detection', solution: 'Separate liveness and readiness probes' }
+                ]
+            }
+        };
+
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -1441,6 +1883,42 @@ function rateLimitMiddleware(limiter) {
         document.querySelectorAll('.stage-card[data-api]').forEach(card => {
             card.addEventListener('click', function() {
                 updateApiStage(this.dataset.api);
+            });
+        });
+
+        // Web Service Stage switching
+        function updateServiceStage(stage) {
+            const data = serviceStages[stage];
+
+            // Update active state for service cards only
+            document.querySelectorAll('.stage-card[data-service]').forEach(card => {
+                card.classList.toggle('active', card.dataset.service === stage);
+            });
+
+            // Update code display
+            document.getElementById('service-code-filename').textContent = data.filename;
+            document.getElementById('service-code-display').textContent = data.code;
+
+            // Update error list
+            const errorList = document.getElementById('service-error-list');
+            errorList.innerHTML = data.errors.map(error => `
+                <div class="error-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <div class="error-item-content">
+                        <div class="error-type">${error.type}</div>
+                        <div class="error-solution">${error.solution}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.stage-card[data-service]').forEach(card => {
+            card.addEventListener('click', function() {
+                updateServiceStage(this.dataset.service);
             });
         });
 
