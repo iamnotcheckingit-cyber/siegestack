@@ -713,6 +713,189 @@
             text-decoration: underline;
         }
 
+        /* Monitoring Dashboard Styles */
+        .monitoring-intro {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .monitoring-intro h3 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .monitoring-intro p {
+            color: var(--slate);
+        }
+
+        .dashboard-container {
+            background: var(--navy);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .dashboard-title {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-live {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--green-soft);
+            font-size: 0.85rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green-soft);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--navy-dark);
+            border-radius: 8px;
+            padding: 1.25rem;
+            border-left: 3px solid var(--slate);
+        }
+
+        .metric-card.healthy {
+            border-left-color: var(--green-soft);
+        }
+
+        .metric-card.warning {
+            border-left-color: var(--yellow-soft);
+        }
+
+        .metric-card.critical {
+            border-left-color: var(--red-soft);
+        }
+
+        .metric-label {
+            color: var(--slate);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            color: var(--white);
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .metric-trend {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .metric-trend.up {
+            color: var(--green-soft);
+        }
+
+        .metric-trend.down {
+            color: var(--blue-accent);
+        }
+
+        .metric-card.warning .metric-trend.up {
+            color: var(--yellow-soft);
+        }
+
+        .alert-timeline {
+            background: var(--navy-dark);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .timeline-title {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.05);
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-time {
+            color: var(--slate);
+            font-size: 0.75rem;
+            min-width: 70px;
+        }
+
+        .alert-status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .alert-item.resolved .alert-status {
+            background: rgba(107, 203, 119, 0.15);
+            color: var(--green-soft);
+        }
+
+        .alert-item.info .alert-status {
+            background: rgba(100, 255, 218, 0.15);
+            color: var(--blue-accent);
+        }
+
+        .alert-item.warning .alert-status {
+            background: rgba(255, 217, 61, 0.15);
+            color: var(--yellow-soft);
+        }
+
+        .alert-item.critical .alert-status {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--red-soft);
+        }
+
+        .alert-msg {
+            color: var(--light-slate);
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -748,6 +931,20 @@
 
             .cta-section {
                 padding: 2rem 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .alert-item {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .alert-msg {
+                width: 100%;
+                margin-top: 0.25rem;
             }
         }
     </style>
@@ -939,6 +1136,12 @@
                     <line x1="12" y1="17" x2="12" y2="21"></line>
                 </svg>
                 Web Services
+            </button>
+            <button class="tab-btn" data-tab="monitoring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+                Monitoring
             </button>
         </div>
 
@@ -1496,6 +1699,302 @@ function createServer(config = {}) {
                         <div class="error-item-content">
                             <div class="error-type">Request tracing failures</div>
                             <div class="error-solution">Correlation IDs with distributed tracing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Dashboard Tab -->
+        <div id="monitoring-tab" class="tab-content">
+            <div class="monitoring-intro">
+                <h3>Production Monitoring That Actually Helps</h3>
+                <p>Every integration we build includes real-time monitoring. You see what's happening, we get alerted before problems become emergencies.</p>
+            </div>
+
+            <!-- Live Dashboard Visualization -->
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <span class="dashboard-title">Integration Health Dashboard</span>
+                    <span class="dashboard-live"><span class="live-dot"></span> Live</span>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card healthy">
+                        <div class="metric-label">API Uptime</div>
+                        <div class="metric-value">99.97%</div>
+                        <div class="metric-trend up">+0.02% vs last week</div>
+                    </div>
+                    <div class="metric-card healthy">
+                        <div class="metric-label">Avg Response Time</div>
+                        <div class="metric-value">142ms</div>
+                        <div class="metric-trend down">-23ms vs last week</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-label">Retry Rate</div>
+                        <div class="metric-value">2.3%</div>
+                        <div class="metric-trend up">+0.8% vs last week</div>
+                    </div>
+                    <div class="metric-card healthy">
+                        <div class="metric-label">Records Processed</div>
+                        <div class="metric-value">1.2M</div>
+                        <div class="metric-trend">Last 24 hours</div>
+                    </div>
+                </div>
+
+                <!-- Alert Timeline -->
+                <div class="alert-timeline">
+                    <div class="timeline-title">Recent Events</div>
+                    <div class="alert-item resolved">
+                        <span class="alert-time">2 hrs ago</span>
+                        <span class="alert-status">RESOLVED</span>
+                        <span class="alert-msg">Salesforce API rate limit approached - auto-throttled</span>
+                    </div>
+                    <div class="alert-item info">
+                        <span class="alert-time">4 hrs ago</span>
+                        <span class="alert-status">INFO</span>
+                        <span class="alert-msg">Scheduled sync completed: 45,231 records in 3m 42s</span>
+                    </div>
+                    <div class="alert-item warning">
+                        <span class="alert-time">Yesterday</span>
+                        <span class="alert-status">WARNING</span>
+                        <span class="alert-msg">Shopify webhook delay detected (avg 2.1s) - monitoring</span>
+                    </div>
+                    <div class="alert-item resolved">
+                        <span class="alert-time">2 days ago</span>
+                        <span class="alert-status">RESOLVED</span>
+                        <span class="alert-msg">P21 connection timeout - failover to replica successful</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retry Logic Code Example -->
+            <div class="code-container" style="margin-top: 2rem;">
+                <div class="code-header">
+                    <span class="code-filename">retry-handler.js</span>
+                    <span class="code-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Production Ready
+                    </span>
+                </div>
+                <div class="code-block">
+                    <pre id="monitoring-code-display">// Smart retry logic with exponential backoff and circuit breaker
+class ResilientApiClient {
+  constructor(config) {
+    this.baseUrl = config.baseUrl;
+    this.maxRetries = config.maxRetries || 3;
+    this.baseDelay = config.baseDelay || 1000;
+    this.maxDelay = config.maxDelay || 30000;
+    this.timeout = config.timeout || 10000;
+
+    // Circuit breaker state
+    this.failures = 0;
+    this.circuitOpen = false;
+    this.circuitResetTime = null;
+    this.failureThreshold = config.failureThreshold || 5;
+    this.circuitResetTimeout = config.circuitResetTimeout || 60000;
+  }
+
+  async request(endpoint, options = {}) {
+    // Check circuit breaker
+    if (this.circuitOpen) {
+      if (Date.now() < this.circuitResetTime) {
+        throw new CircuitOpenError('Circuit breaker is open - API temporarily unavailable');
+      }
+      // Try to reset circuit
+      this.circuitOpen = false;
+    }
+
+    let lastError;
+
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        const response = await this.executeWithTimeout(endpoint, options);
+
+        // Success - reset failure count
+        this.failures = 0;
+        return response;
+
+      } catch (error) {
+        lastError = error;
+
+        // Don't retry on client errors (4xx) except 429 (rate limit)
+        if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+          throw error;
+        }
+
+        // Record failure for circuit breaker
+        this.failures++;
+        if (this.failures >= this.failureThreshold) {
+          this.openCircuit();
+        }
+
+        // Calculate delay with exponential backoff + jitter
+        if (attempt < this.maxRetries) {
+          const delay = this.calculateDelay(attempt, error);
+
+          await this.logRetry({
+            endpoint,
+            attempt: attempt + 1,
+            maxRetries: this.maxRetries,
+            delay,
+            error: error.message,
+            status: error.status
+          });
+
+          await this.sleep(delay);
+        }
+      }
+    }
+
+    // All retries exhausted
+    await this.alertOps({
+      type: 'api_failure',
+      endpoint,
+      error: lastError.message,
+      attempts: this.maxRetries + 1,
+      circuitStatus: this.circuitOpen ? 'OPEN' : 'CLOSED'
+    });
+
+    throw lastError;
+  }
+
+  async executeWithTimeout(endpoint, options) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        }
+      });
+
+      if (!response.ok) {
+        const error = new Error(`API error: ${response.status}`);
+        error.status = response.status;
+        error.retryAfter = response.headers.get('Retry-After');
+        throw error;
+      }
+
+      return await response.json();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  calculateDelay(attempt, error) {
+    // Use Retry-After header if provided (rate limiting)
+    if (error.retryAfter) {
+      return parseInt(error.retryAfter) * 1000;
+    }
+
+    // Exponential backoff: 1s, 2s, 4s, 8s... with jitter
+    const exponentialDelay = this.baseDelay * Math.pow(2, attempt);
+    const jitter = Math.random() * 1000; // 0-1s random jitter
+
+    return Math.min(exponentialDelay + jitter, this.maxDelay);
+  }
+
+  openCircuit() {
+    this.circuitOpen = true;
+    this.circuitResetTime = Date.now() + this.circuitResetTimeout;
+
+    this.alertOps({
+      type: 'circuit_breaker_open',
+      message: 'Too many failures - circuit breaker activated',
+      resetTime: new Date(this.circuitResetTime).toISOString()
+    });
+  }
+
+  async logRetry(details) {
+    // Log to your monitoring system
+    console.log(`[RETRY] ${JSON.stringify(details)}`);
+    await metrics.increment('api.retry', { endpoint: details.endpoint });
+  }
+
+  async alertOps(alert) {
+    // Send to Slack, PagerDuty, etc - but batched, not spammy
+    await alertService.send({
+      ...alert,
+      timestamp: new Date().toISOString(),
+      service: this.baseUrl
+    });
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+// Usage example
+const salesforce = new ResilientApiClient({
+  baseUrl: 'https://yourinstance.salesforce.com/services/data/v57.0',
+  maxRetries: 3,
+  timeout: 15000,          // 15s timeout
+  failureThreshold: 5,     // Open circuit after 5 consecutive failures
+  circuitResetTimeout: 60000  // Try again after 1 minute
+});</pre>
+                </div>
+            </div>
+
+            <!-- Error Patterns Handled -->
+            <div class="error-list-container" style="margin-top: 1.5rem;">
+                <h4 class="error-list-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    Scenarios This Handles
+                </h4>
+                <div class="error-list" id="monitoring-error-list">
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Slow API responses (timeout)</div>
+                            <div class="error-solution">Configurable timeout + abort controller kills hung requests</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Rate limiting (429 errors)</div>
+                            <div class="error-solution">Respects Retry-After header, exponential backoff with jitter</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Cascading failures</div>
+                            <div class="error-solution">Circuit breaker prevents hammering a dead API</div>
+                        </div>
+                    </div>
+                    <div class="error-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div class="error-item-content">
+                            <div class="error-type">Alert fatigue</div>
+                            <div class="error-solution">Batched alerts, severity levels - you get summaries, not spam</div>
                         </div>
                     </div>
                 </div>
