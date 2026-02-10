@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultant Expertise Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 30px; }
+        h2 { 
+            color: #666; 
+            margin-top: 40px; 
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .field-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"], 
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .skill-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .skill-label {
+            font-weight: 500;
+            color: #555;
+        }
+        select {
+            width: auto;
+            min-width: 150px;
+        }
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        .submit-btn:hover {
+            background: #0056b3;
+        }
+        .rating-legend {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .rating-legend h3 {
+            margin-top: 0;
+        }
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Consultant Expertise Submission Form</h1>
+        
+        <div class="success-message" id="successMessage">
+            Thank you! Your expertise profile has been submitted successfully.
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            There was an error submitting your form. Please try again.
+        </div>
+
+        <div class="rating-legend">
+            <h3>Rating Scale</h3>
+            <p><strong>4</strong> - Expert (Can train others, implement independently)</p>
+            <p><strong>3</strong> - Proficient (Comfortable implementing with minimal support)</p>
+            <p><strong>2</strong> - Intermediate (Familiar, needs some guidance)</p>
+            <p><strong>1</strong> - Basic (Awareness only, needs significant support)</p>
+            <p><strong>0</strong> - No Experience</p>
+        </div>
+
+        <form id="expertiseForm">
+            <!-- Background Information -->
+            <h2>Consultant Background</h2>
+            
+            <div class="field-group">
+                <label for="consultantName">Name *</label>
+                <input type="text" id="consultantName" name="consultantName" required>
+            </div>
+
+            <div class="field-group">
+                <label for="erpExperience">ERP/Business Software Experience</label>
+                <input type="text" id="erpExperience" name="erpExperience" placeholder="e.g., P21 17 Years">
+            </div>
+
+            <div class="field-group">
+                <label for="languagesSpoken">Languages Spoken</label>
+                <input type="text" id="languagesSpoken" name="languagesSpoken">
+            </div>
+
+            <div class="field-group">
+                <label for="yearsInDistribution">Years in Distribution</label>
+                <input type="number" id="yearsInDistribution" name="yearsInDistribution" min="0">
+            </div>
+
+            <!-- Core Engagements -->
+            <h2>Core Engagements Readiness</h2>
+            <div id="coreEngagements"></div>
+
+            <!-- Specialty Engagements -->
+            <h2>Specialty Engagements Readiness</h2>
+            <div id="specialtyEngagements"></div>
+
+            <!-- Accounting Skills -->
+            <h2>Accounting Skills</h2>
+            <div id="accountingSkills"></div>
+
+            <!-- Sales Order Processing -->
+            <h2>Sales Order Processing</h2>
+            <div id="salesOrderSkills"></div>
+
+            <!-- Inventory & Purchasing -->
+            <h2>Inventory & Purchasing</h2>
+            <div id="inventorySkills"></div>
+
+            <!-- Production Orders -->
+            <h2>Production Orders/Secondary Processing</h2>
+            <div id="productionSkills"></div>
+
+            <!-- Pricing & Imports -->
+            <h2>Pricing & Imports</h2>
+            <div id="pricingSkills"></div>
+
+            <!-- Warehouse Operations -->
+            <h2>Warehouse Operations</h2>
+            <div id="warehouseSkills"></div>
+
+            <!-- CRM -->
+            <h2>CRM</h2>
+            <div id="crmSkills"></div>
+
+            <!-- Extensibility & Alerts -->
+            <h2>Extensibility & Alerts</h2>
+            <div id="extensibilitySkills"></div>
+
+            <!-- Functional/Vertical Expertise -->
+            <h2>Functional/Vertical Expertise</h2>
+            <div id="functionalSkills"></div>
+
+            <button type="submit" class="submit-btn">Submit Expertise Profile</button>
+        </form>
+    </div>
+
+    <script src="/consultant-form.js"></script>
+</body>
+</html>
