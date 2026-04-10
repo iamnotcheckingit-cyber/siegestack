@@ -130,6 +130,102 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 </script>
 
+<!-- Schema.org Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Scott Willis",
+  "alternateName": "iamnotcheckingit",
+  "jobTitle": "Enterprise Distribution Software Specialist",
+  "description": "P21 ERP configuration specialist, pro se litigant in Willis v. Rendon Legal PLLC, builder of safesapcrtx.org threat intelligence honeypot, and founder of SiegeStack.",
+  "url": "https://siegestack.com/",
+  "email": "iamnotcheckingit@gmail.com",
+  "image": "https://siegestack.com/og-working-with-claude.png",
+  "sameAs": [
+    "https://x.com/SiegeStack",
+    "https://github.com/iamnotcheckingit-cyber",
+    "https://github.com/iamnotcheckingit-cyber/siegestack",
+    "https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas",
+    "https://safesapcrtx.org"
+  ],
+  "knowsAbout": [
+    "Prophet 21 ERP",
+    "SQL Server performance optimization",
+    "ETL pipelines",
+    "Pro se litigation",
+    "Texas family law",
+    "Threat intelligence honeypots",
+    "Netlify edge functions",
+    "Supabase",
+    "Claude AI workflows"
+  ],
+  "worksFor": {
+    "@type": "Organization",
+    "name": "SiegeStack",
+    "url": "https://siegestack.com/"
+  }
+}
+</script>
+
+<!-- Schema.org FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does 'working with Claude' actually look like in practice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's an iteration loop, not a single prompt. You define an outcome, Claude drafts, you test against your real environment, give precise feedback, and refine. The leverage comes from the loop running many times against real artifacts — not from clever prompting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Claude help with pro se litigation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, with caveats. In Willis v. Rendon Legal PLLC, Claude co-authored the Second Amended Petition, the response defeating attorney immunity arguments, and surfaced controlling Texas precedent like Cantey Hanger and Landry's. Every citation and statute was independently verified before filing. Claude is a research and drafting partner, not a substitute for verifying law against the actual cases."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much performance gain did Claude help unlock on P21 ERP SQL views?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Approximately 27% aggregate gain across 300+ custom views in production. The wins came from sargability fixes (DATEDIFF vs DATEADD), index alignment, and removing unnecessary scalar functions in WHERE clauses."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the honest limitation of working with Claude?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Compaction is not lossless — long sessions lose nuance. Claude is confidently wrong roughly 20% of the time. It ignores instructions in long threads. There's no real cross-session memory. It's a smart but unreliable junior collaborator, not a co-founder. The leverage comes from how you wrap it, not the model alone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between 'prompting' and 'system design' with AI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stage 1 thinking is 'how do I write a better prompt.' Stage 2 thinking is 'how do I build a system around the model' — externalized memory, MCP tools, file-based context, scoped phases, and verification at every step. Power users live in Stage 2."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why a honeypot at safesapcrtx.org?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To learn how attackers actually behave by watching them in real time — not by reading reports about it. The site looks like a vulnerable WordPress install, runs on Netlify free tier with edge functions as a serverless firewall, and logs every probe to Supabase. Total monthly cost: $0. Daily intake: 80+ probes."
+      }
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -490,6 +586,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h1>Questions?</h1>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
     <p style="color:var(--muted);margin-top:2rem">Scott Willis &nbsp;·&nbsp; <a class="link" style="color:var(--muted)" href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a></p>
+    <p style="color:var(--muted);margin-top:.5rem;font-size:.85rem">
+      <a class="link" style="color:var(--ice)" href="https://siegestack.com/working-with-claude-blog.html">Read the long-form post</a>
+      &nbsp;·&nbsp;
+      <a class="link" style="color:var(--ice)" href="https://siegestack.com/">SiegeStack home</a>
+      &nbsp;·&nbsp;
+      <a class="link" style="color:var(--ice)" href="https://siegestack.com/etl-showcase">ETL showcase</a>
+    </p>
     <div class="repo-links">
       <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/siegestack</a>
       <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>
