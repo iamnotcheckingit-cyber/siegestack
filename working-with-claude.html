@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude.html">
 <meta property="og:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta property="og:description" content="A 22-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and zero ad spend. By Scott Willis.">
+<meta property="og:description" content="A 24-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and zero ad spend. By Scott Willis.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:secure_url" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:type" content="image/png">
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude.html">
 <meta name="twitter:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta name="twitter:description" content="A 22-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend.">
+<meta name="twitter:description" content="A 24-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta name="twitter:image:alt" content="Working with Claude — Scott Willis presentation cover">
 <meta name="twitter:creator" content="@SiegeStack">
@@ -84,7 +84,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "@type": "PresentationDigitalDocument",
   "name": "Working with Claude — AI Partnership in ERP, Law, Security & Content",
   "headline": "Working with Claude",
-  "description": "A 22-slide case study covering real-world AI partnership: 27% SQL view performance gains across 300+ P21 ERP custom views, pro se litigation co-authored with Claude in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and zero ad spend organic growth.",
+  "description": "A 24-slide case study covering real-world AI partnership: 27% SQL view performance gains across 300+ P21 ERP custom views, pro se litigation co-authored with Claude in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and zero ad spend organic growth.",
   "url": "https://siegestack.com/working-with-claude.html",
   "image": "https://siegestack.com/og-working-with-claude.png",
   "inLanguage": "en-US",
@@ -542,6 +542,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="callout"><strong>The critical insight:</strong> Most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering.</div>
 </div>
 
+<!-- 18b: Loop step-by-step -->
+<div class="slide slide--light" data-slide="18">
+  <h2>The Loop, Step by Step</h2>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">1. Define done</span><span class="detail"><strong>Before you type a word.</strong> "Copy-paste into the live environment with zero errors." "Filed with zero procedural defects." If the target is fuzzy, the output is fuzzy.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">2. Claude drafts</span><span class="detail"><strong>Feed real artifacts, never summaries.</strong> Actual code, actual logs, actual filings. State hard constraints up front. Let it go full creative on the first pass.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">3. Test reality</span><span class="detail"><strong>Where 95% of users fail.</strong> Run the code in dev. File in test mode. Deploy and hit it with traffic. You are the merciless QA department.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">4. Precise feedback</span><span class="detail"><strong>The convergence engine.</strong> Bad: "make it better." Good: "Line 47 throws an invalid handle on the temp buffer because the alias only exists in the older code path." Reproducible &gt; vague.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">5. Ship or repeat</span><span class="detail"><strong>Two choices only.</strong> Ship = passes production with zero caveats. Repeat = back to step 3 with new failure data. No "maybe one more prompt." The loop is sacred.</span></div>
+</div>
+
+<!-- 18c: Pro tips -->
+<div class="slide slide--light" data-slide="19">
+  <h2>Make Your Loop Tighter</h2>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <h3 style="color:var(--accent)">War room file</h3>
+      <p>Keep a context file you paste at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent)">Pattern library</h3>
+      <p>After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent)">Time-box</h3>
+      <p>15–20 minutes per loop, hard cap. If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Stop prompting.</p>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:1rem"><strong>Why it crushes other workflows:</strong> the human is the constant. You stay the domain expert. Every hallucination becomes fuel. The loop is model-agnostic — Claude, Grok, Gemini, GPT — because the leverage is in the discipline, not the tool.</div>
+</div>
+
 <!-- 19 -->
 <div class="slide slide--light" data-slide="18">
   <h2>What I'd Tell Someone Starting Today</h2>
@@ -603,7 +633,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
-  <span class="counter" id="counter">1 / 22</span>
+  <span class="counter" id="counter">1 / 24</span>
   <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
 <script>
