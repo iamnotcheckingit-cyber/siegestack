@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude.html">
 <meta property="og:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta property="og:description" content="A 21-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and zero ad spend. By Scott Willis.">
+<meta property="og:description" content="A 22-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and zero ad spend. By Scott Willis.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:secure_url" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:type" content="image/png">
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude.html">
 <meta name="twitter:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta name="twitter:description" content="A 21-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend.">
+<meta name="twitter:description" content="A 22-slide case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta name="twitter:image:alt" content="Working with Claude — Scott Willis presentation cover">
 <meta name="twitter:creator" content="@SiegeStack">
@@ -84,7 +84,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "@type": "PresentationDigitalDocument",
   "name": "Working with Claude — AI Partnership in ERP, Law, Security & Content",
   "headline": "Working with Claude",
-  "description": "A 21-slide case study covering real-world AI partnership: 27% SQL view performance gains across 300+ P21 ERP custom views, pro se litigation co-authored with Claude in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and zero ad spend organic growth.",
+  "description": "A 22-slide case study covering real-world AI partnership: 27% SQL view performance gains across 300+ P21 ERP custom views, pro se litigation co-authored with Claude in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and zero ad spend organic growth.",
   "url": "https://siegestack.com/working-with-claude.html",
   "image": "https://siegestack.com/og-working-with-claude.png",
   "inLanguage": "en-US",
@@ -457,7 +457,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <!-- 20 -->
-<div class="slide slide--dark" data-slide="19">
+<div class="slide slide--light" data-slide="19">
+  <h2>The Honest Limitations</h2>
+  <p style="margin-bottom:.5rem">Everything in this deck is real. So is everything below. Anyone selling you Claude as a magic co-founder is lying.</p>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Compaction loses things</span><span class="detail">When the context window fills up, Claude summarizes the older parts. That summary drops nuance and edge cases. It is not lossless. Plan for it.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Confidently wrong</span><span class="detail">~20% of the time Claude will produce an answer that sounds right and isn't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Instructions get ignored</span><span class="detail">Especially in long sessions. "Don't change X" gets violated. Re-state critical constraints in every meaningful turn.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Not a stateful partner</span><span class="detail">Default chat has no memory between sessions. What feels like continuity is you re-establishing context every time. That's a workflow, not a feature.</span></div>
+  <div class="callout" style="margin-top:1rem"><strong>The honest framing:</strong> Claude is a smart but unreliable junior — not a co-founder. The leverage comes from how you wrap it, not from the model alone.</div>
+</div>
+
+<!-- 21 -->
+<div class="slide slide--light" data-slide="20">
+  <h2>From Prompting to System Design</h2>
+  <p style="margin-bottom:.8rem">Stage 1 thinking: "How do I write a better prompt?" Stage 2 thinking: "How do I build a system around the model?" That's the actual leap.</p>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3 style="color:var(--red)">Don't</h3>
+      <p style="color:var(--charcoal)">&#8226; Giant kitchen-sink prompts<br>&#8226; Long messy chat threads<br>&#8226; "Just keep going" sessions until compaction breaks them<br>&#8226; Trust the model to remember last week<br>&#8226; Skip verification because the answer "sounds right"</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent)">Do</h3>
+      <p style="color:var(--charcoal)">&#8226; Break work into discrete phases with checkpoints<br>&#8226; Externalize memory: docs, files, system prompts, MCP tools<br>&#8226; Restart sessions with clean, curated context<br>&#8226; Use real tools (file I/O, APIs, databases) — not just chat<br>&#8226; Verify every claim against reality before shipping</p>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:1rem"><strong>The real formula:</strong> <span class="mono">Claude + external memory + structured workflows = leverage</span>. The honeypot, the SQL audit, the legal filings — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.</div>
+</div>
+
+<!-- 22 -->
+<div class="slide slide--dark" data-slide="21">
   <div style="text-align:center">
     <h1>Questions?</h1>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
@@ -472,7 +500,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
-  <span class="counter" id="counter">1 / 20</span>
+  <span class="counter" id="counter">1 / 22</span>
   <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
 <script>
