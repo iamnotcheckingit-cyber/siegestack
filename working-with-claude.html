@@ -29,11 +29,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="icon" type="image/svg+xml" href="/favicon-sw.svg">
 <link rel="apple-touch-icon" href="/favicon.png">
 
-<title>Working with Claude — A Real Case Study in AI Partnership for Engineering, Law, Security & Content</title>
+<title>How to Use Claude AI Effectively — A Real Workflow That Ships Production Work</title>
 
 <!-- Primary SEO Meta Tags -->
-<meta name="description" content="A real case study in partnering with Claude AI: enterprise data work, pro se litigation, a serverless threat intelligence honeypot, and zero ad spend organic content — plus the honest limits of working with AI.">
-<meta name="keywords" content="working with Claude, Claude AI, Anthropic, AI partnership, AI workflow, prompting vs system design, AI iteration loop, AI co-authoring, pro se litigation, threat intelligence honeypot, edge functions, AI case study, SiegeStack">
+<meta name="description" content="How to use Claude AI effectively, presented as a 24-slide case study from someone who ships real work with Claude daily. The Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
+<meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, Claude AI tutorial, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude">
 <meta name="author" content="Scott Willis">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -42,8 +42,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Open Graph / Facebook / iMessage / Android RCS -->
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude.html">
-<meta property="og:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta property="og:description" content="A 24-slide case study in partnering with Claude across enterprise engineering, law, security, and content — including the honest limits. By Scott Willis.">
+<meta property="og:title" content="How to Use Claude AI Effectively — A Real Workflow That Ships Production Work">
+<meta property="og:description" content="Stop treating Claude like a chatbot. A 24-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:secure_url" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:type" content="image/png">
@@ -62,8 +62,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude.html">
-<meta name="twitter:title" content="Working with Claude — AI Partnership in ERP, Law, Security & Content">
-<meta name="twitter:description" content="A 24-slide case study in partnering with Claude across enterprise engineering, law, security, and content — plus the honest limits.">
+<meta name="twitter:title" content="How to Use Claude AI Effectively — A Real Workflow That Ships">
+<meta name="twitter:description" content="A 24-slide case study on the Claude workflow, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta name="twitter:image:alt" content="Working with Claude — Scott Willis presentation cover">
 <meta name="twitter:creator" content="@SiegeStack">
@@ -82,9 +82,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 {
   "@context": "https://schema.org",
   "@type": "PresentationDigitalDocument",
-  "name": "Working with Claude — AI Partnership in ERP, Law, Security & Content",
-  "headline": "Working with Claude",
-  "description": "A 24-slide case study covering real-world AI partnership across enterprise engineering, pro se litigation, threat intelligence, and zero-ad-spend organic content — with an honest section on Claude's limits and the shift from prompting to system design.",
+  "name": "How to Use Claude AI Effectively — A Real Workflow That Ships Production Work",
+  "headline": "How to Use Claude AI Effectively",
+  "description": "How to use Claude AI effectively, presented as a 24-slide case study covering the Claude workflow, the iteration loop, common mistakes that break Claude, Claude vs ChatGPT, and a copy-paste template.",
   "url": "https://siegestack.com/working-with-claude.html",
   "image": "https://siegestack.com/og-working-with-claude.png",
   "inLanguage": "en-US",
@@ -173,54 +173,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What does 'working with Claude' actually look like in practice?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "It's an iteration loop, not a single prompt. You define an outcome, Claude drafts, you test against your real environment, give precise feedback, and refine. The leverage comes from the loop running many times against real artifacts — not from clever prompting."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can Claude help with pro se litigation?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, with verification. Claude can co-author petitions, draft responses to dispositive motions, and surface controlling precedent. Every citation and statute must be independently verified against the actual case law before filing. Claude is a research and drafting partner, not a substitute for reading the law yourself."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How much performance gain did Claude help unlock on enterprise database work?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Roughly 27% aggregate gain across hundreds of production views. The wins came from sargability fixes, index alignment, and removing unnecessary scalar functions in WHERE clauses — patterns Claude surfaced quickly once given real query plans."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What's the honest limitation of working with Claude?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Compaction is not lossless — long sessions lose nuance. Claude is confidently wrong roughly 20% of the time. It ignores instructions in long threads. There's no real cross-session memory. It's a smart but unreliable junior collaborator, not a co-founder. The leverage comes from how you wrap it, not the model alone."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What's the difference between 'prompting' and 'system design' with AI?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Stage 1 thinking is 'how do I write a better prompt.' Stage 2 thinking is 'how do I build a system around the model' — externalized memory, MCP tools, file-based context, scoped phases, and verification at every step. Power users live in Stage 2."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why a honeypot at safesapcrtx.org?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "To learn how attackers actually behave by watching them in real time — not by reading reports about it. The site looks like a vulnerable WordPress install, runs on Netlify free tier with edge functions as a serverless firewall, and logs every probe to Supabase. Total monthly cost: $0. Daily intake: 80+ probes."
-      }
-    }
+    {"@type":"Question","name":"What is Claude AI used for?","acceptedAnswer":{"@type":"Answer","text":"Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent and tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents."}},
+    {"@type":"Question","name":"How do you use Claude AI effectively?","acceptedAnswer":{"@type":"Answer","text":"Use the iteration loop: define the outcome, let Claude draft, test against reality, give precise feedback, then ship or repeat. Feed real artifacts (not summaries), keep an externalized context file, time-box each loop, and verify everything before shipping. Effective Claude use is system design, not prompt cleverness."}},
+    {"@type":"Question","name":"Is Claude better than ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features. Most serious users keep both open and route work to whichever fits the task."}},
+    {"@type":"Question","name":"How do you write good prompts for Claude?","acceptedAnswer":{"@type":"Answer","text":"The best Claude prompts are specific, not clever. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague 'try again' prompts."}},
+    {"@type":"Question","name":"Can Claude replace developers?","acceptedAnswer":{"@type":"Answer","text":"No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output, catch hallucinations, and define what 'done' actually means, you get confident-sounding garbage. The human is the quality gate."}},
+    {"@type":"Question","name":"What is the biggest mistake people make with Claude?","acceptedAnswer":{"@type":"Answer","text":"Treating it like a search engine instead of a junior collaborator. They paste a vague question, take the first answer, and walk away. The leverage is in the loop — defining done, drafting, testing against reality, giving precise feedback, and repeating until production-ready."}},
+    {"@type":"Question","name":"Does Claude have memory between sessions?","acceptedAnswer":{"@type":"Answer","text":"Default chat has no persistent cross-session memory. What feels like continuity is you re-establishing context every time. Serious workflows externalize memory in project files, system prompts, or tool-based memory APIs."}}
   ]
 }
 </script>
@@ -300,8 +259,6 @@ a.link:hover{opacity:.75}
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KKNXM7TW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-
-<h1 style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">Working with Claude — Scott Willis on AI partnership across enterprise engineering, pro se litigation, threat intelligence, and zero-ad-spend content</h1>
 
 <div class="progress" id="progress"></div>
 <div class="deck" id="deck">
@@ -647,5 +604,70 @@ let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{pa
 document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx>0?goTo(current-1):goTo(current+1)});
 goTo(0);
 </script>
+
+<!-- Semantic SEO content for crawlers — visually hidden, fully readable to search engines and screen readers. The slideshow above is the user-facing presentation; the structured article below mirrors its content for indexing. -->
+<article style="position:absolute;left:-99999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="false">
+  <h1>How to Use Claude AI Effectively</h1>
+  <p>Most people are using Claude wrong. They treat it like a chatbot. The most effective way to use Claude AI is as a production system — wrapped in a structured workflow with real artifacts, real tests, and tight feedback loops. This 24-slide presentation walks through that workflow with real case studies.</p>
+
+  <h2>What Claude AI Actually Is</h2>
+  <p>Claude is a large language model built by Anthropic for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it is wrapping the model in a structured workflow. Prompting is Stage 1 thinking. System design is Stage 2 thinking. This presentation is about Stage 2.</p>
+
+  <h2>What Most People Get Wrong About Claude</h2>
+  <p>Three failure modes account for almost every "Claude isn't that useful" complaint: one-shotting it (no iteration, no verification), feeding it summaries instead of real artifacts, and treating the chat itself as the system instead of building a workflow around it.</p>
+
+  <h2>My Actual Claude Workflow (Step by Step)</h2>
+  <h3>Step 1: Define the Output</h3>
+  <p>Before you type a single word, know exactly what "done" looks like in production reality. Not "a good query" — copy-paste into the live environment with zero errors. Not "a legal-looking brief" — filed with zero procedural defects. If the target pattern is fuzzy, the output is fuzzy.</p>
+
+  <h3>Step 2: Provide Real Context</h3>
+  <p>Feed Claude the actual code, the actual error message, the actual log lines, the actual document. Never summaries. Summaries leak the exact signal Claude needs. Include hard constraints up front so the first draft doesn't violate them.</p>
+
+  <h3>Step 3: Iterate and Debug</h3>
+  <p>Test every draft against reality immediately. Document failures with surgical precision: "Line 47 throws an invalid handle on the temp buffer because the alias only exists in the older code path" beats "it's wrong" by an order of magnitude. Specific feedback is the convergence engine.</p>
+
+  <h3>Step 4: Ship Only Production-Ready Work</h3>
+  <p>Two choices: ship if it passes your production test with zero caveats, or repeat from step 3 with the new failure data. No "maybe one more prompt." The loop is sacred.</p>
+
+  <h2>Claude vs ChatGPT: When to Use Each</h2>
+  <p>Neither Claude nor ChatGPT is universally better. Use Claude for long-context work, careful editing, conservative tone, and tool-use / agent workflows. Use ChatGPT for fast breadth-first ideation, multi-modal work (images, voice), and the broader plugin ecosystem. Most serious users keep both open and route work to whichever fits the task. Anyone telling you "X is always better than Y" is selling you something.</p>
+
+  <h2>Common Mistakes That Break Claude</h2>
+  <ul>
+    <li>Prompting in summary form instead of pasting real artifacts.</li>
+    <li>Defining "done" in the middle of a session instead of before it starts.</li>
+    <li>Letting context-window compaction happen silently and lose your earlier constraints.</li>
+    <li>Trusting fabricated citations, library names, function signatures, or config flags without verifying.</li>
+    <li>Skipping the test-against-reality step because the output "looked right."</li>
+    <li>Re-prompting "try again" instead of giving a precise correction.</li>
+    <li>Asking the chat to remember things from prior sessions when it has no cross-session memory.</li>
+  </ul>
+
+  <h2>Reusable Claude Workflow Template</h2>
+  <p>Paste this at the top of any new serious Claude session. If you can't fill all five sections in before you start prompting, you're not ready to prompt — go figure out the missing piece first.</p>
+  <ol>
+    <li><strong>Outcome (definition of done):</strong> What artifact will exist when this session is over? What test will it pass? Where will it be deployed or filed?</li>
+    <li><strong>Constraints (hard rules):</strong> Language, framework, version. Things you must NOT change. Style and format requirements.</li>
+    <li><strong>Context (real artifacts only):</strong> Paste the actual code, log, document, or data. Never summaries.</li>
+    <li><strong>Prior failures:</strong> What did the last attempt get wrong? What was the precise reason?</li>
+    <li><strong>Verification plan:</strong> How will you test the output before shipping? What command or step proves it works?</li>
+  </ol>
+
+  <h2>Frequently Asked Questions</h2>
+  <h3>What is Claude AI used for?</h3>
+  <p>Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent and tool-use workflows. Its strength is holding coherent context over many thousands of tokens.</p>
+  <h3>Is Claude better than ChatGPT?</h3>
+  <p>Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features.</p>
+  <h3>How do you write good prompts for Claude?</h3>
+  <p>The best Claude prompts are specific, not clever. State the outcome, paste real artifacts, list hard constraints, and include any prior failures so the model doesn't repeat them.</p>
+  <h3>Can Claude replace developers?</h3>
+  <p>No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output and define what "done" actually means, you get confident-sounding garbage.</p>
+  <h3>What is the biggest mistake people make with Claude?</h3>
+  <p>Treating it like a search engine instead of a junior collaborator. The leverage is in the iteration loop, not in any single prompt.</p>
+  <h3>Does Claude have memory between sessions?</h3>
+  <p>Default chat has no persistent cross-session memory. Serious workflows externalize memory in project files, system prompts, or tool-based memory APIs.</p>
+
+  <p><a href="/working-with-claude-blog.html">Read the long-form blog version</a> &middot; <a href="https://www.anthropic.com/" rel="noopener">Anthropic</a> &middot; <a href="https://docs.anthropic.com/" rel="noopener">Claude documentation</a> &middot; <a href="/">SiegeStack home</a> &middot; <a href="/etl-showcase">ETL showcase</a></p>
+</article>
 </body>
 </html>
