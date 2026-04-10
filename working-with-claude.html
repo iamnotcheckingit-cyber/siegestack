@@ -181,6 +181,13 @@ p,.body-text{font-size:clamp(.85rem,1.6vw,1.1rem);line-height:1.6;color:var(--ic
 .slide--dark .callout{background:rgba(255,255,255,.06);color:var(--ice);border-left-color:var(--gold)}
 .slide--dark .callout strong{color:var(--white)}
 .accent-bar{position:absolute;left:0;top:0;width:5px;height:100%;background:var(--accent)}
+a.link{color:inherit;text-decoration:none;border-bottom:1px solid currentColor;transition:opacity .2s}
+a.link:hover{opacity:.75}
+.repo-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+.repo-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(74,144,217,.12);border:1px solid rgba(74,144,217,.35);color:var(--ice);padding:.6em 1.1em;border-radius:8px;font-size:.9rem;font-family:var(--font-mono);text-decoration:none;transition:background .2s,border-color .2s}
+.repo-link:hover{background:rgba(249,168,37,.15);border-color:var(--gold);color:var(--gold)}
+.slide--light .repo-link{background:#eef1f6;border-color:#c5cfe0;color:var(--charcoal)}
+.slide--light .repo-link:hover{background:#fff5e0;border-color:var(--gold);color:var(--navy)}
 .big-quote{font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2.5vw,1.6rem);color:var(--ice);text-align:center;max-width:40rem;margin:1.5rem auto}
 .nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1rem;z-index:100;background:rgba(11,16,36,.85);backdrop-filter:blur(12px);padding:.6rem 1.2rem;border-radius:50px;border:1px solid rgba(74,144,217,.2)}
 .nav button{width:2.5rem;height:2.5rem;border-radius:50%;border:none;background:var(--accent);color:var(--white);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
@@ -308,8 +315,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- 10 -->
 <div class="slide slide--navy" data-slide="9">
-  <h1 style="text-align:center">Personal Project<br><span class="gold">safesapcrtx.org</span></h1>
+  <h1 style="text-align:center">Personal Project<br><a class="link gold" href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a></h1>
   <p class="subtitle" style="text-align:center">Building a threat intelligence honeypot from scratch</p>
+  <div class="repo-links">
+    <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>
+  </div>
 </div>
 
 <!-- 11 -->
@@ -381,7 +391,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div style="display:flex;flex-direction:column;justify-content:center">
       <h2>Strangers Ran Paid Ads for My Site</h2>
-      <p style="color:var(--ice)">People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting safesapcrtx.org.</p>
+      <p style="color:var(--ice)">People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting <a class="link gold" href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a>.</p>
       <p style="color:var(--ice);margin-top:1rem">I didn't ask them to. I didn't know they were doing it. They just thought the content mattered enough to spend their own money on.</p>
       <p class="gold" style="font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2vw,1.5rem);margin-top:1.5rem">The content spoke for itself.</p>
     </div>
@@ -451,7 +461,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div style="text-align:center">
     <h1>Questions?</h1>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
-    <p style="color:var(--muted);margin-top:2rem">Scott Willis &nbsp;·&nbsp; iamnotcheckingit@gmail.com</p>
+    <p style="color:var(--muted);margin-top:2rem">Scott Willis &nbsp;·&nbsp; <a class="link" style="color:var(--muted)" href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a></p>
+    <div class="repo-links">
+      <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/siegestack</a>
+      <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>
+    </div>
   </div>
 </div>
 
