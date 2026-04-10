@@ -222,19 +222,54 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>I'm a P21 ERP configuration specialist by day, a pro se litigant by necessity, and a builder by habit. Claude has been a daily partner across all of it. Here's what that actually looks like.</p>
 
-  <h2>The Methodology That Actually Works</h2>
+  <h2>The Iteration Loop</h2>
 
-  <p>People keep asking me for my "prompt template." There isn't one. The thing that matters is the loop, not the wording.</p>
+  <p>People keep asking me for my "prompt template." There isn't one. The thing that matters is the loop, not the wording. Here it is, in full:</p>
 
-  <ol style="color:var(--light-slate);margin:0 0 1.5rem 1.4rem">
-    <li><strong>Define the outcome first.</strong> Before I open a chat I know what artifact I need: a SQL view, a motion to dismiss response, an edge function. If I can't describe the deliverable I'm not ready to prompt.</li>
-    <li><strong>Feed real artifacts.</strong> Actual SQL, actual logs, actual filings. Never summaries. Summaries leak signal.</li>
-    <li><strong>Test against reality immediately.</strong> Run the query. File the motion. Deploy the function. Most people stop at "Claude gave me a draft." That's where the work starts.</li>
-    <li><strong>Give precise feedback.</strong> "Row 47 NULL on the join because supplier_xref has no match for vendor 8821" beats "this isn't right" by an order of magnitude.</li>
-    <li><strong>Re-ground every session.</strong> Context doesn't persist between chats. Treat every new conversation as a fresh hire who hasn't read the brief.</li>
-  </ol>
+  <blockquote><strong>Define the outcome → Claude drafts → Test against reality → Specific feedback → Ship or repeat.</strong></blockquote>
 
-  <p>That's the entire methodology. Everything else in this article is what happens when you run that loop, hard, against real problems.</p>
+  <p>The critical insight: most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering. That's it. That's the engine. Below is what each step actually means in production.</p>
+
+  <h3>1. Define the outcome (before you type a single word)</h3>
+  <p>This is the single most important step and the one people skip. You must know exactly what "done" looks like in production reality. Not "a good query." Not "a legal-looking brief." <strong>Done</strong> means: copy-paste into the live environment with zero errors, or filed with zero procedural defects, or a function that logs real probes and blocks nothing legitimate.</p>
+  <p>Write the definition in plain English first: <em>"After this loop, I will have a single script that replaces the legacy ones, runs in under two seconds on a 10k-row dataset, and requires zero user training."</em> A model is a world-class pattern-matcher. If the target pattern is fuzzy, the output is fuzzy. Clarity here is the entire game.</p>
+
+  <h3>2. Claude drafts</h3>
+  <p>Feed the crystal-clear outcome plus all the real data — never summaries. Paste the actual query text, the actual docket entries, the actual log lines, the actual analytics exports. State your hard constraints up front. One-shot draft. No hand-holding yet. Let it go full creative. You'll fix it in the next steps.</p>
+
+  <h3>3. Test against reality (this is where 95% of AI users fail)</h3>
+  <p>You become the merciless QA department. Run the code in a real dev environment. File the draft in test mode. Deploy the function and hit it with real traffic. Check the indexing tools for the new content.</p>
+  <p>Document every failure with surgical precision. Do not say "it's wrong." Say: <em>"Line 47 throws an invalid handle on the temp buffer because the query uses an alias that only exists in the older code path."</em></p>
+
+  <h3>4. Specific feedback (the convergence engine)</h3>
+  <p>This is the art. Your feedback must be so precise that the next draft cannot possibly make the same mistake.</p>
+  <ul>
+    <li><strong>Bad:</strong> "Make it better."</li>
+    <li><strong>Good:</strong> <em>"The script fails on records where the invoice number contains a hyphen because you assumed all invoice numbers are numeric. Add a string check and handle that case explicitly."</em></li>
+    <li><strong>Even better:</strong> <em>"Reproduce the exact error I just saw, then fix it, then show me the before/after diff so I can verify."</em></li>
+  </ul>
+  <p>You are training the model on your exact domain reality in real time. That training only works if your descriptions are reproducible.</p>
+
+  <h3>5. Ship or repeat</h3>
+  <p>Two choices only. <strong>Ship</strong> = it passes your production test with zero caveats. <strong>Repeat</strong> = go straight back to step 3 with the new failure data. No "maybe one more prompt." The loop is sacred.</p>
+  <p>You keep repeating until the output is production-ready every single time. That's why the audit work delivered real measurable gains, why the filings forced substantive responses from experienced opposing counsel, and why the honeypot logs hostile probes while serving clean content to humans.</p>
+
+  <h2>Why This Loop Crushes Every Other AI Workflow</h2>
+  <ul>
+    <li><strong>It forces you to stay the domain expert.</strong> You define done. You test reality. The model can't hide behind vagueness because you removed it.</li>
+    <li><strong>It turns hallucinations into fuel.</strong> Every failure becomes training data for the next iteration.</li>
+    <li><strong>It compounds across domains.</strong> The more loops you run on SAPCR filings, the faster honeypot analysis converges, because your feedback style is now elite.</li>
+    <li><strong>It's model-agnostic.</strong> Swap Claude for Grok, Gemini, GPT — the loop still works because the human is the constant.</li>
+  </ul>
+
+  <h2>Pro Tips to Make Your Loop Tighter</h2>
+  <ul>
+    <li><strong>Keep a "war room" context file.</strong> Paste it at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers.</li>
+    <li><strong>Build a personal pattern library.</strong> After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online.</li>
+    <li><strong>Time-box every loop to 15–20 minutes.</strong> If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Don't keep prompting.</li>
+  </ul>
+
+  <p>That's the entire methodology. It's boring, unsexy, and brutally effective — exactly like real engineering. Everything else in this article is what happens when you run this loop, hard, against real problems.</p>
 
   <h2>Professional: 27% SQL Performance Gain Across 300+ P21 Views</h2>
 
