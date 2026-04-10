@@ -477,7 +477,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </nav>
 <script>
 const slides=document.querySelectorAll('.slide'),total=slides.length;let current=0;
-function goTo(n){if(n<0||n>=total)return;slides[current].classList.remove('active');slides[current].classList.add('exit');setTimeout(()=>slides.forEach(s=>{if(!s.classList.contains('active'))s.classList.remove('exit')}),550);current=n;slides[current].classList.add('active');document.getElementById('counter').textContent=(current+1)+' / '+total;document.getElementById('prev').disabled=current===0;document.getElementById('next').disabled=current===total-1;document.getElementById('progress').style.width=((current+1)/total*100)+'%'}
+function goTo(n){if(n<0||n>=total)return;if(n!==current){slides[current].classList.remove('active');slides[current].classList.add('exit');setTimeout(()=>slides.forEach(s=>{if(!s.classList.contains('active'))s.classList.remove('exit')}),550);}current=n;slides[current].classList.remove('exit');slides[current].classList.add('active');document.getElementById('counter').textContent=(current+1)+' / '+total;document.getElementById('prev').disabled=current===0;document.getElementById('next').disabled=current===total-1;document.getElementById('progress').style.width=((current+1)/total*100)+'%'}
 document.getElementById('prev').addEventListener('click',()=>goTo(current-1));
 document.getElementById('next').addEventListener('click',()=>goTo(current+1));
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(current+1)}if(e.key==='ArrowLeft'){e.preventDefault();goTo(current-1)}});
