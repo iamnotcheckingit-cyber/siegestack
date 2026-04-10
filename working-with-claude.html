@@ -77,7 +77,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="apple-mobile-web-app-title" content="Working with Claude">
 <meta name="format-detection" content="telephone=no">
 
-<!-- Schema.org Structured Data: Presentation as PresentationDigitalDocument -->
+<!-- Schema.org Structured Data: Presentation -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -92,7 +92,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "author": {
     "@type": "Person",
     "name": "Scott Willis",
-    "jobTitle": "P21 Configuration Specialist & Pro Se Litigant",
+    "jobTitle": "Enterprise Distribution Software Specialist & Pro Se Litigant",
     "email": "iamnotcheckingit@gmail.com",
     "url": "https://siegestack.com/"
   },
@@ -135,116 +135,60 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
---navy:#1E2761;--dark:#0B1024;--accent:#4A90D9;--ice:#CADCFC;--gold:#F9A825;
---bg:#F4F6FA;--charcoal:#2C3E6B;--muted:#8899BB;--white:#fff;--red:#C0392B;
---font-display:'Playfair Display',Georgia,serif;
---font-body:'DM Sans',sans-serif;
---font-mono:'JetBrains Mono',monospace;
-}
+:root{--navy:#1E2761;--dark:#0B1024;--accent:#4A90D9;--ice:#CADCFC;--gold:#F9A825;--bg:#F4F6FA;--charcoal:#2C3E6B;--muted:#8899BB;--white:#fff;--red:#C0392B;--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',sans-serif;--font-mono:'JetBrains Mono',monospace}
 html,body{height:100%;overflow:hidden;font-family:var(--font-body);background:var(--dark);color:var(--white)}
 .deck{position:relative;width:100%;height:100%}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(1.5rem,5vw,4rem);opacity:0;visibility:hidden;transition:opacity .5s ease,transform .5s ease;transform:translateX(40px)}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(1.5rem,5vw,4rem);opacity:0;visibility:hidden;transition:opacity .5s ease,transform .5s ease;transform:translateX(40px);overflow-y:auto}
 .slide.active{opacity:1;visibility:visible;transform:translateX(0)}
 .slide.exit{opacity:0;transform:translateX(-40px)}
-
-/* Slide types */
-.slide--dark{background:var(--dark)}
-.slide--navy{background:var(--navy)}
-.slide--light{background:var(--bg);color:var(--navy)}
-
+.slide--dark{background:var(--dark)}.slide--navy{background:var(--navy)}.slide--light{background:var(--bg);color:var(--navy)}
 .slide--dark::before,.slide--navy::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 20% 50%,rgba(74,144,217,.08) 0%,transparent 70%);pointer-events:none}
-
-/* Typography */
 h1{font-family:var(--font-display);font-size:clamp(2rem,5.5vw,4rem);line-height:1.1;margin-bottom:.5em}
 h2{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,2.8rem);line-height:1.15;margin-bottom:.4em}
 h3{font-family:var(--font-body);font-size:clamp(1rem,2.2vw,1.5rem);font-weight:700;margin-bottom:.3em}
 p,.body-text{font-size:clamp(.85rem,1.6vw,1.1rem);line-height:1.6;color:var(--ice);max-width:60ch}
 .slide--light p,.slide--light .body-text{color:var(--charcoal)}
-
 .subtitle{font-size:clamp(.95rem,2vw,1.3rem);color:var(--ice);opacity:.8;margin-bottom:1.5em}
-.gold{color:var(--gold)}
-.accent{color:var(--accent)}
-.mono{font-family:var(--font-mono)}
+.gold{color:var(--gold)}.accent{color:var(--accent)}.mono{font-family:var(--font-mono)}
 .tag{display:inline-block;background:var(--accent);color:var(--white);padding:.2em .7em;border-radius:4px;font-size:.8rem;font-weight:700;margin-right:.3em;margin-bottom:.3em}
-.tag--gold{background:var(--gold);color:var(--dark)}
-
-/* Cards */
 .card-grid{display:grid;gap:clamp(.75rem,1.5vw,1.5rem);margin-top:1rem}
 .card-grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr))}
 .card-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr))}
 .card-grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr))}
 .card{background:var(--white);border-radius:12px;padding:clamp(1rem,2vw,1.8rem);color:var(--navy);box-shadow:0 4px 20px rgba(0,0,0,.06)}
-.card--dark{background:var(--navy);color:var(--white)}
-.card--dark p{color:var(--ice)}
-.card h3{color:var(--navy)}
-.card--dark h3{color:var(--white)}
+.card--dark{background:var(--navy);color:var(--white)}.card--dark p{color:var(--ice)}
+.card h3{color:var(--navy)}.card--dark h3{color:var(--white)}
 .card p{color:var(--charcoal);font-size:clamp(.8rem,1.4vw,.95rem)}
-
-.stat-card{text-align:center}
-.stat-card .num{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);color:var(--accent);font-weight:700;line-height:1}
-.stat-card .label{font-size:.85rem;color:var(--muted);margin-top:.3em}
-.stat-card--gold .num{color:var(--gold)}
-
-/* Table */
+.stat-card{text-align:center}.stat-card .num{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);color:var(--accent);font-weight:700;line-height:1}
+.stat-card .label{font-size:.85rem;color:var(--muted);margin-top:.3em}.stat-card--gold .num{color:var(--gold)}
 .data-table{width:100%;border-collapse:collapse;margin-top:.8rem;font-size:clamp(.75rem,1.3vw,.9rem)}
 .data-table th{background:var(--navy);color:var(--white);padding:.5em 1em;text-align:left;font-weight:700}
 .data-table td{padding:.45em 1em;border-bottom:1px solid #e8ecf2}
 .data-table tr:nth-child(even){background:#eef1f6}
-.data-table .mono{font-family:var(--font-mono);font-size:.85em}
-.data-table .red{color:var(--red);font-weight:700}
-
-/* Items list */
+.data-table .mono{font-family:var(--font-mono);font-size:.85em}.data-table .red{color:var(--red);font-weight:700}
 .item-row{display:flex;gap:1rem;align-items:flex-start;padding:.7em 0;border-bottom:1px solid rgba(255,255,255,.08)}
 .slide--light .item-row{border-bottom-color:#e0e4ec}
 .item-row .label{font-weight:700;min-width:8rem;flex-shrink:0;color:var(--accent)}
-.item-row .detail{color:var(--ice);line-height:1.5}
-.slide--light .item-row .detail{color:var(--charcoal)}
-
-/* Agenda */
+.item-row .detail{color:var(--ice);line-height:1.5}.slide--light .item-row .detail{color:var(--charcoal)}
 .agenda-item{display:flex;align-items:center;gap:.8rem;padding:.45em 0}
 .agenda-num{width:2rem;height:2rem;background:var(--accent);color:var(--white);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
-
-/* Flow diagram */
 .flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;margin:1.5rem 0}
 .flow-step{background:var(--accent);color:var(--white);padding:.8em 1.2em;border-radius:10px;text-align:center;font-weight:700;font-size:clamp(.8rem,1.4vw,1rem);min-width:7rem}
-.flow-step:last-child{background:var(--gold);color:var(--dark)}
-.flow-arrow{font-size:1.5rem;color:var(--muted);padding:0 .3rem}
-
-/* AI cards */
+.flow-step:last-child{background:var(--gold);color:var(--dark)}.flow-arrow{font-size:1.5rem;color:var(--muted);padding:0 .3rem}
 .ai-hub{text-align:center;background:var(--navy);color:var(--white);padding:1em 2em;border-radius:12px;font-family:var(--font-display);font-size:clamp(1rem,2vw,1.4rem);font-weight:700;margin:0 auto 1.5rem;max-width:20rem}
-
-/* Navigation */
+.callout{background:var(--white);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1.2em 1.5em;margin-top:1rem;color:var(--charcoal);font-size:clamp(.85rem,1.5vw,1rem);line-height:1.6}
+.callout strong{color:var(--navy)}
+.slide--dark .callout{background:rgba(255,255,255,.06);color:var(--ice);border-left-color:var(--gold)}
+.slide--dark .callout strong{color:var(--white)}
+.accent-bar{position:absolute;left:0;top:0;width:5px;height:100%;background:var(--accent)}
+.big-quote{font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2.5vw,1.6rem);color:var(--ice);text-align:center;max-width:40rem;margin:1.5rem auto}
 .nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1rem;z-index:100;background:rgba(11,16,36,.85);backdrop-filter:blur(12px);padding:.6rem 1.2rem;border-radius:50px;border:1px solid rgba(74,144,217,.2)}
 .nav button{width:2.5rem;height:2.5rem;border-radius:50%;border:none;background:var(--accent);color:var(--white);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.nav button:hover{background:var(--gold);color:var(--dark)}
-.nav button:disabled{opacity:.3;cursor:default;background:var(--muted)}
+.nav button:hover{background:var(--gold);color:var(--dark)}.nav button:disabled{opacity:.3;cursor:default;background:var(--muted)}
 .nav .counter{font-size:.85rem;color:var(--ice);min-width:4rem;text-align:center;font-family:var(--font-mono)}
-
-/* Progress */
 .progress{position:fixed;top:0;left:0;height:3px;background:var(--gold);transition:width .4s ease;z-index:200}
-
-/* Left accent bar */
-.accent-bar{position:absolute;left:0;top:0;width:5px;height:100%;background:var(--accent)}
-
-/* Big quote */
-.big-quote{font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2.5vw,1.6rem);color:var(--ice);text-align:center;max-width:40rem;margin:1.5rem auto}
-
-/* Responsive */
-@media(max-width:768px){
-  .slide{padding:1.5rem 1.2rem 5rem}
-  .flow{flex-direction:column;align-items:stretch}
-  .flow-arrow{transform:rotate(90deg);text-align:center}
-  .item-row{flex-direction:column;gap:.2rem}
-  .item-row .label{min-width:auto}
-  .card-grid.cols-4{grid-template-columns:1fr 1fr}
-  .data-table{font-size:.7rem}
-  .data-table td,.data-table th{padding:.35em .5em}
-}
-@media(max-width:480px){
-  .card-grid.cols-4{grid-template-columns:1fr}
-  .nav{bottom:.8rem;padding:.4rem .8rem}
-}
+@media(max-width:768px){.slide{padding:1.5rem 1.2rem 5rem}.flow{flex-direction:column;align-items:stretch}.flow-arrow{transform:rotate(90deg);text-align:center}.item-row{flex-direction:column;gap:.2rem}.item-row .label{min-width:auto}.card-grid.cols-4{grid-template-columns:1fr 1fr}.data-table{font-size:.7rem}.data-table td,.data-table th{padding:.35em .5em}}
+@media(max-width:480px){.card-grid.cols-4{grid-template-columns:1fr}.nav{bottom:.8rem;padding:.4rem .8rem}}
 </style>
 </head>
 <body>
@@ -256,166 +200,165 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <h1 style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">Working with Claude — Scott Willis on AI partnership in P21 ERP, pro se litigation, threat intelligence, and zero-ad-spend content</h1>
 
 <div class="progress" id="progress"></div>
-
 <div class="deck" id="deck">
 
-<!-- SLIDE 1: Title -->
+<!-- 1 -->
 <div class="slide slide--dark active" data-slide="0">
   <h1>Working with <span class="gold">Claude</span></h1>
-  <p class="subtitle">AI Partnership in ERP, Law, Security & Content — Zero Ad Spend</p>
-  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Willis &nbsp;·&nbsp; P21 Configuration Specialist &nbsp;·&nbsp; Pro Se Litigant &nbsp;·&nbsp; Builder</p>
+  <p class="subtitle">How one person uses AI to create, iterate, and ship — across enterprise software, law, security, and content — with zero ad spend.</p>
+  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Willis &nbsp;·&nbsp; Enterprise Distribution Software Specialist &nbsp;·&nbsp; Pro Se Litigant &nbsp;·&nbsp; Builder</p>
 </div>
 
-<!-- SLIDE 2: Agenda -->
+<!-- 2 -->
 <div class="slide slide--dark" data-slide="1">
   <div class="accent-bar"></div>
   <h2>What We'll Cover</h2>
   <div style="margin-top:.5rem">
-    <div class="agenda-item"><div class="agenda-num">1</div><span>Why Claude — and how I work with it</span></div>
-    <div class="agenda-item"><div class="agenda-num">2</div><span>Professional: SQL, P21 ERP, automation</span></div>
-    <div class="agenda-item"><div class="agenda-num">3</div><span>Legal: Pro se litigation, co-authored filings</span></div>
-    <div class="agenda-item"><div class="agenda-num">4</div><span>Private: Threat intelligence honeypot</span></div>
-    <div class="agenda-item"><div class="agenda-num">5</div><span>The stack: Netlify, Supabase, edge functions</span></div>
-    <div class="agenda-item"><div class="agenda-num">6</div><span>Zero ad dollars — organic exposure + cross-AI loop</span></div>
-    <div class="agenda-item"><div class="agenda-num">7</div><span>Iteration in practice & lessons learned</span></div>
+    <div class="agenda-item"><div class="agenda-num">1</div><span>How I actually work with AI (the honest version)</span></div>
+    <div class="agenda-item"><div class="agenda-num">2</div><span>Professional work: databases, automation, migration</span></div>
+    <div class="agenda-item"><div class="agenda-num">3</div><span>Legal: representing myself in a fraud case</span></div>
+    <div class="agenda-item"><div class="agenda-num">4</div><span>Personal project: building a threat intelligence honeypot</span></div>
+    <div class="agenda-item"><div class="agenda-num">5</div><span>Getting real users with $0 and no marketing background</span></div>
+    <div class="agenda-item"><div class="agenda-num">6</div><span>Using multiple AIs together — and knowing when not to</span></div>
+    <div class="agenda-item"><div class="agenda-num">7</div><span>What I got wrong, what I'd do differently</span></div>
   </div>
   <p style="margin-top:1.5rem;font-size:.85rem;color:var(--muted)">~45 minutes &nbsp;·&nbsp; Q&A at the end</p>
 </div>
 
-<!-- SLIDE 3: Methodology -->
+<!-- 3 -->
 <div class="slide slide--light" data-slide="2">
-  <h2>My Working Methodology</h2>
-  <div class="item-row"><span class="label tag">1</span><span class="detail"><strong>Define Output First</strong> — Know the deliverable format before prompting</span></div>
-  <div class="item-row"><span class="label tag">2</span><span class="detail"><strong>Feed Real Artifacts</strong> — Actual SQL, logs, legal filings — not summaries</span></div>
-  <div class="item-row"><span class="label tag">3</span><span class="detail"><strong>Precise Feedback</strong> — "Row 47 NULL on join" beats "it's wrong"</span></div>
-  <div class="item-row"><span class="label tag">4</span><span class="detail"><strong>Re-ground Each Session</strong> — Context doesn't persist — re-establish every time</span></div>
-  <div class="item-row"><span class="label tag">5</span><span class="detail"><strong>Copy-Paste Ready</strong> — Every output production-deployable or court-fileable</span></div>
+  <h2>How I Actually Work with Claude</h2>
+  <p style="margin-bottom:1rem">These aren't tips from a blog post. They're patterns I learned by shipping real things and failing first.</p>
+  <div class="item-row"><span class="label tag">1</span><span class="detail"><strong>Know what "done" looks like before you start</strong> — I decide the exact output format before writing a single prompt. Vague asks get vague results.</span></div>
+  <div class="item-row"><span class="label tag">2</span><span class="detail"><strong>Give it real data, not descriptions of data</strong> — I paste actual queries, actual error messages, actual court documents. Summaries lose the details that matter.</span></div>
+  <div class="item-row"><span class="label tag">3</span><span class="detail"><strong>Be surgically specific when something's wrong</strong> — "Row 47 returns NULL on the join" gets fixed in one round. "It's broken" gets five rounds of guessing.</span></div>
+  <div class="item-row"><span class="label tag">4</span><span class="detail"><strong>Re-establish context every session</strong> — Claude doesn't remember yesterday. I treat every conversation like onboarding a new team member.</span></div>
+  <div class="item-row"><span class="label tag">5</span><span class="detail"><strong>Nothing ships until it's copy-paste ready</strong> — No placeholder text, no "insert X here." If I can't deploy it or file it immediately, it's not done.</span></div>
 </div>
 
-<!-- SLIDE 4: Section - Professional -->
+<!-- 4 -->
 <div class="slide slide--navy" data-slide="3">
-  <h1 style="text-align:center">Professional<br><span class="gold">SQL & P21 ERP</span></h1>
-  <p class="subtitle" style="text-align:center">Where the rubber meets the road</p>
+  <h1 style="text-align:center">Professional Work<br><span class="gold">Databases & Automation</span></h1>
+  <p class="subtitle" style="text-align:center">The same problems you have at work — just with an AI collaborator</p>
 </div>
 
-<!-- SLIDE 5: View Audit -->
+<!-- 5 -->
 <div class="slide slide--light" data-slide="4">
-  <h2>SQL View Performance Audit</h2>
+  <h2>Auditing 300+ Database Views</h2>
   <div class="card-grid cols-2">
     <div class="card">
-      <h3>300+ Custom Views Audited</h3>
-      <p>Batch 1 (CHG_001–007): AR aging, duplicate receipts, invoice line history, inventory usage, supplier expedite. Identified DATEDIFF vs DATEADD sargability issues.</p>
-      <p style="margin-top:.8rem">Batch 2 (CHG_008–070): Placeholder syntax caught and rebuilt before deploy.</p>
+      <h3>The Process, Not the Tech</h3>
+      <p>I fed Claude real production queries one at a time — not theoretical examples. It identified performance patterns I'd been living with for years. Things that looked correct but were silently slow.</p>
+      <p style="margin-top:.8rem">We worked in batches: 7 scripts first, then 62 more. The second batch revealed a critical lesson — Claude generated placeholder syntax in several scripts. My "nothing ships until it's ready" rule caught every one before production.</p>
+      <p style="margin-top:.8rem"><strong>The AI accelerated the work. My standards were the quality gate.</strong></p>
     </div>
     <div class="card card--dark stat-card stat-card--gold" style="display:flex;flex-direction:column;justify-content:center;align-items:center">
       <div class="num" style="font-size:clamp(3rem,8vw,5rem)">~27%</div>
-      <div class="label" style="color:var(--ice);font-size:1.1rem;margin-top:.5rem">aggregate performance gain</div>
-      <div class="label" style="color:var(--muted)">confirmed in production</div>
+      <div class="label" style="color:var(--ice);font-size:1.1rem;margin-top:.5rem">performance improvement</div>
+      <div class="label" style="color:var(--muted)">measured after deployment</div>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 6: Automation -->
+<!-- 6 -->
 <div class="slide slide--light" data-slide="5">
-  <h2>Automation & Migration</h2>
+  <h2>Replacing What Nobody Understood</h2>
   <div class="card-grid cols-2">
     <div class="card">
-      <h3>PACCAR JIT Scan-to-Ship</h3>
-      <p>Replaced a 9-macro Excel/VBA suite with a single PowerShell automation. Network folder monitor, ICCustItemLocn query, 99%+ match rate. Co-authored entirely with Claude.</p>
+      <h3>9 Macros → 1 Automation</h3>
+      <p>The warehouse ran on 9 fragile Excel macros that nobody fully understood. Instead of documenting them, I described the end-to-end workflow to Claude — scan, look up, validate, ship — and we rebuilt it from the intent, not the legacy code.</p>
+      <p style="margin-top:.6rem">Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over.</p>
     </div>
     <div class="card">
-      <h3>INxSQL-to-P21 Migration</h3>
-      <p>Multi-location migration planning: item master, pricing, lot traceability, open transactions, EDI remapping. Claude co-authored mapping strategy and phased rollout plan.</p>
+      <h3>Migration: Conversation as Strategy</h3>
+      <p>Multiple locations needed to move between enterprise distribution platforms. Instead of hiring a consultant, I walked Claude through the data domains one by one and we built a phased migration plan together.</p>
+      <p style="margin-top:.6rem">The mapping strategy came out of conversation. The domain knowledge came from me. The structure came from the collaboration.</p>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 7: Section - Legal -->
+<!-- 7 -->
 <div class="slide slide--navy" data-slide="6">
-  <h1 style="text-align:center">Legal<br><span class="gold">Pro Se Litigation</span></h1>
-  <p class="subtitle" style="text-align:center">Claude as co-counsel in a fraud case</p>
+  <h1 style="text-align:center">Legal<br><span class="gold">Representing Myself</span></h1>
+  <p class="subtitle" style="text-align:center">What happens when you can't afford a lawyer but you can think clearly</p>
 </div>
 
-<!-- SLIDE 8: Legal Case -->
+<!-- 8 -->
 <div class="slide slide--light" data-slide="7">
-  <h2>Willis v. Rendon Legal — The Case</h2>
+  <h2>The Fraud Case</h2>
   <div class="card" style="max-width:none">
-    <h3>The Situation</h3>
-    <p>An opposing attorney filed a false Certificate of Last Known Address — using a decade-old address — just 103 days after personally serving me at my actual location. A default judgment stripped me of custody for 490+ days without my knowledge.</p>
-    <h3 style="margin-top:1.2rem">The Response</h3>
-    <p>Filed pro se in Harris County, 189th Judicial District. Second Amended Petition, Response to Motion to Dismiss, Bill of Review — all co-authored with Claude. Active criminal investigation (Precinct 4 Constable, Incident #2601-01381). State Bar and TREC complaints filed.</p>
+    <h3>What Happened</h3>
+    <p>An opposing attorney filed a false address with the court — an address I hadn't lived at in over a decade — just 103 days after her own team served me in person at my real location. Based on that false filing, a judge entered a default custody order I never knew about. I lost access to my children for over 490 days.</p>
+    <h3 style="margin-top:1.2rem">What I Did About It</h3>
+    <p>I filed suit pro se. Every legal document — the petition, the response to their motion to dismiss, the bill of review — was co-authored with Claude. I brought the facts and the anger. Claude helped me structure them into something a court would take seriously.</p>
+    <p style="margin-top:.6rem">There's now an active criminal investigation. The State Bar and TREC have received complaints.</p>
     <p style="margin-top:1rem"><strong class="gold">Trial set: February 2, 2027 &nbsp;·&nbsp; 189th District Court &nbsp;·&nbsp; Judge Tamika Craft-Demming</strong></p>
   </div>
 </div>
 
-<!-- SLIDE 9: Legal Claude role -->
+<!-- 9 -->
 <div class="slide slide--light" data-slide="8">
-  <h2>How Claude Helped Build the Case</h2>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Petition Drafting</span><span class="detail">Co-authored the Second Amended Petition — 4 causes of action, statutory citations, structured prayer for relief</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Motion Response</span><span class="detail">Defeated attorney immunity + judicial privilege arguments by identifying the 103-day timeline as dispositive</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Legal Research</span><span class="detail">Cantey Hanger, Landry's, Troice v. Greenberg Traurig — surfaced and contextualized key Texas precedent</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Strategic Framing</span><span class="detail">Positioned the false certificate as conduct "foreign to attorney duties" — the exact language that defeats immunity</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Communication</span><span class="detail">Drafted criminal complaint narratives, State Bar complaint language, and CIO-level summaries</span></div>
+  <h2>What "Co-Authoring" Actually Means</h2>
+  <p style="margin-bottom:.8rem">Claude didn't write my case. I lived my case. Here's how the collaboration actually worked:</p>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">I brought</span><span class="detail">The timeline, the documents, the emotional weight, the public records proving the fraud — and the refusal to accept what happened</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Claude brought</span><span class="detail">Legal structure, case law research, statutory formatting, and the ability to organize my facts into causes of action</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The key moment</span><span class="detail">Their attorney moved to dismiss, arguing immunity. Claude helped me frame the 103-day gap as the dispositive fact — using their own legal standard against them</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The result</span><span class="detail">Pro se filings that forced a 30-year attorney to respond substantively. The court set the case for trial — not dismissal.</span></div>
 </div>
 
-<!-- SLIDE 10: Section - Honeypot -->
+<!-- 10 -->
 <div class="slide slide--navy" data-slide="9">
-  <h1 style="text-align:center">Threat Intelligence<br><span class="gold">safesapcrtx.org</span></h1>
-  <p class="subtitle" style="text-align:center">A personal honeypot project</p>
+  <h1 style="text-align:center">Personal Project<br><span class="gold">safesapcrtx.org</span></h1>
+  <p class="subtitle" style="text-align:center">Building a threat intelligence honeypot from scratch</p>
 </div>
 
-<!-- SLIDE 11: Architecture -->
+<!-- 11 -->
 <div class="slide slide--light" data-slide="10">
-  <h2>Honeypot Architecture</h2>
-  <div class="card-grid cols-4">
-    <div class="card" style="text-align:center"><h3 style="color:var(--accent)">Netlify</h3><p>Static site with intentional WordPress attack surface — zero server cost</p></div>
-    <div class="card" style="text-align:center"><h3 style="color:var(--accent)">Edge Functions</h3><p>Intercept, classify, and log every inbound probe as a serverless firewall</p></div>
-    <div class="card" style="text-align:center"><h3 style="color:var(--accent)">Supabase</h3><p>PostgreSQL backend — structured JSON with IP, UA, path, headers, classification</p></div>
-    <div class="card" style="text-align:center"><h3 style="color:var(--gold)">Claude</h3><p>Threat actor clustering, edge function co-authoring, dashboard visualization</p></div>
+  <h2>Why Build a Honeypot?</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>The Idea</h3>
+      <p>I wanted to understand how attackers actually behave — not from reading about it, but from watching it happen. So I built a site that <em>looks</em> like a vulnerable WordPress install, deployed it for free, and started logging every probe.</p>
+      <p style="margin-top:.6rem">The domain name does double duty. "SAPCR" is the legal filing type from my custody case. Anyone researching Texas family law might find it. Every bot scanning for WordPress vulnerabilities definitely finds it.</p>
+    </div>
+    <div class="card">
+      <h3>Simple on Purpose</h3>
+      <p><strong>Netlify</strong> hosts the site for free and runs edge functions that act as a serverless firewall.</p>
+      <p style="margin-top:.4rem"><strong>Supabase</strong> stores every probe in a database — IP, path, user agent, headers — structured and queryable.</p>
+      <p style="margin-top:.4rem"><strong>Claude</strong> helps me analyze the logs, cluster threat actors by behavior, and build dashboards.</p>
+      <p style="margin-top:.6rem"><strong>Total monthly cost: $0.</strong></p>
+    </div>
   </div>
 </div>
 
-<!-- SLIDE 12: Live Data -->
+<!-- 12 -->
 <div class="slide slide--light" data-slide="11">
-  <h2>Live Honeypot Data — Last 48 Hours</h2>
+  <h2>What Attackers Actually Do</h2>
+  <p style="margin-bottom:.5rem">Real probes logged in the last 48 hours — every one hit my site automatically:</p>
   <table class="data-table">
-    <thead><tr><th>Path</th><th>Method</th><th>What It Reveals</th></tr></thead>
+    <thead><tr><th>What They Tried</th><th>Why</th></tr></thead>
     <tbody>
-      <tr><td class="mono">/wp-login.php</td><td>GET</td><td>WordPress credential brute-force attempt</td></tr>
-      <tr><td class="mono">/xmlrpc.php</td><td class="red">POST</td><td>XML-RPC exploit — amplification / auth bypass</td></tr>
-      <tr><td class="mono">/wp-admin/setup-config.php</td><td>GET</td><td>Looking for unconfigured WordPress installs</td></tr>
-      <tr><td class="mono">/admin/.env</td><td>GET</td><td>Hunting exposed environment variables & secrets</td></tr>
-      <tr><td class="mono">/shell.php</td><td>GET</td><td>Webshell probe — checking for prior compromise</td></tr>
-      <tr><td class="mono">/backup.sql</td><td>GET</td><td>Database dump fishing — hoping for exposed backups</td></tr>
-      <tr><td class="mono">/phpmyadmin/</td><td>GET</td><td>phpMyAdmin — direct database admin attempt</td></tr>
+      <tr><td class="mono">/wp-login.php</td><td>Trying to brute-force WordPress login credentials</td></tr>
+      <tr><td class="mono">/xmlrpc.php <span class="red">(POST)</span></td><td>Exploiting WordPress's remote API for amplification attacks</td></tr>
+      <tr><td class="mono">/wp-admin/setup-config.php</td><td>Checking if WordPress was installed but never configured</td></tr>
+      <tr><td class="mono">/admin/.env</td><td>Hunting for accidentally exposed passwords and API keys</td></tr>
+      <tr><td class="mono">/shell.php</td><td>Looking for web shells — evidence of a previous compromise</td></tr>
+      <tr><td class="mono">/backup.sql</td><td>Hoping someone left a database dump in a public folder</td></tr>
+      <tr><td class="mono">/phpmyadmin/</td><td>Trying to access database admin panels directly</td></tr>
     </tbody>
   </table>
-  <p style="margin-top:1rem;font-size:.8rem;color:var(--muted);font-style:italic">All probes logged to Supabase in real time via Netlify edge functions — zero server infrastructure</p>
+  <p style="margin-top:.8rem;font-size:.8rem;color:var(--muted);font-style:italic">Every probe is logged in real time. No servers to manage. No infrastructure to maintain.</p>
 </div>
 
-<!-- SLIDE 13: Section - Stack -->
+<!-- 13 -->
 <div class="slide slide--navy" data-slide="12">
-  <h1 style="text-align:center">The Stack<br><span class="gold">Netlify + Supabase + Claude</span></h1>
+  <h1 style="text-align:center"><span class="gold">$0 Ad Spend</span><br>Real Users Anyway</h1>
+  <p class="subtitle" style="text-align:center">What happens when you build something people actually want to read</p>
 </div>
 
-<!-- SLIDE 14: Stack Detail -->
+<!-- 14 -->
 <div class="slide slide--light" data-slide="13">
-  <h2>Netlify + Supabase + Claude</h2>
-  <div class="item-row"><span class="label" style="min-width:9rem">Netlify</span><span class="detail">Static site hosting with edge functions as a serverless firewall layer. Free tier. Zero DevOps.</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Supabase</span><span class="detail">PostgreSQL backend storing structured probe logs — IP, UA, path, headers, classification. Real-time API.</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Claude</span><span class="detail">Log analysis, threat actor clustering, edge function co-authoring, dashboard visualization with Chart.js.</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Chart.js</span><span class="detail">Attack pattern visualizations — frequency by path, temporal distribution, actor fingerprints.</span></div>
-</div>
-
-<!-- SLIDE 15: Section - Zero Ad -->
-<div class="slide slide--navy" data-slide="14">
-  <h1 style="text-align:center"><span class="gold">$0 Ad Spend</span><br>Organic Exposure</h1>
-  <p class="subtitle" style="text-align:center">Building in public works</p>
-</div>
-
-<!-- SLIDE 16: Analytics -->
-<div class="slide slide--light" data-slide="15">
-  <h2>Real Analytics — safesapcrtx.org <span style="font-size:.6em;color:var(--muted)">(30 Days)</span></h2>
+  <h2>30-Day Analytics</h2>
   <div class="card-grid cols-4" style="margin-bottom:1rem">
     <div class="card stat-card"><div class="num">74</div><div class="label">New Users</div></div>
     <div class="card stat-card"><div class="num">40</div><div class="label">Active Users</div></div>
@@ -423,73 +366,88 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="card stat-card"><div class="num">356</div><div class="label">Page Views</div></div>
   </div>
   <div class="card-grid cols-2">
-    <div class="card">
-      <h3>Top Search Queries (GSC)</h3>
-      <p>trcp 239a — 1 click, 12 impressions<br>kerr wilson — 1 click, 5 impressions<br>sapcr lawyer — 51 impressions<br>how to file a sapcr — 35 impressions<br>sapcr meaning — 29 impressions<br>sapcr texas — 22 impressions</p>
-    </div>
-    <div class="card">
-      <h3>Reach & Channels</h3>
-      <p><strong>Countries:</strong> US (35), Egypt (2), China, Ghana, Taiwan<br><strong>Channels:</strong> Direct (64), Organic Search (5), Social (1), Referral (1)<br><strong>Cohort retention:</strong> 3.5–8.3% return rate week over week</p>
-    </div>
+    <div class="card"><h3>What People Search For</h3><p>sapcr lawyer — 51 impressions<br>how to file a sapcr in texas — 35<br>sapcr meaning — 29<br>trcp 239a — 12 impressions, 1 click<br>sapcr texas — 22 impressions</p></div>
+    <div class="card"><h3>Where They Come From</h3><p><strong>Countries:</strong> US (35), Egypt, China, Ghana, Taiwan<br><strong>Channels:</strong> Direct (64), Organic Search (5), Social (1), Referral (1)<br><strong>Return rate:</strong> 3.5–8.3% come back weekly</p></div>
   </div>
 </div>
 
-<!-- SLIDE 17: Strangers ran ads -->
-<div class="slide slide--dark" data-slide="16">
+<!-- 15 -->
+<div class="slide slide--dark" data-slide="14">
   <div class="card-grid cols-2">
     <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
       <div style="font-family:var(--font-display);font-size:clamp(4rem,12vw,7rem);font-weight:700;color:var(--gold);line-height:1">$0</div>
       <p style="font-size:1.2rem;color:var(--ice);margin-top:.5rem">personal ad spend</p>
-      <p style="color:var(--muted);margin-top:1rem;font-size:.9rem">$0/month hosting · Netlify free tier + Supabase free tier<br>80+ bot probes / day = free intelligence</p>
+      <p style="color:var(--muted);margin-top:1rem;font-size:.9rem">$0/month hosting<br>80+ bot probes / day = free threat intelligence</p>
     </div>
     <div style="display:flex;flex-direction:column;justify-content:center">
-      <h2>Strangers Ran Paid Ads</h2>
-      <p style="color:var(--ice);font-size:clamp(.9rem,1.6vw,1.1rem)">People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting safesapcrtx.org.</p>
+      <h2>Strangers Ran Paid Ads for My Site</h2>
+      <p style="color:var(--ice)">People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting safesapcrtx.org.</p>
+      <p style="color:var(--ice);margin-top:1rem">I didn't ask them to. I didn't know they were doing it. They just thought the content mattered enough to spend their own money on.</p>
       <p class="gold" style="font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2vw,1.5rem);margin-top:1.5rem">The content spoke for itself.</p>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 18: Cross-AI -->
-<div class="slide slide--light" data-slide="17">
-  <h2>Cross-AI Iteration Loop</h2>
-  <div class="ai-hub">Claude — Primary Builder</div>
+<!-- 16 -->
+<div class="slide slide--light" data-slide="15">
+  <h2>Using Multiple AIs Together</h2>
+  <p style="margin-bottom:.5rem">Claude is the primary builder. But I use other AIs to stress-test, analyze, and create feedback loops:</p>
+  <div class="ai-hub">Claude — Where Things Get Built</div>
   <div class="card-grid cols-4">
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">ChatGPT</h3><p>SEO analysis, content gap audits</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Grok</h3><p>Real-time X/social signal analysis</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Copilot</h3><p>Bing indexing insights, alt perspectives</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Gemini</h3><p>Google Search behavior, traffic patterns</p></div>
+    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">ChatGPT</h3><p>SEO audits, content gap analysis — "what's missing?"</p></div>
+    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Grok</h3><p>Real-time social signal analysis — what's getting traction?</p></div>
+    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Copilot</h3><p>Bing indexing behavior, alternative perspectives</p></div>
+    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Gemini</h3><p>Google Search patterns, traffic analysis</p></div>
   </div>
-  <div class="card" style="margin-top:1rem;border-left:4px solid var(--gold);background:var(--white)">
-    <p>Other AIs analyze the site for traffic, SEO, and content quality — that feedback loops back to Claude for the next build iteration. <strong>Social posts force real-time Google indexing.</strong></p>
-  </div>
+  <div class="callout">The other AIs analyze the site. That feedback loops back to Claude for the next build. <strong>Social posts force real-time Google indexing.</strong> The cycle runs continuously.</div>
 </div>
 
-<!-- SLIDE 19: Iteration Loop -->
-<div class="slide slide--light" data-slide="18">
+<!-- 17 -->
+<div class="slide slide--dark" data-slide="16">
+  <h2>What I Got Wrong <span class="gold">(Honest Version)</span></h2>
+  <div class="card-grid cols-3" style="margin-top:1rem">
+    <div class="card">
+      <h3 style="color:var(--red)">Over-Engineering</h3>
+      <p>Not every problem needs a pipeline or a multi-step workflow. Sometimes a clean prompt in a fresh session is faster and better than an elaborate system. I built complexity that didn't earn its keep.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--red)">Trusting Without Checking</h3>
+      <p>Claude's Batch 2 placeholder bug taught me this permanently. The output <em>looked</em> right. It was structured correctly. But several scripts had syntax that would have broken in production. You lose nuance and edge-case details if you don't verify.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--red)">Forgetting the Tradeoffs</h3>
+      <p>AI gives you speed, but speed costs something. You lose experiential texture. You lose the thinking-through-it process that sometimes <em>is</em> the point. I had to learn when to use Claude and when to just sit with the problem myself.</p>
+    </div>
+  </div>
+  <div class="callout"><strong>The rule I follow now:</strong> If the problem is well-defined and the output format is clear — delegate to AI. If the problem is ambiguous and I need to <em>think</em> — I do that myself first, then bring Claude the result.</div>
+</div>
+
+<!-- 18 -->
+<div class="slide slide--light" data-slide="17">
   <h2>The Iteration Loop</h2>
+  <p style="margin-bottom:.5rem">This is the actual cycle. It ran dozens of times across every project in this presentation.</p>
   <div class="flow">
-    <div class="flow-step">Prompt</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Draft</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Test</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Feedback</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Refine</div>
+    <div class="flow-step">Define the<br>outcome</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Claude<br>drafts</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Test against<br>reality</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Specific<br>feedback</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Ship or<br>repeat</div>
   </div>
-  <p style="text-align:center;color:var(--muted);font-style:italic;margin-top:1.5rem">This loop ran across SQL views, PACCAR automation, legal filings, and honeypot dashboards</p>
+  <div class="callout"><strong>The critical insight:</strong> Most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering.</div>
 </div>
 
-<!-- SLIDE 20: Lessons -->
-<div class="slide slide--light" data-slide="19">
-  <h2>Lessons Learned</h2>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Collaborator, not replacement</span><span class="detail">Domain expertise is the foundation. Claude amplifies what you know.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Specificity is everything</span><span class="detail">Precise feedback converges 10x faster than vague complaints.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Trust but verify</span><span class="detail">Batch 2 placeholder bug + legal citation checks proved this.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Private sharpens professional</span><span class="detail">Honeypot work made me better at log analysis in my day job.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">AI levels the playing field</span><span class="detail">A pro se litigant can produce filings that survive a 91a motion to dismiss.</span></div>
+<!-- 19 -->
+<div class="slide slide--light" data-slide="18">
+  <h2>What I'd Tell Someone Starting Today</h2>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">You're the expert</span><span class="detail">Claude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Specificity compounds</span><span class="detail">One precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Ship real things</span><span class="detail">The gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Side projects matter</span><span class="detail">My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">AI levels the field</span><span class="detail">A pro se litigant produced filings that survived a motion to dismiss from a 30-year attorney. That wasn't possible five years ago.</span></div>
 </div>
 
-<!-- SLIDE 21: Closing -->
-<div class="slide slide--dark" data-slide="20">
+<!-- 20 -->
+<div class="slide slide--dark" data-slide="19">
   <div style="text-align:center">
     <h1>Questions?</h1>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
@@ -498,50 +456,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 </div>
-
-<!-- Navigation -->
 <nav class="nav">
-  <button id="prev" aria-label="Previous slide">←</button>
-  <span class="counter" id="counter">1 / 21</span>
-  <button id="next" aria-label="Next slide">→</button>
+  <button id="prev" aria-label="Previous slide">&#8592;</button>
+  <span class="counter" id="counter">1 / 20</span>
+  <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
-
 <script>
-const slides = document.querySelectorAll('.slide');
-const total = slides.length;
-let current = 0;
-
-function goTo(n) {
-  if (n < 0 || n >= total) return;
-  slides[current].classList.remove('active');
-  slides[current].classList.add('exit');
-  setTimeout(() => slides[current === n ? current : (current)].classList.remove('exit'), 500);
-  current = n;
-  slides[current].classList.add('active');
-  document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
-  document.getElementById('prev').disabled = current === 0;
-  document.getElementById('next').disabled = current === total - 1;
-  document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
-  // Remove exit from all after transition
-  setTimeout(() => slides.forEach(s => { if (!s.classList.contains('active')) s.classList.remove('exit'); }), 550);
-}
-
-document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
-document.getElementById('next').addEventListener('click', () => goTo(current + 1));
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
-  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
-});
-
-// Touch/swipe
-let tx = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 50) dx > 0 ? goTo(current - 1) : goTo(current + 1);
-});
-
+const slides=document.querySelectorAll('.slide'),total=slides.length;let current=0;
+function goTo(n){if(n<0||n>=total)return;slides[current].classList.remove('active');slides[current].classList.add('exit');setTimeout(()=>slides.forEach(s=>{if(!s.classList.contains('active'))s.classList.remove('exit')}),550);current=n;slides[current].classList.add('active');document.getElementById('counter').textContent=(current+1)+' / '+total;document.getElementById('prev').disabled=current===0;document.getElementById('next').disabled=current===total-1;document.getElementById('progress').style.width=((current+1)/total*100)+'%'}
+document.getElementById('prev').addEventListener('click',()=>goTo(current-1));
+document.getElementById('next').addEventListener('click',()=>goTo(current+1));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(current+1)}if(e.key==='ArrowLeft'){e.preventDefault();goTo(current-1)}});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx>0?goTo(current-1):goTo(current+1)});
 goTo(0);
 </script>
 </body>
