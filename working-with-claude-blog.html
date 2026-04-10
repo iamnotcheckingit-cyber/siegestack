@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Tag Manager -->
+<script>
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'pageName': 'Working with Claude (Blog)',
+    'pageType': 'Article',
+    'siteName': 'SiegeStack'
+});
+</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KKNXM7TW');</script>
+<!-- End Google Tag Manager -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-D9JTK6CC9J');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+
+<title>Working with Claude — A Real Case Study in AI Partnership for SQL, P21 ERP, Pro Se Litigation & Threat Intelligence</title>
+
+<meta name="description" content="An honest, long-form case study on partnering with Claude AI: 27% SQL gains across 300+ P21 ERP views, pro se litigation co-authored in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and the unsexy truth about Claude's limitations.">
+<meta name="keywords" content="working with Claude, Claude AI, Anthropic, P21 ERP, Prophet 21, SQL performance, pro se litigation, AI legal research, Netlify edge functions, Supabase honeypot, threat intelligence, AI workflow case study, prompting vs system design, Scott Willis, SiegeStack">
+<meta name="author" content="Scott Willis">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://siegestack.com/working-with-claude-blog.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://siegestack.com/working-with-claude-blog.html">
+<meta property="og:title" content="Working with Claude — A Real Case Study in AI Partnership">
+<meta property="og:description" content="An honest, long-form case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend, and the unsexy truth about Claude's limits.">
+<meta property="og:image" content="https://siegestack.com/og-working-with-claude.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Working with Claude — Scott Willis">
+<meta property="og:site_name" content="SiegeStack">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Scott Willis">
+<meta property="article:section" content="AI & Engineering">
+<meta property="article:published_time" content="2026-04-10T00:00:00-05:00">
+<meta property="article:tag" content="Claude AI">
+<meta property="article:tag" content="P21 ERP">
+<meta property="article:tag" content="Pro Se Litigation">
+<meta property="article:tag" content="Threat Intelligence">
+<meta property="article:tag" content="AI Workflow">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://siegestack.com/working-with-claude-blog.html">
+<meta name="twitter:title" content="Working with Claude — A Real Case Study in AI Partnership">
+<meta name="twitter:description" content="27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and the honest limits.">
+<meta name="twitter:image" content="https://siegestack.com/og-working-with-claude.png">
+<meta name="twitter:creator" content="@SiegeStack">
+<meta name="twitter:site" content="@SiegeStack">
+
+<meta name="theme-color" content="#0a192f">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Article schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Working with Claude — A Real Case Study in AI Partnership",
+  "description": "An honest, long-form case study on partnering with Claude AI across enterprise SQL/ERP, pro se litigation, threat intelligence, and content.",
+  "image": "https://siegestack.com/og-working-with-claude.png",
+  "datePublished": "2026-04-10T00:00:00-05:00",
+  "dateModified": "2026-04-10T00:00:00-05:00",
+  "url": "https://siegestack.com/working-with-claude-blog.html",
+  "mainEntityOfPage": "https://siegestack.com/working-with-claude-blog.html",
+  "inLanguage": "en-US",
+  "author": {
+    "@type": "Person",
+    "name": "Scott Willis",
+    "url": "https://siegestack.com/",
+    "sameAs": ["https://x.com/SiegeStack","https://github.com/iamnotcheckingit-cyber"]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SiegeStack",
+    "url": "https://siegestack.com/",
+    "logo": {"@type":"ImageObject","url":"https://siegestack.com/favicon.png"}
+  },
+  "keywords": "Claude AI, P21 ERP, SQL optimization, pro se litigation, threat intelligence, Netlify, Supabase"
+}
+</script>
+
+<!-- Breadcrumb -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"SiegeStack","item":"https://siegestack.com/"},
+    {"@type":"ListItem","position":2,"name":"Working with Claude (Blog)","item":"https://siegestack.com/working-with-claude-blog.html"}
+  ]
+}
+</script>
+
+<!-- FAQ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What does 'working with Claude' actually look like in practice?","acceptedAnswer":{"@type":"Answer","text":"It's an iteration loop, not a single prompt. Define an outcome, Claude drafts, you test against your real environment, give precise feedback, refine. The leverage comes from running the loop many times against real artifacts."}},
+    {"@type":"Question","name":"Can Claude help with pro se litigation?","acceptedAnswer":{"@type":"Answer","text":"Yes, with verification. In Willis v. Rendon Legal PLLC, Claude co-authored the Second Amended Petition and the response defeating attorney immunity arguments, and surfaced controlling Texas precedent. Every citation was independently verified before filing."}},
+    {"@type":"Question","name":"How much SQL performance gain on P21 ERP?","acceptedAnswer":{"@type":"Answer","text":"~27% aggregate across 300+ custom views in production, primarily from sargability fixes and index alignment."}},
+    {"@type":"Question","name":"What's the honest limitation?","acceptedAnswer":{"@type":"Answer","text":"Compaction is not lossless. Claude is confidently wrong ~20% of the time. Instructions get ignored in long sessions. Treat it as a smart unreliable junior, not a co-founder."}},
+    {"@type":"Question","name":"Prompting vs. system design?","acceptedAnswer":{"@type":"Answer","text":"Stage 1: 'how do I write a better prompt.' Stage 2: 'how do I build a system around the model' — externalized memory, MCP tools, scoped phases, verification loops. Power users live in Stage 2."}}
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy-dark:#0a192f;--navy:#112240;--navy-light:#1d3557;
+  --blue-accent:#64ffda;--blue-bright:#57cbff;
+  --slate:#8892b0;--light-slate:#a8b2d1;--lightest-slate:#ccd6f6;
+  --white:#e6f1ff;--gold:#F9A825;--red:#ff6b6b;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--navy-dark);color:var(--lightest-slate);line-height:1.7;font-size:17px}
+
+nav.topnav{position:fixed;top:0;width:100%;background:rgba(10,25,47,.95);backdrop-filter:blur(10px);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(100,255,218,.1)}
+nav.topnav a.nav-logo{font-size:1.4rem;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-1px}
+nav.topnav .nav-links{display:flex;gap:1.6rem;align-items:center}
+nav.topnav .nav-links a{color:var(--light-slate);text-decoration:none;font-size:.9rem;transition:color .2s}
+nav.topnav .nav-links a:hover{color:var(--blue-accent)}
+@media(max-width:680px){nav.topnav .nav-links a:not(.btn){display:none}}
+
+article{max-width:760px;margin:0 auto;padding:9rem 1.5rem 6rem}
+
+.eyebrow{color:var(--blue-accent);font-family:'JetBrains Mono',monospace;font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+h1.title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2rem,5vw,3.4rem);color:var(--white);line-height:1.1;margin-bottom:1.2rem;font-weight:700}
+.lede{font-size:1.2rem;color:var(--light-slate);margin-bottom:2rem;line-height:1.6}
+.byline{display:flex;gap:1rem;align-items:center;color:var(--slate);font-size:.9rem;border-top:1px solid rgba(100,255,218,.15);border-bottom:1px solid rgba(100,255,218,.15);padding:1rem 0;margin-bottom:3rem;flex-wrap:wrap}
+.byline a{color:var(--blue-accent);text-decoration:none}
+.byline a:hover{text-decoration:underline}
+
+article h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3.5vw,2.2rem);color:var(--white);margin:3rem 0 1rem;line-height:1.2}
+article h3{font-size:1.25rem;color:var(--lightest-slate);margin:2rem 0 .8rem;font-weight:600}
+article p{margin-bottom:1.3rem;color:var(--light-slate)}
+article p strong{color:var(--white);font-weight:600}
+article a{color:var(--blue-accent);text-decoration:none;border-bottom:1px solid rgba(100,255,218,.4);transition:border-color .2s}
+article a:hover{border-bottom-color:var(--blue-accent)}
+article ul{margin:0 0 1.5rem 1.5rem;color:var(--light-slate)}
+article ul li{margin-bottom:.5rem}
+article blockquote{border-left:3px solid var(--blue-accent);padding:.6rem 0 .6rem 1.4rem;margin:1.8rem 0;font-style:italic;color:var(--lightest-slate)}
+article code{font-family:'JetBrains Mono',monospace;background:rgba(100,255,218,.08);color:var(--blue-accent);padding:.15em .4em;border-radius:3px;font-size:.9em}
+
+.callout{background:var(--navy);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:1.2rem 1.5rem;margin:2rem 0;color:var(--lightest-slate)}
+.callout strong{color:var(--white)}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:2rem 0}
+.tag-row span{background:rgba(100,255,218,.1);color:var(--blue-accent);padding:.3em .8em;border-radius:99px;font-size:.8rem;font-family:'JetBrains Mono',monospace}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin:2rem 0}
+.stat{background:var(--navy);border:1px solid rgba(100,255,218,.15);border-radius:8px;padding:1.2rem;text-align:center}
+.stat .num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--blue-accent);font-weight:700;line-height:1}
+.stat .label{font-size:.8rem;color:var(--slate);margin-top:.4rem}
+
+.related{background:var(--navy);border-radius:10px;padding:2rem;margin-top:4rem}
+.related h3{margin-top:0;color:var(--white);font-family:'Playfair Display',serif;font-size:1.4rem}
+.related ul{list-style:none;margin:0;padding:0}
+.related li{padding:.5rem 0;border-bottom:1px solid rgba(100,255,218,.1)}
+.related li:last-child{border-bottom:none}
+
+footer{text-align:center;padding:3rem 2rem;color:var(--slate);font-size:.85rem;border-top:1px solid rgba(100,255,218,.1)}
+footer a{color:var(--blue-accent);text-decoration:none}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KKNXM7TW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<nav class="topnav">
+  <a href="https://siegestack.com/" class="nav-logo">SiegeStack</a>
+  <div class="nav-links">
+    <a href="https://siegestack.com/#solutions">Solutions</a>
+    <a href="https://siegestack.com/etl-showcase">ETL Showcase</a>
+    <a href="https://siegestack.com/#faq">FAQ</a>
+    <a href="https://siegestack.com/#schedule">Get Started</a>
+  </div>
+</nav>
+
+<article>
+  <p class="eyebrow">Case Study &nbsp;·&nbsp; AI Partnership</p>
+  <h1 class="title">Working with Claude</h1>
+  <p class="lede">A real case study in AI partnership across enterprise SQL, pro se litigation, threat intelligence, and content — with the unsexy parts left in.</p>
+
+  <div class="byline">
+    <span>By <strong style="color:var(--white)">Scott Willis</strong></span>
+    <span>·</span>
+    <span>April 10, 2026</span>
+    <span>·</span>
+    <span>~12 min read</span>
+    <span>·</span>
+    <a href="/working-with-claude.html">View as slide deck →</a>
+  </div>
+
+  <div class="tag-row">
+    <span>Claude AI</span><span>P21 ERP</span><span>SQL</span><span>Pro Se Litigation</span><span>Threat Intel</span><span>Netlify</span><span>Supabase</span>
+  </div>
+
+  <p>Most "working with AI" articles fall into one of two camps: hype that pretends Claude is your co-founder, or skepticism that pretends nothing has changed. Neither matches what I actually do every day. This is the honest version — what's worked, what hasn't, and why the leap isn't about better prompting at all.</p>
+
+  <p>I'm a P21 ERP configuration specialist by day, a pro se litigant by necessity, and a builder by habit. Claude has been a daily partner across all of it. Here's what that actually looks like.</p>
+
+  <h2>The Methodology That Actually Works</h2>
+
+  <p>People keep asking me for my "prompt template." There isn't one. The thing that matters is the loop, not the wording.</p>
+
+  <ol style="color:var(--light-slate);margin:0 0 1.5rem 1.4rem">
+    <li><strong>Define the outcome first.</strong> Before I open a chat I know what artifact I need: a SQL view, a motion to dismiss response, an edge function. If I can't describe the deliverable I'm not ready to prompt.</li>
+    <li><strong>Feed real artifacts.</strong> Actual SQL, actual logs, actual filings. Never summaries. Summaries leak signal.</li>
+    <li><strong>Test against reality immediately.</strong> Run the query. File the motion. Deploy the function. Most people stop at "Claude gave me a draft." That's where the work starts.</li>
+    <li><strong>Give precise feedback.</strong> "Row 47 NULL on the join because supplier_xref has no match for vendor 8821" beats "this isn't right" by an order of magnitude.</li>
+    <li><strong>Re-ground every session.</strong> Context doesn't persist between chats. Treat every new conversation as a fresh hire who hasn't read the brief.</li>
+  </ol>
+
+  <p>That's the entire methodology. Everything else in this article is what happens when you run that loop, hard, against real problems.</p>
+
+  <h2>Professional: 27% SQL Performance Gain Across 300+ P21 Views</h2>
+
+  <p>I work in <strong>Prophet 21</strong>, the enterprise distribution ERP that runs on SQL Server. Custom views accumulate. Reports get slow. The interesting question is never "is this view slow," it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
+
+  <p>Working with Claude on the audit, I batched changes into discrete change sets — CHG_001 through CHG_070 — and treated each one as a unit of work with a baseline, a hypothesis, and a rollback. Two patterns came up over and over:</p>
+
+  <ul>
+    <li><code>DATEDIFF(day, posted_date, GETDATE())</code> in a WHERE clause kills sargability. Rewriting it as <code>posted_date &lt;= DATEADD(day, -N, GETDATE())</code> makes the index usable again.</li>
+    <li>Scalar UDFs in SELECT lists silently force row-by-row execution. Inlining them as a CASE expression is ugly but fast.</li>
+  </ul>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="num">300+</div><div class="label">views audited</div></div>
+    <div class="stat"><div class="num">~27%</div><div class="label">aggregate gain</div></div>
+    <div class="stat"><div class="num">70</div><div class="label">change sets</div></div>
+    <div class="stat"><div class="num">99%+</div><div class="label">PACCAR scan match</div></div>
+  </div>
+
+  <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch 70 change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of these systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
+
+  <p>The other professional win was a JIT scan-to-ship process for a PACCAR account: an Excel/VBA suite of nine macros, replaced by a single PowerShell automation that watches a folder, queries <code>ICCustItemLocn</code>, and matches scans at 99%+. Co-authored entirely with Claude, deployed in production, no humans in the loop.</p>
+
+  <h2>Legal: Pro Se Litigation in Willis v. Rendon Legal</h2>
+
+  <p>This is where the "Claude as smart junior" framing matters most.</p>
+
+  <p>An opposing attorney filed a false Certificate of Last Known Address using a decade-old address — 103 days after personally serving me at my actual location. A default judgment stripped me of custody for 490 days without my knowledge. When I found out, I filed pro se in Harris County, 189th Judicial District.</p>
+
+  <p>The defendant moved to dismiss under attorney immunity. Their lawyer had been practicing for thirty years. I had Claude.</p>
+
+  <p>Claude helped me do three things that mattered:</p>
+
+  <ul>
+    <li><strong>Surfaced controlling precedent.</strong> Cantey Hanger, Landry's, Troice v. Greenberg Traurig. The cases that define when conduct falls outside attorney immunity in Texas. I read every one of them in full before citing any of them.</li>
+    <li><strong>Framed the dispositive fact.</strong> The 103-day timeline between personal service at my actual address and the false certificate is the entire case. Claude didn't find that — I did — but Claude helped me articulate why that fact alone defeats the immunity defense as a matter of law.</li>
+    <li><strong>Drafted the structural skeleton.</strong> Causes of action, statutory citations, prayer for relief. I rewrote substantially every paragraph, but starting from a reasonable structure saved me weeks.</li>
+  </ul>
+
+  <p>The motion to dismiss was denied. Trial is set for February 2, 2027, in the 189th District Court before Judge Tamika Craft-Demming. There's an active criminal investigation (Precinct 4 Constable, Incident #2601-01381) and complaints filed with the State Bar and TREC.</p>
+
+  <div class="callout"><strong>The verification rule:</strong> Claude fabricates citations. Not often, but enough that you must independently verify every case, every statute, every quote against the actual source before it goes in a filing. If you can't be bothered to do that, don't use AI for legal work. The cost of a hallucinated citation in front of a judge is your credibility — and credibility is the only currency a pro se litigant has.</div>
+
+  <h2>Personal Project: A Honeypot at safesapcrtx.org</h2>
+
+  <p>I wanted to understand how attackers actually behave by watching them — not by reading about it. So I built <a href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a>: a static site that looks like a vulnerable WordPress install, deployed on Netlify's free tier, with edge functions acting as a serverless firewall and Supabase logging every probe.</p>
+
+  <p>Total monthly cost: <strong>$0</strong>. Daily intake: <strong>80+ probes</strong>.</p>
+
+  <p>The probe paths are exactly what you'd expect: <code>/wp-login.php</code>, <code>/xmlrpc.php</code>, <code>/admin/.env</code>, <code>/shell.php</code>, <code>/backup.sql</code>, <code>/phpmyadmin/</code>. Each one tells you something about the attacker's playbook — credential stuffing, environment variable hunting, webshell discovery, database dump fishing. The interesting work isn't catching probes — it's clustering them into actor groups by behavior.</p>
+
+  <p>Claude helped me build the edge function classifier, the Supabase schema, and the dashboard. Two weekends of work, end to end. The honeypot is live and writing data right now. The repo is <a href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>.</p>
+
+  <h2>Zero Ad Spend: The Strangest Validation</h2>
+
+  <p>I have never paid for an ad. Not for SiegeStack, not for the honeypot site, not for anything. But people I have never met — strangers, completely unknown to me — independently paid for advertising campaigns promoting safesapcrtx.org. They thought the content mattered enough to spend their own money on it.</p>
+
+  <p>That is the strangest validation I've ever received as a builder. It also taught me something concrete: <strong>the content has to be good enough to make someone else want to amplify it</strong>. That bar is much higher than "good enough to ship," and it's the only bar that matters for organic growth.</p>
+
+  <h2>The Honest Limitations</h2>
+
+  <p>Everything above is real. So is everything below. Anyone selling Claude as a magic co-founder is lying.</p>
+
+  <h3>Compaction is not lossless</h3>
+  <p>When the context window fills, Claude summarizes the older parts of the conversation. That summary drops nuance and edge cases. You will lose things. Plan for it: checkpoint your decisions in external files, restart sessions deliberately, don't rely on Claude to remember what happened ten thousand tokens ago.</p>
+
+  <h3>Confidently wrong, roughly 20% of the time</h3>
+  <p>Claude will produce answers that sound right and aren't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always. If you don't have the domain expertise to catch the wrong answers, you cannot use Claude safely for that domain.</p>
+
+  <h3>Instructions get ignored in long sessions</h3>
+  <p>"Don't change X" gets violated. "Use the function we wrote earlier" gets ignored. Re-state critical constraints in every meaningful turn. Treat the assistant as memoryless even when it isn't.</p>
+
+  <h3>Not actually a stateful partner</h3>
+  <p>Default chat has no cross-session memory. What feels like continuity is you re-establishing context every time. That's a workflow you build, not a feature the model gives you.</p>
+
+  <div class="callout"><strong>The honest framing:</strong> Claude is a smart but unreliable junior, not a co-founder. The leverage comes from how you wrap it, not from the model alone.</div>
+
+  <h2>From Prompting to System Design</h2>
+
+  <p>This is the actual leap, and it's the part most articles miss. Stage 1 thinking is "how do I write a better prompt." Stage 2 thinking is "how do I build a system around the model." Power users live in Stage 2.</p>
+
+  <p><strong>Don't:</strong></p>
+  <ul>
+    <li>Write giant kitchen-sink prompts</li>
+    <li>Run long messy chat threads until compaction breaks them</li>
+    <li>Trust the model to remember what happened last week</li>
+    <li>Skip verification because the answer "sounds right"</li>
+  </ul>
+
+  <p><strong>Do:</strong></p>
+  <ul>
+    <li>Break work into discrete phases with checkpoints</li>
+    <li>Externalize memory: docs, files, system prompts, MCP tools</li>
+    <li>Restart sessions with clean, curated context</li>
+    <li>Use real tools (file I/O, APIs, databases) — not just chat</li>
+    <li>Verify every claim against reality before shipping</li>
+  </ul>
+
+  <div class="callout"><strong>The real formula:</strong> <code>Claude + external memory + structured workflows = leverage</code>. The honeypot, the SQL audit, the legal filings — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.</div>
+
+  <h2>What I'd Tell Someone Starting Today</h2>
+
+  <p><strong>You're the expert.</strong> Claude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.</p>
+
+  <p><strong>Specificity compounds.</strong> One precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.</p>
+
+  <p><strong>Ship real things.</strong> The gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.</p>
+
+  <p><strong>Side projects matter.</strong> My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.</p>
+
+  <p><strong>AI levels the playing field.</strong> A pro se litigant produced filings that survived a motion to dismiss from a 30-year attorney. That wasn't possible five years ago. It is now. Use it.</p>
+
+  <div class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/working-with-claude.html">View this case study as a 22-slide presentation →</a></li>
+      <li><a href="/etl-showcase">SiegeStack ETL Showcase — what we build for distributors →</a></li>
+      <li><a href="/#solutions">SiegeStack Solutions overview →</a></li>
+      <li><a href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org — honeypot site →</a></li>
+      <li><a href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">GitHub: siegestack →</a></li>
+      <li><a href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">GitHub: safe-sapcr-texas →</a></li>
+    </ul>
+  </div>
+</article>
+
+<footer>
+  <p>&copy; 2026 SiegeStack &nbsp;·&nbsp; <a href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a> &nbsp;·&nbsp; <a href="/privacy-policy">Privacy</a></p>
+</footer>
+</body>
+</html>
