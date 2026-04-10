@@ -28,10 +28,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
 
-<title>Working with Claude — A Real Case Study in AI Partnership for SQL, P21 ERP, Pro Se Litigation & Threat Intelligence</title>
+<title>Working with Claude — A Real Case Study in AI Partnership for Engineering, Law, Security & Content</title>
 
-<meta name="description" content="An honest, long-form case study on partnering with Claude AI: 27% SQL gains across 300+ P21 ERP views, pro se litigation co-authored in Willis v. Rendon Legal, a Netlify+Supabase honeypot capturing 80+ daily probes, and the unsexy truth about Claude's limitations.">
-<meta name="keywords" content="working with Claude, Claude AI, Anthropic, P21 ERP, Prophet 21, SQL performance, pro se litigation, AI legal research, Netlify edge functions, Supabase honeypot, threat intelligence, AI workflow case study, prompting vs system design, Scott Willis, SiegeStack">
+<meta name="description" content="An honest, long-form case study on partnering with Claude AI across enterprise engineering, pro se litigation, threat intelligence, and zero-ad-spend content — including the unsexy truth about Claude's limits and the shift from prompting to system design.">
+<meta name="keywords" content="working with Claude, Claude AI, Anthropic, AI partnership, AI workflow, AI iteration loop, prompting vs system design, pro se litigation, AI legal research, threat intelligence honeypot, edge functions, AI case study, SiegeStack">
 <meta name="author" content="Scott Willis">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://siegestack.com/working-with-claude-blog.html">
@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude-blog.html">
 <meta property="og:title" content="Working with Claude — A Real Case Study in AI Partnership">
-<meta property="og:description" content="An honest, long-form case study: 27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, zero ad spend, and the unsexy truth about Claude's limits.">
+<meta property="og:description" content="An honest, long-form case study in partnering with Claude across enterprise engineering, law, security, and content — plus the unsexy truth about Claude's limits and the shift from prompting to system design.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -50,7 +50,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="article:section" content="AI & Engineering">
 <meta property="article:published_time" content="2026-04-10T00:00:00-05:00">
 <meta property="article:tag" content="Claude AI">
-<meta property="article:tag" content="P21 ERP">
+<meta property="article:tag" content="AI Workflow">
 <meta property="article:tag" content="Pro Se Litigation">
 <meta property="article:tag" content="Threat Intelligence">
 <meta property="article:tag" content="AI Workflow">
@@ -58,7 +58,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude-blog.html">
 <meta name="twitter:title" content="Working with Claude — A Real Case Study in AI Partnership">
-<meta name="twitter:description" content="27% SQL gains on P21 ERP, pro se litigation co-authored with Claude, a serverless honeypot, and the honest limits.">
+<meta name="twitter:description" content="A real case study in partnering with Claude across engineering, law, security, and content — and the honest limits.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude.png">
 <meta name="twitter:creator" content="@SiegeStack">
 <meta name="twitter:site" content="@SiegeStack">
@@ -91,7 +91,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     "url": "https://siegestack.com/",
     "logo": {"@type":"ImageObject","url":"https://siegestack.com/favicon.png"}
   },
-  "keywords": "Claude AI, P21 ERP, SQL optimization, pro se litigation, threat intelligence, Netlify, Supabase"
+  "keywords": "Claude AI, AI workflow, AI partnership, iteration loop, prompting vs system design, pro se litigation, threat intelligence honeypot"
 }
 </script>
 
@@ -114,8 +114,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "@type": "FAQPage",
   "mainEntity": [
     {"@type":"Question","name":"What does 'working with Claude' actually look like in practice?","acceptedAnswer":{"@type":"Answer","text":"It's an iteration loop, not a single prompt. Define an outcome, Claude drafts, you test against your real environment, give precise feedback, refine. The leverage comes from running the loop many times against real artifacts."}},
-    {"@type":"Question","name":"Can Claude help with pro se litigation?","acceptedAnswer":{"@type":"Answer","text":"Yes, with verification. In Willis v. Rendon Legal PLLC, Claude co-authored the Second Amended Petition and the response defeating attorney immunity arguments, and surfaced controlling Texas precedent. Every citation was independently verified before filing."}},
-    {"@type":"Question","name":"How much SQL performance gain on P21 ERP?","acceptedAnswer":{"@type":"Answer","text":"~27% aggregate across 300+ custom views in production, primarily from sargability fixes and index alignment."}},
+    {"@type":"Question","name":"Can Claude help with pro se litigation?","acceptedAnswer":{"@type":"Answer","text":"Yes, with verification. Claude can co-author petitions, draft responses to dispositive motions, and surface controlling precedent. Every citation must be independently verified against the actual case law before filing."}},
+    {"@type":"Question","name":"How much database performance gain did the loop deliver?","acceptedAnswer":{"@type":"Answer","text":"Roughly 27% aggregate across hundreds of production views, primarily from sargability fixes, index alignment, and removing unnecessary scalar functions."}},
     {"@type":"Question","name":"What's the honest limitation?","acceptedAnswer":{"@type":"Answer","text":"Compaction is not lossless. Claude is confidently wrong ~20% of the time. Instructions get ignored in long sessions. Treat it as a smart unreliable junior, not a co-founder."}},
     {"@type":"Question","name":"Prompting vs. system design?","acceptedAnswer":{"@type":"Answer","text":"Stage 1: 'how do I write a better prompt.' Stage 2: 'how do I build a system around the model' — externalized memory, MCP tools, scoped phases, verification loops. Power users live in Stage 2."}}
   ]
@@ -215,12 +215,12 @@ footer a{color:var(--blue-accent);text-decoration:none}
   </div>
 
   <div class="tag-row">
-    <span>Claude AI</span><span>P21 ERP</span><span>SQL</span><span>Pro Se Litigation</span><span>Threat Intel</span><span>Netlify</span><span>Supabase</span>
+    <span>Claude AI</span><span>AI Workflow</span><span>Iteration Loop</span><span>Pro Se Litigation</span><span>Threat Intel</span><span>System Design</span>
   </div>
 
   <p>Most "working with AI" articles fall into one of two camps: hype that pretends Claude is your co-founder, or skepticism that pretends nothing has changed. Neither matches what I actually do every day. This is the honest version — what's worked, what hasn't, and why the leap isn't about better prompting at all.</p>
 
-  <p>I'm a P21 ERP configuration specialist by day, a pro se litigant by necessity, and a builder by habit. Claude has been a daily partner across all of it. Here's what that actually looks like.</p>
+  <p>I'm an enterprise distribution software specialist by day, a pro se litigant by necessity, and a builder by habit. Claude has been a daily partner across all of it. Here's what that actually looks like.</p>
 
   <h2>The Iteration Loop</h2>
 
@@ -258,7 +258,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <ul>
     <li><strong>It forces you to stay the domain expert.</strong> You define done. You test reality. The model can't hide behind vagueness because you removed it.</li>
     <li><strong>It turns hallucinations into fuel.</strong> Every failure becomes training data for the next iteration.</li>
-    <li><strong>It compounds across domains.</strong> The more loops you run on SAPCR filings, the faster honeypot analysis converges, because your feedback style is now elite.</li>
+    <li><strong>It compounds across domains.</strong> The more loops you run on legal filings, the faster honeypot analysis converges, because your feedback style is now elite.</li>
     <li><strong>It's model-agnostic.</strong> Swap Claude for Grok, Gemini, GPT — the loop still works because the human is the constant.</li>
   </ul>
 
@@ -271,45 +271,45 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>That's the entire methodology. It's boring, unsexy, and brutally effective — exactly like real engineering. Everything else in this article is what happens when you run this loop, hard, against real problems.</p>
 
-  <h2>Professional: 27% SQL Performance Gain Across 300+ P21 Views</h2>
+  <h2>Professional: A 27% Performance Gain Across Hundreds of Database Views</h2>
 
-  <p>I work in <strong>Prophet 21</strong>, the enterprise distribution ERP that runs on SQL Server. Custom views accumulate. Reports get slow. The interesting question is never "is this view slow," it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
+  <p>I work in enterprise distribution software that runs on a relational database. Custom views accumulate over years. Reports get slow. The interesting question is never "is this view slow" — it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
 
-  <p>Working with Claude on the audit, I batched changes into discrete change sets — CHG_001 through CHG_070 — and treated each one as a unit of work with a baseline, a hypothesis, and a rollback. Two patterns came up over and over:</p>
+  <p>Working with Claude on the audit, I batched the changes into discrete change sets and treated each one as a unit of work with a baseline, a hypothesis, and a rollback. Two patterns came up over and over:</p>
 
   <ul>
-    <li><code>DATEDIFF(day, posted_date, GETDATE())</code> in a WHERE clause kills sargability. Rewriting it as <code>posted_date &lt;= DATEADD(day, -N, GETDATE())</code> makes the index usable again.</li>
-    <li>Scalar UDFs in SELECT lists silently force row-by-row execution. Inlining them as a CASE expression is ugly but fast.</li>
+    <li>Date math wrapped around an indexed column in a WHERE clause kills sargability. Rewriting it so the column appears bare on one side makes the index usable again.</li>
+    <li>Scalar functions in SELECT lists silently force row-by-row execution. Inlining them is ugly but fast.</li>
   </ul>
 
   <div class="stat-grid">
     <div class="stat"><div class="num">300+</div><div class="label">views audited</div></div>
     <div class="stat"><div class="num">~27%</div><div class="label">aggregate gain</div></div>
     <div class="stat"><div class="num">70</div><div class="label">change sets</div></div>
-    <div class="stat"><div class="num">99%+</div><div class="label">PACCAR scan match</div></div>
+    <div class="stat"><div class="num">99%+</div><div class="label">match rate</div></div>
   </div>
 
-  <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch 70 change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of these systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
+  <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
 
-  <p>The other professional win was a JIT scan-to-ship process for a PACCAR account: an Excel/VBA suite of nine macros, replaced by a single PowerShell automation that watches a folder, queries <code>ICCustItemLocn</code>, and matches scans at 99%+. Co-authored entirely with Claude, deployed in production, no humans in the loop.</p>
+  <p>The other professional win was a scan-to-ship workflow for a high-volume warehouse: a fragile suite of nine spreadsheet macros, replaced by a single script that watches a folder, queries the inventory database, and matches scans at 99%+. Co-authored end-to-end with Claude, deployed in production, no humans in the loop.</p>
 
-  <h2>Legal: Pro Se Litigation in Willis v. Rendon Legal</h2>
+  <h2>Legal: Pro Se Litigation</h2>
 
   <p>This is where the "Claude as smart junior" framing matters most.</p>
 
-  <p>An opposing attorney filed a false Certificate of Last Known Address using a decade-old address — 103 days after personally serving me at my actual location. A default judgment stripped me of custody for 490 days without my knowledge. When I found out, I filed pro se in Harris County, 189th Judicial District.</p>
+  <p>An opposing attorney filed a false address with the court using an address I hadn't lived at in over a decade — 103 days after their own team personally served me at my actual location. A default judgment based on that filing stripped me of custody for over 490 days without my knowledge. When I found out, I filed pro se.</p>
 
-  <p>The defendant moved to dismiss under attorney immunity. Their lawyer had been practicing for thirty years. I had Claude.</p>
+  <p>The defense moved to dismiss under attorney immunity. Their lawyer had been practicing for thirty years. I had Claude.</p>
 
   <p>Claude helped me do three things that mattered:</p>
 
   <ul>
-    <li><strong>Surfaced controlling precedent.</strong> Cantey Hanger, Landry's, Troice v. Greenberg Traurig. The cases that define when conduct falls outside attorney immunity in Texas. I read every one of them in full before citing any of them.</li>
-    <li><strong>Framed the dispositive fact.</strong> The 103-day timeline between personal service at my actual address and the false certificate is the entire case. Claude didn't find that — I did — but Claude helped me articulate why that fact alone defeats the immunity defense as a matter of law.</li>
+    <li><strong>Surfaced controlling precedent.</strong> The line of cases that define when conduct falls outside attorney immunity. I read every one of them in full before citing any of them.</li>
+    <li><strong>Framed the dispositive fact.</strong> The 103-day timeline between personal service at my actual address and the false filing is the entire case. Claude didn't find that — I did — but Claude helped me articulate why that fact alone defeats the immunity defense as a matter of law.</li>
     <li><strong>Drafted the structural skeleton.</strong> Causes of action, statutory citations, prayer for relief. I rewrote substantially every paragraph, but starting from a reasonable structure saved me weeks.</li>
   </ul>
 
-  <p>The motion to dismiss was denied. Trial is set for February 2, 2027, in the 189th District Court before Judge Tamika Craft-Demming. There's an active criminal investigation (Precinct 4 Constable, Incident #2601-01381) and complaints filed with the State Bar and TREC.</p>
+  <p>The motion to dismiss was denied. The case is set for trial. There's an active criminal investigation and complaints have been filed with the relevant professional licensing bodies.</p>
 
   <div class="callout"><strong>The verification rule:</strong> Claude fabricates citations. Not often, but enough that you must independently verify every case, every statute, every quote against the actual source before it goes in a filing. If you can't be bothered to do that, don't use AI for legal work. The cost of a hallucinated citation in front of a judge is your credibility — and credibility is the only currency a pro se litigant has.</div>
 
