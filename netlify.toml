@@ -1,6 +1,9 @@
 [build]
   publish = "."
 
+[build.processing.html]
+  pretty_urls = true
+
 # Headers for all pages
 [[headers]]
   for = "/*"
@@ -53,6 +56,30 @@
 #   function = "block-bots"
 #   path = "/*"
 #   excludedPath = ["/.netlify/*"]
+# Pretty URL rewrites
+[[redirects]]
+  from = "/working-with-claude"
+  to = "/working-with-claude.html"
+  status = 200
+
+[[redirects]]
+  from = "/working-with-claude-blog"
+  to = "/working-with-claude-blog.html"
+  status = 200
+
+# 301 redirect .html variants to clean URLs
+[[redirects]]
+  from = "/working-with-claude.html"
+  to = "/working-with-claude"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/working-with-claude-blog.html"
+  to = "/working-with-claude-blog"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/privacy-policy"
   to = "/privacy-policy.html"
