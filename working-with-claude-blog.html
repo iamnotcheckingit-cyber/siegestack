@@ -276,7 +276,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <h2>Professional: A 27% Performance Gain Across Hundreds of Database Views</h2>
 
-  <p>I work in enterprise distribution software that runs on a relational database. Custom views accumulate over years. Reports get slow. The interesting question is never "is this view slow" — it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
+  <p>I work on line-of-business systems built on relational databases. Custom views accumulate over years. Reports get slow. The interesting question is never "is this view slow" — it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
 
   <p>Working with Claude on the audit, I batched the changes into discrete change sets and treated each one as a unit of work with a baseline, a hypothesis, and a rollback. Two patterns came up over and over:</p>
 
@@ -294,7 +294,31 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
 
-  <p>The other professional win was a scan-to-ship workflow for a high-volume warehouse: a fragile suite of nine spreadsheet macros, replaced by a single script that watches a folder, queries the inventory database, and matches scans at 99%+. Co-authored end-to-end with Claude, deployed in production, no humans in the loop.</p>
+  <p>The other professional win replaced a fragile suite of nine spreadsheet macros with a single script that watches a folder, queries the database, and reconciles records at 99%+. Co-authored end-to-end with Claude, deployed in production, no humans in the loop.</p>
+
+  <h2>Professional: Mapping a Schema Nobody Had Documented</h2>
+
+  <p>Before the performance work above could start, there was a more basic problem: nothing described how the pieces fit together. Hundreds of view definitions had accumulated over years, each one joining tables that joined other tables, and no map existed. You cannot safely change what you cannot see.</p>
+
+  <p>So the first project was building the map. Claude wrote a parser that read every view definition, extracted the join relationships, and cross-referenced them against the declared key constraints. Output went to flat files rather than a dashboard, deliberately — a queryable artifact beats a pretty one when you are about to make seventy changes against it.</p>
+
+  <p>The part that mattered was the parse log. Any definition the parser could not confidently interpret got written to a failure list instead of being silently skipped. That list was short, but everything on it was a genuine edge case worth a human decision. A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.</p>
+
+  <p>Claude wrote the parser. I decided what counted as a join in the ambiguous cases, and those decisions are the only reason the output was trustworthy.</p>
+
+  <h2>Professional: A Tool and Its Manual, Built Together</h2>
+
+  <p>A recurring manual task involved taking an export out of one system, reshaping it by hand into several differently-formatted files, and loading it back in. It worked, it took a long time, and it broke in quiet ways — a mistyped identifier or a date in the wrong format would fail halfway through a load and leave a partial mess behind.</p>
+
+  <p>The replacement runs entirely in the browser. No backend, no upload, nothing leaves the machine. Drop the export files in, and the tool detects which is which, stamps the batch identifier down every row, normalizes the date formats, drops the header the exporter adds, and writes out the correctly-named files.</p>
+
+  <p>The validation design is the part worth stealing. Failures are split into two tiers: conditions that guarantee a broken load are <strong>errors</strong> and stop you, while conditions that are merely suspicious are <strong>warnings</strong> and let you proceed. Collapsing those into one category is what makes people ignore validation entirely.</p>
+
+  <p>Then the manual — a two-part slide deck, with every slide individually linkable so a colleague can be sent to step nine rather than to the document.</p>
+
+  <p>Illustrating it produced the most instructive failure of the whole project. The obvious approach was to have the browser screenshot itself. That does not work: the captures could not be retrieved to disk. Second attempt, having the page capture its own DOM, also failed. What eventually worked was dropping out of the browser entirely — an OS-level screen capture driven from a shell script that brings the right window forward, switches to the right tab, grabs the pixels, and crops them. Three approaches, two dead ends, and the working one was the least elegant.</p>
+
+  <p>That is the loop doing its job. The first idea was reasonable, it was wrong, and finding that out took minutes instead of an afternoon.</p>
 
   <h2>Legal: Pro Se Litigation</h2>
 
@@ -326,6 +350,25 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>Claude helped me build the edge function classifier, the Supabase schema, and the dashboard. Two weekends of work, end to end. The honeypot is live and writing data right now. The repo is <a href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>.</p>
 
+  <h2>Personal: Rewriting a Reference Site, and Catching Four Errors In It</h2>
+
+  <p>A separate long-running project is a public reference site explaining a narrow area of procedure. Recently I put a full day into deepening it — several guides roughly tripled in length, each claim tied to a specific rule or decision rather than to a summary of one.</p>
+
+  <p>The useful part was not the writing. It was what the rewrite surfaced.</p>
+
+  <p>Checking existing pages against primary sources turned up four substantive errors that had been live for months. One of them appeared on four separate pages and was the kind of mistake a reader could act on and be harmed by — a widely repeated shortcut that is true in a narrow case and misleading in most. Another described a cited authority as supporting a position when it had in fact decided the opposite. A third stated a deadline rule that applies to one category of matter as though it applied to a different one.</p>
+
+  <p>Every one of those was found the same way: by pulling the actual source and reading it, rather than asking whether the earlier draft was right. Asking a model to check its own work tends to produce agreement. Comparing its output against something external produces corrections.</p>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="num">12</div><div class="label">pages rewritten</div></div>
+    <div class="stat"><div class="num">4</div><div class="label">substantive errors found</div></div>
+    <div class="stat"><div class="num">1</div><div class="label">tool built from scratch</div></div>
+    <div class="stat"><div class="num">0</div><div class="label">found by asking "are you sure"</div></div>
+  </div>
+
+  <p>The same day also produced a small interactive tool for the site — the user enters two dates and gets back which options remain open to them and how long each has left. It replaced a wall of prose that answered the same question badly. Most of the effort went into the branch nobody thinks about: what to show when the answer is that every option has already expired.</p>
+
   <h2>Zero Ad Spend: The Strangest Validation</h2>
 
   <p>I have never paid for an ad. Not for SiegeStack, not for the honeypot site, not for anything. But people I have never met — strangers, completely unknown to me — independently paid for advertising campaigns promoting safesapcrtx.org. They thought the content mattered enough to spend their own money on it.</p>
@@ -341,6 +384,9 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <h3>Confidently wrong, roughly 20% of the time</h3>
   <p>Claude will produce answers that sound right and aren't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always. If you don't have the domain expertise to catch the wrong answers, you cannot use Claude safely for that domain.</p>
+
+
+  <p>A concrete version of this: across a single reference project, four separate factual errors survived multiple review passes because each one read as authoritative. The one that mattered most had been repeated across four pages. None of them were caught by re-reading the text or by asking whether it was correct. All four were caught by opening the primary source and comparing. Plausibility is not a signal you can use — the failure mode is specifically that wrong answers sound exactly like right ones.</p>
 
   <h3>Instructions get ignored in long sessions</h3>
   <p>"Don't change X" gets violated. "Use the function we wrote earlier" gets ignored. Re-state critical constraints in every meaningful turn. Treat the assistant as memoryless even when it isn't.</p>
