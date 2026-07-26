@@ -30,15 +30,22 @@
     <meta property="og:url" content="https://siegestack.com/">
     <meta property="og:title" content="SiegeStack | Custom Integrations, Dashboards & Apps">
     <meta property="og:description" content="We build the custom integrations, dashboards, and apps that make your business run smoother.">
-    <meta property="og:image" content="https://siegestack.com/og-image.png">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
     <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://siegestack.com/">
     <meta name="twitter:title" content="SiegeStack | Custom Integrations & Dashboards">
     <meta name="twitter:description" content="We build custom integrations, dashboards, and apps that make your business run smoother.">
-    <meta name="twitter:image" content="https://siegestack.com/og-image.png">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
 
     <!-- Additional SEO -->
     <meta name="theme-color" content="#0a192f">
@@ -145,6 +152,12 @@
 
         .nav-links a:hover {
             color: var(--blue-accent);
+        }
+
+        /* Keep the CTA readable: .nav-links a would otherwise win over .btn-primary */
+        .nav-links a.btn-primary,
+        .nav-links a.btn-primary:hover {
+            color: var(--navy-dark);
         }
 
         .btn {

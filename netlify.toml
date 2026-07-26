@@ -21,6 +21,11 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
   for = "/*.svg"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
@@ -89,6 +94,24 @@
   from = "/etl-showcase"
   to = "/etl-showcase.html"
   status = 200
+
+[[redirects]]
+  from = "/operations-modernization"
+  to = "/operations-modernization.html"
+  status = 200
+
+# 301 the .html variants of the indexable pages to their canonical clean URLs
+[[redirects]]
+  from = "/etl-showcase.html"
+  to = "/etl-showcase"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/operations-modernization.html"
+  to = "/operations-modernization"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/consultant-expertise"
