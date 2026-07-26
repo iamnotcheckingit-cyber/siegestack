@@ -294,7 +294,25 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
 
-  <p>The other professional win replaced a fragile suite of nine spreadsheet macros with a single script that watches a folder, queries the database, and reconciles records at 99%+. Co-authored end-to-end with Claude, deployed in production, no humans in the loop.</p>
+  <h2>Professional: Retiring Nine Spreadsheet Macros</h2>
+
+  <p>The other professional win was an architecture change disguised as a cleanup.</p>
+
+  <p>The process ran on nine spreadsheet macros. Each one had to be opened by a person, on a particular machine, in a particular order. They broke in the way macros always break: someone had the file open, or a column moved, or the workbook was on a laptop that was at home that day. When it failed there was no log, only a person noticing that something downstream looked wrong.</p>
+
+  <p>The replacement has three parts, and the separation between them is the whole point.</p>
+
+  <p><strong>PowerShell does the work.</strong> One script instead of nine macros, watching for input, querying the database directly, and reconciling records. It runs on the server rather than on somebody's desktop, so it does not care whose machine is on or who has a file open.</p>
+
+  <p><strong>SQL Server Agent runs the schedule.</strong> This is the choice people skip past, and it is the one that mattered. The obvious option was the operating system's task scheduler. Agent was better for reasons that have nothing to do with elegance: it already lived next to the data, it keeps job history without anyone building logging, it has retry and failure notification as configuration rather than code, and it is somewhere the people who look after the database already look. A scheduled task on a random server is invisible until it has been failing for three weeks.</p>
+
+  <p><strong>A web service delivers the result.</strong> Previously the output was a file that got sent to people. Files go stale the instant they are sent, they fork into six slightly different versions, and nobody can tell which is current. Exposing the result over a service inverts that — consumers ask for it when they need it and get the current answer, and other systems can consume the same endpoint instead of someone re-keying numbers out of an attachment.</p>
+
+  <p>Reconciliation runs at 99%+. The remaining percent is genuinely ambiguous and is surfaced for a human rather than guessed at, which is the same errors-versus-warnings distinction as the tool above. Anything a machine cannot decide honestly should be handed to someone who can, not resolved quietly on its behalf.</p>
+
+  <p>Claude co-authored all three parts. What Claude did not do was pick the architecture. The decision to put orchestration in Agent rather than a scheduled task, and to deliver over a service rather than as a file, came from knowing which failures actually hurt — and those decisions are most of the value. The code was the easy part.</p>
+
+
 
   <h2>Professional: Mapping a Schema Nobody Had Documented</h2>
 
