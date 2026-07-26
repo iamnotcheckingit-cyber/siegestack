@@ -17,7 +17,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
     <title>Why Your ERP Report Times Out on Month-to-Date | SiegeStack</title>
     <meta name="description" content="A report that is instant for today and times out for month-to-date is rarely a volume problem. How to diagnose the missing index and apply it safely.">
-    <meta name="keywords" content="ERP report slow, SQL Server missing index, month to date report timeout, execution plan table scan, distribution ERP reporting performance, covering index, logical reads">
+    <meta name="keywords" content="ERP report slow, SQL Server missing index, month to date report timeout, execution plan table scan, ERP reporting performance, covering index, logical reads">
     <meta name="author" content="SiegeStack">
     <link rel="canonical" href="https://siegestack.com/erp-report-slow-month-to-date">
     <meta property="og:type" content="article">
@@ -248,6 +248,7 @@
             <a href="/operations-modernization">Operations</a>
             <a href="/etl-showcase">ETL Showcase</a>
             <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
             <a href="/#schedule" class="btn btn-primary">Get Started</a>
         </div>
         <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
@@ -269,7 +270,7 @@
 
             <h2>Why the two date ranges are not the same query</h2>
 
-            <p>Distribution ERPs almost always split transactional data in two: a live table for records still moving, and a history table for records that have posted. Receipts, invoices, picks and shipments all tend to follow this pattern under different names.</p>
+            <p>Transactional ERPs almost always split their data in two: a live table for records still moving, and a history table for records that have posted. Receipts, invoices, picks and shipments all tend to follow this pattern under different names.</p>
 
             <p>A well&#8209;built report follows that split. Today reads the open table only, because everything from today is still open. Week and month union the open table with history, because most of that period has already posted. Those are two genuinely different execution plans against two very differently sized tables, so treating the slow one as &ldquo;the same report, just more data&rdquo; misses what is actually happening.</p>
 
@@ -277,7 +278,7 @@
 
             <h2>The specific failure: an unindexed date column</h2>
 
-            <p>Here is the shape of it, from a real diagnosis. The report filtered invoice history on a pick&#8209;date column. That table had four indexes on it &mdash; the order number, a history id plus line, the lot, and a rowguid. Every one of those is a perfectly sensible index for a transactional system to ship with. Not one of them helps a query whose <code>WHERE</code> clause filters on pick date.</p>
+            <p>Here is the shape it usually takes. A report filters invoice history on a pick&#8209;date column. That table had four indexes on it &mdash; the order number, a history id plus line, the lot, and a rowguid. Every one of those is a perfectly sensible index for a transactional system to ship with. Not one of them helps a query whose <code>WHERE</code> clause filters on pick date.</p>
 
             <p>With no index on the filtered column, SQL Server cannot seek to the rows in your date range. It scans, reading every row in the history table and discarding the ones outside the window. Today was fast because it never touched that table. Month was slow because touching that table meant reading all of it.</p>
 
@@ -337,7 +338,8 @@
 
             <h2>Related reading</h2>
             <ul>
-                <li><a href="/case-studies">Case studies</a> &mdash; the engagement this diagnosis came from, plus a warehouse KPI console and a label service.</li>
+                <li><a href="/insights">All insights</a> &mdash; articles and case studies in one place.</li>
+                <li><a href="/case-studies">Case studies</a> &mdash; this diagnosis written up as a case, plus a KPI console and a label service.</li>
                 <li><a href="/operations-modernization">Operations modernization</a> &mdash; what happens after the reporting is trustworthy: slotting, order consolidation, purchasing and network replenishment.</li>
                 <li><a href="/etl-showcase">CRM &amp; ERP integration</a> &mdash; the pipeline and integration work that feeds reporting like this.</li>
             </ul>
