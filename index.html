@@ -7,7 +7,9 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-D9JTK6CC9J');
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +19,7 @@
     <title>SiegeStack | Custom Integrations, Dashboards & Apps for Your Business</title>
 
     <!-- Primary SEO Meta Tags -->
-    <meta name="description" content="SiegeStack builds custom integrations, dashboards, and apps that make your business run smoother. ETL pipelines, business intelligence, cross-platform integration. Built fast, built right.">
+    <meta name="description" content="SiegeStack builds custom integrations, dashboards and apps that make your business run smoother. ETL pipelines, BI, cross-platform integration. Built fast.">
     <meta name="keywords" content="full stack web development, data reporting, ETL development, business intelligence, cross-platform integration, data pipeline, custom web development, e-commerce development, SaaS development, enterprise web development, ERP integration, CRM integration, API development, data analytics, dashboard development, data visualization, reporting solutions, system integration, digital transformation">
     <meta name="author" content="SiegeStack">
     <meta name="robots" content="index, follow">
@@ -475,6 +477,7 @@
         <div class="nav-links">
             <a href="#solutions">Solutions</a>
             <a href="#process">Process</a>
+            <a href="/operations-modernization">Operations</a>
             <a href="/etl-showcase">ETL Showcase</a>
             <a href="#faq">FAQ</a>
             <a href="#schedule" class="btn btn-primary">Get Started</a>
@@ -547,7 +550,7 @@
     <!-- Solutions / Value Props -->
     <section id="solutions" style="padding-top:2rem">
         <h2 class="section-title">What We Build</h2>
-        <p class="section-subtitle">Solutions that solve real problems and deliver measurable results.</p>
+        <p class="section-subtitle">Solutions that solve real problems and deliver measurable results. Worked examples with real numbers are in the <a href="/working-with-claude-blog" style="color:inherit;text-decoration:underline">case study</a>. Larger multi-site engagements are described under <a href="/operations-modernization" style="color:inherit;text-decoration:underline">operations modernization</a>.</p>
         <div class="value-grid">
             <div class="value-card">
                 <h3>Stop Manual Data Entry</h3>
@@ -579,6 +582,62 @@
                 <p>Daily summaries, weekly KPIs, monthly board reports—generated and delivered automatically. No more manual Excel work.</p>
                 <span class="tag">&#8594; Automated Reporting</span>
             </div>
+            <div class="value-card">
+                <h3>Make the Slow Things Fast</h3>
+                <p>Reports that time out and queries that crawl usually have a cause, not a mystery. We find which ones are actually slow, fix the reason, and measure the difference.</p>
+                <span class="tag">&#8594; Performance Tuning</span>
+            </div>
+            <div class="value-card">
+                <h3>Understand What You Inherited</h3>
+                <p>Systems nobody documented, built by people who left. We map how it actually fits together so your team can change it without holding their breath.</p>
+                <span class="tag">&#8594; System Mapping</span>
+            </div>
+            <div class="value-card">
+                <h3>Retire the Fragile Macros</h3>
+                <p>Spreadsheet macros that only run on one person's machine, in the right order, when they remember. Replaced with something scheduled, logged, and monitored.</p>
+                <span class="tag">&#8594; Legacy Automation</span>
+            </div>
+            <div class="value-card">
+                <h3>Tools Your Team Will Actually Use</h3>
+                <p>Small, purpose-built tools that replace a manual process, with validation that catches mistakes before they cost you and documentation people will read.</p>
+                <span class="tag">&#8594; Internal Tools</span>
+            </div>
+            <div class="value-card">
+                <h3>Knowledge That Outlives the People Who Have It</h3>
+                <p>The person who knows how the process works will eventually leave. We turn what is in their head into guides your team will actually open, organised the way they already think.</p>
+                <span class="tag">&#8594; Training &amp; Documentation</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Documentation worked example -->
+    <section id="knowledge-library" style="padding-top:1rem">
+        <h2 class="section-title">What That Looks Like Built</h2>
+        <p class="section-subtitle">One client engagement, described without the specifics.</p>
+        <div style="max-width:900px;margin:0 auto">
+            <p style="margin-bottom:1rem">A company ran its entire operation on one large system that nobody had documented. Knowledge lived with whoever had been there longest, training was done by shoulder-surfing, and the same questions were answered over and over.</p>
+            <p style="margin-bottom:1rem">We built them an internal knowledge library. Rather than inventing a structure, it mirrors the module layout of the system staff already work in every day, so finding a reference feels familiar from the first visit. Guides are slide decks instead of walls of text, every slide is individually linkable so a colleague can be sent to step nine rather than to a document, and the tooling sits alongside the documentation instead of in a separate place people forget about.</p>
+            <p style="margin-bottom:1.4rem">It is explicitly a living document. Published guides went out while later modules were still being written, because a library that waits until it is complete never ships.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1.5rem;margin:1.5rem 0 1.4rem">
+                    <div style="text-align:center">
+                        <div style="font-size:2.5rem;font-weight:700;color:var(--blue-accent);line-height:1">7</div>
+                        <div style="color:var(--slate);font-size:0.8rem;margin-top:0.3rem">guides published</div>
+                    </div>
+                    <div style="text-align:center">
+                        <div style="font-size:2.5rem;font-weight:700;color:var(--blue-accent);line-height:1">72</div>
+                        <div style="color:var(--slate);font-size:0.8rem;margin-top:0.3rem">slides written</div>
+                    </div>
+                    <div style="text-align:center">
+                        <div style="font-size:2.5rem;font-weight:700;color:var(--blue-accent);line-height:1">4</div>
+                        <div style="color:var(--slate);font-size:0.8rem;margin-top:0.3rem">areas covered</div>
+                    </div>
+                    <div style="text-align:center">
+                        <div style="font-size:2.5rem;font-weight:700;color:var(--blue-accent);line-height:1">5</div>
+                        <div style="color:var(--slate);font-size:0.8rem;margin-top:0.3rem">more in progress</div>
+                    </div>
+            </div>
+            <p>The same engagement produced the in-browser tool described above, embedded directly in the guide that explains when to use it. Documentation people ignore and tools people cannot find are the same problem. Shipping them together is the fix.</p>
         </div>
     </section>
 
