@@ -102,6 +102,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type":"Question","name":"What is Claude AI used for?","acceptedAnswer":{"@type":"Answer","text":"Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent and tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents."}},
+    {"@type":"Question","name":"How do you use Claude AI effectively?","acceptedAnswer":{"@type":"Answer","text":"Use the iteration loop: define the outcome, let Claude draft, test against reality, give precise feedback, then ship or repeat. Feed real artifacts (not summaries), keep an externalized context file, time-box each loop, and verify everything before shipping. Effective Claude use is system design, not prompt cleverness."}},
     {"@type":"Question","name":"Is Claude better than ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features. Most serious users keep both open and route work to whichever fits the task."}},
     {"@type":"Question","name":"How do you write good prompts for Claude?","acceptedAnswer":{"@type":"Answer","text":"The best Claude prompts are specific, not clever. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague 'try again' prompts."}},
     {"@type":"Question","name":"Can Claude replace developers?","acceptedAnswer":{"@type":"Answer","text":"No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output, catch hallucinations, and define what 'done' actually means, you get confident-sounding garbage. The human is the quality gate."}},
@@ -184,6 +185,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <div class="nav-links">
     <a href="https://siegestack.com/#solutions">Solutions</a>
     <a href="https://siegestack.com/etl-showcase">ETL Showcase</a>
+    <a href="https://siegestack.com/case-studies">Case Studies</a>
     <a href="https://siegestack.com/#faq">FAQ</a>
     <a href="https://siegestack.com/#schedule">Get Started</a>
   </div>
@@ -201,7 +203,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
     <span>·</span>
     <span>~14 min read</span>
     <span>·</span>
-    <a href="/working-with-claude.html">View as slide deck →</a>
+    <a href="/working-with-claude">View as slide deck →</a>
   </div>
 
   <div class="tag-row">

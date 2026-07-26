@@ -158,23 +158,6 @@
 }
 </script>
 
-<!-- Schema.org FAQPage -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type":"Question","name":"What is Claude AI used for?","acceptedAnswer":{"@type":"Answer","text":"Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent and tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents."}},
-    {"@type":"Question","name":"How do you use Claude AI effectively?","acceptedAnswer":{"@type":"Answer","text":"Use the iteration loop: define the outcome, let Claude draft, test against reality, give precise feedback, then ship or repeat. Feed real artifacts (not summaries), keep an externalized context file, time-box each loop, and verify everything before shipping. Effective Claude use is system design, not prompt cleverness."}},
-    {"@type":"Question","name":"Is Claude better than ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features. Most serious users keep both open and route work to whichever fits the task."}},
-    {"@type":"Question","name":"How do you write good prompts for Claude?","acceptedAnswer":{"@type":"Answer","text":"The best Claude prompts are specific, not clever. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague 'try again' prompts."}},
-    {"@type":"Question","name":"Can Claude replace developers?","acceptedAnswer":{"@type":"Answer","text":"No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output, catch hallucinations, and define what 'done' actually means, you get confident-sounding garbage. The human is the quality gate."}},
-    {"@type":"Question","name":"What is the biggest mistake people make with Claude?","acceptedAnswer":{"@type":"Answer","text":"Treating it like a search engine instead of a junior collaborator. They paste a vague question, take the first answer, and walk away. The leverage is in the loop — defining done, drafting, testing against reality, giving precise feedback, and repeating until production-ready."}},
-    {"@type":"Question","name":"Does Claude have memory between sessions?","acceptedAnswer":{"@type":"Answer","text":"Default chat has no persistent cross-session memory. What feels like continuity is you re-establishing context every time. Serious workflows externalize memory in project files, system prompts, or tool-based memory APIs."}}
-  ]
-}
-</script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -630,7 +613,7 @@ None<div class="slide slide--light" data-slide="22">
 </div>
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
-  <span class="counter" id="counter">1 / 24</span>
+  <span class="counter" id="counter">1 / 27</span>
   <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
 <script>
@@ -706,7 +689,7 @@ goTo(0);
   <h3>Does Claude have memory between sessions?</h3>
   <p>Default chat has no persistent cross-session memory. Serious workflows externalize memory in project files, system prompts, or tool-based memory APIs.</p>
 
-  <p><a href="/working-with-claude-blog.html">Read the long-form blog version</a> &middot; <a href="https://www.anthropic.com/" rel="noopener">Anthropic</a> &middot; <a href="https://docs.anthropic.com/" rel="noopener">Claude documentation</a> &middot; <a href="/">SiegeStack home</a> &middot; <a href="/etl-showcase">ETL showcase</a></p>
+  <p><a href="/working-with-claude-blog">Read the long-form blog version</a> &middot; <a href="https://www.anthropic.com/" rel="noopener">Anthropic</a> &middot; <a href="https://docs.anthropic.com/" rel="noopener">Claude documentation</a> &middot; <a href="/">SiegeStack home</a> &middot; <a href="/etl-showcase">ETL showcase</a> &middot; <a href="/case-studies">Case studies</a> &middot; <a href="/operations-modernization">Operations modernization</a></p>
 </article>
 </body>
 </html>

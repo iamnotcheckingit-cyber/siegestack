@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>Case Studies | Distribution ERP, Reporting &amp; Automation</title>
+    <meta name="description" content="Three anonymised engagements: a warehouse and purchasing KPI console, a month-to-date report that timed out on a missing index, and a multi-source label service.">
+    <meta name="keywords" content="distribution ERP case study, warehouse KPI dashboard, receiving KPI, purchase price variance, SQL Server index tuning, Zebra label service, picker productivity, distribution reporting">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/case-studies">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/case-studies">
+    <meta property="og:title" content="Case Studies | Distribution ERP, Reporting &amp; Automation">
+    <meta property="og:description" content="Three anonymised engagements from distribution operations: KPI console, an index-tuning root cause, and a multi-source label service.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/case-studies">
+    <meta name="twitter:title" content="Case Studies | Distribution ERP, Reporting &amp; Automation">
+    <meta name="twitter:description" content="Three anonymised engagements from distribution operations: KPI console, an index-tuning root cause, and a multi-source label service.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Case Studies | SiegeStack",
+    "description": "Three anonymised distribution-operations engagements: a warehouse and purchasing KPI console, a report timeout root-caused to a missing index, and a multi-source label service.",
+    "url": "https://siegestack.com/case-studies",
+    "inLanguage": "en-US",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "SiegeStack",
+        "url": "https://siegestack.com/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "SiegeStack",
+        "url": "https://siegestack.com/"
+    },
+    "about": [
+        {
+            "@type": "Thing",
+            "name": "Distribution ERP reporting"
+        },
+        {
+            "@type": "Thing",
+            "name": "SQL Server index tuning"
+        },
+        {
+            "@type": "Thing",
+            "name": "Warehouse label printing"
+        }
+    ],
+    "hasPart": [
+        {
+            "@type": "Article",
+            "headline": "A KPI console for people who were reading the warehouse from memory",
+            "about": "Receiving and picker productivity metrics for a multi-location distributor",
+            "author": {
+                "@type": "Organization",
+                "name": "SiegeStack"
+            }
+        },
+        {
+            "@type": "Article",
+            "headline": "The report that worked on Today and timed out on Month",
+            "about": "A month-to-date report timeout root-caused to an unindexed date column on a vendor table",
+            "author": {
+                "@type": "Organization",
+                "name": "SiegeStack"
+            }
+        },
+        {
+            "@type": "Article",
+            "headline": "One label service instead of a label program per label",
+            "about": "Consolidating multiple label sources into one configuration-driven service",
+            "author": {
+                "@type": "Organization",
+                "name": "SiegeStack"
+            }
+        }
+    ]
+}
+    </script>
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "SiegeStack",
+            "item": "https://siegestack.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Case Studies",
+            "item": "https://siegestack.com/case-studies"
+        }
+    ]
+}
+    </script>
+
+    <style>
+      /* Base site styling, matching index.html (this page is self-contained) */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      /* Keep the CTA readable: .nav-links a would otherwise win over .btn-primary */
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>Case Studies</h1>
+            <p class="subtitle">Three engagements from distribution operations, described without the specifics.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">Everything below is anonymised: no client, no vendor names where they would identify one, no item numbers and no dollar figures. What is left is the part that transfers &mdash; the problem as it presented, what it actually turned out to be, and what was built. Where a number would matter, it is called out as something to measure rather than asserted.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>Why there are no percentages on this page.</strong> Consulting case studies tend to open with a figure &mdash; 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured the before state, and in most operational work nobody did, because the before state was nobody's job to instrument. Where a baseline was captured, it is named. Where it was not, saying so is more useful than a number nobody can reproduce.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Case 01</div>
+                <h3>A KPI console for people who were reading the warehouse from memory</h3>
+
+                <p><strong>The situation.</strong> A multi-location distributor ran its warehouse and purchasing off a SQL Server&ndash;backed distribution ERP. Operational questions &mdash; is receiving keeping up, are we paying what the purchase order said, who picked what yesterday &mdash; were answered by whoever had been there longest. The data existed. Nothing assembled it.</p>
+
+                <p><strong>What was built.</strong> A reporting console with two audiences and two very different trust levels. Supervisors get the full set in a browser. The warehouse floor gets a subset on wall-mounted TV displays, driven by scoped display tokens.</p>
+
+                <p>That split turned out to be the design constraint that mattered. Several reports carry cost and margin. A TV in a receiving bay is visible to every visitor, driver and contractor who walks past it. So report definitions carry a flag: anything with dollars in it is backend-only, the server refuses to attach it to a display token, and it is never listed in the publicly enumerable set. The restriction lives in the report definition rather than in the page that renders it, because the page is the thing most likely to be rewritten later by someone who does not know the rule.</p>
+
+                <p><strong>The receiving metrics.</strong> Volume was the easy part. The ones that changed conversations:</p>
+
+                <div class="om-table-wrap">
+                <table class="om-table">
+                    <thead><tr><th>Metric</th><th>What it measures, and the modelling decision behind it</th></tr></thead>
+                    <tbody>
+                        <tr><td>Purchase price variance</td><td>Receipt cost minus purchase-order line cost. Positive means the business paid above what the PO said. This is the number that gets attention, because it is the gap between what purchasing agreed and what accounts payable will actually be billed.</td></tr>
+                        <tr><td>On-time percentage</td><td>Receipt date against the due date, preferring promise date, then required, then original. Lines with <em>no</em> due date are excluded from the ratio rather than silently counted as on time &mdash; an undated line is missing data, not a success, and rolling it into the numerator flatters the number in exactly the cases nobody is watching.</td></tr>
+                        <tr><td>In-full percentage</td><td>Only open receipts carry an in-full flag; the posted-history table has no equivalent. History rows are therefore excluded from the ratio via an explicit marker instead of scoring zero, so a full month does not read worse than a single day purely because most of it has been posted.</td></tr>
+                        <tr><td>Lines per PO</td><td>Receiving effort per order. A cheap proxy for whether purchasing is consolidating or drip-feeding the dock.</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <p>Two of those four rows are decisions about what <em>not</em> to count. That ratio is normal. Most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence, and a dashboard that gets it wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks.</p>
+
+                <p><strong>Open versus posted.</strong> The same period can span unposted receipts and posted history, which live in separate tables with different columns. Today reads from open receipts only. Week and month union both. Getting this wrong is the classic distribution reporting bug: numbers that look right on a daily view and quietly drift on anything longer.</p>
+
+                <p><strong>Picker productivity.</strong> A parallel set covers lines picked, quantity, active hours and first and last pick per picker. The awkward part was not the aggregation, it was identity: pickers appear as initials on the transaction, and the mapping to a human runs through a chain of fallbacks &mdash; a description field, a Windows login, the local part of an email address, and finally an explicit <em>unmapped</em> bucket. Unmapped is displayed rather than hidden. An unattributed pick is a data-quality finding, and hiding it turns a fixable mapping gap into a permanently wrong leaderboard.</p>
+
+                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
+                <ul>
+                    <li>PPV dollars surfaced in the first full month, against what was being caught manually before.</li>
+                    <li>Time from &ldquo;how did receiving do last week&rdquo; to an answer, before and after.</li>
+                    <li>Share of picks landing in the unmapped bucket, tracked down over time as the mapping is cleaned.</li>
+                </ul>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Case 02</div>
+                <h3>The report that worked on Today and timed out on Month</h3>
+
+                <p><strong>The symptom.</strong> The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as &ldquo;the dashboard is slow.&rdquo;</p>
+
+                <p><strong>What it actually was.</strong> The week and month views filter invoice-history on a pick-date column. That column was not indexed. The indexes that existed on the table covered the order number, a history id and line, the lot, and a rowguid &mdash; every access path except the one the date filter needed. So the date range forced a full scan of the entire invoice-history table. Today was fast because it read a different, far smaller table; the period views were slow because they touched history, and the shape of the query meant touching history meant reading all of it.</p>
+
+                <p>This is the most common performance root cause in ERP reporting and the one most often misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. It is not a volume problem. It is an access-path problem that volume makes visible.</p>
+
+                <p><strong>Why the fix needed more care than the diagnosis.</strong> The tables were the ERP vendor's, not the customer's. Adding an index to a vendor schema is a supportability decision before it is a technical one, so the work went to the platform owner before anything was applied. Beyond that:</p>
+
+                <ul>
+                    <li>Index creation takes a schema-modification lock on SQL Server Standard Edition. It blocks live users for the duration of the build, so it belongs in a maintenance window, not in the afternoon it was diagnosed.</li>
+                    <li>An idle query window holding an open transaction will block the build and create a lock chain that looks, to everyone else, like the database has frozen. Close the tabs first. This sounds trivial until it happens.</li>
+                    <li>Size and current index state get captured before anything changes, so the change can be evaluated and reversed.</li>
+                </ul>
+
+                <p><strong>The transferable part.</strong> When a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index &mdash; it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.</p>
+
+                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
+                <ul>
+                    <li>Report runtime before and after, at each period setting. Capture it before you apply the index; you cannot go back for it.</li>
+                    <li>Logical reads for the query, which is the honest measure and does not move with server load.</li>
+                    <li>Index build duration, so the next maintenance window can be planned rather than guessed.</li>
+                </ul>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Case 03</div>
+                <h3>One label service instead of a label program per label</h3>
+
+                <p><strong>The situation.</strong> Labels were being produced from several unrelated places &mdash; contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.</p>
+
+                <p><strong>What was built.</strong> A single label service with the sources defined as data rather than as code. Configuration tables in the ERP database describe each label source: the query that produces the rows, the fields it exposes, and the template it maps into. A .NET API serves those sources, an admin panel maintains them, and the user-facing side becomes one interface that changes behaviour by configuration.</p>
+
+                <p>Output is native printer command language for industrial label printers, rather than a rendered image. For a warehouse printer this matters &mdash; it prints faster, positions predictably at the label edges, and does not degrade when the printer is asked to scale.</p>
+
+                <p><strong>The design decision worth stealing.</strong> Adding a label type should be a configuration change, not a deployment. Once the source is a row in a table &mdash; a query, a field list, a template &mdash; the fifth label type costs a fraction of the first, and the layouts stay consistent because they share one rendering path. Most label sprawl is not a printing problem. It is the absence of a place to define a label source.</p>
+
+                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
+                <ul>
+                    <li>Elapsed time to add a new label type, before and after.</li>
+                    <li>Reprints caused by layout or alignment faults, per week.</li>
+                    <li>Number of distinct programs that can talk to a printer &mdash; the number you are trying to drive to one.</li>
+                </ul>
+            </div>
+
+            <h2>The pattern across all three</h2>
+
+            <p>None of these started as the problem they turned out to be. &ldquo;We need a dashboard&rdquo; was really a question about which rows count as evidence. &ldquo;The dashboard is slow&rdquo; was one missing index on a vendor table. &ldquo;We need another label program&rdquo; was the absence of anywhere to define a label source.</p>
+
+            <p>That is the common shape of operational software work in distribution: the request describes the symptom accurately and the cause not at all, and the useful first move is always to reproduce the symptom against the actual data before agreeing to build anything.</p>
+
+            <h2>Related</h2>
+            <ul>
+                <li><a href="/operations-modernization">Operations modernization</a> &mdash; the larger engagement these sit inside: consolidate onto one system of record, then optimize on top of it.</li>
+                <li><a href="/etl-showcase">CRM &amp; ERP integration</a> &mdash; the integration and pipeline work that feeds reporting like this.</li>
+                <li><a href="/working-with-claude-blog">How the analysis actually gets done</a> &mdash; the working method behind these engagements.</li>
+            </ul>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Recognise any of these?</h3>
+                <p>If a report is slow on longer date ranges, or a number nobody trusts is driving a decision, the first conversation is short and costs nothing.</p>
+                <p><a href="/#contact">Get in touch</a> &middot; <a href="/operations-modernization">See the engagement model</a></p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
