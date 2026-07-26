@@ -339,7 +339,7 @@
                     <li>Size and current index state get captured before anything changes, so the change can be evaluated and reversed.</li>
                 </ul>
 
-                <p><strong>The transferable part.</strong> When a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index &mdash; it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.</p>
+                <p><strong>The transferable part.</strong> Written up in full as <a href="/erp-report-slow-month-to-date">why an ERP report is fast on today and times out on month-to-date</a>. In short: when a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index &mdash; it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.</p>
 
                 <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
                 <ul>
@@ -380,6 +380,7 @@
                 <li><a href="/operations-modernization">Operations modernization</a> &mdash; the larger engagement these sit inside: consolidate onto one system of record, then optimize on top of it.</li>
                 <li><a href="/etl-showcase">CRM &amp; ERP integration</a> &mdash; the integration and pipeline work that feeds reporting like this.</li>
                 <li><a href="/working-with-claude-blog">How the analysis actually gets done</a> &mdash; the working method behind these engagements.</li>
+                <li><a href="/erp-report-slow-month-to-date">Why your ERP report times out on month-to-date</a> &mdash; the technical write-up of Case 02.</li>
             </ul>
 
             <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">

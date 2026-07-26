@@ -105,6 +105,11 @@
   to = "/case-studies.html"
   status = 200
 
+[[redirects]]
+  from = "/erp-report-slow-month-to-date"
+  to = "/erp-report-slow-month-to-date.html"
+  status = 200
+
 # 301 the .html variants of the indexable pages to their canonical clean URLs
 [[redirects]]
   from = "/etl-showcase.html"
@@ -121,6 +126,12 @@
 [[redirects]]
   from = "/case-studies.html"
   to = "/case-studies"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/erp-report-slow-month-to-date.html"
+  to = "/erp-report-slow-month-to-date"
   status = 301
   force = true
 
