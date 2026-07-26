@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>Why Your ERP Report Times Out on Month-to-Date | SiegeStack</title>
+    <meta name="description" content="A report that is instant for today and times out for month-to-date is rarely a volume problem. How to diagnose the missing index and apply it safely.">
+    <meta name="keywords" content="ERP report slow, SQL Server missing index, month to date report timeout, execution plan table scan, distribution ERP reporting performance, covering index, logical reads">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/erp-report-slow-month-to-date">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://siegestack.com/erp-report-slow-month-to-date">
+    <meta property="og:title" content="Why Your ERP Report Times Out on Month-to-Date">
+    <meta property="og:description" content="Fast on today, dead on month-to-date. It is an access-path problem, not a volume problem — and the fix is usually one index.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+    <meta property="article:author" content="SiegeStack">
+    <meta property="article:section" content="ERP &amp; Data Engineering">
+    <meta property="article:published_time" content="2026-07-26T00:00:00-05:00">
+    <meta property="article:modified_time" content="2026-07-26T00:00:00-05:00">
+    <meta property="article:tag" content="SQL Server">
+    <meta property="article:tag" content="ERP Reporting">
+    <meta property="article:tag" content="Performance Tuning">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/erp-report-slow-month-to-date">
+    <meta name="twitter:title" content="Why Your ERP Report Times Out on Month-to-Date">
+    <meta name="twitter:description" content="Fast on today, dead on month-to-date. An access-path problem, not a volume problem.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date",
+        "description": "A report that is instant for today and times out for month-to-date is rarely a volume problem. How to diagnose the missing index and apply it safely.",
+        "url": "https://siegestack.com/erp-report-slow-month-to-date",
+        "mainEntityOfPage": "https://siegestack.com/erp-report-slow-month-to-date",
+        "inLanguage": "en-US",
+        "image": "https://siegestack.com/og-card.jpg",
+        "datePublished": "2026-07-26T00:00:00-05:00",
+        "dateModified": "2026-07-26T00:00:00-05:00",
+        "author": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://siegestack.com/favicon.png"
+            }
+        },
+        "about": [
+            {
+                "@type": "Thing",
+                "name": "SQL Server index tuning"
+            },
+            {
+                "@type": "Thing",
+                "name": "ERP reporting performance"
+            }
+        ],
+        "proficiencyLevel": "Expert",
+        "keywords": "SQL Server, missing index, table scan, ERP reporting, month-to-date, logical reads"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "SiegeStack",
+                "item": "https://siegestack.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Why Your ERP Report Times Out on Month-to-Date",
+                "item": "https://siegestack.com/erp-report-slow-month-to-date"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+      /* Base site styling, matching index.html (this page is self-contained) */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      /* Keep the CTA readable: .nav-links a would otherwise win over .btn-primary */
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>Why Your ERP Report Is Fast on Today and Times Out on Month&#8209;to&#8209;Date</h1>
+            <p class="subtitle">It is almost never the amount of data. It is which column the date filter lands on, and whether anything indexes it.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">This is the most common performance complaint in ERP reporting and the most consistently misdiagnosed. The report returns instantly for today. Widen it to week&#8209;to&#8209;date or month&#8209;to&#8209;date and it hangs, then times out. Because the pain scales with the date range, it reads like a data&#8209;volume problem, and the usual response is to rewrite the query or ask for a bigger server. Both are usually wrong.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>The short version.</strong> A short window and a long window frequently read <em>different tables</em>. Today often reads open, in&#8209;flight records. Week and month have to reach into posted history. If the history table has no index on the date column you are filtering, the database has no way to skip rows &mdash; it reads the entire table to find the ones in your range. The fix is often a single index. The care is all in applying it.</p>
+            </div>
+
+            <h2>Why the two date ranges are not the same query</h2>
+
+            <p>Distribution ERPs almost always split transactional data in two: a live table for records still moving, and a history table for records that have posted. Receipts, invoices, picks and shipments all tend to follow this pattern under different names.</p>
+
+            <p>A well&#8209;built report follows that split. Today reads the open table only, because everything from today is still open. Week and month union the open table with history, because most of that period has already posted. Those are two genuinely different execution plans against two very differently sized tables, so treating the slow one as &ldquo;the same report, just more data&rdquo; misses what is actually happening.</p>
+
+            <p>The live table is small &mdash; it holds only what has not yet posted, so it is naturally self&#8209;trimming. The history table holds years. That is the one where indexing decides whether your report returns in a second or not at all.</p>
+
+            <h2>The specific failure: an unindexed date column</h2>
+
+            <p>Here is the shape of it, from a real diagnosis. The report filtered invoice history on a pick&#8209;date column. That table had four indexes on it &mdash; the order number, a history id plus line, the lot, and a rowguid. Every one of those is a perfectly sensible index for a transactional system to ship with. Not one of them helps a query whose <code>WHERE</code> clause filters on pick date.</p>
+
+            <p>With no index on the filtered column, SQL Server cannot seek to the rows in your date range. It scans, reading every row in the history table and discarding the ones outside the window. Today was fast because it never touched that table. Month was slow because touching that table meant reading all of it.</p>
+
+            <p>Notice what is <em>not</em> wrong here. The query is not badly written. The server is not undersized. The data volume is normal for the business. The only defect is that the access path the report needs does not exist.</p>
+
+            <h2>How to confirm it in about ten minutes</h2>
+
+            <ol>
+                <li><strong>Establish the split.</strong> Run the report at each period setting and record the runtime. If today is sub&#8209;second and week is minutes, you are looking at a threshold, not a gradient. A genuine volume problem degrades smoothly; an access&#8209;path problem falls off a cliff.</li>
+                <li><strong>Read the actual execution plan</strong> for the slow version, not the estimated one. You are looking for a scan on a large table underneath your date filter. That single operator is usually the whole story.</li>
+                <li><strong>Measure logical reads</strong> with <code>SET STATISTICS IO ON</code>. This is the honest number: it does not move with server load, caching or who else is on the box, so it is the one to record before and after. Elapsed time is what the user feels, but logical reads are what you actually changed.</li>
+                <li><strong>List what is currently indexed</strong> on the table, and check whether the filtered column appears as the leading key of anything. Being present somewhere in an index is not the same as being seekable &mdash; a column buried as the third key of a composite index will not serve a range scan on its own.</li>
+            </ol>
+
+            <p>If those four point the same direction, the diagnosis is settled and you have a defensible before&#8209;state to compare against.</p>
+
+            <h2>The part that needs more care than the diagnosis</h2>
+
+            <p>Finding it is the easy half. Applying it in a live ERP is where the risk sits, and this is the part most write&#8209;ups skip.</p>
+
+            <div class="om-table-wrap">
+            <table class="om-table">
+                <thead><tr><th>Consideration</th><th>Why it matters before you run <code>CREATE INDEX</code></th></tr></thead>
+                <tbody>
+                    <tr><td>Whose schema is it</td><td>If the tables belong to your ERP vendor rather than to you, adding an index is a supportability decision before it is a technical one. Some vendors are relaxed about additive indexes; some treat any schema change as voiding support; some overwrite them on upgrade. Ask before you apply, and record the answer &mdash; the next upgrade may silently remove your index and the timeout will come back looking like a new bug.</td></tr>
+                    <tr><td>Which SQL Server edition</td><td>Online index operations are an Enterprise feature. On Standard Edition, index creation takes a schema&#8209;modification lock and blocks users on that table for the whole build. On a big history table that is not a few seconds. This belongs in a maintenance window.</td></tr>
+                    <tr><td>Open transactions</td><td>An idle query window somewhere holding an open transaction will block the build, and the build will in turn block everyone else. The result looks, from the floor, like the database froze. Close the tabs, and check for open transactions before you start.</td></tr>
+                    <tr><td>Write cost</td><td>Every index is maintained on insert, update and delete. On a high&#8209;churn transactional table, an index you added for one monthly report is paid for on every transaction all month. Usually still worth it. Occasionally not.</td></tr>
+                    <tr><td>The reversal plan</td><td>Capture the table size, row count and existing index list before you change anything, so the change can be evaluated honestly and dropped cleanly if it does not help.</td></tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h2>Designing the index</h2>
+
+            <p>Lead with the column you filter on. For a date&#8209;range report, that means the date column is the first key &mdash; that is what makes the range seekable. Columns you group or join by follow. Columns you only return can go in an <code>INCLUDE</code> list rather than the key, which keeps the index narrower while still avoiding a lookup back to the base table for every row.</p>
+
+            <p>Resist the urge to add one index per report. Three overlapping indexes on the same table, each serving one query, cost more in write overhead and buffer pool than one well&#8209;ordered index serving all three. If you already have an index whose leading key is right and it is missing a column or two, extending it is usually better than adding a sibling.</p>
+
+            <h2>When it genuinely is volume</h2>
+
+            <p>Sometimes the scan is unavoidable and the answer is architectural rather than an index:</p>
+
+            <ul>
+                <li>The report aggregates most rows in the table anyway, so there is nothing to skip. A pre&#8209;aggregated snapshot, refreshed nightly, beats recomputing it per page load.</li>
+                <li>The history table is genuinely enormous and every query hits it. Partitioning by date can help, though it is a much larger commitment than an index.</li>
+                <li>Several dashboards recompute the same expensive figures independently. Materialise them once on a schedule and have every dashboard read the result.</li>
+            </ul>
+
+            <p>The tell is the shape of the degradation. A missing index produces a cliff &mdash; fine, fine, fine, dead. A true volume problem produces a slope. Diagnose which one you have before choosing a fix, because the architectural remedies cost weeks and the index costs an afternoon and a maintenance window.</p>
+
+            <h2>The general lesson</h2>
+
+            <p>&ldquo;The dashboard is slow&rdquo; is a symptom report, and it is an accurate one &mdash; the user is not wrong. But it describes the experience, not the cause, and the instinct it triggers (optimise the query, buy hardware) points away from the actual defect most of the time.</p>
+
+            <p>Ask a narrower question instead: <em>what exactly does the date filter filter on, and does anything index it?</em> In ERP reporting that question resolves a surprising share of performance complaints, usually to one line of DDL and a conversation with whoever owns the schema.</p>
+
+            <h2>Related reading</h2>
+            <ul>
+                <li><a href="/case-studies">Case studies</a> &mdash; the engagement this diagnosis came from, plus a warehouse KPI console and a label service.</li>
+                <li><a href="/operations-modernization">Operations modernization</a> &mdash; what happens after the reporting is trustworthy: slotting, order consolidation, purchasing and network replenishment.</li>
+                <li><a href="/etl-showcase">CRM &amp; ERP integration</a> &mdash; the pipeline and integration work that feeds reporting like this.</li>
+            </ul>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Got a report that dies on longer date ranges?</h3>
+                <p>Usually diagnosable from the execution plan and the index list in a single sitting. The first conversation costs nothing.</p>
+                <p><a href="/#contact">Get in touch</a> &middot; <a href="/case-studies">Read the case studies</a></p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
