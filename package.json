@@ -1,7 +1,9 @@
 {
-  "name": "safe-sapcr-texas",
+  "name": "siegestack",
   "version": "1.0.0",
+  "private": true,
+  "description": "siegestack.com. Static pages, plus one Netlify function for the private thread at /jesse.",
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+    "@netlify/blobs": "^10.7.12"
   }
 }

@@ -2,3 +2,9 @@ tmpclaude-*
 .DS_Store
 *.log
 siegestack/
+node_modules/
+.netlify/
+
+# private-files/ is committed on purpose -- that folder IS how a file gets to
+# Jesse. It is kept off the web by the 404 rule in netlify.toml, not by being
+# absent from the repo. Remember the repo is public: nothing secret goes in it.

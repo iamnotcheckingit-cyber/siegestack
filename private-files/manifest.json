@@ -1,0 +1,32 @@
+{
+  "_readme": [
+    "The files rail on /jesse.",
+    "",
+    "TO SEND JESSE A FILE: drop it in this folder and push. That is the whole",
+    "process -- the rail lists whatever is in here, so a file with no entry",
+    "below still shows up, just under its own filename with no description.",
+    "",
+    "Add an entry here only when the filename alone is not enough. Order in",
+    "this file is the order in the rail; anything unlisted sorts after, newest",
+    "first.",
+    "",
+    "Nothing in this folder is reachable over the web. netlify.toml 404s the",
+    "path, and the only way in is /api/jesse/file, which checks the session",
+    "cookie first. That is deliberate: it is the same door as the messages.",
+    "",
+    "The keys under \"files\" are exact filenames. \"password\" is shown in the",
+    "rail in plain text -- it is a convenience for a zip, not a secret."
+  ],
+
+  "files": {
+    "ram-report.zip": {
+      "label": "RAM report script",
+      "note": "Extract it, run ram-report.bat, paste what it prints into the thread.",
+      "password": "blue"
+    },
+    "ram-report.bat": {
+      "label": "RAM report script (loose .bat)",
+      "note": "Same thing, not zipped, in case the zip is a hassle. Windows may warn you — that is just because it came from the internet."
+    }
+  }
+}

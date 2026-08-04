@@ -173,26 +173,63 @@
   to = "/consultant-expertise.html"
   status = 200
 
-# Personal utility page. noindex, deliberately absent from sitemap.xml.
+# -----------------------------------------------------------------------------
+# /jesse -- the private thread. See netlify/functions/jesse-api.mjs.
+#
+# Four things keep it private and all four are load-bearing:
+#   1. The PIN check, server-side, in the function. That is the actual lock.
+#   2. noindex here AND in _headers, because which of those two files wins a
+#      conflict is not worth betting a private page on. They agree, so it
+#      cannot matter.
+#   3. Absent from sitemap.xml, and linked from no other page.
+#   4. private-files/ is 404'd below, so the only route to those downloads is
+#      through the authenticated function.
+#
+# robots.txt is deliberately NOT given a Disallow for this path -- that file is
+# public, and a Disallow line would advertise the URL to every crawler and
+# every idle reader. X-Robots-Tag is the stronger signal anyway: Disallow only
+# stops crawling, noindex stops listing.
+# -----------------------------------------------------------------------------
+
 [[redirects]]
   from = "/jesse"
   to = "/jesse.html"
   status = 200
 
-# Force a download rather than the browser trying to render these.
 [[headers]]
-  for = "/ram-report.zip"
+  for = "/jesse"
   [headers.values]
-    Content-Type = "application/zip"
-    Content-Disposition = "attachment; filename=\"ram-report.zip\""
-    Cache-Control = "public, max-age=300"
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet, noimageindex"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
 
 [[headers]]
-  for = "/ram-report.bat"
+  for = "/jesse.html"
   [headers.values]
-    Content-Type = "application/octet-stream"
-    Content-Disposition = "attachment; filename=\"ram-report.bat\""
-    Cache-Control = "public, max-age=300"
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet, noimageindex"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/api/jesse/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "no-store, no-cache, must-revalidate, private"
+    Referrer-Policy = "no-referrer"
+
+# The publish directory is the repo root, so anything committed is on the web by
+# default. These files must not be. This closes the door; the function opens it
+# only for a valid session.
+[[redirects]]
+  from = "/private-files/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ...and this is what puts them inside the function bundle so it can read them.
+# Without it the rail is empty and the reason is not obvious from the logs.
+[functions]
+  included_files = ["private-files/**"]
 
 [[redirects]]
   from = "/favicon.ico"
