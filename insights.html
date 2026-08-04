@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>Insights | ERP Reporting, SQL Server &amp; Automation</title>
+    <meta name="description" content="Technical write-ups and anonymised problem breakdowns on ERP reporting, SQL Server performance and operational automation.">
+    <meta name="keywords" content="ERP reporting articles, SQL Server performance, operational automation, KPI design, index tuning, label automation">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/insights">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/insights">
+    <meta property="og:title" content="Insights | ERP Reporting, SQL Server &amp; Automation">
+    <meta property="og:description" content="Technical write-ups and anonymised problem breakdowns on ERP reporting, SQL Server performance and operational automation.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/insights">
+    <meta name="twitter:title" content="Insights | ERP Reporting, SQL Server &amp; Automation">
+    <meta name="twitter:description" content="Technical write-ups and anonymised problem breakdowns on ERP reporting, SQL Server performance and operational automation.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Insights | SiegeStack",
+        "description": "Technical write-ups and anonymised problem breakdowns on ERP reporting, SQL Server performance and operational automation.",
+        "url": "https://siegestack.com/insights",
+        "inLanguage": "en-US",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+        },
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListOrder": "https://schema.org/ItemListOrderDescending",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "url": "https://siegestack.com/erp-report-slow-month-to-date",
+                    "name": "Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "url": "https://siegestack.com/case-studies",
+                    "name": "Case studies: KPI console, index root cause, label service"
+                }
+            ]
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "SiegeStack",
+                "item": "https://siegestack.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Insights",
+                "item": "https://siegestack.com/insights"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+      /* Base site styling, matching index.html (this page is self-contained) */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      /* Keep the CTA readable: .nav-links a would otherwise win over .btn-primary */
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>Insights</h1>
+            <p class="subtitle">Technical write-ups and anonymised problem breakdowns, from work that shipped.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">Everything here is written from problems that actually occurred, and everything here is anonymised. No client or employer is named, no client data appears, and identifying details are removed rather than disguised. What is kept is the part that transfers to anyone running the same class of system.</p>
+
+            <h2>Technical articles</h2>
+
+            <div class="om-track">
+                <div class="om-num">SQL Server &middot; ERP reporting</div>
+                <h3><a href="/erp-report-slow-month-to-date">Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date</a></h3>
+                <p>The most common performance complaint in ERP reporting and the most consistently misdiagnosed. Short and long date ranges frequently read different tables, and if the history table has no index on the column you filter, the database reads all of it. Covers how to confirm it in about ten minutes, how to design the index, and what to check before adding one to a vendor schema.</p>
+            </div>
+
+            <h2>Case studies</h2>
+
+            <div class="om-track">
+                <div class="om-num">Reporting &middot; Metrics design</div>
+                <h3><a href="/case-studies">A KPI console for people who were reading the operation from memory</a></h3>
+                <p>Receiving and picker productivity metrics, including purchase price variance and on-time and in-full rates. Most of the work was deciding which rows count as evidence and which are absence of evidence &mdash; and keeping cost figures off screens that face a public floor.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Performance &middot; Root cause</div>
+                <h3><a href="/case-studies">The report that worked on Today and timed out on Month</a></h3>
+                <p>Reported as &ldquo;the dashboard is slow.&rdquo; It was one unindexed date column on a table that shipped with the ERP. The diagnosis took minutes; applying the fix safely took the planning.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Automation &middot; Architecture</div>
+                <h3><a href="/case-studies">One label service instead of a label program per label</a></h3>
+                <p>Several unrelated paths to a printer, each grown separately, layouts drifting apart. Replaced with one service where label sources are rows in a configuration table rather than new programs.</p>
+            </div>
+
+            <h2>What tends to get written up here</h2>
+
+            <p>Operational software problems where the request describes the symptom accurately and the cause not at all. &ldquo;The dashboard is slow&rdquo; that turns out to be an access path. &ldquo;We need another label program&rdquo; that turns out to be a missing abstraction. &ldquo;We need a report&rdquo; that turns out to be a disagreement about which rows count.</p>
+
+            <p>If you are running into one of these, the <a href="/case-studies">case studies</a> show the shape of the work and <a href="/operations-modernization">operations modernization</a> covers the larger engagement they sit inside.</p>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Recognise one of these?</h3>
+                <p>The first conversation is short and costs nothing.</p>
+                <p><a href="/#contact">Get in touch</a> &middot; <a href="/etl-showcase">See the integration work</a></p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

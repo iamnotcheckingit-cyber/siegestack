@@ -8,11 +8,17 @@
 /*.png
   Cache-Control: public, max-age=31536000, immutable
 
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
 /*.svg
   Cache-Control: public, max-age=31536000, immutable
 
 /*.ico
   Cache-Control: public, max-age=31536000, immutable
 
-/og-image.png
+/og-card.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/og-working-with-claude-card.jpg
   Cache-Control: public, max-age=31536000, immutable
