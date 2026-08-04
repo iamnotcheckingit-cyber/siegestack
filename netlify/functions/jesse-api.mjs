@@ -528,6 +528,8 @@ export default async (req, context) => {
       // raises: is it the right site, the right scope, or a typo?
       const diag = {
         site: process.env.SITE_NAME || null,
+        siteId: process.env.SITE_ID || null,
+        url: process.env.URL || null,
         context: process.env.CONTEXT || null,
         sawDadsPin: Boolean(process.env.DADS_PIN),
         sawJessesPin: Boolean(process.env.JESSES_PIN),
