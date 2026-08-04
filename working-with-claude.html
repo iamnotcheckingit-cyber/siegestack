@@ -16,12 +16,15 @@
 <link rel="icon" type="image/svg+xml" href="/favicon-sw.svg">
 <link rel="apple-touch-icon" href="/favicon.png">
 
-<title>Working with Claude: A 27-Slide Case Study | SiegeStack</title>
+<!-- SLIDE COUNT LIVES IN NINE PLACES: <title>, description, og:title, og:description,
+     twitter:title, twitter:description, schema name, schema description, the #counter span,
+     and the hidden <article> below. Adding a slide means changing all of them. -->
+<title>Working with Claude: A 33-Slide Case Study | SiegeStack</title>
 
 <!-- Primary SEO Meta Tags -->
-<meta name="description" content="A 27-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.">
-<meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, Claude AI tutorial, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude">
-<meta name="author" content="Scott Willis">
+<meta name="description" content="A 33-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.">
+<meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, Claude AI tutorial, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude, content security policy hardening, row level security audit">
+<meta name="author" content="Scott Allen Willis">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://siegestack.com/working-with-claude">
@@ -29,32 +32,33 @@
 <!-- Open Graph / Facebook / iMessage / Android RCS -->
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude">
-<meta property="og:title" content="Working with Claude: A 27-Slide Case Study on Shipping Production Work">
-<meta property="og:description" content="Stop treating Claude like a chatbot. A 27-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
+<meta property="og:title" content="Working with Claude: A 33-Slide Case Study on Shipping Production Work">
+<meta property="og:description" content="Stop treating Claude like a chatbot. A 33-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta property="og:image:secure_url" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Working with Claude — Scott Willis presentation cover">
+<meta property="og:image:alt" content="Working with Claude — Scott Allen Willis presentation cover">
 <meta property="og:site_name" content="SiegeStack">
 <meta property="og:locale" content="en_US">
-<meta property="article:author" content="Scott Willis">
+<meta property="article:author" content="Scott Allen Willis">
 <meta property="article:section" content="AI & Engineering">
 <meta property="article:published_time" content="2026-04-10T00:00:00-05:00">
-<meta property="article:modified_time" content="2026-07-26T00:00:00-05:00">
+<meta property="article:modified_time" content="2026-08-04T00:00:00-05:00">
 <meta property="article:tag" content="Claude AI">
 <meta property="article:tag" content="AI Workflow">
+<meta property="article:tag" content="Application Security">
 <meta property="article:tag" content="Pro Se Litigation">
 <meta property="article:tag" content="Threat Intelligence">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude">
-<meta name="twitter:title" content="Working with Claude: A 27-Slide Case Study">
-<meta name="twitter:description" content="A 27-slide case study on the Claude workflow, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
+<meta name="twitter:title" content="Working with Claude: A 33-Slide Case Study">
+<meta name="twitter:description" content="A 33-slide case study on the Claude workflow, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
-<meta name="twitter:image:alt" content="Working with Claude — Scott Willis presentation cover">
+<meta name="twitter:image:alt" content="Working with Claude — Scott Allen Willis presentation cover">
 <meta name="twitter:creator" content="@SiegeStack">
 <meta name="twitter:site" content="@SiegeStack">
 
@@ -71,18 +75,18 @@
 {
   "@context": "https://schema.org",
   "@type": "PresentationDigitalDocument",
-  "name": "Working with Claude: A 27-Slide Case Study on Shipping Production Work",
+  "name": "Working with Claude: A 33-Slide Case Study on Shipping Production Work",
   "headline": "Working with Claude",
-  "description": "How to use Claude AI effectively, presented as a 27-slide case study covering the Claude workflow, the iteration loop, common mistakes that break Claude, Claude vs ChatGPT, and a copy-paste template.",
+  "description": "How to use Claude AI effectively, presented as a 33-slide case study covering the Claude workflow, the iteration loop, common mistakes that break Claude, Claude vs ChatGPT, and a copy-paste template.",
   "url": "https://siegestack.com/working-with-claude",
   "image": "https://siegestack.com/og-working-with-claude-card.jpg",
   "inLanguage": "en-US",
   "isAccessibleForFree": true,
   "datePublished": "2026-04-10T00:00:00-05:00",
-  "dateModified": "2026-07-26T00:00:00-05:00",
+  "dateModified": "2026-08-04T00:00:00-05:00",
   "author": {
     "@type": "Person",
-    "name": "Scott Willis",
+    "name": "Scott Allen Willis",
     "jobTitle": "Enterprise Distribution Software Specialist & Pro Se Litigant",
     "email": "iamnotcheckingit@gmail.com",
     "url": "https://siegestack.com/"
@@ -100,12 +104,14 @@
     {"@type": "Thing", "name": "Claude AI"},
     {"@type": "Thing", "name": "Enterprise Data Engineering"},
     {"@type": "Thing", "name": "SQL Performance Optimization"},
+    {"@type": "Thing", "name": "Content Security Policy"},
+    {"@type": "Thing", "name": "Row Level Security"},
     {"@type": "Thing", "name": "Pro Se Litigation"},
     {"@type": "Thing", "name": "Threat Intelligence"},
     {"@type": "Thing", "name": "Netlify Edge Functions"},
     {"@type": "Thing", "name": "Supabase"}
   ],
-  "keywords": "Claude AI, AI workflow, AI partnership, iteration loop, prompting vs system design, pro se litigation, threat intelligence honeypot, edge functions"
+  "keywords": "Claude AI, AI workflow, AI partnership, iteration loop, prompting vs system design, content security policy, row level security, pro se litigation, threat intelligence honeypot, edge functions"
 }
 </script>
 
@@ -126,10 +132,10 @@
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Scott Willis",
+  "name": "Scott Allen Willis",
   "alternateName": "iamnotcheckingit",
   "jobTitle": "Enterprise Distribution Software Specialist",
-  "description": "Enterprise distribution software specialist, pro se litigant, builder of safesapcrtx.org threat intelligence honeypot, and founder of SiegeStack.",
+  "description": "Enterprise distribution software specialist, pro se litigant, builder of the safesapcrtx.org reference site and threat intelligence honeypot, and founder of SiegeStack.",
   "url": "https://siegestack.com/",
   "email": "iamnotcheckingit@gmail.com",
   "image": "https://siegestack.com/og-working-with-claude.png",
@@ -137,13 +143,16 @@
     "https://x.com/SiegeStack",
     "https://github.com/iamnotcheckingit-cyber",
     "https://github.com/iamnotcheckingit-cyber/siegestack",
-    "https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas",
     "https://safesapcrtx.org"
   ],
   "knowsAbout": [
     "Enterprise distribution software",
     "Database performance optimization",
     "ETL pipelines",
+    "Content Security Policy hardening",
+    "Row level security and data exposure audits",
+    "Transactional email deliverability",
+    "Technical SEO and crawlability",
     "Pro se litigation",
     "Family law",
     "Threat intelligence honeypots",
@@ -237,7 +246,7 @@ a.link:hover{opacity:.75}
 <div class="slide slide--dark active" data-slide="0">
   <h1>Working with <span class="gold">Claude</span></h1>
   <p class="subtitle">How one person uses AI to create, iterate, and ship — across enterprise software, law, security, and content — with zero ad spend.</p>
-  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Willis &nbsp;·&nbsp; Enterprise Distribution Software Specialist &nbsp;·&nbsp; Pro Se Litigant &nbsp;·&nbsp; Builder</p>
+  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Allen Willis &nbsp;·&nbsp; Enterprise Distribution Software Specialist &nbsp;·&nbsp; Pro Se Litigant &nbsp;·&nbsp; Builder</p>
 </div>
 
 <!-- 2 -->
@@ -247,13 +256,14 @@ a.link:hover{opacity:.75}
   <div style="margin-top:.5rem">
     <div class="agenda-item"><div class="agenda-num">1</div><span>How I actually work with AI (the honest version)</span></div>
     <div class="agenda-item"><div class="agenda-num">2</div><span>Professional work: databases, automation, migration</span></div>
-    <div class="agenda-item"><div class="agenda-num">3</div><span>Legal: representing myself in a fraud case</span></div>
+    <div class="agenda-item"><div class="agenda-num">3</div><span>Legal: representing myself after a default judgment</span></div>
     <div class="agenda-item"><div class="agenda-num">4</div><span>Personal project: building a threat intelligence honeypot</span></div>
-    <div class="agenda-item"><div class="agenda-num">5</div><span>Getting real users with $0 and no marketing background</span></div>
-    <div class="agenda-item"><div class="agenda-num">6</div><span>Using multiple AIs together — and knowing when not to</span></div>
-    <div class="agenda-item"><div class="agenda-num">7</div><span>What I got wrong, what I'd do differently</span></div>
+    <div class="agenda-item"><div class="agenda-num">5</div><span>Hardening it: security, data exposure, and the bugs nothing reports</span></div>
+    <div class="agenda-item"><div class="agenda-num">6</div><span>Getting real users with $0 and no marketing background</span></div>
+    <div class="agenda-item"><div class="agenda-num">7</div><span>Using multiple AIs together — and knowing when not to</span></div>
+    <div class="agenda-item"><div class="agenda-num">8</div><span>What I got wrong, what I'd do differently</span></div>
   </div>
-  <p style="margin-top:1.5rem;font-size:.85rem;color:var(--muted)">~45 minutes &nbsp;·&nbsp; Q&A at the end</p>
+  <p style="margin-top:1.5rem;font-size:.85rem;color:var(--muted)">~50 minutes &nbsp;·&nbsp; Q&A at the end</p>
 </div>
 
 <!-- 3 -->
@@ -316,14 +326,14 @@ a.link:hover{opacity:.75}
 
 <!-- 8 -->
 <div class="slide slide--light" data-slide="7">
-  <h2>The Fraud Case</h2>
+  <h2>The Default Judgment</h2>
   <div class="card" style="max-width:none">
     <h3>What Happened</h3>
-    <p>An opposing attorney filed a false address with the court — an address I hadn't lived at in over a decade — just 103 days after her own team served me in person at my real location. Based on that false filing, a judge entered a default custody order I never knew about. I lost access to my children for over 490 days.</p>
+    <p>A certificate of last known address filed with the court listed an address I had not lived at in over ten years — filed 103 days after the same side had served me in person at my actual address. On the strength of that filing a judge entered a default custody order I knew nothing about. My children and I have been separated since December 2024.</p>
     <h3 style="margin-top:1.2rem">What I Did About It</h3>
-    <p>I filed suit pro se. Every legal document — the petition, the response to their motion to dismiss, the bill of review — was co-authored with Claude. I brought the facts and the anger. Claude helped me structure them into something a court would take seriously.</p>
-    <p style="margin-top:.6rem">There's now an active criminal investigation. Complaints have been filed with the relevant professional licensing bodies.</p>
-    <p style="margin-top:1rem"><strong class="gold">Case is set for trial.</strong></p>
+    <p>I filed suit pro se. Every document — the petition, the response to the motion to dismiss, the bill of review — was co-authored with Claude. I brought the facts and the anger. Claude helped me structure them into something a court would take seriously.</p>
+    <p style="margin-top:.6rem">A criminal referral has been made and complaints have been filed with the relevant professional licensing bodies. No court has made findings on any of it.</p>
+    <p style="margin-top:1rem"><strong class="gold">The suit was dismissed with prejudice on attorney immunity in March 2026. The motion for new trial was overruled by operation of law in June when the court did not rule. A trial setting stands for October 2026.</strong></p>
   </div>
 </div>
 
@@ -331,19 +341,18 @@ a.link:hover{opacity:.75}
 <div class="slide slide--light" data-slide="8">
   <h2>What "Co-Authoring" Actually Means</h2>
   <p style="margin-bottom:.8rem">Claude didn't write my case. I lived my case. Here's how the collaboration actually worked:</p>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">I brought</span><span class="detail">The timeline, the documents, the emotional weight, the public records proving the fraud — and the refusal to accept what happened</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">I brought</span><span class="detail">The timeline, the documents, the emotional weight, the public records underlying the claim — and the refusal to accept what happened</span></div>
   <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Claude brought</span><span class="detail">Legal structure, case law research, statutory formatting, and the ability to organize my facts into causes of action</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The key moment</span><span class="detail">Their attorney moved to dismiss, arguing immunity. Claude helped me frame the 103-day gap as the dispositive fact — using their own legal standard against them</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The result</span><span class="detail">Pro se filings that forced a 30-year attorney to respond substantively. The court set the case for trial — not dismissal.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The key moment</span><span class="detail">The defence moved to dismiss on attorney immunity. Claude helped me frame the 103-day gap between personal service and the certificate as the fact the whole case turned on</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The result</span><span class="detail">A thirty-year attorney had to brief the immunity question substantively against filings written by someone with no legal training. <strong>Then the court granted the motion and dismissed with prejudice.</strong> Being taken seriously is not the same as winning, and a deck that claimed otherwise would be doing exactly what this one warns against</span></div>
+  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">What that costs</span><span class="detail">A default judgment is attacked by bill of review, and in Texas that runs on a four-year clock. The "void judgments can be challenged at any time" line you will read everywhere requires the defect to be apparent from the face of the record — where the return recites valid service, it is not. Plan around four years, not forever</span></div>
 </div>
 
 <!-- 10 -->
 <div class="slide slide--navy" data-slide="9">
   <h1 style="text-align:center">Personal Project<br><a class="link gold" href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a></h1>
-  <p class="subtitle" style="text-align:center">Building a threat intelligence honeypot from scratch</p>
-  <div class="repo-links">
-    <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>
-  </div>
+  <p class="subtitle" style="text-align:center">A public reference site with a threat intelligence honeypot attached</p>
+  <p style="text-align:center;color:var(--muted);font-size:.85rem;margin:1rem auto 0">The repository was public for 388 commits and is now private. The site is live; the source is not.</p>
 </div>
 
 <!-- 11 -->
@@ -368,7 +377,7 @@ a.link:hover{opacity:.75}
 <!-- 12 -->
 <div class="slide slide--light" data-slide="11">
   <h2>What Attackers Actually Do</h2>
-  <p style="margin-bottom:.5rem">Real probes logged in the last 48 hours — every one hit my site automatically:</p>
+  <p style="margin-bottom:.5rem">Every path below came from a real probe against my site. Nobody was sent there; scanners find it on their own:</p>
   <table class="data-table">
     <thead><tr><th>What They Tried</th><th>Why</th></tr></thead>
     <tbody>
@@ -437,27 +446,138 @@ a.link:hover{opacity:.75}
 
 <!-- 16 -->
 <div class="slide slide--navy" data-slide="15">
+  <h1 style="text-align:center">Hardening It<br><span class="gold">The Unglamorous Half</span></h1>
+  <p class="subtitle" style="text-align:center">Everything above is the part that gets demoed. This is the part that decides whether it survives contact with the internet.</p>
+</div>
+
+<!-- 17 -->
+<div class="slide slide--light" data-slide="16">
+  <h2>From B to A+</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>What Was Wrong</h3>
+      <p>The site scored a <strong>B</strong>. The content security policy needed <span class="mono">unsafe-inline</span> because the markup was full of things that required it — event handlers on elements, executable script blocks, style tags, and inline style attributes by the thousand.</p>
+      <p style="margin-top:.6rem">A policy with <span class="mono">unsafe-inline</span> in it is not a policy. It is a header that looks like one.</p>
+    </div>
+    <div class="card">
+      <h3>What It Took</h3>
+      <table class="data-table" style="margin-top:0">
+        <thead><tr><th>&nbsp;</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>Inline event handlers</td><td class="mono red">258</td><td class="mono">0</td></tr>
+          <tr><td>Executable inline scripts</td><td class="mono red">118</td><td class="mono">0</td></tr>
+          <tr><td>Style blocks</td><td class="mono red">49</td><td class="mono">0</td></tr>
+          <tr><td>Inline style attributes</td><td class="mono red">1,316</td><td class="mono">0</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.6rem">No <span class="mono">unsafe-inline</span> and no <span class="mono">unsafe-eval</span> in any directive. <strong>A+, 125/100.</strong></p>
+    </div>
+  </div>
+  <div class="callout"><strong>The exception that is not an exception:</strong> 203 structured-data blocks stayed inline and are correct. Browsers never execute them and the script policy does not govern them. Knowing which rule does not apply is worth as much as knowing which does.</div>
+</div>
+
+<!-- 18 -->
+<div class="slide slide--light" data-slide="17">
+  <h2>Closing a Data Exposure</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>The Hole</h3>
+      <p>A members table held real personal data — names, emails, phone numbers, cities. The page read and wrote it directly from the browser using a key printed in the page source, scoped by an email address the database had no way to verify.</p>
+      <p style="margin-top:.6rem">From an unauthenticated browser, that table returned <span class="mono">200</span> and every row. It now returns <span class="mono">401</span>.</p>
+    </div>
+    <div class="card">
+      <h3>The Fix</h3>
+      <p>All four operations moved server-side behind a function that takes the caller's identity from a <strong>verified ID token</strong> — signature checked against the provider's public keys — and ignores whatever the request body claims. The browser key and client-side database SDK are gone from the page. Row-level security enabled and forced, public grants revoked, and 36 assertions covering forged, expired, unsigned and tampered tokens.</p>
+    </div>
+  </div>
+  <div class="callout"><strong>Two traps worth carrying to any project.</strong> The table already had four dormant access policies, inert only because row-level security was switched off — enabling it would have <em>activated</em> them. Revoking the grants is what saved it, because privilege denial is evaluated before policies are. And do not write a policy matching a token claim when your identity provider is not the database's own: the claim is null, the policy matches nothing, and it looks exactly like working access control.</div>
+</div>
+
+<!-- 19 -->
+<div class="slide slide--light" data-slide="18">
+  <h2>The Bugs Nothing Reports</h2>
+  <p style="margin-bottom:.5rem">Three production faults that returned no error, logged nothing, and read correctly in every file involved.</p>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <h3 style="color:var(--red)">Six months of 404</h3>
+      <p>Two redirect config files, one silently outranking the other. A rule in the losing file never runs and nothing says so. One endpoint 404'd for <strong>six months</strong>; another for two days. Both files were individually correct.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--red)">Two hyphens</h3>
+      <p>A <span class="mono">--</span> inside an XML comment is illegal and makes the entire sitemap not well-formed. Search Console reported "couldn't fetch", zero pages indexed — while the URL returned 200, the right content type, the right length, and fetched fine as the crawler. <strong>Nothing in the response reveals it. Only parsing does.</strong></p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--red)">A year-old stylesheet</h3>
+      <p>Assets served immutable for a year with no fingerprinting. Ship markup that needs a new class without bumping the version token and returning visitors get unstyled pages for up to a year — and it looks perfect to you, because your first visit fetched both fresh.</p>
+    </div>
+  </div>
+  <div class="callout"><strong>The common thread:</strong> every one of these passes review, passes config validation, and produces no error anywhere. The only thing that finds them is probing the live URL and parsing what actually comes back. <strong>Config that reads correctly is not evidence.</strong></div>
+</div>
+
+<!-- 20 -->
+<div class="slide slide--light" data-slide="19">
+  <h2>Never Put a Credential on the Critical Path</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>What Happened</h3>
+      <p>Two public forms sent an email and returned success only if the send worked. When the mail credential died, every submission returned an error and <strong>was destroyed</strong> — the handler logged only the domain of the address, never the address itself, so there was nothing to recover from. Two real people who wrote in over two days were lost that way.</p>
+      <p style="margin-top:.6rem">The forms now record the submission first and notify second. <strong>Read it, write it down, then try to send it.</strong></p>
+    </div>
+    <div class="card">
+      <h3>The Part That Only Failed in Production</h3>
+      <p>The mail handshake was measured at 28.7s, 2.3s, 21.5s, 22.4s and 1.5s. The timeout was 7 seconds, so roughly half of all sends aborted — in production only, while identical code worked locally every time.</p>
+      <p style="margin-top:.6rem">I initially wrote the slow handshakes off as an artifact of my home connection. That assumption cost more time than the bug.</p>
+    </div>
+  </div>
+  <div class="callout"><strong>Generalise it:</strong> anything that can fail independently of the user's intent belongs after the durable write, not before it. A form whose success depends on a third-party credential is a form that quietly deletes messages the day that credential expires.</div>
+</div>
+
+<!-- 21 -->
+<div class="slide slide--light" data-slide="20">
+  <h2>Proving a Refactor Changed Nothing</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>Don't Reason About It. Measure It.</h3>
+      <p>For a mechanical change across many files, "I read the diff and it looks equivalent" is not a claim you can support. So: check out the pre-change tree, serve both versions on two local ports, and for every rendered element read about twenty computed properties, concatenate and hash them. Compare the hashes. Compare the geometry too.</p>
+      <p style="margin-top:.6rem">Then investigate every mismatch before shipping.</p>
+    </div>
+    <div class="card">
+      <h3>What It Caught</h3>
+      <p><strong>Two real bugs that produced no console error and looked fine in the diff.</strong></p>
+      <p style="margin-top:.4rem">Three pages had a style block <em>inside</em> an inline SVG. Swapping it for a stylesheet link in place does nothing — SVG has no such mechanism — and the diagrams would have shipped unstyled.</p>
+      <p style="margin-top:.4rem">Converting 1,316 inline styles to classes silently lost six declarations to higher-specificity rules.</p>
+    </div>
+  </div>
+  <div class="callout"><strong>Instrument the instrument.</strong> Always measure one file the change never touched. If the control reports differences too, your checker is broken, not the site — that is exactly how a run of false positives got caught before it buried the one real error.</div>
+</div>
+
+<!-- 22 -->
+<div class="slide slide--navy" data-slide="21">
   <h1 style="text-align:center"><span class="gold">$0 Ad Spend</span><br>Real Users Anyway</h1>
   <p class="subtitle" style="text-align:center">What happens when you build something people actually want to read</p>
 </div>
 
 <!-- 17 -->
-<div class="slide slide--light" data-slide="16">
-  <h2>30-Day Analytics</h2>
-  <div class="card-grid cols-4" style="margin-bottom:1rem">
-    <div class="card stat-card"><div class="num">74</div><div class="label">New Users</div></div>
-    <div class="card stat-card"><div class="num">40</div><div class="label">Active Users</div></div>
-    <div class="card stat-card"><div class="num">1:50</div><div class="label">Avg Engagement</div></div>
-    <div class="card stat-card"><div class="num">356</div><div class="label">Page Views</div></div>
-  </div>
+<div class="slide slide--light" data-slide="22">
+  <h2>What the Numbers Were Actually Worth</h2>
+  <p style="margin-bottom:.8rem">This slide used to show a tidy 30-day dashboard. Those figures came from the period the previous slide is about — double-counted pages, preview builds reporting as live traffic, one property fed by more than one site. <strong>I have removed them rather than restate them, because I cannot reproduce them.</strong> What survived the audit is the part that was never about volume:</p>
   <div class="card-grid cols-2">
-    <div class="card"><h3>What People Search For</h3><p>Niche legal terms surfaced through Search Console — long-tail queries with low competition that mainstream content ignores. The honeypot site ranks for them because nothing else does. Free traffic, real intent.</p></div>
-    <div class="card"><h3>Where They Come From</h3><p><strong>Countries:</strong> US (35), Egypt, China, Ghana, Taiwan<br><strong>Channels:</strong> Direct (64), Organic Search (5), Social (1), Referral (1)<br><strong>Return rate:</strong> 3.5–8.3% come back weekly</p></div>
+    <div class="card">
+      <h3>Head terms are a trap</h3>
+      <p>The obvious high-volume query for the subject produced <strong>209 impressions and zero clicks</strong>. Ranking for the term everyone writes about is worth nothing if the people searching it are not looking for what you have.</p>
+      <p style="margin-top:.6rem">One narrow procedural term converts at <strong>6.8%</strong> against a site average of <strong>0.59%</strong> — more than ten times the rate, on a fraction of the traffic.</p>
+    </div>
+    <div class="card">
+      <h3>What that changes</h3>
+      <p>The site's own machine-readable index is ordered by that finding rather than by search volume: the narrow, high-intent material leads, because it exists nowhere else in depth and it is the material that actually converts.</p>
+      <p style="margin-top:.6rem">Writing more pages was the tempting move and the wrong one. The remaining gains were depth and trust, not coverage.</p>
+    </div>
   </div>
+  <div class="callout"><strong>The uncomfortable part:</strong> the tidy dashboard was on this slide for months and nobody questioned it, including me. A number is not evidence until you know what produced it.</div>
 </div>
 
 <!-- 18 -->
-<div class="slide slide--dark" data-slide="17">
+<div class="slide slide--dark" data-slide="23">
   <div class="card-grid cols-2">
     <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
       <div style="font-family:var(--font-display);font-size:clamp(4rem,12vw,7rem);font-weight:700;color:var(--gold);line-height:1">$0</div>
@@ -474,7 +594,7 @@ a.link:hover{opacity:.75}
 </div>
 
 <!-- 19 -->
-<div class="slide slide--light" data-slide="18">
+<div class="slide slide--light" data-slide="24">
   <h2>Using Multiple AIs Together</h2>
   <p style="margin-bottom:.5rem">Claude is the primary builder. But I use other AIs to stress-test, analyze, and create feedback loops:</p>
   <div class="ai-hub">Claude — Where Things Get Built</div>
@@ -488,7 +608,7 @@ a.link:hover{opacity:.75}
 </div>
 
 <!-- 20 -->
-<div class="slide slide--dark" data-slide="19">
+<div class="slide slide--dark" data-slide="25">
   <h2>What I Got Wrong <span class="gold">(Honest Version)</span></h2>
   <div class="card-grid cols-3" style="margin-top:1rem">
     <div class="card">
@@ -503,12 +623,17 @@ a.link:hover{opacity:.75}
       <h3 style="color:var(--red)">Forgetting the Tradeoffs</h3>
       <p>AI gives you speed, but speed costs something. You lose experiential texture. You lose the thinking-through-it process that sometimes <em>is</em> the point. I had to learn when to use Claude and when to just sit with the problem myself.</p>
     </div>
+    <div class="card">
+      <h3 style="color:var(--red)">Building More Than Was Asked</h3>
+      <p>I added impersonator-blocking to a firewall that only needed to let verified crawlers through. The pattern it matched also appears in a real consumer browser's user agent, so <strong>every reader using that browser got a 403 on every page.</strong></p>
+      <p style="margin-top:.4rem">An outside tool then reported the site as hostile to crawlers. It was not a policy. It was my unrequested feature. Verification now grants passage only — it never denies.</p>
+    </div>
   </div>
   <div class="callout"><strong>The rule I follow now:</strong> If the problem is well-defined and the output format is clear — delegate to AI. If the problem is ambiguous and I need to <em>think</em> — I do that myself first, then bring Claude the result.</div>
 </div>
 
 <!-- 21 -->
-<div class="slide slide--light" data-slide="20">
+<div class="slide slide--light" data-slide="26">
   <h2>The Iteration Loop</h2>
   <p style="margin-bottom:.5rem">This is the actual cycle. It ran dozens of times across every project in this presentation.</p>
   <div class="flow">
@@ -521,8 +646,8 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>The critical insight:</strong> Most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering.</div>
 </div>
 
-<!-- 18b: Loop step-by-step -->
-None<div class="slide slide--light" data-slide="21">
+<!-- Loop step-by-step -->
+<div class="slide slide--light" data-slide="27">
   <h2>The Loop, Step by Step</h2>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">1. Define done</span><span class="detail"><strong>Before you type a word.</strong> "Copy-paste into the live environment with zero errors." "Filed with zero procedural defects." If the target is fuzzy, the output is fuzzy.</span></div>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">2. Claude drafts</span><span class="detail"><strong>Feed real artifacts, never summaries.</strong> Actual code, actual logs, actual filings. State hard constraints up front. Let it go full creative on the first pass.</span></div>
@@ -531,8 +656,8 @@ None<div class="slide slide--light" data-slide="21">
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">5. Ship or repeat</span><span class="detail"><strong>Two choices only.</strong> Ship = passes production with zero caveats. Repeat = back to step 3 with new failure data. No "maybe one more prompt." The loop is sacred.</span></div>
 </div>
 
-<!-- 18c: Pro tips -->
-None<div class="slide slide--light" data-slide="22">
+<!-- Pro tips -->
+<div class="slide slide--light" data-slide="28">
   <h2>Make Your Loop Tighter</h2>
   <div class="card-grid cols-3">
     <div class="card">
@@ -552,28 +677,29 @@ None<div class="slide slide--light" data-slide="22">
 </div>
 
 <!-- 24 -->
-<div class="slide slide--light" data-slide="23">
+<div class="slide slide--light" data-slide="29">
   <h2>What I'd Tell Someone Starting Today</h2>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">You're the expert</span><span class="detail">Claude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.</span></div>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Specificity compounds</span><span class="detail">One precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.</span></div>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Ship real things</span><span class="detail">The gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.</span></div>
   <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Side projects matter</span><span class="detail">My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">AI levels the field</span><span class="detail">A pro se litigant produced filings that survived a motion to dismiss from a 30-year attorney. That wasn't possible five years ago.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">AI levels the field</span><span class="detail">Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. It also wasn't enough — the court granted the dismissal. Access to the argument is not the same as winning it, and anyone telling you otherwise is selling something.</span></div>
 </div>
 
 <!-- 25 -->
-<div class="slide slide--light" data-slide="24">
+<div class="slide slide--light" data-slide="30">
   <h2>The Honest Limitations</h2>
   <p style="margin-bottom:.5rem">Everything in this deck is real. So is everything below. Anyone selling you Claude as a magic co-founder is lying.</p>
   <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Compaction loses things</span><span class="detail">When the context window fills up, Claude summarizes the older parts. That summary drops nuance and edge cases. It is not lossless. Plan for it.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Confidently wrong</span><span class="detail">~20% of the time Claude will produce an answer that sounds right and isn't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Confidently wrong</span><span class="detail">Claude produces answers that sound right and aren't — often enough that verification has to be a step, not a habit. I am not going to give you a percentage, because I have not measured one and neither has anyone quoting you a figure. Citations get fabricated. Working code gets rewritten unnecessarily.</span></div>
+  <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Plausibility is not a signal</span><span class="detail">Four substantive errors sat live on a reference site for months. One was repeated across four pages, and the worst of them was inside the structured data — the exact text search engines and assistants quote back. <strong>None were caught by re-reading or by asking whether the draft was right.</strong> All four came from opening the primary source and comparing.</span></div>
   <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Instructions get ignored</span><span class="detail">Especially in long sessions. "Don't change X" gets violated. Re-state critical constraints in every meaningful turn.</span></div>
   <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Not a stateful partner</span><span class="detail">Default chat has no memory between sessions. What feels like continuity is you re-establishing context every time. That's a workflow, not a feature.</span></div>
   <div class="callout" style="margin-top:1rem"><strong>The honest framing:</strong> Claude is a smart but unreliable junior — not a co-founder. The leverage comes from how you wrap it, not from the model alone.</div>
 </div>
 
 <!-- 26 -->
-<div class="slide slide--light" data-slide="25">
+<div class="slide slide--light" data-slide="31">
   <h2>From Prompting to System Design</h2>
   <p style="margin-bottom:.8rem">Stage 1 thinking: "How do I write a better prompt?" Stage 2 thinking: "How do I build a system around the model?" That's the actual leap.</p>
   <div class="card-grid cols-2">
@@ -590,22 +716,24 @@ None<div class="slide slide--light" data-slide="22">
 </div>
 
 <!-- 27 -->
-<div class="slide slide--dark" data-slide="26">
+<div class="slide slide--dark" data-slide="32">
   <div style="text-align:center">
     <h1>Questions?</h1>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
-    <p style="color:var(--muted);margin-top:2rem">Scott Willis &nbsp;·&nbsp; <a class="link" style="color:var(--muted)" href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a></p>
+    <p style="color:var(--muted);margin-top:2rem">Scott Allen Willis &nbsp;·&nbsp; <a class="link" style="color:var(--muted)" href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a></p>
     <p style="color:var(--muted);margin-top:.5rem;font-size:.85rem">
       <a class="link" style="color:var(--ice)" href="https://siegestack.com/working-with-claude-blog">Read the long-form post</a>
       &nbsp;·&nbsp;
       <a class="link" style="color:var(--ice)" href="https://siegestack.com/">SiegeStack home</a>
       &nbsp;·&nbsp;
+      <a class="link" style="color:var(--ice)" href="https://siegestack.com/case-studies">Case studies</a>
+      &nbsp;·&nbsp;
       <a class="link" style="color:var(--ice)" href="https://siegestack.com/etl-showcase">ETL showcase</a>
-          <a class="link" style="color:var(--ice)" href="https://siegestack.com/operations-modernization">Operations Modernization</a>
+      &nbsp;·&nbsp;
+      <a class="link" style="color:var(--ice)" href="https://siegestack.com/operations-modernization">Operations modernization</a>
     </p>
     <div class="repo-links">
       <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/siegestack</a>
-      <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>
     </div>
   </div>
 </div>
@@ -613,7 +741,7 @@ None<div class="slide slide--light" data-slide="22">
 </div>
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
-  <span class="counter" id="counter">1 / 27</span>
+  <span class="counter" id="counter">1 / 33</span>
   <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
 <script>
@@ -630,7 +758,7 @@ goTo(0);
 <!-- Semantic SEO content for crawlers — visually hidden, fully readable to search engines and screen readers. The slideshow above is the user-facing presentation; the structured article below mirrors its content for indexing. -->
 <article style="position:absolute;left:-99999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="false">
   <h1>How to Use Claude AI Effectively</h1>
-  <p>Most people are using Claude wrong. They treat it like a chatbot. The most effective way to use Claude AI is as a production system — wrapped in a structured workflow with real artifacts, real tests, and tight feedback loops. This 27-slide presentation walks through that workflow with real case studies.</p>
+  <p>Most people are using Claude wrong. They treat it like a chatbot. The most effective way to use Claude AI is as a production system — wrapped in a structured workflow with real artifacts, real tests, and tight feedback loops. This 33-slide presentation walks through that workflow with real case studies.</p>
 
   <h2>What Claude AI Actually Is</h2>
   <p>Claude is a large language model built by Anthropic for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it is wrapping the model in a structured workflow. Prompting is Stage 1 thinking. System design is Stage 2 thinking. This presentation is about Stage 2.</p>
@@ -650,6 +778,22 @@ goTo(0);
 
   <h3>Step 4: Ship Only Production-Ready Work</h3>
   <p>Two choices: ship if it passes your production test with zero caveats, or repeat from step 3 with the new failure data. No "maybe one more prompt." The loop is sacred.</p>
+
+  <h2>Hardening What You Shipped</h2>
+  <h3>Content Security Policy without unsafe-inline</h3>
+  <p>A content security policy containing <code>unsafe-inline</code> is not a policy. Removing it means removing what made it necessary: inline event handlers, executable inline script blocks, style blocks, and inline style attributes. Across one site that meant 258 event handlers, 118 executable script blocks, 49 style blocks and 1,316 inline style attributes going to zero, taking the observatory grade from B to A+. Structured-data blocks are the exception — browsers do not execute them and the script directive does not govern them, so they correctly stay inline.</p>
+
+  <h3>Auditing who can actually read your data</h3>
+  <p>A browser-side database key plus row-level security that was never switched on meant a table of personal data returned every row to anyone who read the page source. Closing it required moving every operation server-side behind a verified identity token rather than trusting an email address supplied by the caller. Two traps generalise: dormant access policies already on the table would have activated the moment row-level security was enabled, so revoking public grants is what actually closed it; and a policy matching a token claim does nothing when your identity provider is not the database's own — the claim is null and the policy silently matches nothing.</p>
+
+  <h3>Production bugs that report nothing</h3>
+  <p>Three faults that produce no error and read correctly in every file involved: one redirect configuration silently taking precedence over another so a rule never runs (a six-month 404), two consecutive hyphens inside an XML comment making an entire sitemap not well-formed while the URL returns 200 with correct headers, and assets served immutable for a year with no fingerprinting so a stylesheet change without a version bump breaks returning visitors invisibly. Passing configuration is not evidence. Probe the live URL and parse what comes back.</p>
+
+  <h3>Never put a credential on the critical path of a public form</h3>
+  <p>A form that sends an email and reports success only if the send worked will destroy submissions the day the mail credential expires. Record the submission durably first, notify second. Related: transactional mail handshakes vary enormously — measured between 1.5 and 28.7 seconds against a 7-second timeout, aborting roughly half of all sends, in production only.</p>
+
+  <h3>Proving a mechanical refactor changed nothing</h3>
+  <p>Do not reason about equivalence, measure it. Serve the pre-change tree and the working tree on two ports, read roughly twenty computed properties for every rendered element, hash and compare, and compare geometry as well. This caught a style block inside an inline SVG that would have shipped diagrams unstyled, and six declarations lost to specificity when inline styles became classes. Always include a control file the change never touched, so a broken checker is distinguishable from a broken site.</p>
 
   <h2>Claude vs ChatGPT: When to Use Each</h2>
   <p>Neither Claude nor ChatGPT is universally better. Use Claude for long-context work, careful editing, conservative tone, and tool-use / agent workflows. Use ChatGPT for fast breadth-first ideation, multi-modal work (images, voice), and the broader plugin ecosystem. Most serious users keep both open and route work to whichever fits the task. Anyone telling you "X is always better than Y" is selling you something.</p>

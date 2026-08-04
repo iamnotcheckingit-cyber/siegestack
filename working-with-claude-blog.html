@@ -18,8 +18,8 @@
 <title>How to Use Claude AI Effectively | SiegeStack</title>
 
 <meta name="description" content="How to use Claude AI effectively, from someone who ships real work with it daily. The workflow, the iteration loop, the mistakes, and a template you can steal.">
-<meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude, Claude AI tutorial">
-<meta name="author" content="Scott Willis">
+<meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude, Claude AI tutorial, content security policy unsafe-inline, row level security audit, transactional email deliverability, refactor verification">
+<meta name="author" content="Scott Allen Willis">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://siegestack.com/working-with-claude-blog">
 
@@ -30,13 +30,13 @@
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Working with Claude — Scott Willis">
+<meta property="og:image:alt" content="Working with Claude — Scott Allen Willis">
 <meta property="og:site_name" content="SiegeStack">
 <meta property="og:locale" content="en_US">
-<meta property="article:author" content="Scott Willis">
+<meta property="article:author" content="Scott Allen Willis">
 <meta property="article:section" content="AI & Engineering">
 <meta property="article:published_time" content="2026-04-10T00:00:00-05:00">
-<meta property="article:modified_time" content="2026-07-26T00:00:00-05:00">
+<meta property="article:modified_time" content="2026-08-04T00:00:00-05:00">
 <meta property="article:tag" content="Claude AI">
 <meta property="article:tag" content="AI Workflow">
 <meta property="article:tag" content="Pro Se Litigation">
@@ -47,7 +47,7 @@
 <meta name="twitter:title" content="How to Use Claude AI Effectively: A Real Workflow That Ships">
 <meta name="twitter:description" content="Stop treating Claude like a chatbot. The actual Claude AI workflow that ships real work, plus common mistakes and Claude vs ChatGPT.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
-<meta name="twitter:image:alt" content="Working with Claude — Scott Willis">
+<meta name="twitter:image:alt" content="Working with Claude — Scott Allen Willis">
 <meta name="twitter:creator" content="@SiegeStack">
 <meta name="twitter:site" content="@SiegeStack">
 
@@ -63,13 +63,13 @@
   "description": "How to use Claude AI effectively, from someone who ships real work with it daily. Covers the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.",
   "image": "https://siegestack.com/og-working-with-claude-card.jpg",
   "datePublished": "2026-04-10T00:00:00-05:00",
-  "dateModified": "2026-07-26T00:00:00-05:00",
+  "dateModified": "2026-08-04T00:00:00-05:00",
   "url": "https://siegestack.com/working-with-claude-blog",
   "mainEntityOfPage": "https://siegestack.com/working-with-claude-blog",
   "inLanguage": "en-US",
   "author": {
     "@type": "Person",
-    "name": "Scott Willis",
+    "name": "Scott Allen Willis",
     "url": "https://siegestack.com/",
     "sameAs": ["https://x.com/SiegeStack","https://github.com/iamnotcheckingit-cyber"]
   },
@@ -198,11 +198,13 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <p class="lede"><strong>Most people are using Claude wrong.</strong> They treat it like a chatbot. I use it like a production system — and it ships hours of real work every week.</p>
 
   <div class="byline">
-    <span>By <strong style="color:var(--white)">Scott Willis</strong></span>
+    <span>By <strong style="color:var(--white)">Scott Allen Willis</strong></span>
     <span>·</span>
     <span>April 10, 2026</span>
     <span>·</span>
-    <span>~14 min read</span>
+    <span>Updated August 4, 2026</span>
+    <span>·</span>
+    <span>~24 min read</span>
     <span>·</span>
     <a href="/working-with-claude">View as slide deck →</a>
   </div>
@@ -213,7 +215,9 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>This guide is for people who already opened a Claude tab, got an answer that <em>almost</em> worked, and walked away thinking AI is overhyped. It's not overhyped. You're using it like a search engine when you should be using it like a junior engineer who never sleeps.</p>
 
-  <p>Below is the exact workflow I use to ship production code, file pro se legal documents, run a serverless honeypot, and generate organic content with zero ad spend. The same loop, every time, across every domain.</p>
+  <p>Below is the exact workflow I use to ship production code, file pro se legal documents, run a serverless honeypot, harden the things I have already shipped, and generate organic content with zero ad spend. The same loop, every time, across every domain.</p>
+
+  <div class="callout"><strong>Updated August 2026.</strong> This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Two claims in the original have been corrected rather than quietly edited — the outcome of the litigation, and an invented statistic about how often the model is wrong. Both corrections are marked where they appear, because an article about verification that silently rewrites its own history is worth nothing.</div>
 
   <div class="callout"><strong>What is Claude AI?</strong> Claude is a large language model built by <a href="https://www.anthropic.com/" target="_blank" rel="noopener">Anthropic</a> for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it's wrapping the model in a structured workflow with real artifacts, real tests, and tight feedback loops. Prompting is Stage 1. System design is Stage 2. This guide is about Stage 2.</div>
 
@@ -346,7 +350,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>This is where the "Claude as smart junior" framing matters most.</p>
 
-  <p>An opposing attorney filed a false address with the court using an address I hadn't lived at in over a decade — 103 days after their own team personally served me at my actual location. A default judgment based on that filing stripped me of custody for over 490 days without my knowledge. When I found out, I filed pro se.</p>
+  <p>A certificate of last known address was filed with the court listing an address I had not lived at in over ten years — 103 days after the same side had personally served me at my actual address. A default judgment based on that filing took custody from me without my knowledge. My children and I have been separated since December 2024. When I found out, I filed pro se.</p>
 
   <p>The defense moved to dismiss under attorney immunity. Their lawyer had been practicing for thirty years. I had Claude.</p>
 
@@ -358,7 +362,11 @@ footer a{color:var(--blue-accent);text-decoration:none}
     <li><strong>Drafted the structural skeleton.</strong> Causes of action, statutory citations, prayer for relief. I rewrote substantially every paragraph, but starting from a reasonable structure saved me weeks.</li>
   </ul>
 
-  <p>The motion to dismiss was denied. The case is set for trial. There's an active criminal investigation and complaints have been filed with the relevant professional licensing bodies.</p>
+  <p><strong>The motion to dismiss was granted.</strong> The suit was dismissed with prejudice in March 2026, and the motion for new trial was overruled by operation of law that June when the court did not rule on it. A trial setting stands for October 2026. A criminal referral has been made and complaints have been filed with the relevant professional licensing bodies; no court has made findings on any of it.</p>
+
+  <p>I am leaving that paragraph in its corrected form rather than deleting the section, because the earlier version of this article said the motion was denied and the case was set for trial, and that was wrong for months. The honest lesson survives the loss: filings produced by someone with no legal training forced a thirty-year attorney to brief the immunity question substantively instead of disposing of it on the pleadings. That is a real change in what one person can do. It is not the same as winning, and an article that blurred the two would be committing the exact error the rest of this piece is about.</p>
+
+  <div class="callout"><strong>The four-year trap:</strong> you will read everywhere that a void judgment can be challenged "at any time." That is true only where the defect is apparent from the face of the record. Where the return of service recites valid service, the record looks regular, and proving otherwise takes evidence from outside it — which means a bill of review inside the four-year limitations period. Plan around four years, not forever. A parent who reads the unqualified version, waits, and lets the clock run out has lost the only remedy they had.</div>
 
   <div class="callout"><strong>The verification rule:</strong> Claude fabricates citations. Not often, but enough that you must independently verify every case, every statute, every quote against the actual source before it goes in a filing. If you can't be bothered to do that, don't use AI for legal work. The cost of a hallucinated citation in front of a judge is your credibility — and credibility is the only currency a pro se litigant has.</div>
 
@@ -370,7 +378,74 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>The probe paths are exactly what you'd expect: <code>/wp-login.php</code>, <code>/xmlrpc.php</code>, <code>/admin/.env</code>, <code>/shell.php</code>, <code>/backup.sql</code>, <code>/phpmyadmin/</code>. Each one tells you something about the attacker's playbook — credential stuffing, environment variable hunting, webshell discovery, database dump fishing. The interesting work isn't catching probes — it's clustering them into actor groups by behavior.</p>
 
-  <p>Claude helped me build the edge function classifier, the Supabase schema, and the dashboard. Two weekends of work, end to end. The honeypot is live and writing data right now. The repo is <a href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">github.com/iamnotcheckingit-cyber/-safe-sapcr-texas</a>.</p>
+  <p>Claude helped me build the edge function classifier, the Supabase schema, and the dashboard. Two weekends of work, end to end. The honeypot is live and writing data right now. The repository was public for 388 commits and is now private — the site is live, the source is not.</p>
+
+  <h2>Personal: Taking a Security Policy from B to A+</h2>
+
+  <p>The same site scored a B. Not because anything was wrong with the server configuration — the headers were all present — but because the content security policy carried <code>unsafe-inline</code>, and a policy with <code>unsafe-inline</code> in it is not a policy. It is a header that looks like one. It permits precisely the class of injection the policy exists to stop.</p>
+
+  <p>Removing it is not a configuration change. It means removing everything that made it necessary, and on a site that has grown organically that is a lot:</p>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="num">258</div><div class="label">inline event handlers → 0</div></div>
+    <div class="stat"><div class="num">118</div><div class="label">inline scripts → 0</div></div>
+    <div class="stat"><div class="num">49</div><div class="label">style blocks → 0</div></div>
+    <div class="stat"><div class="num">1,316</div><div class="label">inline style attributes → 0</div></div>
+  </div>
+
+  <p>The end state has no <code>unsafe-inline</code> and no <code>unsafe-eval</code> in any directive, and the grade went from B / 75 to A+ / 125.</p>
+
+  <p>The interesting part is the exception. Two hundred and three structured-data blocks stayed inline and that is correct: browsers never execute them, and the script directive does not govern them at all. A sweep that "fixed" those would have broken every piece of structured data on the site in exchange for nothing. <strong>Knowing which rule does not apply is worth as much as knowing which one does</strong>, and it is the kind of judgement a model will not make for you unless you already know the answer.</p>
+
+  <h2>Personal: Closing a Data Exposure I Had Shipped Myself</h2>
+
+  <p>This one is uncomfortable to write up, which is the reason to write it up.</p>
+
+  <p>A members table held real personal data — names, email addresses, phone numbers, cities. The signup page talked to the database directly from the browser, using a key printed in the page source, scoped by an email address that the database had no way to verify. Row-level security had never been enabled. From an unauthenticated browser on the other side of the internet, that table returned success and every row in it.</p>
+
+  <p>The fix has two halves and both were necessary. On the code side, every operation moved server-side into a function that takes the caller's identity from a <strong>verified ID token</strong> — signature checked against the identity provider's public keys — and ignores whatever email the request body claims. The browser key and the client-side database SDK came off the page entirely. On the database side, row-level security was enabled and forced, and the public grants revoked. Verified from an outside browser: the table now refuses. Thirty-six assertions cover forged, expired, unsigned, wrong-audience and tampered tokens.</p>
+
+  <p>Two things came out of it that transfer to anything with a database behind it:</p>
+
+  <ul>
+    <li><strong>Check for existing policies before enabling row-level security.</strong> That table already had four access policies on it, written at some point and completely inert because the feature was switched off. Enabling it would have <em>activated</em> them. Revoking the grants is what actually closed the hole, because privilege denial is evaluated before policies are.</li>
+    <li><strong>A policy that matches a token claim does nothing if your identity provider is not the database's own.</strong> The claim is null, so the policy matches no rows, and it looks exactly like working access control in the dashboard. This is the most convincing kind of broken security: it reads correctly, it deploys cleanly, and it protects nothing.</li>
+  </ul>
+
+  <h2>The Bugs That Report Nothing</h2>
+
+  <p>Three separate production faults on the same project, none of which produced an error, a log line, or a failing check. All three read correctly in every file involved. I am grouping them because the lesson is identical.</p>
+
+  <p><strong>A 404 that lasted six months.</strong> The platform supports two redirect configuration files and one silently takes precedence over the other. A rule in the losing file never runs, and nothing anywhere reports this — both files are individually valid and both read as if they work. One endpoint returned 404 for six months. Another for two days.</p>
+
+  <p><strong>Two hyphens.</strong> A <code>--</code> inside an XML comment is illegal and makes the entire document not well-formed. Search Console reported "couldn't fetch" and zero pages indexed, while the URL returned 200, the correct content type, the correct length, and fetched perfectly when requested as the crawler. <strong>Nothing in the HTTP response reveals it. Only parsing does.</strong> I spent real time looking at headers for a problem that was four bytes of comment syntax.</p>
+
+  <p><strong>A year-old stylesheet.</strong> Static assets served immutable for a year with no filename fingerprinting, so every reference carries a version token. Ship markup that depends on a new CSS class without bumping that token and returning visitors get unstyled pages for up to a year — while it looks perfect to you, because your first visit fetched both fresh. The same trap bites during debugging: edit a stylesheet, retest without bumping, and a correct fix appears to have failed because the browser served you the cached copy.</p>
+
+  <div class="callout"><strong>The common thread:</strong> every one of these passes review and produces no error anywhere. Configuration that reads correctly is not evidence that it works. The only thing that finds this class of bug is probing the live URL and parsing what actually comes back.</div>
+
+  <h2>Never Put a Credential on the Critical Path of a Public Form</h2>
+
+  <p>Two public forms on that site sent an email and returned success only if the send succeeded. When the mail credential died, every submission returned a 500 and <strong>was destroyed</strong> — the handler logged only the domain of the sender's address, never the address itself, so there was nothing to recover from afterwards. Two real people who wrote in over two days were lost that way. Not a theoretical data-loss bug; a specific one, with specific people on the other end who think they were ignored.</p>
+
+  <p>Both forms now post to a platform form handler that records the submission before any mail is attempted. <strong>Read it, write it down, then try to send it.</strong> Anything that can fail independently of the user's intent belongs after the durable write, never before it.</p>
+
+  <p>The same project produced a second lesson about mail that is worth having in advance: the SMTP handshake time was measured at 28.7s, 2.3s, 21.5s, 22.4s and 1.5s. The timeout was set to 7 seconds, which meant roughly half of all sends aborted — and it failed <em>only in production</em>, while identical code worked locally every time. I initially wrote the slow handshakes off as an artifact of my home connection. That assumption cost considerably more time than the bug did.</p>
+
+  <h2>Proving a Refactor Changed Nothing</h2>
+
+  <p>Removing 1,316 inline styles is a mechanical change across dozens of files, and "I read the diff and it looks equivalent" is not a claim anyone should accept, including from themselves.</p>
+
+  <p>So the verification was measurement rather than reasoning. Check out the pre-change tree into a temporary directory, serve it and the working tree on two local ports, and for every rendered element on every page read about twenty computed properties, concatenate them, and hash the result. Compare the hashes. Compare the geometry too — bounding rectangles and document height — because identical computed styles will not reveal a font-metric shift.</p>
+
+  <p>It caught two real bugs that looked fine in the diff and produced no console error:</p>
+
+  <ul>
+    <li>Three pages had a <code>&lt;style&gt;</code> block <em>inside</em> an inline SVG. Replacing it with a stylesheet link in place does nothing at all — SVG has no such mechanism — and those diagrams would have shipped unstyled.</li>
+    <li>Six declarations were silently lost to higher-specificity rules when inline styles became classes, because an inline style attribute outranks nearly everything and a class does not.</li>
+  </ul>
+
+  <p>One detail makes the technique trustworthy: <strong>always measure a control file the change never touched.</strong> If the control reports differences too, your instrument is broken rather than your site. That is exactly how a run of false positives got caught before it buried the one real error underneath it.</p>
 
   <h2>Personal: Rewriting a Reference Site, and Catching Four Errors In It</h2>
 
@@ -404,8 +479,9 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <h3>Compaction is not lossless</h3>
   <p>When the context window fills, Claude summarizes the older parts of the conversation. That summary drops nuance and edge cases. You will lose things. Plan for it: checkpoint your decisions in external files, restart sessions deliberately, don't rely on Claude to remember what happened ten thousand tokens ago.</p>
 
-  <h3>Confidently wrong, roughly 20% of the time</h3>
+  <h3>Confidently wrong, often enough to matter</h3>
   <p>Claude will produce answers that sound right and aren't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always. If you don't have the domain expertise to catch the wrong answers, you cannot use Claude safely for that domain.</p>
+  <p>An earlier version of this article put a number on that — "roughly 20% of the time." I have removed it, because I never measured it and neither has anyone else quoting you a figure. It was a plausible-sounding number in an article about not trusting plausible-sounding things. The correct statement is that it happens often enough that verification has to be a step in your process rather than something you do when you feel uneasy.</p>
 
 
   <p>A concrete version of this: across a single reference project, four separate factual errors survived multiple review passes because each one read as authoritative. The one that mattered most had been repeated across four pages. None of them were caught by re-reading the text or by asking whether it was correct. All four were caught by opening the primary source and comparing. Plausibility is not a signal you can use — the failure mode is specifically that wrong answers sound exactly like right ones.</p>
@@ -470,7 +546,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
     <li><strong>Prompting in summary form.</strong> "Help me fix my login bug." Wrong. Paste the actual error stack, the actual code, the actual reproduction steps. Real artifacts only.</li>
     <li><strong>Defining "done" in the middle of a session.</strong> If you don't know what success looks like before you start, the model can't help you converge on it.</li>
     <li><strong>Letting compaction happen silently.</strong> Long sessions hit the context limit, Claude summarizes the older history, and that summary loses your earlier constraints. Restart deliberately. Don't drift.</li>
-    <li><strong>Trusting citations without verifying.</strong> Claude will fabricate case law, library names, function signatures, and config flags about 1 in 5 turns. Verify everything against the source.</li>
+    <li><strong>Trusting citations without verifying.</strong> Claude will fabricate case law, library names, function signatures, and config flags. Verify everything against the source — and verify it by opening the source, not by asking whether it was right.</li>
     <li><strong>Skipping the test-against-reality step.</strong> "It looked right" is not a test. Run the code. File the draft. Deploy the function. The model lives in word-space. Reality lives in error-space. Bridge it yourself.</li>
     <li><strong>Re-prompting instead of correcting.</strong> When Claude gets it wrong, don't say "try again." Say "you got X wrong because Y; the fix is Z." Specific corrections converge in one round; vague ones loop forever.</li>
     <li><strong>Asking it to remember things it can't.</strong> Default chat has no cross-session memory. Re-establish context every time. Or use a project file / system prompt to externalize it.</li>
@@ -536,18 +612,18 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p><strong>Side projects matter.</strong> My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.</p>
 
-  <p><strong>AI levels the playing field.</strong> A pro se litigant produced filings that survived a motion to dismiss from a 30-year attorney. That wasn't possible five years ago. It is now. Use it.</p>
+  <p><strong>AI levels the playing field — up to a point.</strong> Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. The court still granted the dismissal. Access to the argument is not the same as winning it, and the gap between those two things is where the honest version of this whole article lives.</p>
 
   <div class="related">
     <h3>Related</h3>
     <ul>
-      <li><a href="/working-with-claude">View this case study as a 27-slide presentation &rarr;</a></li>
+      <li><a href="/working-with-claude">View this case study as a 33-slide presentation &rarr;</a></li>
       <li><a href="/operations-modernization">Operations Modernization &mdash; consolidate, then optimize &rarr;</a></li>
       <li><a href="/etl-showcase">SiegeStack ETL Showcase — what we build for distributors →</a></li>
       <li><a href="/#solutions">SiegeStack Solutions overview →</a></li>
       <li><a href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org — honeypot site →</a></li>
+      <li><a href="/case-studies">Case studies — three problems, described without the specifics →</a></li>
       <li><a href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">GitHub: siegestack →</a></li>
-      <li><a href="https://github.com/iamnotcheckingit-cyber/-safe-sapcr-texas" target="_blank" rel="noopener">GitHub: safe-sapcr-texas →</a></li>
     </ul>
   </div>
 </article>
