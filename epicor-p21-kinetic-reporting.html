@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>Epicor P21 &amp; Kinetic Reporting and Integration | SiegeStack</title>
+    <meta name="description" content="Reporting and integration work on Epicor Prophet 21 and Kinetic. The data-model traps that make P21 reports quietly wrong, and what changes when the schema belongs to the vendor.">
+    <meta name="keywords" content="Epicor P21 integration, Prophet 21 reporting, Epicor Kinetic reporting, P21 SQL reporting, P21 dashboard, Prophet 21 custom report, Epicor P21 data model, P21 open versus posted, distribution ERP reporting">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/epicor-p21-kinetic-reporting">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/epicor-p21-kinetic-reporting">
+    <meta property="og:title" content="Epicor P21 &amp; Kinetic Reporting and Integration">
+    <meta property="og:description" content="The P21 data-model traps that make reports quietly wrong — open versus posted, undated lines, unmapped identity — and what changes when the schema is the vendor's.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/epicor-p21-kinetic-reporting">
+    <meta name="twitter:title" content="Epicor P21 &amp; Kinetic Reporting and Integration">
+    <meta name="twitter:description" content="The P21 data-model traps that make reports quietly wrong, and what changes when the schema belongs to the vendor.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Epicor P21 and Kinetic Reporting and Integration",
+        "serviceType": "ERP reporting, integration and performance work on Epicor Prophet 21 and Kinetic",
+        "provider": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com"},
+        "description": "Custom reporting, dashboards, integrations and data-loading tools for distributors running Epicor Prophet 21 or Kinetic on SQL Server, including the data-model decisions that determine whether a metric is correct.",
+        "areaServed": "United States",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "P21 and Kinetic engagements",
+            "itemListElement": [
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Operational reporting and KPI consoles over the ERP schema"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Report and query performance on a vendor-owned schema"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Integration between the ERP and CRM, e-commerce and warehouse systems"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Bulk data loading and maintenance tooling with validation"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Schema mapping of undocumented views and dependencies"}}
+            ]
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Epicor P21 & Kinetic Reporting", "item": "https://siegestack.com/epicor-p21-kinetic-reporting"}
+        ]
+    }
+    </script>
+
+    <!-- FAQPage mirrors the visible FAQ section below verbatim. Edit both together. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type":"Question","name":"Will you add indexes to our P21 database?","acceptedAnswer":{"@type":"Answer","text":"Only with the platform owner's agreement, and in a maintenance window. The tables ship with the ERP, so adding an index is a supportability decision before it is a technical one. It also takes a schema-modification lock, which blocks live users for the duration of the build."}},
+            {"@type":"Question","name":"Do you need production access?","acceptedAnswer":{"@type":"Answer","text":"Read access to a restore or a replica is enough to diagnose almost everything. Nothing is applied to production without an agreed window, a captured baseline and a way back."}},
+            {"@type":"Question","name":"Can you work on Kinetic as well as Prophet 21?","acceptedAnswer":{"@type":"Answer","text":"Yes. The reporting and access-path work transfers directly because both sit on SQL Server and both are vendor-owned schemas. The application-layer specifics differ, and the deepest hands-on experience here is on Prophet 21 — that is stated plainly rather than smoothed over."}},
+            {"@type":"Question","name":"Do we own what you build?","acceptedAnswer":{"@type":"Answer","text":"Yes, entirely. Full source, documentation and deployment instructions. You can hand it to another team tomorrow."}},
+            {"@type":"Question","name":"Do you upgrade or re-implement the ERP itself?","acceptedAnswer":{"@type":"Answer","text":"No. This is reporting, integration and tooling around a system you already run. Full re-implementation is a different kind of engagement and there are firms that specialise in it."}}
+        ]
+    }
+    </script>
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>Epicor P21 &amp; Kinetic Reporting and Integration</h1>
+            <p class="subtitle">Reporting, integration and tooling for distributors already running the ERP. The hard part is rarely the query &mdash; it is knowing which rows count.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">Prophet 21 and Kinetic hold everything the business runs on and answer operational questions reluctantly. The data is there. Assembling it correctly is a different job from querying it, and most reporting that goes wrong on these platforms goes wrong quietly &mdash; a number that looks plausible, moves in the right direction, and is built on rows that should never have been counted.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>Where the depth actually is.</strong> The hands-on work behind this page is on <strong>Prophet 21</strong>. Kinetic shares the parts that transfer &mdash; SQL Server underneath, a vendor-owned schema, the same access-path failure modes in reporting &mdash; and differs at the application layer. That distinction is stated here rather than smoothed over, because a consultancy that claims equal depth in every product on its own keyword list is telling you something about its writing, not its experience.</p>
+            </div>
+
+            <h2>Four traps in P21 reporting that produce confidently wrong numbers</h2>
+
+            <p>These are not exotic. They are the ordinary shape of the schema, and each one has a default behaviour that flatters the metric in exactly the cases nobody is checking.</p>
+
+            <div class="om-track">
+                <div class="om-num">Trap 01</div>
+                <h3>Open and posted live in different tables</h3>
+                <p>The same reporting period can span unposted transactions and posted history, and those sit in separate tables with different columns. A daily view that reads only the open side is correct. Extend it to a week or a month without unioning history and the number is not wrong by a little &mdash; it silently omits everything that has been posted, which on a full month is most of it.</p>
+                <p>This is the classic ERP reporting bug on this platform: it looks right on the view people check most often, and drifts on every longer window. It is also the reason a report can be fast on Today and unusable on month-to-date, which is <a href="/erp-report-slow-month-to-date">a separate problem with the same trigger</a>.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Trap 02</div>
+                <h3>Undated lines counted as successes</h3>
+                <p>On-time percentage compares a receipt or ship date against a due date, and due date itself is a fallback chain &mdash; promise, then required, then original. The decision that matters is what to do with a line that has <em>no</em> due date at all.</p>
+                <p>Rolling those into the numerator treats missing data as a success. It flatters the metric precisely where the data is worst, which is where you most need the metric to be honest. Excluding them from the ratio and reporting the exclusion count separately is the version that survives being questioned by the person whose department it measures.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Trap 03</div>
+                <h3>Flags that only exist on one side</h3>
+                <p>Some completeness flags exist on open records and have no equivalent in posted history. Score the history rows zero and a full month reads worse than a single day, purely because most of the month has been posted. The fix is to exclude them from the ratio with an explicit marker rather than let them default to failure &mdash; and to say so on the report, because a ratio with a hidden denominator rule is a ratio nobody should act on.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Trap 04</div>
+                <h3>Identity is a fallback chain, and the fallbacks fail silently</h3>
+                <p>Transactions frequently carry initials or a short code rather than a person. Mapping that to a human runs through a chain &mdash; a description field, a network login, the local part of an email address &mdash; and every chain has rows that reach the end unmatched.</p>
+                <p>Hiding them produces a leaderboard that is permanently and invisibly wrong. Displaying an explicit <em>unmapped</em> bucket turns the same rows into a data-quality finding somebody can close. An unattributed transaction is information; a silently dropped one is a bug you will never be told about.</p>
+            </div>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>The pattern across all four:</strong> most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence. A dashboard that gets that wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks. Worked through properly in <a href="/case-studies">the KPI console case study</a>.</p>
+            </div>
+
+            <h2>What changes when the schema belongs to the vendor</h2>
+
+            <p>Nearly every constraint that makes this work different from ordinary application development comes from one fact: the tables shipped with the ERP and you did not create them.</p>
+
+            <div class="om-table-wrap">
+            <table class="om-table">
+                <thead><tr><th>Constraint</th><th>What it means in practice</th></tr></thead>
+                <tbody>
+                    <tr><td>Indexes are a supportability decision first</td><td>Adding one to a vendor table is a conversation with the platform owner before it is a technical exercise. It is frequently approved. It should never be applied because it was obviously correct.</td></tr>
+                    <tr><td>Index builds take a schema-modification lock</td><td>On SQL Server Standard Edition the build blocks live users for its duration. That places it in a maintenance window, not in the afternoon it was diagnosed.</td></tr>
+                    <tr><td>An idle query window can block the build</td><td>An open transaction on a forgotten tab creates a lock chain that looks, to everyone else, like the database has frozen. Close the tabs first. This sounds trivial until it happens to you.</td></tr>
+                    <tr><td>Upgrades can reintroduce what you changed</td><td>Anything applied to a vendor object needs to be written down somewhere the next upgrade will be read, or it will quietly disappear and the report will get slow again with no explanation.</td></tr>
+                    <tr><td>Customisation belongs outside the schema where possible</td><td>Reporting layers, configuration tables and services alongside the ERP survive upgrades. Changes inside vendor objects are a liability you carry forever.</td></tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h2>Beyond reporting</h2>
+
+            <div class="om-track">
+                <div class="om-num">Integration</div>
+                <h3>Getting data in and out without a nightly file</h3>
+                <p>Connecting the ERP to a CRM, a storefront or a warehouse system is mostly a question of what happens on the bad day &mdash; the API that times out, the format that changed, the record that arrives twice. Retries, circuit breakers, idempotent writes and monitoring are the parts that decide whether an integration is an asset or a recurring incident. The patterns, with production-shaped code, are on the <a href="/etl-showcase">integration showcase</a>.</p>
+                <p>The design rule that matters most: replace file drops with a service consumers can ask. A file is stale the moment it is sent, forks into several slightly different versions, and nobody can tell which is current.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Bulk maintenance</div>
+                <h3>Loading tooling that refuses to half-finish</h3>
+                <p>Bulk maintenance in P21 &mdash; pricing, contracts, and anything else that goes out through an export and comes back through an import &mdash; usually means reshaping one export into several differently-formatted files by hand. It works, it takes a long time, and it fails in the worst possible way: halfway through a load, leaving a partial mess behind.</p>
+                <p>Purpose-built tooling for this runs in the browser with no backend and nothing leaving the machine. It detects which file is which, stamps the batch identifier down every row, normalises date formats, drops the header the exporter adds, and writes out correctly named files.</p>
+                <p><strong>The validation design is the part worth stealing.</strong> Failures split into two tiers: conditions that guarantee a broken load are <em>errors</em> and stop you; conditions that are merely suspicious are <em>warnings</em> and let you proceed. An orphaned child record is an error. A mismatch between related lines is a warning. Collapsing those two into one category is what teaches people to ignore validation entirely.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Mapping</div>
+                <h3>Understanding what you inherited</h3>
+                <p>Custom views accumulate over years, each joining tables that join other tables, and no map exists. Before any performance work is safe, the map has to exist &mdash; parse every view definition, extract the join relationships, cross-reference them against declared key constraints, and write the result somewhere queryable rather than somewhere pretty.</p>
+                <p>The part that decides whether the map is trustworthy is the failure list. Any definition the parser cannot confidently interpret gets written down for a human decision instead of being skipped. <strong>A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.</strong></p>
+            </div>
+
+            <h2>Worth measuring if you run this</h2>
+
+            <p>No percentages are published on this page. Any figure worth quoting needs a before state somebody actually captured, and in most operational work nobody did, because instrumenting the before state was nobody's job. These are the measurements that make an engagement here assessable:</p>
+
+            <ul>
+                <li>Report runtime at each period setting, and logical reads for the query &mdash; captured <em>before</em> anything is applied, because you cannot go back for it.</li>
+                <li>The share of rows landing in the unmapped bucket, tracked down over time as the mapping is cleaned.</li>
+                <li>Purchase price variance surfaced in the first full month, against what was being caught by hand before.</li>
+                <li>Elapsed time from an operational question being asked to it being answered, before and after.</li>
+                <li>Failed or partially completed bulk loads per month.</li>
+            </ul>
+
+            <h2>Frequently asked questions</h2>
+
+            <div class="om-track">
+                <h3>Will you add indexes to our P21 database?</h3>
+                <p>Only with the platform owner's agreement, and in a maintenance window. The tables ship with the ERP, so adding an index is a supportability decision before it is a technical one. It also takes a schema-modification lock, which blocks live users for the duration of the build.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Do you need production access?</h3>
+                <p>Read access to a restore or a replica is enough to diagnose almost everything. Nothing is applied to production without an agreed window, a captured baseline and a way back.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Can you work on Kinetic as well as Prophet 21?</h3>
+                <p>Yes. The reporting and access-path work transfers directly because both sit on SQL Server and both are vendor-owned schemas. The application-layer specifics differ, and the deepest hands-on experience here is on Prophet 21 &mdash; that is stated plainly rather than smoothed over.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Do we own what you build?</h3>
+                <p>Yes, entirely. Full source, documentation and deployment instructions. You can hand it to another team tomorrow.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Do you upgrade or re-implement the ERP itself?</h3>
+                <p>No. This is reporting, integration and tooling around a system you already run. Full re-implementation is a different kind of engagement and there are firms that specialise in it.</p>
+            </div>
+
+            <h2>Related</h2>
+            <ul>
+                <li><a href="/sql-server-erp-performance">SQL Server performance for ERP reporting</a> &mdash; the diagnostic method, independent of which ERP sits on top. Start there if the question is <em>why is this slow</em> rather than <em>which rows count</em>.</li>
+                <li><a href="/erp-report-slow-month-to-date">Why your ERP report is fast on Today and times out on month-to-date</a> &mdash; the single worked example, start to finish.</li>
+                <li><a href="/case-studies">Case studies</a> &mdash; the KPI console, the month-to-date timeout, and the label service, all anonymised.</li>
+                <li><a href="/etl-showcase">CRM &amp; ERP integration showcase</a> &mdash; integration patterns with production-shaped code.</li>
+                <li><a href="/operations-modernization">Operations modernization</a> &mdash; the larger engagement: consolidate onto one system of record, then optimize.</li>
+            </ul>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Running P21 or Kinetic and not trusting a number?</h3>
+                <p>Bring the report and the question it is supposed to answer. The first conversation is thirty minutes and costs nothing, and frequently ends with a diagnosis rather than a proposal.</p>
+                <p><a href="/#schedule">Book a call</a> &middot; <a href="/case-studies">See the case studies</a></p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
