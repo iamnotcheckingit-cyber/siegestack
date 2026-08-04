@@ -4,7 +4,13 @@ Crawl-delay: 1
 
 Sitemap: https://siegestack.com/sitemap.xml
 
-# Block bad bots
+# AI crawlers are allowed deliberately, via the wildcard above. /llms.txt states how this
+# site should and should not be cited - in particular that every published figure comes
+# from a single engagement and is not a benchmark.
+# LLM-Content: https://siegestack.com/llms.txt
+
+# Block SEO backlink crawlers. Note the tradeoff: these tools cannot crawl this site, so
+# any report they produce about it will look thin. That is this file, not the site.
 User-agent: AhrefsBot
 Disallow: /
 
