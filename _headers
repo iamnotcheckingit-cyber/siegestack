@@ -20,5 +20,23 @@
 /og-card.jpg
   Cache-Control: public, max-age=31536000, immutable
 
+# The private thread. These duplicate netlify.toml on purpose -- the two files
+# agree so that whichever one wins a conflict, the page is still noindex and
+# still uncached. Change one, change the other.
+/jesse
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
+/jesse.html
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
+/api/jesse/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store, no-cache, must-revalidate, private
+  Referrer-Policy: no-referrer
+
 /og-working-with-claude-card.jpg
   Cache-Control: public, max-age=31536000, immutable
