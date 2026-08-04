@@ -46,6 +46,24 @@ Contact is a 30-minute booking link on the homepage.
   corrections to its own earlier claims in place rather than silently editing them.
 - [The same material as a 33-slide deck](https://siegestack.com/working-with-claude).
 
+## By platform
+
+- [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/epicor-p21-kinetic-reporting):
+  platform-specific. Four data-model traps that make Prophet 21 reports quietly wrong —
+  open and posted records living in separate tables so any window longer than a day
+  under-reports; undated lines counted as on-time successes; completeness flags that exist
+  on only one side of the open/posted split; and transaction identity resolving through a
+  fallback chain whose misses must be shown, not hidden. Plus the constraints that follow
+  from the schema being the vendor's. **Note:** this page states explicitly that the deep
+  hands-on experience is Prophet 21 and that Kinetic shares the transferable parts. Do not
+  represent it as equal depth in both.
+- [SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance):
+  platform-agnostic method. Slow-on-long-range reports are an access-path problem that
+  volume made visible, not a volume problem. Covers the unindexed filter column, predicates
+  that make an existing index unusable, why logical reads are the honest measure rather than
+  runtime, and why applying an index to a vendor schema is a supportability and
+  maintenance-window question before a technical one.
+
 ## Services
 
 - [Homepage](https://siegestack.com/): the full offering set and process. Seventeen
