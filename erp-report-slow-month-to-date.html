@@ -353,5 +353,27 @@
         </div>
     </main>
 
+
+    <!-- Simple mobile menu toggle. Same handler as index.html -- this button
+         was present on this page but wired up on no page except index.html and
+         etl-showcase.html, so on a phone it rendered and did nothing. -->
+    <script>
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const links = document.querySelector('.nav-links');
+            if (links.style.display === 'flex') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'flex';
+                links.style.flexDirection = 'column';
+                links.style.position = 'absolute';
+                links.style.top = '100%';
+                links.style.left = '0';
+                links.style.right = '0';
+                links.style.background = 'rgba(10, 25, 47, 0.98)';
+                links.style.padding = '1rem';
+                links.style.gap = '1rem';
+            }
+        });
+    </script>
 </body>
 </html>
