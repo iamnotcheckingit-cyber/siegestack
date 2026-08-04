@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>SQL Server Performance for ERP Reporting | SiegeStack</title>
+    <meta name="description" content="Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method, the two patterns that cause most of it, and how to apply a fix to a vendor schema safely.">
+    <meta name="keywords" content="SQL Server ERP reporting slow, ERP report performance tuning, non-sargable predicate, missing index ERP, logical reads, execution plan table scan, scalar function row by row, SQL Server maintenance window index build">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/sql-server-erp-performance">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/sql-server-erp-performance">
+    <meta property="og:title" content="SQL Server Performance for ERP Reporting">
+    <meta property="og:description" content="Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method and how to apply the fix to a vendor schema safely.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/sql-server-erp-performance">
+    <meta name="twitter:title" content="SQL Server Performance for ERP Reporting">
+    <meta name="twitter:description" content="An access-path problem, not a volume problem. The method, and how to apply a fix to a schema you do not own.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "SQL Server Performance for ERP Reporting",
+        "serviceType": "Database and report performance diagnosis and tuning",
+        "provider": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com"},
+        "description": "Diagnosing and fixing slow reports and queries on SQL Server-backed ERP systems, including safe application of index changes to vendor-owned schemas.",
+        "areaServed": "United States",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Performance engagements",
+            "itemListElement": [
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Diagnose a specific slow report against a captured baseline"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Audit a view or report estate and rank by measured cost"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Index design and safe application on a vendor schema"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Schema and dependency mapping ahead of change"}}
+            ]
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
+            {"@type": "ListItem", "position": 2, "name": "SQL Server Performance for ERP Reporting", "item": "https://siegestack.com/sql-server-erp-performance"}
+        ]
+    }
+    </script>
+
+    <!-- FAQPage mirrors the visible FAQ section below verbatim. Edit both together. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type":"Question","name":"Is a slow report always a missing index?","acceptedAnswer":{"@type":"Answer","text":"No, but an unindexed filter column is the most common single cause in ERP reporting and the most consistently misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. Check the access path before assuming volume."}},
+            {"@type":"Question","name":"Why measure logical reads instead of runtime?","acceptedAnswer":{"@type":"Answer","text":"Runtime moves with server load, cache state and who else is on the system, so the same query can look twice as fast on a quiet afternoon. Logical reads count pages actually touched and do not move with load, which makes them the honest before-and-after measure."}},
+            {"@type":"Question","name":"Can you tune without adding indexes?","acceptedAnswer":{"@type":"Answer","text":"Often yes. Rewriting a predicate so the indexed column appears bare on one side restores index usability with no schema change at all, and inlining a scalar function removes row-by-row execution. Those are usually tried first precisely because they touch nothing the vendor owns."}},
+            {"@type":"Question","name":"How long does a diagnosis take?","acceptedAnswer":{"@type":"Answer","text":"Confirming whether a specific report is an access-path problem is usually about ten minutes against a restore or replica. Designing and safely applying the fix takes longer, and most of that time is scheduling rather than work."}},
+            {"@type":"Question","name":"Will this void our ERP support?","acceptedAnswer":{"@type":"Answer","text":"That is the platform owner's call, not ours, which is exactly why the conversation happens before anything is applied. Many vendors permit added indexes; some do not. Predicate rewrites and reporting-layer changes avoid the question entirely."}}
+        ]
+    }
+    </script>
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+             background: rgba(100,255,218,0.08); color: var(--blue-accent);
+             padding: .15em .4em; border-radius: 3px; font-size: .9em; }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>SQL Server Performance for ERP Reporting</h1>
+            <p class="subtitle">Reports that crawl usually have a cause, not a mystery. The method below finds it, and the risk is almost never in the fix.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">A slow ERP report is reported as &ldquo;the dashboard is slow,&rdquo; which is an accurate description of the symptom and tells you nothing about the cause. The useful first move is never to optimise the query. It is to establish whether the database is reading the rows it needs or reading everything and discarding most of it &mdash; because those two situations look identical from the outside and have completely different fixes.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>The single most useful reframe:</strong> when a report is fast on a short date range and dies on a longer one, that is not evidence of a volume problem. It is evidence of an <strong>access-path</strong> problem that volume has made visible. The distinction matters because the volume interpretation leads to hardware, archiving and partitioning conversations, and the access-path interpretation frequently leads to one index.</p>
+            </div>
+
+            <h2>The two patterns behind most of it</h2>
+
+            <div class="om-track">
+                <div class="om-num">Pattern 01</div>
+                <h3>The filter column nobody indexed</h3>
+                <p>The report filters history on a date column. The indexes that exist on that table cover the order number, a history identifier and line, a lot number, a row identifier &mdash; every access path except the one the filter actually needs. So the date range forces a scan of the whole history table.</p>
+                <p>The symptom scales with the date range, which is exactly why it gets misdiagnosed as data volume. It is also why the short-range version of the same report is often instant: it frequently reads a different, far smaller table altogether.</p>
+            </div>
+
+            <div class="om-track">
+                <div class="om-num">Pattern 02</div>
+                <h3>Predicates that make an existing index unusable</h3>
+                <p>An index only helps if the optimiser can seek on it, and wrapping the indexed column in an expression prevents that. Date arithmetic applied around the column in a <code>WHERE</code> clause is the usual offender. Rewriting so the column sits bare on one side of the comparison and the arithmetic moves to the constant makes the same index usable again &mdash; with no schema change at all.</p>
+                <p>The close relative: scalar functions in a <code>SELECT</code> list, which silently force row-by-row execution across the whole result. Inlining them is ugly and fast, and ugly-and-fast is the correct trade in a report nobody reads the source of.</p>
+                <p>Both of these are worth trying first for a reason that has nothing to do with elegance: <strong>they touch nothing the vendor owns.</strong></p>
+            </div>
+
+            <h2>The method</h2>
+
+            <div class="om-table-wrap">
+            <table class="om-table">
+                <thead><tr><th>Step</th><th>What it establishes</th></tr></thead>
+                <tbody>
+                    <tr><td>Reproduce the symptom against real data, at each period setting</td><td>That the complaint is real, specific and repeatable &mdash; and which setting is the boundary. A complaint you cannot reproduce is not yet a problem you can fix.</td></tr>
+                    <tr><td>Capture the baseline before touching anything</td><td>Runtime at each setting, logical reads, table sizes, and the current index state. <strong>You cannot go back for this.</strong> Every engagement that skipped it ended up unable to prove its own result.</td></tr>
+                    <tr><td>Read the plan, not the query</td><td>Whether the expensive operator is a scan where a seek was expected, and which predicate is responsible. This is the step that separates a diagnosis from a guess.</td></tr>
+                    <tr><td>Try the changes that touch nothing first</td><td>Predicate rewrites and function inlining need no permission, no window, and no rollback plan.</td></tr>
+                    <tr><td>Design the index, then negotiate it</td><td>Key columns in the right order, included columns to cover the query, and an honest estimate of the write cost it adds. Then take it to whoever owns the platform.</td></tr>
+                    <tr><td>Apply it in a window, and measure again</td><td>Same measurements, same conditions, compared against the baseline &mdash; and the build duration recorded so the next window can be planned rather than guessed.</td></tr>
+                </tbody>
+            </table>
+            </div>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>Measure logical reads, not seconds.</strong> Runtime moves with server load, cache state and whoever else is on the system, so the same query can look twice as fast on a quiet afternoon and you will believe you fixed something. Logical reads count the pages actually touched and do not move with load. It is the honest number, and it is the one to put in front of anyone who has to approve the change.</p>
+            </div>
+
+            <h2>Why the fix needs more care than the diagnosis</h2>
+
+            <p>In ERP work the tables shipped with the product. That single fact drives everything about how a change gets applied:</p>
+
+            <ul>
+                <li><strong>Adding an index to a vendor schema is a supportability decision before it is a technical one.</strong> It is frequently approved. It should never be applied merely because it was obviously correct.</li>
+                <li><strong>Index creation takes a schema-modification lock.</strong> On SQL Server Standard Edition the build blocks live users for its duration, which places it in a maintenance window rather than in the afternoon it was diagnosed.</li>
+                <li><strong>An idle query window holding an open transaction will block the build</strong> and create a lock chain that looks, to everybody else, like the database has frozen. Close the tabs first. This sounds trivial until it is happening.</li>
+                <li><strong>Write it down where the next upgrade will look.</strong> Anything added to a vendor object can be removed by an upgrade, and a report that silently gets slow again a year later is a genuinely miserable thing to diagnose twice.</li>
+            </ul>
+
+            <h2>When it genuinely is volume</h2>
+
+            <p>Sometimes the access path is correct and the table really is too big for the question being asked. That case is recognisable rather than assumed: the plan already shows a seek, logical reads are proportionate to rows actually returned, and the report is slow in a way that scales smoothly rather than falling off a cliff at a particular date range.</p>
+
+            <p>That is a different engagement &mdash; archiving strategy, pre-aggregation, or moving reporting off the transactional system. It is worth naming here because jumping to it first is the expensive mistake, and it is the one an outside firm has the most incentive to recommend.</p>
+
+            <h2>Worth measuring if you run this</h2>
+
+            <p>There are no percentages on this page. A figure is only worth quoting if somebody captured the before state, and in most operational work nobody did. These are the numbers that make the work assessable:</p>
+
+            <ul>
+                <li>Report runtime at each period setting, before and after &mdash; captured before you apply anything.</li>
+                <li>Logical reads for the query, which is the measure that does not move with server load.</li>
+                <li>Index build duration, so the next maintenance window is planned rather than guessed.</li>
+                <li>Write-path cost added by the new index, measured on the transactions that maintain it.</li>
+                <li>How many reports in the estate share the same root cause &mdash; usually more than one.</li>
+            </ul>
+
+            <h2>Frequently asked questions</h2>
+
+            <div class="om-track">
+                <h3>Is a slow report always a missing index?</h3>
+                <p>No, but an unindexed filter column is the most common single cause in ERP reporting and the most consistently misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. Check the access path before assuming volume.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Why measure logical reads instead of runtime?</h3>
+                <p>Runtime moves with server load, cache state and who else is on the system, so the same query can look twice as fast on a quiet afternoon. Logical reads count pages actually touched and do not move with load, which makes them the honest before-and-after measure.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Can you tune without adding indexes?</h3>
+                <p>Often yes. Rewriting a predicate so the indexed column appears bare on one side restores index usability with no schema change at all, and inlining a scalar function removes row-by-row execution. Those are usually tried first precisely because they touch nothing the vendor owns.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>How long does a diagnosis take?</h3>
+                <p>Confirming whether a specific report is an access-path problem is usually about ten minutes against a restore or replica. Designing and safely applying the fix takes longer, and most of that time is scheduling rather than work.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Will this void our ERP support?</h3>
+                <p>That is the platform owner's call, not ours, which is exactly why the conversation happens before anything is applied. Many vendors permit added indexes; some do not. Predicate rewrites and reporting-layer changes avoid the question entirely.</p>
+            </div>
+
+            <h2>Related</h2>
+            <ul>
+                <li><a href="/erp-report-slow-month-to-date">Why your ERP report is fast on Today and times out on month-to-date</a> &mdash; this method applied end to end to one real report, including the confirmation steps.</li>
+                <li><a href="/epicor-p21-kinetic-reporting">Epicor P21 &amp; Kinetic reporting and integration</a> &mdash; the platform-specific side. Start there if the question is <em>which rows count</em> rather than <em>why is this slow</em>.</li>
+                <li><a href="/case-studies">Case studies</a> &mdash; including the report that worked on Today and timed out on Month.</li>
+                <li><a href="/insights">All insights</a> &mdash; technical articles and anonymised breakdowns.</li>
+            </ul>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Got a report that dies on longer date ranges?</h3>
+                <p>Bring the report and the period setting where it falls over. Confirming whether it is an access-path problem takes about ten minutes, and that conversation costs nothing.</p>
+                <p><a href="/#schedule">Book a call</a> &middot; <a href="/erp-report-slow-month-to-date">Read the worked example</a></p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

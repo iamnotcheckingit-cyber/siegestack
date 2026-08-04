@@ -115,6 +115,16 @@
   to = "/erp-report-slow-month-to-date.html"
   status = 200
 
+[[redirects]]
+  from = "/epicor-p21-kinetic-reporting"
+  to = "/epicor-p21-kinetic-reporting.html"
+  status = 200
+
+[[redirects]]
+  from = "/sql-server-erp-performance"
+  to = "/sql-server-erp-performance.html"
+  status = 200
+
 # 301 the .html variants of the indexable pages to their canonical clean URLs
 [[redirects]]
   from = "/etl-showcase.html"
@@ -143,6 +153,18 @@
 [[redirects]]
   from = "/erp-report-slow-month-to-date.html"
   to = "/erp-report-slow-month-to-date"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/epicor-p21-kinetic-reporting.html"
+  to = "/epicor-p21-kinetic-reporting"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/sql-server-erp-performance.html"
+  to = "/sql-server-erp-performance"
   status = 301
   force = true
 
