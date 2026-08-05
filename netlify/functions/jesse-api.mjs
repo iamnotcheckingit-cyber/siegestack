@@ -689,8 +689,21 @@ async function notifyOther(sender, preview) {
 const GIF_ENDPOINT = 'https://api.giphy.com/v1/gifs/search';
 const MAX_GIF_BYTES = 5 * 1024 * 1024;
 
+/**
+ * Accept either name.
+ *
+ * The canonical one is GIPHY_API_KEY, but this project has now lost real time
+ * twice to a variable that existed under a slightly different name than the
+ * code read -- JESSES_KEY for JESSES_PIN, then GIPHY_KEY for this. Reading both
+ * costs one line and removes a whole category of "it is set and it does not
+ * work". Anything plausible that a person would actually type is honoured.
+ */
+function giphyKey() {
+  return process.env.GIPHY_API_KEY || process.env.GIPHY_KEY || process.env.GIPHY || '';
+}
+
 async function searchGifs(q) {
-  const key = process.env.GIPHY_API_KEY;
+  const key = giphyKey();
   if (!key) return { ok: false, error: 'no_key' };
   const url = `${GIF_ENDPOINT}?api_key=${encodeURIComponent(key)}&q=${encodeURIComponent(q)}&limit=24&rating=pg13&bundle=messaging_non_clips`;
   const res = await fetch(url);
@@ -827,7 +840,7 @@ export default async (req, context) => {
 
     if (action === 'gif-send') {
       if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
-      if (!process.env.GIPHY_API_KEY) return json({ ok: false, error: 'no_key' }, { status: 503 });
+      if (!giphyKey()) return json({ ok: false, error: 'no_key' }, { status: 503 });
 
       const { url, title } = (await req.json().catch(() => ({}))) || {};
       // Only GIPHY's own CDN. Without this the endpoint would happily fetch any
