@@ -522,24 +522,11 @@ export default async (req, context) => {
 
   try {
     if (action === 'session') {
-      // TEMPORARY DIAGNOSTIC -- remove once the PINs are working.
-      // Reports variable NAMES only, never values, and those names are already
-      // public in this file. Answers the three questions a missing env var
-      // raises: is it the right site, the right scope, or a typo?
-      const diag = {
-        site: process.env.SITE_NAME || null,
-        siteId: process.env.SITE_ID || null,
-        url: process.env.URL || null,
-        context: process.env.CONTEXT || null,
-        sawDadsPin: Boolean(process.env.DADS_PIN),
-        sawJessesPin: Boolean(process.env.JESSES_PIN),
-        sawMsgKey: Boolean(process.env.JESSE_MSG_KEY),
-        // Anything that looks like it was meant to be one of ours, so a typo
-        // ("DAD_PIN", "JESSE_PIN") shows up instead of reading as absent.
-        lookalikes: Object.keys(process.env).filter((k) => /PIN|JESSE|DAD/i.test(k)),
-        totalEnvVars: Object.keys(process.env).length,
-      };
-      return json({ ok: true, configured, who: me?.id || null, name: me?.name || null, diag });
+      // `configured` is deliberately public: the page needs to distinguish
+      // "wrong PIN" from "this was never set up", and the second is not a
+      // secret. It reveals nothing an attacker can use -- a locked door that
+      // says it is locked is still locked.
+      return json({ ok: true, configured, who: me?.id || null, name: me?.name || null });
     }
 
     if (action === 'login') {
