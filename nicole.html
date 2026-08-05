@@ -416,13 +416,27 @@ details.how summary:hover{color:var(--accent)}
     return div;
   }
 
-  /** Newest first, so new arrivals go on top. */
+  /**
+   * Newest first, so new arrivals go on top.
+   *
+   * Skips anything already on screen, matched on the message key that node()
+   * writes to data-key. Your own message is rendered immediately from the send
+   * response AND arrives again in the next poll; without this it appears twice.
+   * The dedupe is what makes it safe to leave the poll cursor alone below.
+   */
   function add(messages) {
-    if (!messages.length) return;
+    if (!messages || !messages.length) return;
     var frag = document.createDocumentFragment();
-    messages.forEach(function (m) { frag.appendChild(node(m)); });
+    var added = 0;
+    messages.forEach(function (m) {
+      if (!m || !m.key) return;
+      if (thread.querySelector('[data-key="' + m.key.replace(/"/g, '\\"') + '"]')) return;
+      frag.appendChild(node(m));
+      added++;
+    });
+    if (!added) return;
     thread.insertBefore(frag, thread.firstChild);
-    rendered += messages.length;
+    rendered += added;
     if (empty.parentNode) empty.parentNode.removeChild(empty);
   }
 
@@ -576,7 +590,7 @@ details.how summary:hover{color:var(--accent)}
         hint.textContent = r && r.ok
           ? 'Notifications on — you’ll get them even with this closed.'
           : 'Notifications on for this page, but background ones didn’t register.';
-        setTimeout(function () { hint.textContent = 'Enter sends · Shift+Enter for a new line'; }, 6000);
+        setTimeout(function () { hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line'; }, 6000);
       })
       .catch(function (e) {
         // Local notifications still work; say exactly that rather than nothing.
@@ -756,7 +770,7 @@ details.how summary:hover{color:var(--accent)}
       pickLabel.textContent = 'Send a file';
       pick.value = '';
       uhint.textContent = msg;
-      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line';
       done();
     };
 
@@ -791,7 +805,6 @@ details.how summary:hover{color:var(--accent)}
         drawFiles(out.r.files || []);
         if (out.r.message) {
           add([out.r.message]);
-          if (out.r.message.key > (latestKey || '')) latestKey = out.r.message.key;
           thread.scrollTop = 0;
         }
         reset(out.file.name + ' sent.');
@@ -886,9 +899,11 @@ details.how summary:hover{color:var(--accent)}
         return;
       }
       textArea.value = '';
-      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      // NOTE: latestKey is deliberately NOT advanced here. The cursor moves
+      // only in poll(). Advancing it from your own echo skips the other
+      // person's messages permanently -- add() dedupes the double render.
+      hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line';
       add([r.message]);
-      if (r.message.key > (latestKey || '')) latestKey = r.message.key;
       thread.scrollTop = 0;
       textArea.focus();
     }).catch(function () {
@@ -935,8 +950,7 @@ details.how summary:hover{color:var(--accent)}
           .then(function (r) {
             if (r.ok && r.message) {
               add([r.message]);
-              if (r.message.key > (latestKey || '')) latestKey = r.message.key;
-              thread.scrollTop = 0;
+                      thread.scrollTop = 0;
               closeGif();
               loadFiles();
             } else {
@@ -1024,7 +1038,17 @@ details.how summary:hover{color:var(--accent)}
   });
 
   sendBtn.addEventListener('click', send);
+  // A touch keyboard has no Shift+Enter, so Enter must insert a newline there
+  // and the Send button becomes the only way to send. On a hardware keyboard
+  // Enter still sends. isComposing guards IME input, where Enter commits a
+  // candidate rather than ending the message.
+  var touchOnly = window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+  if (touchOnly) {
+    textArea.setAttribute('enterkeyhint', 'enter');
+    hint.textContent = 'Tap Send when you’re ready';
+  }
   textArea.addEventListener('keydown', function (e) {
+    if (touchOnly || e.isComposing || e.keyCode === 229) return;
     if (e.key === 'Enter' && !e.shiftKey && !e.altKey) { e.preventDefault(); send(); }
   });
 

@@ -264,41 +264,6 @@ details.how summary:hover{color:var(--accent)}
         <div class="uhint" id="uhint">Encrypted, and never touches the public repo.</div>
       </div>
 
-      <details class="how">
-        <summary>How to run the RAM script</summary>
-
-        <ol>
-          <li>Download <strong>ram-report.zip</strong> above, then <strong>right-click it &rarr; Extract All</strong>. The password is <strong>blue</strong></li>
-          <li>Double-click <strong>ram-report.bat</strong></li>
-          <li>A black window opens and prints the answer</li>
-          <li>It saves <strong>ram-report.txt</strong> to your Desktop &mdash; paste what&rsquo;s in it into the thread</li>
-        </ol>
-
-        <div class="warn">
-          <p><strong>Windows will probably warn you.</strong> A blue box saying &ldquo;Windows protected your PC.&rdquo; That&rsquo;s only because the file came from the internet &mdash; it isn&rsquo;t a sign anything is wrong. Click <strong>More info</strong>, then <strong>Run anyway</strong>.</p>
-        </div>
-
-        <h3>What it does</h3>
-        <p>It only <em>reads</em> what Windows already knows about your memory. It installs nothing, changes nothing, and never touches the internet. It doesn&rsquo;t need admin rights.</p>
-        <p>You can read the whole thing before you run it &mdash; right-click <strong>ram-report.bat</strong> &rarr; Open with &rarr; Notepad, and every line is there in plain English. <strong>Get in the habit of doing that with anything you download.</strong> Including from me.</p>
-
-        <h3>Don&rsquo;t want to download anything?</h3>
-        <p>Press <strong>Windows key</strong>, type <em>powershell</em>, hit Enter, then paste this in:</p>
-        <pre id="cmd">$t=@{24='DDR3';26='DDR4';34='DDR5';35='LPDDR5'};$a=Get-CimInstance Win32_PhysicalMemoryArray;$m=@(Get-CimInstance Win32_PhysicalMemory);"Board: "+(Get-CimInstance Win32_BaseBoard).Product;"Total: {0} GB in {1} of {2} slots" -f (($m|Measure-Object Capacity -Sum).Sum/1GB),$m.Count,$a.MemoryDevices;$m|Select-Object @{n='Slot';e={$_.DeviceLocator}},@{n='GB';e={[int]($_.Capacity/1GB)}},@{n='Type';e={$t[[int]$_.SMBIOSMemoryType]}},@{n='Speed';e={"$($_.Speed) MT/s"}},Manufacturer,PartNumber|Format-Table -AutoSize</pre>
-        <p><button class="copy" id="btn">Copy the command</button> <span class="small" id="done"></span></p>
-        <p class="small">Then paste whatever it prints into the thread.</p>
-
-        <h3>If none of that works</h3>
-        <ul>
-          <li>Right-click <strong>ram-report.bat</strong> &rarr; <strong>Run as administrator</strong>, try again</li>
-          <li>Or grab <strong>CPU-Z</strong> (free, cpuid.com) &mdash; the <strong>SPD</strong> tab names every slot, even the empty ones</li>
-          <li>Or just call me. Seriously. This is literally my job</li>
-        </ul>
-
-        <h3>One thing worth knowing</h3>
-        <p>DDR5 is picky about mixing. Two sticks that weren&rsquo;t sold together as a matched pair can refuse to run at full speed, or stop the PC booting until XMP/EXPO gets switched off in the BIOS. So the safest buy is the <strong>identical part number</strong> to what&rsquo;s already in there &mdash; which is exactly what the script tells us.</p>
-        <p>Also: with two sticks, most boards want them in <strong>A2 and B2</strong> (2nd and 4th slot from the CPU), not A1 and B1. Sounds wrong. Isn&rsquo;t.</p>
-      </details>
     </aside>
   </div>
 </div>
@@ -451,13 +416,27 @@ details.how summary:hover{color:var(--accent)}
     return div;
   }
 
-  /** Newest first, so new arrivals go on top. */
+  /**
+   * Newest first, so new arrivals go on top.
+   *
+   * Skips anything already on screen, matched on the message key that node()
+   * writes to data-key. Your own message is rendered immediately from the send
+   * response AND arrives again in the next poll; without this it appears twice.
+   * The dedupe is what makes it safe to leave the poll cursor alone below.
+   */
   function add(messages) {
-    if (!messages.length) return;
+    if (!messages || !messages.length) return;
     var frag = document.createDocumentFragment();
-    messages.forEach(function (m) { frag.appendChild(node(m)); });
+    var added = 0;
+    messages.forEach(function (m) {
+      if (!m || !m.key) return;
+      if (thread.querySelector('[data-key="' + m.key.replace(/"/g, '\\"') + '"]')) return;
+      frag.appendChild(node(m));
+      added++;
+    });
+    if (!added) return;
     thread.insertBefore(frag, thread.firstChild);
-    rendered += messages.length;
+    rendered += added;
     if (empty.parentNode) empty.parentNode.removeChild(empty);
   }
 
@@ -611,7 +590,7 @@ details.how summary:hover{color:var(--accent)}
         hint.textContent = r && r.ok
           ? 'Notifications on — you’ll get them even with this closed.'
           : 'Notifications on for this page, but background ones didn’t register.';
-        setTimeout(function () { hint.textContent = 'Enter sends · Shift+Enter for a new line'; }, 6000);
+        setTimeout(function () { hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line'; }, 6000);
       })
       .catch(function (e) {
         // Local notifications still work; say exactly that rather than nothing.
@@ -791,7 +770,7 @@ details.how summary:hover{color:var(--accent)}
       pickLabel.textContent = 'Send a file';
       pick.value = '';
       uhint.textContent = msg;
-      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line';
       done();
     };
 
@@ -826,7 +805,6 @@ details.how summary:hover{color:var(--accent)}
         drawFiles(out.r.files || []);
         if (out.r.message) {
           add([out.r.message]);
-          if (out.r.message.key > (latestKey || '')) latestKey = out.r.message.key;
           thread.scrollTop = 0;
         }
         reset(out.file.name + ' sent.');
@@ -921,9 +899,11 @@ details.how summary:hover{color:var(--accent)}
         return;
       }
       textArea.value = '';
-      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      // NOTE: latestKey is deliberately NOT advanced here. The cursor moves
+      // only in poll(). Advancing it from your own echo skips the other
+      // person's messages permanently -- add() dedupes the double render.
+      hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line';
       add([r.message]);
-      if (r.message.key > (latestKey || '')) latestKey = r.message.key;
       thread.scrollTop = 0;
       textArea.focus();
     }).catch(function () {
@@ -970,8 +950,7 @@ details.how summary:hover{color:var(--accent)}
           .then(function (r) {
             if (r.ok && r.message) {
               add([r.message]);
-              if (r.message.key > (latestKey || '')) latestKey = r.message.key;
-              thread.scrollTop = 0;
+                      thread.scrollTop = 0;
               closeGif();
               loadFiles();
             } else {
@@ -1059,7 +1038,17 @@ details.how summary:hover{color:var(--accent)}
   });
 
   sendBtn.addEventListener('click', send);
+  // A touch keyboard has no Shift+Enter, so Enter must insert a newline there
+  // and the Send button becomes the only way to send. On a hardware keyboard
+  // Enter still sends. isComposing guards IME input, where Enter commits a
+  // candidate rather than ending the message.
+  var touchOnly = window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+  if (touchOnly) {
+    textArea.setAttribute('enterkeyhint', 'enter');
+    hint.textContent = 'Tap Send when you’re ready';
+  }
   textArea.addEventListener('keydown', function (e) {
+    if (touchOnly || e.isComposing || e.keyCode === 229) return;
     if (e.key === 'Enter' && !e.shiftKey && !e.altKey) { e.preventDefault(); send(); }
   });
 
@@ -1073,22 +1062,6 @@ details.how summary:hover{color:var(--accent)}
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible' && me) poll();
-  });
-
-  // ------------------------------------------------------- copy the command
-
-  document.getElementById('btn').addEventListener('click', function () {
-    var t = document.getElementById('cmd').textContent;
-    var done = document.getElementById('done');
-    function ok() { done.textContent = 'Copied.'; setTimeout(function () { done.textContent = ''; }, 2500); }
-    function fallback() {
-      var a = document.createElement('textarea');
-      a.value = t; document.body.appendChild(a); a.select();
-      try { document.execCommand('copy'); ok(); } catch (e) { done.textContent = 'Select it and copy manually.'; }
-      document.body.removeChild(a);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fallback);
-    else fallback();
   });
 
   // ------------------------------------------------------------------ boot
