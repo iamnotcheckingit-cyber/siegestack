@@ -6,6 +6,16 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="referrer" content="no-referrer">
+<!-- Installable, because iOS grants web push only to installed pages. The
+     manifest is named "Private" and carries no description: it becomes the
+     label under the Home Screen icon, where anyone glancing at the phone can
+     read it. -->
+<link rel="manifest" href="/jesse-manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Private">
+<meta name="theme-color" content="#0a192f">
 <!--
   Private thread. Deliberately absent from sitemap.xml, unlinked from every
   other page, and served with X-Robots-Tag from both netlify.toml and _headers.
@@ -531,28 +541,56 @@ details.how summary:hover{color:var(--accent)}
     return out;
   }
 
+  /**
+   * iPhone Safari does not define Notification AT ALL until the page has been
+   * added to the Home Screen. The first version of this hid the button in that
+   * case, which meant the one device that needed the instructions was the one
+   * device that could not see them. Show it and say what to do instead.
+   */
   function refreshNotifyBtn() {
-    if (!('Notification' in window)) { notifyBtn.hidden = true; return; }
     notifyBtn.hidden = false;
+    notifyBtn.disabled = false;
+    notifyBtn.title = '';
+
+    if (isIOS && !isStandalone) {
+      notifyBtn.textContent = 'Notifications: add to Home Screen';
+      notifyBtn.title = 'On iPhone, notifications only work once this page is installed.';
+      return;
+    }
+    if (!('Notification' in window)) {
+      notifyBtn.textContent = 'Notifications unsupported';
+      notifyBtn.disabled = true;
+      notifyBtn.title = 'This browser cannot show notifications.';
+      return;
+    }
     if (Notification.permission === 'granted') {
       notifyBtn.textContent = 'Notifications on';
       notifyBtn.disabled = true;
     } else if (Notification.permission === 'denied') {
       notifyBtn.textContent = 'Notifications blocked';
       notifyBtn.disabled = true;
-      notifyBtn.title = 'Turn them back on in your browser settings for this site.';
+      notifyBtn.title = 'Blocked for this site. Turn them back on via the padlock in the address bar.';
     } else {
       notifyBtn.textContent = 'Turn on notifications';
-      notifyBtn.disabled = false;
     }
   }
 
+  /**
+   * Background push. Reports what went wrong rather than swallowing it -- the
+   * first version caught every error silently, so "notifications don't work"
+   * was indistinguishable from "notifications are working", which is a terrible
+   * place to debug from.
+   */
   function enablePush() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return Promise.resolve();
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      hint.textContent = 'Notifications will show while this page is open. This browser can’t do background ones.';
+      return Promise.resolve();
+    }
     return navigator.serviceWorker.register('/jesse-sw.js')
+      .then(function (reg) { return navigator.serviceWorker.ready.then(function () { return reg; }); })
       .then(function (reg) {
         return api('push-key').then(function (k) {
-          if (!k.ok || !k.publicKey) return null;
+          if (!k.ok || !k.publicKey) throw new Error('no key from server');
           return reg.pushManager.getSubscription().then(function (existing) {
             return existing || reg.pushManager.subscribe({
               userVisibleOnly: true,
@@ -562,24 +600,46 @@ details.how summary:hover{color:var(--accent)}
         });
       })
       .then(function (sub) {
-        if (!sub) return;
         return fetch(API + 'subscribe', {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(sub)
-        });
+        }).then(function (r) { return r.json(); });
       })
-      .catch(function () { /* local notifications still work */ });
+      .then(function (r) {
+        hint.textContent = r && r.ok
+          ? 'Notifications on — you’ll get them even with this closed.'
+          : 'Notifications on for this page, but background ones didn’t register.';
+        setTimeout(function () { hint.textContent = 'Enter sends · Shift+Enter for a new line'; }, 6000);
+      })
+      .catch(function (e) {
+        // Local notifications still work; say exactly that rather than nothing.
+        hint.textContent = 'Notifications on while this page is open. Background ones failed: ' + (e && e.message ? e.message : 'unknown');
+      });
   }
 
   notifyBtn.addEventListener('click', function () {
     if (isIOS && !isStandalone) {
-      hint.textContent = 'On iPhone: Share → Add to Home Screen first, then open it from there and tap this again.';
+      hint.textContent = 'On iPhone: tap Share (□↑) → Add to Home Screen, open it from that icon, then tap this again.';
       return;
     }
-    Notification.requestPermission().then(function (p) {
+    if (!('Notification' in window)) {
+      hint.textContent = 'This browser can’t show notifications.';
+      return;
+    }
+    hint.textContent = 'Asking your browser…';
+    var ask;
+    try { ask = Notification.requestPermission(); } catch (e) { ask = null; }
+    // Older Safari only supports the callback form and returns undefined here.
+    if (!ask || typeof ask.then !== 'function') {
+      ask = new Promise(function (res) { Notification.requestPermission(res); });
+    }
+    ask.then(function (p) {
       refreshNotifyBtn();
-      if (p === 'granted') enablePush();
+      if (p === 'granted') { enablePush(); return; }
+      hint.textContent = p === 'denied'
+        ? 'You blocked notifications. Re-enable them via the padlock in the address bar.'
+        : 'No answer given — tap again and choose Allow.';
     });
   });
 
