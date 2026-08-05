@@ -235,6 +235,7 @@ details.how summary:hover{color:var(--accent)}
           </div>
         </div>
         <input type="file" id="photoPick" accept="image/*" hidden>
+        <input type="file" id="gifPick" accept="image/gif" hidden>
 
         <!-- GIF search. Hidden until asked for; the query goes to GIPHY, the
              chosen GIF is re-stored by us so viewing it later leaks nothing. -->
@@ -1005,10 +1006,47 @@ details.how summary:hover{color:var(--accent)}
     note('Type to search.');
   }
 
+  /**
+   * The GIF button must never be a dead control.
+   *
+   * GIPHY search needs an API key, which needs an account, which is a lot to
+   * ask before a button does anything. So the button asks the server once
+   * whether search is available: if it is, it opens the search box; if it is
+   * not, it opens a .gif file picker and sends it the same way. Either way
+   * pressing GIF sends a GIF.
+   *
+   * `searchable` is null until we know, so the first press asks and then acts
+   * rather than guessing wrong.
+   */
+  var searchable = null;
+
+  function gifSearchAvailable() {
+    if (searchable !== null) return Promise.resolve(searchable);
+    return api('gif?q=test')
+      .then(function (r) { searchable = !(r && r.error === 'no_key'); return searchable; })
+      .catch(function () { return false; });
+  }
+
   gifBtn.addEventListener('click', function () {
-    gifBox.hidden = !gifBox.hidden;
-    gifBtn.classList.toggle('on', !gifBox.hidden);
-    if (!gifBox.hidden) gifQ.focus();
+    if (!gifBox.hidden) { closeGif(); return; }
+    gifBtn.disabled = true;
+    gifSearchAvailable().then(function (canSearch) {
+      gifBtn.disabled = false;
+      if (canSearch) {
+        gifBox.hidden = false;
+        gifBtn.classList.add('on');
+        gifQ.focus();
+      } else {
+        // No key: go straight to picking a .gif. No error, no dead end.
+        gifPick.click();
+      }
+    });
+  });
+
+  gifPick.addEventListener('change', function () {
+    if (gifPick.files && gifPick.files[0]) {
+      sendUpload(gifPick.files[0], function () { gifPick.value = ''; });
+    }
   });
   gifClose.addEventListener('click', closeGif);
   gifQ.addEventListener('input', function () {
