@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- viewport-fit=cover is REQUIRED, not cosmetic. Without it every
+     env(safe-area-inset-*) below evaluates to 0, and because the status bar is
+     black-translucent the installed iOS app draws its top bar underneath the
+     notch -- where the buttons in it cannot be tapped at all. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="referrer" content="no-referrer">
@@ -189,6 +193,30 @@ details.how summary:hover{color:var(--accent)}
   .gifgrid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));max-height:40vh}
 }
 
+/* Safe-area padding applies at EVERY width, not just phone-width. An installed
+   iPad is wider than the breakpoint above and still has insets, and on any
+   device without a notch these evaluate to zero and cost nothing. Paired with
+   viewport-fit=cover in the <head>, without which they are all zero anyway. */
+.bar{padding-top:calc(.85rem + env(safe-area-inset-top));
+     padding-left:calc(1.15rem + env(safe-area-inset-left));
+     padding-right:calc(1.15rem + env(safe-area-inset-right))}
+.thread{padding-bottom:calc(3rem + env(safe-area-inset-bottom))}
+.compose{padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
+.gate{padding-top:calc(1.5rem + env(safe-area-inset-top));
+      padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+
+/* --------------------------------------------------- the notification notice */
+/* A one-line hint under the composer is the wrong place to explain a multi-step
+   iOS procedure -- on a phone it is small, easy to miss, and gets overwritten
+   by the next status message. This says it where it cannot be missed. */
+.notice{background:rgba(249,168,37,.1);border:1px solid rgba(249,168,37,.45);border-radius:10px;padding:.9rem 1rem;margin-bottom:1rem}
+.notice h3{color:var(--gold);font-size:.95rem;margin-bottom:.5rem}
+.notice ol{margin:0 0 .3rem 1.15rem}
+.notice li{color:var(--light);font-size:.9rem;margin-bottom:.35rem;line-height:1.5}
+.notice p{color:var(--light);font-size:.88rem;margin-bottom:.4rem}
+.notice strong{color:var(--white)}
+.notice button{background:transparent;border:1px solid rgba(249,168,37,.5);color:var(--gold);font-size:.8rem;padding:.3rem .7rem;border-radius:6px;cursor:pointer;font-family:inherit;margin-top:.4rem}
+
 /* Touch devices: nothing here should depend on a hover state existing. */
 @media (hover:none){
   .file .name:hover,.bar button:hover,.pick:hover{text-decoration:none}
@@ -248,6 +276,7 @@ details.how summary:hover{color:var(--accent)}
         </div>
       </div>
       <div class="thread" id="thread">
+        <div class="notice" id="notice" hidden></div>
         <div class="empty" id="empty">Loading&hellip;</div>
       </div>
     </div>
@@ -294,6 +323,7 @@ details.how summary:hover{color:var(--accent)}
   var uhint = document.getElementById('uhint');
   var whoStrip = document.getElementById('whoStrip');
   var notifyBtn = document.getElementById('notifyBtn');
+  var notice = document.getElementById('notice');
   var photoBtn = document.getElementById('photoBtn');
   var photoPick = document.getElementById('photoPick');
   var gifBtn = document.getElementById('gifBtn');
@@ -455,6 +485,7 @@ details.how summary:hover{color:var(--accent)}
 
   function drawPresence(list) {
     whoStrip.textContent = '';
+    notice.hidden = true;
     (list || []).forEach(function (p) {
       var el = document.createElement('span');
       el.className = 'p' + (p.online ? ' on' : '') + (p.id === me ? ' self' : '');
@@ -587,9 +618,12 @@ details.how summary:hover{color:var(--accent)}
         }).then(function (r) { return r.json(); });
       })
       .then(function (r) {
-        hint.textContent = r && r.ok
-          ? 'Notifications on — you’ll get them even with this closed.'
-          : 'Notifications on for this page, but background ones didn’t register.';
+        if (r && r.ok) {
+          hint.textContent = 'Notifications on — you’ll get them even with this closed.';
+          notice.hidden = true;
+        } else {
+          showNotice('Half-on', [], 'Notifications will show while this page is open, but the background registration did not complete. Tap the button again, or reopen the page from the Home Screen icon.');
+        }
         setTimeout(function () { hint.textContent = touchOnly ? 'Tap Send when you’re ready' : 'Enter sends · Shift+Enter for a new line'; }, 6000);
       })
       .catch(function (e) {
@@ -598,13 +632,60 @@ details.how summary:hover{color:var(--accent)}
       });
   }
 
+  /**
+   * Show a step list where it cannot be missed, at the top of the thread.
+   * Everything is built as DOM nodes, never innerHTML.
+   */
+  function showNotice(title, steps, tail) {
+    notice.textContent = '';
+    var h = document.createElement('h3');
+    h.textContent = title;
+    notice.appendChild(h);
+    if (steps && steps.length) {
+      var ol = document.createElement('ol');
+      steps.forEach(function (t) {
+        var li = document.createElement('li');
+        li.textContent = t;
+        ol.appendChild(li);
+      });
+      notice.appendChild(ol);
+    }
+    if (tail) {
+      var p = document.createElement('p');
+      p.textContent = tail;
+      notice.appendChild(p);
+    }
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.textContent = 'Got it';
+    close.addEventListener('click', function () { notice.hidden = true; });
+    notice.appendChild(close);
+    notice.hidden = false;
+    thread.scrollTop = 0;
+  }
+
   notifyBtn.addEventListener('click', function () {
     if (isIOS && !isStandalone) {
-      hint.textContent = 'On iPhone: tap Share (□↑) → Add to Home Screen, open it from that icon, then tap this again.';
+      showNotice(
+        'One extra step on an iPhone',
+        [
+          'Tap the Share button at the bottom of Safari — the square with an arrow coming out of the top.',
+          'Scroll down and tap "Add to Home Screen", then tap Add.',
+          'Close Safari. Open this from the new icon on your Home Screen, not from Safari.',
+          'Sign in again, then tap "Turn on notifications" one more time.'
+        ],
+        'Apple only lets a website send notifications once it has been added to the Home Screen. There is no way around it from this end. It also needs iOS 16.4 or newer.'
+      );
       return;
     }
     if (!('Notification' in window)) {
-      hint.textContent = 'This browser can’t show notifications.';
+      showNotice(
+        'This iPhone can’t do notifications yet',
+        [],
+        isStandalone
+          ? 'The page is installed correctly, but this version of iOS is too old — web notifications need iOS 16.4 or newer. Updating the phone in Settings → General → Software Update will enable it.'
+          : 'This browser cannot show notifications. Try opening the page in Safari or Chrome.'
+      );
       return;
     }
     hint.textContent = 'Asking your browser…';
@@ -617,9 +698,13 @@ details.how summary:hover{color:var(--accent)}
     ask.then(function (p) {
       refreshNotifyBtn();
       if (p === 'granted') { enablePush(); return; }
-      hint.textContent = p === 'denied'
-        ? 'You blocked notifications. Re-enable them via the padlock in the address bar.'
-        : 'No answer given — tap again and choose Allow.';
+      if (p === 'denied') {
+        showNotice('Notifications are blocked for this page', [], isIOS
+          ? 'Open Settings on the phone, scroll to this app, and turn Notifications on. Safari will not ask again by itself.'
+          : 'Click the padlock in the address bar, set Notifications to Allow, then reload and tap the button again.');
+      } else {
+        showNotice('No answer was given', [], 'The permission box was dismissed. Tap the button again and choose Allow.');
+      }
     });
   });
 
