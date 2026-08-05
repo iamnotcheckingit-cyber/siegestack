@@ -690,6 +690,22 @@ const GIF_ENDPOINT = 'https://api.giphy.com/v1/gifs/search';
 const MAX_GIF_BYTES = 5 * 1024 * 1024;
 
 /**
+ * Content rating for GIF search: 'g', the strictest GIPHY offers.
+ *
+ * This channel is a father and his teenage son. The rating a general-purpose
+ * chat app would pick is the wrong default here, and the cost of being too
+ * strict is that a rude GIF does not show up -- which is not a cost worth
+ * weighing against the alternative. Raise it only on an explicit request from
+ * the site owner.
+ *
+ * Note this filters what SEARCH returns. It is not a guarantee about every
+ * image that can reach the thread: either person can still upload any file
+ * from their own device, and that is theirs to manage, not something a rating
+ * parameter can police.
+ */
+const GIF_RATING = 'g';
+
+/**
  * Accept either name.
  *
  * The canonical one is GIPHY_API_KEY, but this project has now lost real time
@@ -705,7 +721,7 @@ function giphyKey() {
 async function searchGifs(q) {
   const key = giphyKey();
   if (!key) return { ok: false, error: 'no_key' };
-  const url = `${GIF_ENDPOINT}?api_key=${encodeURIComponent(key)}&q=${encodeURIComponent(q)}&limit=24&rating=pg13&bundle=messaging_non_clips`;
+  const url = `${GIF_ENDPOINT}?api_key=${encodeURIComponent(key)}&q=${encodeURIComponent(q)}&limit=24&rating=${GIF_RATING}&bundle=messaging_non_clips`;
   const res = await fetch(url);
   if (!res.ok) return { ok: false, error: 'search_failed' };
   const data = await res.json();
