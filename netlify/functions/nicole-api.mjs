@@ -648,7 +648,7 @@ const subKey = (who, endpoint) =>
  */
 async function notifyOther(sender, preview) {
   try {
-    await vapid();
+    const { publicKey } = await vapid();
     const target = otherPerson(sender);
     const { blobs } = await pushStore().list({ prefix: `sub/${target}/` });
     if (!blobs.length) return;
@@ -665,6 +665,21 @@ async function notifyOther(sender, preview) {
     await Promise.all(blobs.map(async ({ key }) => {
       const sub = await pushStore().get(key, { type: 'json' });
       if (!sub) return;
+
+      // A subscription is welded to the VAPID key it was created with, and one
+      // made against a different key can never be delivered to -- the push
+      // service answers 403 forever. Drop it so the browser builds a fresh one
+      // on its next visit, instead of failing silently on every send until
+      // someone thinks to read the logs.
+      //
+      // `sub.key` is absent on anything stored before this existed. Unknown is
+      // not the same as wrong, so those are still attempted.
+      if (sub.key && sub.key !== publicKey) {
+        await pushStore().delete(key);
+        console.log(JSON.stringify({ event: 'NICOLE_PUSH_STALE_KEY' }));
+        return;
+      }
+
       try {
         await webpush.sendNotification(sub, payload);
       } catch (err) {
@@ -860,9 +875,21 @@ export default async (req, context) => {
 
     if (action === 'subscribe') {
       if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
-      const sub = await req.json().catch(() => null);
+      const body = await req.json().catch(() => null);
+
+      // The page and the service worker both post { subscription, publicKey }.
+      // A bare PushSubscription is what older builds sent and is still taken --
+      // just without the key that lets notifyOther() recognise a stale one, so
+      // it is stored as null rather than assumed to be the current key.
+      const sub = body?.subscription?.endpoint ? body.subscription : body;
       if (!sub?.endpoint) return json({ ok: false, error: 'bad_subscription' }, { status: 400 });
-      await pushStore().setJSON(subKey(me.id, sub.endpoint), sub);
+
+      await pushStore().setJSON(subKey(me.id, sub.endpoint), {
+        endpoint: sub.endpoint,
+        keys: sub.keys,
+        expirationTime: sub.expirationTime ?? null,
+        key: typeof body?.publicKey === 'string' ? body.publicKey : null,
+      });
       return json({ ok: true });
     }
 
