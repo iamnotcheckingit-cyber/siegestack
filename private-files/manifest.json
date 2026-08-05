@@ -14,6 +14,10 @@
     "path, and the only way in is /api/jesse/file, which checks the session",
     "cookie first. That is deliberate: it is the same door as the messages.",
     "",
+    "The notes below are served ONLY to an authenticated caller, which is why",
+    "the RAM instructions live here rather than in jesse.html -- anything in",
+    "that page is readable by anyone who guesses the URL, without a PIN.",
+    "",
     "The keys under \"files\" are exact filenames. \"password\" is shown in the",
     "rail in plain text -- it is a convenience for a zip, not a secret."
   ],
@@ -21,12 +25,12 @@
   "files": {
     "ram-report.zip": {
       "label": "RAM report script",
-      "note": "Extract it, run ram-report.bat, paste what it prints into the thread.",
+      "note": "Right-click the zip and Extract All (password below), then double-click ram-report.bat. A black window opens and prints the answer, and saves ram-report.txt to your Desktop — paste what's in it into the thread. Windows may warn you: that is only because the file came from the internet. Click More info, then Run anyway. It only reads what Windows already knows about your memory; it installs nothing and never touches the internet. You can read the whole thing first — right-click, Open with, Notepad. Get in the habit of doing that with anything you download. Including from me.",
       "password": "blue"
     },
     "ram-report.bat": {
       "label": "RAM report script (loose .bat)",
-      "note": "Same thing, not zipped, in case the zip is a hassle. Windows may warn you — that is just because it came from the internet."
+      "note": "Same thing, not zipped, in case the zip is a hassle. If it will not run, right-click it and choose Run as administrator. Or grab CPU-Z from cpuid.com — the SPD tab names every slot, even the empty ones. Or just call me."
     }
   }
 }

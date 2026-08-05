@@ -634,10 +634,13 @@ const subKey = (who, endpoint) =>
 /**
  * Notify the other person's devices.
  *
- * The payload carries the sender and a short preview only. It deliberately does
- * NOT carry the whole message: a push payload is decrypted by the browser and
- * shown on a lock screen, which is a different privacy setting than a thread
- * behind a PIN.
+ * The payload carries WHO, never WHAT.
+ *
+ * It used to pass the message sliced to 120 characters, which for almost every
+ * real message is the entire thing -- rendered on a lock screen, in whatever
+ * room the phone happens to be lying in. That is a materially different privacy
+ * setting from a thread behind a PIN, and the comment here claimed the message
+ * was never sent while the code sent it. The code is now what the comment said.
  *
  * A dead subscription (410/404) is deleted rather than retried -- that is the
  * browser telling us the device is gone, and keeping it would mean failing on
@@ -650,9 +653,12 @@ async function notifyOther(sender, preview) {
     const { blobs } = await pushStore().list({ prefix: `sub/${target}/` });
     if (!blobs.length) return;
 
+    // `preview` is a fixed description chosen by the caller ("sent a message",
+    // "sent a photo"), never message content. Sliced anyway as a belt-and-braces
+    // guard against a future caller passing something longer.
     const payload = JSON.stringify({
       title: `${PEOPLE[sender]?.name || sender} sent a message`,
-      body: preview.slice(0, 120),
+      body: String(preview || '').slice(0, 60),
       url: '/nicole',
     });
 
@@ -757,7 +763,19 @@ export default async (req, context) => {
   const ip = context.ip || req.headers.get('x-nf-client-connection-ip') || 'unknown';
 
   const configured = Boolean(process.env.DADS_PIN && process.env.NICOLES_PIN);
-  const me = readToken(cookieValue(req, COOKIE));
+
+  /**
+   * The `configured` gate applies to session verification too, not just login.
+   *
+   * Without it, a deploy missing the PIN env vars still verifies cookies -- and
+   * with both PINs absent, sessionKey() falls back to
+   * sha256("siegestack/nicole/session||"), a constant anyone can compute from
+   * this public repository. That is a forgeable session for anonymous callers.
+   *
+   * login already refuses to run in that state, for exactly this reason. This
+   * line is the other half of that guard, and it was missing.
+   */
+  const me = configured ? readToken(cookieValue(req, COOKIE)) : null;
 
   try {
     if (action === 'session') {
@@ -901,7 +919,7 @@ export default async (req, context) => {
 
       // Awaited, not fire-and-forget: this container may be frozen the instant
       // the response is written, and a detached promise would die unsent.
-      await notifyOther(me.id, body);
+      await notifyOther(me.id, 'sent a message');
 
       // Echo the stored message back so the sender's thread updates from the
       // server's version of events rather than an optimistic local guess.
@@ -947,7 +965,7 @@ export default async (req, context) => {
       const key = newMessageKey(ts);
       await threadStore().setJSON(key, { ts, who: me.id, enc: encrypt(caption), att });
 
-      await notifyOther(me.id, caption || (att.image ? 'sent a photo' : 'sent ' + name));
+      await notifyOther(me.id, att.image ? 'sent a photo' : 'sent a file');
 
       return json({
         ok: true,
