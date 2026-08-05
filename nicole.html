@@ -8,6 +8,13 @@
      notch -- where the buttons in it cannot be tapped at all. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<!-- iOS picks the Home Screen icon from here, not from the manifest: it will
+     not rasterise an SVG for it and it renders transparency as black. This one
+     is a full-bleed PNG with no rounding of its own, because iOS applies the
+     corners itself and would otherwise round an already-rounded square twice.
+     It is the plain mark, not the "SW" monogram in favicon.png -- an icon on a
+     Home Screen is about as public as this thing gets. -->
+<link rel="apple-touch-icon" href="/private-icon-180.png">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="referrer" content="no-referrer">
 <!-- Installable, because iOS grants web push only to installed pages. The
@@ -304,6 +311,29 @@ details.how summary:hover{color:var(--accent)}
   var API = '/api/nicole/';
   var POLL_MS = 6000;
 
+  // The service worker is registered at its own scope, NOT the '/' it would
+  // default to. See the header comment in nicole-sw.js for what sharing a scope
+  // with the other thread broke. SW_SCOPE also matches /nicole.html, since scope
+  // is a string prefix.
+  var SW_FILE = '/nicole-sw.js';
+  var SW_SCOPE = '/nicole';
+  var TAG = 'nicole-thread';
+  var ICON = '/private-icon-192.png';
+  var BADGE = '/private-badge-96.png';
+
+  /**
+   * Whether a notification may quote the message.
+   *
+   * Off, to match what the server sends. notifyOther() in nicole-api.mjs sends
+   * who and not what, on the reasoning that a lock screen is a more public
+   * place than a thread behind a PIN. The in-page notification below used to
+   * quote 120 characters, which for most real messages is the whole thing -- it
+   * got away with it only because the API call it used throws on Android and on
+   * iOS, so on a phone it had never actually fired. It fires now, so it follows
+   * the same rule. Flip this to true to get previews back on desktop.
+   */
+  var PREVIEW_TEXT = false;
+
   var gate = document.getElementById('gate');
   var app = document.getElementById('app');
   var gateForm = document.getElementById('gateForm');
@@ -533,16 +563,60 @@ details.how summary:hover{color:var(--accent)}
    * failing silently.
    */
   function localNotify(msgs) {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    if (!canNotify || Notification.permission !== 'granted') return;
     var m = msgs[msgs.length - 1];
-    var body = m.text || (m.att ? (m.att.image ? 'sent a photo' : 'sent ' + m.att.name) : '');
-    try {
-      new Notification(m.name + ' sent a message', { body: body.slice(0, 120), tag: 'nicole-thread', icon: '/favicon.svg' });
-    } catch (e) { /* some browsers only allow this from a service worker */ }
+    // Same wording the server uses in notifyOther(), so the two collapse into
+    // one line under the shared tag instead of reading as two different events.
+    var what = m.att ? (m.att.image ? 'sent a photo' : 'sent a file') : 'sent a message';
+    var body = PREVIEW_TEXT
+      ? String(m.text || (m.att ? m.att.name : '')).slice(0, 120)
+      : what;
+    var title = m.name + ' sent a message';
+    var opts = { body: body, tag: TAG, icon: ICON, badge: BADGE, renotify: true };
+
+    // Through the service worker where there is one. `new Notification()` does
+    // not merely go unsupported on Android Chrome and on iOS -- it throws, and
+    // the catch here used to swallow that, so on a phone this whole branch had
+    // been doing nothing while looking exactly like it worked.
+    if (canPush && navigator.serviceWorker.getRegistration) {
+      navigator.serviceWorker.getRegistration(SW_SCOPE).then(function (reg) {
+        if (!reg) throw new Error('not registered');
+        return reg.showNotification(title, opts);
+      }).catch(function () { constructNotification(title, opts); });
+      return;
+    }
+    constructNotification(title, opts);
+  }
+
+  function constructNotification(title, opts) {
+    try { new Notification(title, opts); } catch (e) { /* nothing left to try */ }
   }
 
   var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+
+  /**
+   * iPadOS 13 and later removed "iPad" from the user agent -- an iPad reports
+   * itself as a Macintosh. The old test therefore missed every iPad, which then
+   * fell through to "this browser cannot show notifications, try Safari or
+   * Chrome": a dead end, shown on one of the two devices that actually needed
+   * the Add to Home Screen instructions. A desktop Mac reports maxTouchPoints
+   * of 0, so the touch count is what separates the two.
+   */
+  var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  /**
+   * Capabilities are tested, not inferred from the user agent. The user agent
+   * is only ever consulted to explain a failure, never to predict one.
+   *
+   * Safari on iOS and iPadOS does not define Notification AT ALL until the page
+   * has been added to the Home Screen, so its absence there means "not
+   * installed yet", not "impossible". Everywhere else -- including Safari on a
+   * desktop Mac, which is the case a UA sniff gets wrong -- a plain tab is fine.
+   */
+  var canNotify = 'Notification' in window;
+  var canPush = 'serviceWorker' in navigator && 'PushManager' in window;
+  var needsInstall = isIOS && !isStandalone && !canNotify;
 
   function urlB64ToUint8(b64) {
     var pad = '='.repeat((4 - (b64.length % 4)) % 4);
@@ -553,22 +627,22 @@ details.how summary:hover{color:var(--accent)}
   }
 
   /**
-   * iPhone Safari does not define Notification AT ALL until the page has been
-   * added to the Home Screen. The first version of this hid the button in that
-   * case, which meant the one device that needed the instructions was the one
-   * device that could not see them. Show it and say what to do instead.
+   * Safari on iOS and iPadOS does not define Notification until the page has
+   * been added to the Home Screen. The first version of this hid the button in
+   * that case, which meant the one device that needed the instructions was the
+   * one device that could not see them. Show it and say what to do instead.
    */
   function refreshNotifyBtn() {
     notifyBtn.hidden = false;
     notifyBtn.disabled = false;
     notifyBtn.title = '';
 
-    if (isIOS && !isStandalone) {
+    if (needsInstall) {
       notifyBtn.textContent = 'Notifications: add to Home Screen';
-      notifyBtn.title = 'On iPhone, notifications only work once this page is installed.';
+      notifyBtn.title = 'On an iPhone or iPad, notifications only work once this page is installed.';
       return;
     }
-    if (!('Notification' in window)) {
+    if (!canNotify) {
       notifyBtn.textContent = 'Notifications unsupported';
       notifyBtn.disabled = true;
       notifyBtn.title = 'This browser cannot show notifications.';
@@ -587,34 +661,112 @@ details.how summary:hover{color:var(--accent)}
   }
 
   /**
+   * Both threads used to register their worker at the default scope of '/'.
+   *
+   * A registration is keyed by its scope, and the push subscription belongs to
+   * the registration -- so on a browser signed in to both threads, whichever
+   * page loaded second replaced the first one's worker while inheriting its
+   * subscription, which was welded to the other thread's VAPID key. One thread's
+   * notifications were then rejected by the push service outright, and the ones
+   * that did arrive were handled by the wrong worker and opened the wrong page.
+   *
+   * Anyone who used the old build is still carrying that '/' registration.
+   * Unsubscribe it before unregistering, so the server's stored copy dies with a
+   * 410 on the next send instead of lingering as an endpoint no worker answers.
+   *
+   * The test is deliberately "one of our two workers, at neither of the two
+   * scopes we now use" -- checking only for this page's scope would make /nicole
+   * tear down the perfectly good /jesse registration and vice versa.
+   */
+  function clearLegacyRegistration() {
+    if (!navigator.serviceWorker.getRegistrations) return Promise.resolve();
+    return navigator.serviceWorker.getRegistrations().then(function (regs) {
+      return Promise.all(regs.map(function (reg) {
+        var worker = reg.active || reg.waiting || reg.installing;
+        var script = (worker && worker.scriptURL) || '';
+        if (!/\/(nicole|jesse)-sw\.js$/.test(script)) return null;
+        if (reg.scope === location.origin + '/nicole' ||
+            reg.scope === location.origin + '/jesse') return null;
+        return reg.pushManager.getSubscription()
+          .then(function (sub) { return sub && sub.unsubscribe(); })
+          .catch(function () {})
+          .then(function () { return reg.unregister(); })
+          .catch(function () {});
+      }));
+    }).catch(function () { /* nothing to migrate, or no permission to look */ });
+  }
+
+  /**
+   * A subscription is welded to the applicationServerKey it was created with.
+   * If the server's key has moved on -- a regenerated blob, or a subscription
+   * inherited from the other thread by the shared registration above -- every
+   * send comes back 403 and nothing on this end would ever find out.
+   *
+   * Safari does not expose options.applicationServerKey at all. Treat "cannot
+   * tell" as a match: tearing down and rebuilding the subscription on every
+   * single load would be a worse bug than the one being guarded against.
+   */
+  function sameKey(actual, wanted) {
+    if (!actual) return true;
+    var a = new Uint8Array(actual);
+    if (a.length !== wanted.length) return false;
+    for (var i = 0; i < a.length; i++) if (a[i] !== wanted[i]) return false;
+    return true;
+  }
+
+  /** navigator.serviceWorker.ready never rejects and never times out. If the
+   *  worker fails to start, an unguarded wait on it hangs this whole chain in
+   *  silence -- exactly the failure this function exists to avoid. */
+  function readyWithin(reg, ms) {
+    return new Promise(function (resolve, reject) {
+      var settled = false;
+      navigator.serviceWorker.ready.then(function () {
+        if (!settled) { settled = true; resolve(reg); }
+      });
+      setTimeout(function () {
+        if (!settled) { settled = true; reject(new Error('the service worker did not start')); }
+      }, ms);
+    });
+  }
+
+  /**
    * Background push. Reports what went wrong rather than swallowing it -- the
    * first version caught every error silently, so "notifications don't work"
    * was indistinguishable from "notifications are working", which is a terrible
    * place to debug from.
    */
   function enablePush() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    if (!canPush) {
       hint.textContent = 'Notifications will show while this page is open. This browser can’t do background ones.';
       return Promise.resolve();
     }
-    return navigator.serviceWorker.register('/nicole-sw.js')
-      .then(function (reg) { return navigator.serviceWorker.ready.then(function () { return reg; }); })
+    return clearLegacyRegistration()
+      .then(function () { return navigator.serviceWorker.register(SW_FILE, { scope: SW_SCOPE }); })
+      .then(function (reg) { return readyWithin(reg, 15000); })
       .then(function (reg) {
         return api('push-key').then(function (k) {
           if (!k.ok || !k.publicKey) throw new Error('no key from server');
-          return reg.pushManager.getSubscription().then(function (existing) {
-            return existing || reg.pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: urlB64ToUint8(k.publicKey)
-            });
-          });
+          var wanted = urlB64ToUint8(k.publicKey);
+          return reg.pushManager.getSubscription()
+            .then(function (existing) {
+              if (!existing) return null;
+              if (sameKey(existing.options && existing.options.applicationServerKey, wanted)) return existing;
+              return existing.unsubscribe().catch(function () {}).then(function () { return null; });
+            })
+            .then(function (existing) {
+              return existing || reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: wanted
+              });
+            })
+            .then(function (sub) { return { subscription: sub, publicKey: k.publicKey }; });
         });
       })
-      .then(function (sub) {
+      .then(function (payload) {
         return fetch(API + 'subscribe', {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(sub)
+          body: JSON.stringify(payload)
         }).then(function (r) { return r.json(); });
       })
       .then(function (r) {
@@ -665,26 +817,27 @@ details.how summary:hover{color:var(--accent)}
   }
 
   notifyBtn.addEventListener('click', function () {
-    if (isIOS && !isStandalone) {
+    if (needsInstall) {
       showNotice(
-        'One extra step on an iPhone',
+        'One extra step on an iPhone or iPad',
         [
-          'Tap the Share button at the bottom of Safari — the square with an arrow coming out of the top.',
+          'Open this page in Safari. Chrome, Edge and Firefox on an iPhone or iPad cannot do this part — Apple does not let them.',
+          'Tap the Share button — the square with an arrow coming out of the top.',
           'Scroll down and tap "Add to Home Screen", then tap Add.',
-          'Close Safari. Open this from the new icon on your Home Screen, not from Safari.',
+          'Close Safari. Open this from the new icon on the Home Screen, not from Safari.',
           'Sign in again, then tap "Turn on notifications" one more time.'
         ],
-        'Apple only lets a website send notifications once it has been added to the Home Screen. There is no way around it from this end. It also needs iOS 16.4 or newer.'
+        'Apple only lets a website send notifications once it has been added to the Home Screen. There is no way around it from this end. It also needs iOS or iPadOS 16.4 or newer.'
       );
       return;
     }
-    if (!('Notification' in window)) {
+    if (!canNotify) {
       showNotice(
-        'This iPhone can’t do notifications yet',
+        isIOS ? 'This device can’t do notifications yet' : 'This browser can’t do notifications',
         [],
-        isStandalone
-          ? 'The page is installed correctly, but this version of iOS is too old — web notifications need iOS 16.4 or newer. Updating the phone in Settings → General → Software Update will enable it.'
-          : 'This browser cannot show notifications. Try opening the page in Safari or Chrome.'
+        isIOS
+          ? 'The page is installed correctly, but this version of iOS or iPadOS is too old — web notifications need 16.4 or newer. Updating in Settings → General → Software Update will enable it.'
+          : 'This browser has no notification support at all. A current Chrome, Edge, Firefox, Opera or Safari will do it.'
       );
       return;
     }
@@ -925,7 +1078,7 @@ details.how summary:hover{color:var(--accent)}
     refreshNotifyBtn();
     // Already granted from a previous visit? Re-subscribe silently; push
     // subscriptions expire and a stale one fails without telling anyone.
-    if ('Notification' in window && Notification.permission === 'granted') enablePush();
+    if (canNotify && Notification.permission === 'granted') enablePush();
   }
 
   function lock() {
