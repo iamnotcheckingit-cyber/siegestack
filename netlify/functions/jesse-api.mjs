@@ -49,6 +49,7 @@
  */
 
 import { getStore } from '@netlify/blobs';
+import webpush from 'web-push';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -64,6 +65,10 @@ export const config = {
     '/api/jesse/files',
     '/api/jesse/file',
     '/api/jesse/upload',
+    '/api/jesse/push-key',
+    '/api/jesse/subscribe',
+    '/api/jesse/gif',
+    '/api/jesse/gif-send',
   ],
 };
 
@@ -307,7 +312,9 @@ async function loadMessages({ after = null, limit = PAGE_SIZE } = {}) {
     keys.map(async (key) => {
       const rec = await store.get(key, { type: 'json' });
       if (!rec) return null;
-      const text = rec.enc ? decrypt(rec.enc) : null;
+      // A message can be an attachment with no words, so an absent body is not
+      // a failure to decrypt -- only an encrypted body that will not open is.
+      const text = rec.enc ? decrypt(rec.enc) : '';
       return {
         key,
         ts: rec.ts,
@@ -316,6 +323,7 @@ async function loadMessages({ after = null, limit = PAGE_SIZE } = {}) {
         text: text === null ? null : text,
         // An explicit flag beats making the client infer meaning from a null.
         unreadable: text === null,
+        att: rec.att || null,
       };
     })
   );
@@ -429,8 +437,9 @@ function shippedFiles() {
       }
       const m = meta[name] || {};
       return {
-        name, size, mtime, origin: 'shipped',
+        name, display: name, size, mtime, origin: 'shipped',
         label: m.label || name, note: m.note || '', password: m.password || '', from: '',
+        image: Boolean(imageTypeFor(name)),
       };
     })
     .filter(Boolean)
@@ -445,6 +454,21 @@ function shippedFiles() {
     });
 }
 
+/**
+ * Stored name for an upload.
+ *
+ * Uploads are keyed by a generated unique name rather than the file's own,
+ * because phones hand out the same handful of names forever -- two photos both
+ * called IMG_0001.jpg would otherwise be one photo, and the first would be gone.
+ * Rule 1 does not allow that. The original name is kept in metadata and is what
+ * gets displayed and downloaded.
+ */
+function storedName(original, ts) {
+  const ext = path.extname(original).toLowerCase().replace(/[^a-z0-9.]/g, '');
+  const stem = path.basename(original, path.extname(original)).replace(/[^A-Za-z0-9._-]/g, '').slice(0, 40) || 'file';
+  return `${String(ts).padStart(16, '0')}-${crypto.randomBytes(3).toString('hex')}-${stem}${ext}`;
+}
+
 async function uploadedFiles() {
   try {
     const { blobs } = await filesStore().list({ prefix: 'file/' });
@@ -452,16 +476,19 @@ async function uploadedFiles() {
       blobs.map(async (b) => {
         const meta = await filesStore().getMetadata(b.key);
         const m = meta?.metadata || {};
-        if (!m.name) return null;
+        const stored = b.key.slice('file/'.length);
+        const display = m.name || stored;
         return {
-          name: m.name,
+          name: stored,             // what /api/jesse/file wants
+          display,                  // what a human should read
           size: Number(m.size) || 0,
           mtime: Number(m.ts) || 0,
           origin: 'uploaded',
-          label: m.name,
+          label: display,
           note: m.note || '',
           password: '',
           from: PEOPLE[m.who]?.name || '',
+          image: Boolean(imageTypeFor(display)),
         };
       })
     );
@@ -480,7 +507,16 @@ async function listFiles() {
   return [...up, ...shipped.filter((f) => !taken.has(f.name))].map(({ mtime, ...rest }) => rest);
 }
 
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+/**
+ * Ceiling on one upload. The platform caps a function's request body around
+ * 6 MB, so this sits below that with room to spare rather than letting a photo
+ * fail somewhere less legible than here.
+ *
+ * Phone photos routinely exceed it, which is why the page downscales images
+ * before sending. That is a convenience, not the limit itself -- this check is
+ * the limit, because the page cannot be trusted to have run.
+ */
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 const CONTENT_TYPES = {
   '.zip': 'application/zip',
@@ -492,10 +528,184 @@ const CONTENT_TYPES = {
   '.md': 'text/plain; charset=utf-8',
   '.json': 'application/json',
   '.pdf': 'application/pdf',
+};
+
+/**
+ * Types that may be served INLINE, so an <img> can render them in the thread.
+ *
+ * This is an allowlist and it is short on purpose. Everything not named here is
+ * served as application/octet-stream with Content-Disposition: attachment --
+ * the browser downloads it and never interprets it. Serving a user-supplied
+ * file with a user-supplied content type is how an upload becomes a stored XSS,
+ * so the type is derived from the extension here, never from what the uploader
+ * claimed.
+ *
+ * SVG is deliberately absent. It is an image everywhere else in the world, but
+ * it is also a document that can carry script, and it would run on this origin
+ * -- the one origin where a session cookie for this thread exists. An .svg
+ * still uploads and still downloads; it just will not render inline.
+ */
+const INLINE_IMAGE_TYPES = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.avif': 'image/avif',
+  '.heic': 'image/heic',
+  '.heif': 'image/heif',
+  '.bmp': 'image/bmp',
 };
+
+const imageTypeFor = (name) => INLINE_IMAGE_TYPES[path.extname(name).toLowerCase()] || null;
+
+// ------------------------------------------------------------------ presence
+
+/**
+ * "Is the other one there right now?"
+ *
+ * Every authenticated request stamps the caller's clock. Nothing polls just to
+ * announce itself -- the thread already polls every few seconds, so presence
+ * rides along on traffic that was happening anyway.
+ *
+ * ONLINE_WINDOW is deliberately longer than the poll interval. At exactly one
+ * interval, a single slow request makes someone flicker offline while they are
+ * sitting right there reading; three intervals is quiet.
+ */
+const ONLINE_WINDOW = 25000;
+const presenceStore = () => getStore({ name: 'jesse-presence', consistency: 'strong' });
+
+async function touchPresence(who) {
+  try {
+    await presenceStore().setJSON(`seen/${who}`, { ts: Date.now() });
+  } catch { /* presence is a nicety; never fail a request over it */ }
+}
+
+async function presenceOf(who) {
+  try {
+    const rec = await presenceStore().get(`seen/${who}`, { type: 'json' });
+    if (!rec?.ts) return { online: false, lastSeen: null };
+    return { online: Date.now() - rec.ts < ONLINE_WINDOW, lastSeen: rec.ts };
+  } catch {
+    return { online: false, lastSeen: null };
+  }
+}
+
+const otherPerson = (who) => (who === 'dad' ? 'jesse' : 'dad');
+
+// ---------------------------------------------------------------- web push
+
+/**
+ * VAPID keys live in Blobs, generated on first use, NOT in environment
+ * variables.
+ *
+ * That is a deliberate departure from how the PINs are handled, and the reason
+ * is scar tissue: an evening was lost to environment variables that existed on
+ * the wrong Netlify project with the wrong scope. These keys are not a shared
+ * secret anyone needs to type, so there is no reason to make a human carry them
+ * between a dashboard and a runtime. Generated once, persisted, done.
+ *
+ * The private key never leaves the server. The public key is handed to the
+ * browser, which is exactly what it is for.
+ */
+const keyStore = () => getStore({ name: 'jesse-keys', consistency: 'strong' });
+
+let vapidCache = null;
+async function vapid() {
+  if (vapidCache) return vapidCache;
+  const store = keyStore();
+  let keys = await store.get('vapid', { type: 'json' });
+  if (!keys?.publicKey || !keys?.privateKey) {
+    keys = webpush.generateVAPIDKeys();
+    await store.setJSON('vapid', keys);
+    console.log(JSON.stringify({ event: 'JESSE_VAPID_GENERATED' }));
+  }
+  webpush.setVapidDetails('mailto:noreply@siegestack.com', keys.publicKey, keys.privateKey);
+  vapidCache = keys;
+  return keys;
+}
+
+const pushStore = () => getStore({ name: 'jesse-push', consistency: 'strong' });
+
+/** One key per device, derived from its endpoint, so re-subscribing replaces. */
+const subKey = (who, endpoint) =>
+  `sub/${who}/${crypto.createHash('sha256').update(endpoint).digest('hex').slice(0, 32)}`;
+
+/**
+ * Notify the other person's devices.
+ *
+ * The payload carries the sender and a short preview only. It deliberately does
+ * NOT carry the whole message: a push payload is decrypted by the browser and
+ * shown on a lock screen, which is a different privacy setting than a thread
+ * behind a PIN.
+ *
+ * A dead subscription (410/404) is deleted rather than retried -- that is the
+ * browser telling us the device is gone, and keeping it would mean failing on
+ * every send forever.
+ */
+async function notifyOther(sender, preview) {
+  try {
+    await vapid();
+    const target = otherPerson(sender);
+    const { blobs } = await pushStore().list({ prefix: `sub/${target}/` });
+    if (!blobs.length) return;
+
+    const payload = JSON.stringify({
+      title: `${PEOPLE[sender]?.name || sender} sent a message`,
+      body: preview.slice(0, 120),
+      url: '/jesse',
+    });
+
+    await Promise.all(blobs.map(async ({ key }) => {
+      const sub = await pushStore().get(key, { type: 'json' });
+      if (!sub) return;
+      try {
+        await webpush.sendNotification(sub, payload);
+      } catch (err) {
+        if (err?.statusCode === 404 || err?.statusCode === 410) {
+          await pushStore().delete(key);
+        } else {
+          console.error(JSON.stringify({ event: 'JESSE_PUSH_FAILED', status: err?.statusCode || 0 }));
+        }
+      }
+    }));
+  } catch (err) {
+    // A failed notification must never fail the message that triggered it.
+    console.error(JSON.stringify({ event: 'JESSE_PUSH_ERROR', detail: String(err?.message || err).slice(0, 200) }));
+  }
+}
+
+// --------------------------------------------------------------------- gifs
+
+/**
+ * GIF search proxied through here so the API key stays server-side, and so the
+ * browser never talks to GIPHY directly with our session cookie in flight.
+ *
+ * When a GIF is chosen its BYTES are fetched here and stored encrypted like any
+ * other attachment. Nothing in the thread hotlinks to GIPHY -- if it did, GIPHY
+ * would learn every time either of you opened the conversation. The search
+ * words still reach them; the reading does not.
+ */
+const GIF_ENDPOINT = 'https://api.giphy.com/v1/gifs/search';
+const MAX_GIF_BYTES = 5 * 1024 * 1024;
+
+async function searchGifs(q) {
+  const key = process.env.GIPHY_API_KEY;
+  if (!key) return { ok: false, error: 'no_key' };
+  const url = `${GIF_ENDPOINT}?api_key=${encodeURIComponent(key)}&q=${encodeURIComponent(q)}&limit=24&rating=pg13&bundle=messaging_non_clips`;
+  const res = await fetch(url);
+  if (!res.ok) return { ok: false, error: 'search_failed' };
+  const data = await res.json();
+  return {
+    ok: true,
+    gifs: (data.data || []).map((g) => ({
+      id: g.id,
+      title: g.title || 'GIF',
+      preview: g.images?.fixed_width_small?.url || g.images?.preview_gif?.url || '',
+      full: g.images?.downsized?.url || g.images?.original?.url || '',
+    })).filter((g) => g.preview && g.full),
+  };
+}
 
 // -------------------------------------------------------------------- replies
 
@@ -572,9 +782,80 @@ export default async (req, context) => {
     // Everything past this point requires a valid session.
     if (!me) return json({ ok: false, error: 'unauthorized' }, { status: 401 });
 
+    // Being here at all is proof of life. Recorded before the work, so a slow
+    // response cannot make someone look absent while they are plainly present.
+    await touchPresence(me.id);
+
     if (action === 'messages') {
       const after = new URL(req.url).searchParams.get('after');
-      return json({ ok: true, who: me.id, ...(await loadMessages({ after })) });
+      // Both people, always, in a fixed order -- the bar across the top shows
+      // the pair, so "who is here" reads the same for whoever is looking.
+      const [thread, dad, jesse] = await Promise.all([
+        loadMessages({ after }),
+        presenceOf('dad'),
+        presenceOf('jesse'),
+      ]);
+      return json({
+        ok: true,
+        who: me.id,
+        presence: [
+          { id: 'dad', name: PEOPLE.dad.name, ...dad },
+          { id: 'jesse', name: PEOPLE.jesse.name, ...jesse },
+        ],
+        ...thread,
+      });
+    }
+
+    if (action === 'push-key') {
+      const { publicKey } = await vapid();
+      return json({ ok: true, publicKey });
+    }
+
+    if (action === 'subscribe') {
+      if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
+      const sub = await req.json().catch(() => null);
+      if (!sub?.endpoint) return json({ ok: false, error: 'bad_subscription' }, { status: 400 });
+      await pushStore().setJSON(subKey(me.id, sub.endpoint), sub);
+      return json({ ok: true });
+    }
+
+    if (action === 'gif') {
+      const q = (new URL(req.url).searchParams.get('q') || '').trim().slice(0, 100);
+      if (!q) return json({ ok: true, gifs: [] });
+      return json(await searchGifs(q));
+    }
+
+    if (action === 'gif-send') {
+      if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
+      if (!process.env.GIPHY_API_KEY) return json({ ok: false, error: 'no_key' }, { status: 503 });
+
+      const { url, title } = (await req.json().catch(() => ({}))) || {};
+      // Only GIPHY's own CDN. Without this the endpoint would happily fetch any
+      // URL a caller named, which is a server-side request forgery with our
+      // network position behind it.
+      if (!/^https:\/\/[a-z0-9.-]*\.giphy\.com\//i.test(String(url || ''))) {
+        return json({ ok: false, error: 'bad_url' }, { status: 400 });
+      }
+
+      const res = await fetch(url);
+      if (!res.ok) return json({ ok: false, error: 'fetch_failed' }, { status: 502 });
+      const raw = Buffer.from(await res.arrayBuffer());
+      if (!raw.length || raw.length > MAX_GIF_BYTES) return json({ ok: false, error: 'too_big' }, { status: 413 });
+
+      const display = (String(title || 'gif').replace(/[^A-Za-z0-9 _-]/g, '').trim().slice(0, 40) || 'gif') + '.gif';
+      const ts = nextStamp();
+      const stored = storedName(display.replace(/ /g, '-'), ts);
+      const { data, iv, tag } = encryptBytes(raw);
+      await filesStore().set(`file/${stored}`, data, {
+        metadata: { name: display, note: '', size: raw.length, ts, who: me.id, iv, tag },
+      });
+
+      const att = { file: stored, name: display, size: raw.length, image: true };
+      const key = newMessageKey(ts);
+      await threadStore().setJSON(key, { ts, who: me.id, enc: encrypt(''), att });
+      await notifyOther(me.id, 'sent a GIF');
+
+      return json({ ok: true, message: { key, ts, who: me.id, name: me.name, text: '', unreadable: false, att } });
     }
 
     if (action === 'send') {
@@ -588,6 +869,10 @@ export default async (req, context) => {
       const ts = nextStamp();
       const key = newMessageKey(ts);
       await threadStore().setJSON(key, { ts, who: me.id, enc: encrypt(body) });
+
+      // Awaited, not fire-and-forget: this container may be frozen the instant
+      // the response is written, and a detached promise would die unsent.
+      await notifyOther(me.id, body);
 
       // Echo the stored message back so the sender's thread updates from the
       // server's version of events rather than an optimistic local guess.
@@ -618,23 +903,53 @@ export default async (req, context) => {
       if (!raw.length) return json({ ok: false, error: 'empty' }, { status: 400 });
       if (raw.length > MAX_UPLOAD_BYTES) return json({ ok: false, error: 'too_big' }, { status: 413 });
 
+      const ts = nextStamp();
+      const stored = storedName(name, ts);
       const { data, iv, tag } = encryptBytes(raw);
-      await filesStore().set(`file/${name}`, data, {
-        metadata: { name, note, size: raw.length, ts: Date.now(), who: me.id, iv, tag },
+      await filesStore().set(`file/${stored}`, data, {
+        metadata: { name, note, size: raw.length, ts, who: me.id, iv, tag },
       });
 
-      return json({ ok: true, files: await listFiles() });
+      // Anything sent through the page becomes part of the conversation, not
+      // just a row in a sidebar. A photo you have to go hunting for in a file
+      // list is not "sending someone a photo".
+      const att = { file: stored, name, size: raw.length, image: Boolean(imageTypeFor(name)) };
+      const caption = (params.get('text') || '').trim().slice(0, MAX_MESSAGE_CHARS);
+      const key = newMessageKey(ts);
+      await threadStore().setJSON(key, { ts, who: me.id, enc: encrypt(caption), att });
+
+      await notifyOther(me.id, caption || (att.image ? 'sent a photo' : 'sent ' + name));
+
+      return json({
+        ok: true,
+        files: await listFiles(),
+        message: { key, ts, who: me.id, name: me.name, text: caption, unreadable: false, att },
+      });
     }
 
     if (action === 'file') {
-      const name = new URL(req.url).searchParams.get('name') || '';
+      const params = new URL(req.url).searchParams;
+      const name = params.get('name') || '';
       if (!SAFE_NAME.test(name)) return json({ ok: false, error: 'not_found' }, { status: 404 });
 
-      const headers = {
-        'Content-Type': CONTENT_TYPES[path.extname(name).toLowerCase()] || 'application/octet-stream',
-        'Content-Disposition': `attachment; filename="${name}"`,
-        'Cache-Control': 'no-store, private',
-        'X-Robots-Tag': 'noindex, nofollow, noarchive',
+      /**
+       * The displayed filename is what a human should see when they save it;
+       * `name` is the stored key, which for an upload has a timestamp glued to
+       * the front. Quotes and control characters are stripped because this
+       * value goes into a response header.
+       */
+      const headersFor = (display) => {
+        const safeDisplay = String(display || name).replace(/[^\w. \-()]/g, '_').slice(0, 100);
+        const image = imageTypeFor(display || name);
+        return {
+          // Inline only for the short image allowlist. Everything else is
+          // octet-stream + attachment, so the browser never interprets it.
+          'Content-Type': image || CONTENT_TYPES[path.extname(name).toLowerCase()] || 'application/octet-stream',
+          'Content-Disposition': `${image ? 'inline' : 'attachment'}; filename="${safeDisplay}"`,
+          'X-Content-Type-Options': 'nosniff',
+          'Cache-Control': 'no-store, private',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive',
+        };
       };
 
       // An upload shadows a shipped file of the same name, matching the rail.
@@ -642,12 +957,12 @@ export default async (req, context) => {
       if (blob) {
         const plain = decryptBytes(blob.data, blob.metadata?.iv, blob.metadata?.tag);
         if (!plain) return json({ ok: false, error: 'undecryptable' }, { status: 500 });
-        return new Response(plain, { headers });
+        return new Response(plain, { headers: headersFor(blob.metadata?.name) });
       }
 
       const dir = fileDir();
       if (dir && shippedFiles().some((f) => f.name === name)) {
-        return new Response(fs.readFileSync(path.join(dir, name)), { headers });
+        return new Response(fs.readFileSync(path.join(dir, name)), { headers: headersFor(name) });
       }
       return json({ ok: false, error: 'not_found' }, { status: 404 });
     }

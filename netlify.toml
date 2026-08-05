@@ -217,6 +217,17 @@
     Cache-Control = "no-store, no-cache, must-revalidate, private"
     Referrer-Policy = "no-referrer"
 
+# The service worker must NOT inherit the year-long immutable cache that the
+# /*.js rule above applies to every other script. A service worker frozen for a
+# year is a bug that cannot be fixed by deploying -- the browser would keep
+# running the old one. This rule has to stay ahead of any future /*.js change.
+[[headers]]
+  for = "/jesse-sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Service-Worker-Allowed = "/"
+    X-Robots-Tag = "noindex, nofollow"
+
 # The publish directory is the repo root, so anything committed is on the web by
 # default. These files must not be. This closes the door; the function opens it
 # only for a valid session.

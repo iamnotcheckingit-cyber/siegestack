@@ -38,5 +38,12 @@
   Cache-Control: no-store, no-cache, must-revalidate, private
   Referrer-Policy: no-referrer
 
+# Never let the service worker be cached for a year like other .js files, or a
+# bad one could never be replaced. Mirrors netlify.toml deliberately.
+/jesse-sw.js
+  Cache-Control: no-cache, must-revalidate
+  Service-Worker-Allowed: /
+  X-Robots-Tag: noindex, nofollow
+
 /og-working-with-claude-card.jpg
   Cache-Control: public, max-age=31536000, immutable

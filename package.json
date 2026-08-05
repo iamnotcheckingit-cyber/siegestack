@@ -4,6 +4,7 @@
   "private": true,
   "description": "siegestack.com. Static pages, plus one Netlify function for the private thread at /jesse.",
   "dependencies": {
-    "@netlify/blobs": "^10.7.12"
+    "@netlify/blobs": "^10.7.12",
+    "web-push": "^3.6.7"
   }
 }
