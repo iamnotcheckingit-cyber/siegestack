@@ -45,5 +45,27 @@
   Service-Worker-Allowed: /
   X-Robots-Tag: noindex, nofollow
 
+# The second private thread. Mirrors the /jesse rules exactly; the two share no
+# storage, no session and no keys.
+/nicole
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
+/nicole.html
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
+/api/nicole/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store, no-cache, must-revalidate, private
+  Referrer-Policy: no-referrer
+
+/nicole-sw.js
+  Cache-Control: no-cache, must-revalidate
+  Service-Worker-Allowed: /
+  X-Robots-Tag: noindex, nofollow
+
 /og-working-with-claude-card.jpg
   Cache-Control: public, max-age=31536000, immutable

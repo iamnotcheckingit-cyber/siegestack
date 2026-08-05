@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<!-- Installable, because iOS grants web push only to installed pages. The
+     manifest is named "Private" and carries no description: it becomes the
+     label under the Home Screen icon, where anyone glancing at the phone can
+     read it. -->
+<link rel="manifest" href="/nicole-manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Private">
+<meta name="theme-color" content="#0a192f">
+<!--
+  Private thread. Deliberately absent from sitemap.xml, unlinked from every
+  other page, and served with X-Robots-Tag from both netlify.toml and _headers.
+
+  Nothing on the locked screen names anyone or says what this is. A stranger who
+  guesses the URL should learn nothing from it. That is why the <title> is bland
+  and the logged-out markup carries no names, no file list and no history --
+  everything below the gate is fetched only after the PIN is accepted. Keep it
+  that way: anything hard-coded into this file is readable by the public.
+
+  The PIN is checked in netlify/functions/nicole-api.mjs, server-side, against
+  environment variables. This repository is PUBLIC. No secret belongs in here.
+-->
+<title>Private</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy-dark:#0a192f;--navy:#112240;--accent:#64ffda;--bright:#57cbff;--slate:#8892b0;--light:#a8b2d1;--lightest:#ccd6f6;--white:#e6f1ff;--gold:#F9A825}
+/* iOS counts the address bar in 100vh, so a full-height flex column ends up
+   taller than the screen and the composer sits under the browser chrome. dvh
+   fixes it on modern iOS; -webkit-fill-available covers the older ones. Both
+   are behind the plain 100% so nothing regresses on desktop. */
+html,body{height:100%;height:-webkit-fill-available}
+@supports (height:100dvh){html,body{height:100dvh}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--navy-dark);color:var(--lightest);line-height:1.6;font-size:17px;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+
+/* ---------------------------------------------------------------- locked */
+.gate{min-height:100%;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.gate form{width:100%;max-width:300px;text-align:center}
+.gate label{display:block;color:var(--slate);font-size:.95rem;margin-bottom:.9rem;letter-spacing:.02em}
+.pin{width:100%;background:var(--navy);border:1px solid rgba(100,255,218,.25);border-radius:10px;color:var(--white);font-family:ui-monospace,Consolas,monospace;font-size:1.8rem;letter-spacing:.35em;text-align:center;padding:.85rem .5rem;text-indent:.35em}
+.pin:focus{outline:none;border-color:var(--accent)}
+.gate button{width:100%;margin-top:.9rem;background:var(--accent);color:#08131f;border:none;border-radius:10px;font-size:1.05rem;font-weight:700;padding:.85rem;cursor:pointer;font-family:inherit}
+.gate button:disabled{opacity:.45;cursor:default}
+.err{min-height:1.4rem;margin-top:.85rem;color:var(--gold);font-size:.92rem}
+
+/* ---------------------------------------------------------------- shell */
+.app{display:none;flex-direction:column;height:100%}
+.app.on{display:flex}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1.15rem;border-bottom:1px solid rgba(100,255,218,.15);flex:none}
+.bar .me{color:var(--slate);font-size:.9rem}
+.bar .me b{color:var(--accent);font-weight:600}
+.bar nav{display:flex;gap:.4rem;align-items:center}
+.bar a,.bar button{background:transparent;border:1px solid rgba(136,146,176,.35);color:var(--slate);font-size:.82rem;padding:.35rem .7rem;border-radius:6px;cursor:pointer;text-decoration:none;font-family:inherit;white-space:nowrap}
+.bar a:hover,.bar button:hover{color:var(--accent);border-color:var(--accent)}
+#filesToggle{display:none}
+
+.cols{flex:1;display:flex;min-height:0}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+
+/* ---------------------------------------------------------------- thread */
+.compose{flex:none;padding:1rem 1.15rem;border-bottom:1px solid rgba(100,255,218,.12)}
+.compose textarea{width:100%;background:var(--navy);border:1px solid rgba(100,255,218,.2);border-radius:10px;color:var(--white);font-family:inherit;font-size:1rem;line-height:1.55;padding:.8rem .9rem;resize:vertical;min-height:5.2rem}
+.compose textarea:focus{outline:none;border-color:var(--accent)}
+.crow{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.6rem;flex-wrap:wrap}
+.crow .hint{color:var(--slate);font-size:.8rem;flex:1;min-width:0}
+.tools{display:flex;align-items:center;gap:.5rem;flex:none}
+.crow button{background:var(--accent);color:#08131f;border:none;border-radius:8px;font-size:.95rem;font-weight:700;padding:.6rem 1.5rem;cursor:pointer;font-family:inherit}
+.crow button:disabled{opacity:.4;cursor:default}
+button.tool{background:transparent;border:1px solid rgba(100,255,218,.35);color:var(--accent);font-size:.95rem;font-weight:700;padding:.55rem .8rem;line-height:1;min-width:3rem}
+button.tool:hover{background:rgba(100,255,218,.12)}
+button.tool.on{background:rgba(100,255,218,.18)}
+
+/* ------------------------------------------------------------ who is here */
+.who-strip{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;min-width:0}
+.who-strip .p{display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem;color:var(--slate);white-space:nowrap}
+.who-strip .dot{width:.55rem;height:.55rem;border-radius:50%;background:var(--slate);flex:none;box-shadow:0 0 0 0 rgba(100,255,218,.5)}
+.who-strip .p.on .dot{background:var(--accent);animation:pulse 2.4s ease-out infinite}
+.who-strip .p.on{color:var(--lightest)}
+.who-strip .p.self b{color:var(--accent)}
+.who-strip .p b{font-weight:600;color:inherit}
+.who-strip .p .ago{font-size:.76rem;color:var(--slate)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(100,255,218,.45)}70%{box-shadow:0 0 0 .4rem rgba(100,255,218,0)}100%{box-shadow:0 0 0 0 rgba(100,255,218,0)}}
+@media (prefers-reduced-motion:reduce){.who-strip .p.on .dot{animation:none}}
+
+/* -------------------------------------------------------------- gif picker */
+.gifbox{margin-top:.7rem;border:1px solid rgba(100,255,218,.25);border-radius:10px;background:#050d18;overflow:hidden}
+.gifsearch{display:flex;gap:.5rem;padding:.6rem}
+.gifsearch input{flex:1;min-width:0;background:var(--navy);border:1px solid rgba(100,255,218,.2);border-radius:8px;color:var(--white);font-family:inherit;font-size:1rem;padding:.55rem .7rem}
+.gifsearch input:focus{outline:none;border-color:var(--accent)}
+.gifsearch button{background:transparent;border:1px solid rgba(136,146,176,.35);color:var(--slate);border-radius:8px;font-size:1.1rem;padding:0 .7rem;cursor:pointer;font-family:inherit;line-height:1}
+.gifgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.45rem;padding:0 .6rem .6rem;max-height:230px;overflow-y:auto}
+.gifgrid img{width:100%;height:90px;object-fit:cover;border-radius:6px;cursor:pointer;background:var(--navy);border:1px solid transparent}
+.gifgrid img:hover{border-color:var(--accent)}
+.gifnote{grid-column:1/-1;color:var(--slate);font-size:.85rem;padding:.4rem .2rem;line-height:1.5}
+
+.thread{flex:1;overflow-y:auto;padding:1.15rem 1.15rem 3rem}
+.msg{background:var(--navy);border:1px solid rgba(136,146,176,.18);border-left:3px solid var(--slate);border-radius:0 10px 10px 0;padding:.75rem .95rem;margin-bottom:.85rem}
+.msg.mine{border-left-color:var(--accent)}
+.msg .who{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.3rem}
+.msg .who b{color:var(--lightest);font-size:.88rem;font-weight:600}
+.msg.mine .who b{color:var(--accent)}
+.msg .who time{color:var(--slate);font-size:.76rem;white-space:nowrap}
+.msg p{white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere;color:var(--light)}
+.msg a{color:var(--bright)}
+.msg.broken{border-left-color:var(--gold)}
+.msg.broken p{color:var(--gold);font-style:italic}
+.msg .shot{display:block;margin-top:.5rem;line-height:0}
+.msg .shot img{max-width:100%;height:auto;border-radius:8px;border:1px solid rgba(136,146,176,.25);background:#050d18}
+.msg .attach{display:inline-block;margin-top:.5rem;background:rgba(100,255,218,.08);border:1px solid rgba(100,255,218,.3);color:var(--accent);border-radius:8px;padding:.5rem .8rem;font-size:.88rem;text-decoration:none;line-height:1.4}
+.msg .attach:hover{background:rgba(100,255,218,.16)}
+.empty{color:var(--slate);text-align:center;padding:2.5rem 1rem;font-size:.95rem}
+
+/* ----------------------------------------------------------------- rail */
+.side{flex:none;width:290px;border-left:1px solid rgba(100,255,218,.15);overflow-y:auto;padding:1.15rem 1.1rem 3rem}
+.side h2{color:var(--slate);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:.9rem}
+.file{background:var(--navy);border:1px solid rgba(100,255,218,.15);border-radius:10px;padding:.8rem .9rem;margin-bottom:.7rem}
+.file .name{display:block;color:var(--accent);font-weight:600;font-size:.95rem;text-decoration:none;line-height:1.35}
+.file .name:hover{color:var(--bright);text-decoration:underline}
+.file .meta{color:var(--slate);font-size:.75rem;margin-top:.15rem}
+.file .note{color:var(--light);font-size:.84rem;margin-top:.45rem;line-height:1.5}
+.file .pw{margin-top:.45rem;font-size:.8rem;color:var(--slate)}
+.file .pw b{color:var(--gold);font-family:ui-monospace,Consolas,monospace;font-size:1rem;letter-spacing:.06em}
+.side .none{color:var(--slate);font-size:.85rem;line-height:1.6}
+.file .tag{display:inline-block;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;padding:.1rem .4rem;border-radius:4px;margin-left:.4rem;vertical-align:.1em;border:1px solid rgba(136,146,176,.4);color:var(--slate)}
+.file .tag.pub{border-color:rgba(249,168,37,.5);color:var(--gold)}
+
+.upload{margin-top:.9rem}
+.pick{display:block;text-align:center;border:1px dashed rgba(100,255,218,.35);color:var(--accent);border-radius:10px;padding:.7rem;font-size:.88rem;font-weight:600;cursor:pointer}
+.pick:hover{background:rgba(100,255,218,.08)}
+.pick.busy{opacity:.5;cursor:default}
+.uhint{color:var(--slate);font-size:.75rem;margin-top:.45rem;line-height:1.5}
+
+details.how{margin-top:1.4rem;border-top:1px solid rgba(100,255,218,.15);padding-top:1rem}
+details.how summary{cursor:pointer;color:var(--slate);font-size:.83rem;list-style:none}
+details.how summary::-webkit-details-marker{display:none}
+details.how summary::before{content:"\25B8\00a0"}
+details.how[open] summary::before{content:"\25BE\00a0"}
+details.how summary:hover{color:var(--accent)}
+.how h3{color:var(--white);font-size:.92rem;margin:1.1rem 0 .4rem}
+.how p{margin-bottom:.7rem;color:var(--light);font-size:.85rem;line-height:1.6}
+.how ol,.how ul{margin:0 0 .8rem 1.1rem}
+.how li{margin-bottom:.35rem;color:var(--light);font-size:.85rem;line-height:1.55}
+.how strong{color:var(--white)}
+.how pre{background:#050d18;border:1px solid rgba(100,255,218,.2);border-radius:8px;padding:.7rem;overflow-x:auto;font-family:ui-monospace,Consolas,monospace;font-size:.68rem;color:var(--lightest);line-height:1.5;white-space:pre-wrap;word-break:break-all;margin-bottom:.6rem}
+.how button.copy{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.4rem .8rem;border-radius:6px;font-size:.78rem;cursor:pointer;font-weight:600;font-family:inherit}
+.how button.copy:hover{background:rgba(100,255,218,.12)}
+.how .small{font-size:.78rem;color:var(--slate)}
+.warn{border-left:3px solid var(--gold);background:rgba(249,168,37,.08);padding:.7rem .85rem;border-radius:0 6px 6px 0;margin:.8rem 0}
+.warn p{margin:0;font-size:.82rem}
+
+/* --------------------------------------------------------------- narrow */
+@media (max-width:860px){
+  #filesToggle{display:inline-block}
+  .cols{flex-direction:column}
+  .side{width:auto;border-left:none;border-top:1px solid rgba(100,255,218,.15);display:none;flex:none;max-height:55%}
+  .side.open{display:block}
+  .bar{padding:.7rem .85rem;gap:.6rem;align-items:flex-start}
+  .bar nav{flex-wrap:wrap;justify-content:flex-end;gap:.35rem}
+  .bar a,.bar button{font-size:.78rem;padding:.3rem .55rem}
+  .thread,.compose{padding-left:.85rem;padding-right:.85rem}
+  .who-strip{gap:.75rem}
+  .who-strip .p{font-size:.82rem}
+
+  /* Safari zooms the whole page when a focused field is under 16px, and never
+     zooms back out. Every input the thumb can reach is therefore >=16px. */
+  .compose textarea,.gifsearch input{font-size:16px}
+  .pin{font-size:1.6rem}
+
+  /* Room for the home indicator and the notch, without hardcoding a guess. */
+  .thread{padding-bottom:calc(2.5rem + env(safe-area-inset-bottom))}
+  .compose{padding-bottom:calc(1rem + env(safe-area-inset-bottom)/2)}
+  .bar{padding-top:calc(.7rem + env(safe-area-inset-top))}
+  .side{padding-bottom:calc(3rem + env(safe-area-inset-bottom))}
+
+  /* The composer stacks so the buttons keep a full-width tap target. */
+  .crow{gap:.6rem}
+  .crow .hint{flex-basis:100%;order:2}
+  .tools{order:1;width:100%;justify-content:space-between}
+  .tools #send{flex:1;margin-left:.3rem}
+  button.tool{padding:.65rem .9rem}
+  .gifgrid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));max-height:40vh}
+}
+
+/* Touch devices: nothing here should depend on a hover state existing. */
+@media (hover:none){
+  .file .name:hover,.bar button:hover,.pick:hover{text-decoration:none}
+  .thread{-webkit-overflow-scrolling:touch}
+}
+</style>
+</head>
+<body>
+
+<!-- Locked. Says nothing about who or what. -->
+<div class="gate" id="gate">
+  <form id="gateForm" autocomplete="off">
+    <label for="pin">Enter your PIN</label>
+    <input class="pin" id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]*"
+           autocomplete="off" autocorrect="off" spellcheck="false" maxlength="12" aria-describedby="gateErr">
+    <button type="submit" id="gateGo">Enter</button>
+    <div class="err" id="gateErr" role="alert" aria-live="polite"></div>
+  </form>
+</div>
+
+<!-- Unlocked. -->
+<div class="app" id="app">
+  <div class="bar">
+    <!-- Who is here. Both people, always, in the same order for both of us. -->
+    <div class="who-strip" id="whoStrip" aria-live="polite"></div>
+    <nav>
+      <button type="button" id="notifyBtn" hidden>Notifications</button>
+      <button type="button" id="filesToggle" aria-expanded="false" aria-controls="side">Files</button>
+      <button type="button" id="exportBtn">Save a copy</button>
+      <button type="button" id="signOut">Sign out</button>
+    </nav>
+  </div>
+
+  <div class="cols">
+    <div class="main">
+      <div class="compose">
+        <textarea id="text" placeholder="Write something&hellip;" maxlength="4000" aria-label="Your message"></textarea>
+        <div class="crow">
+          <span class="hint" id="hint">Enter sends &middot; Shift+Enter for a new line</span>
+          <div class="tools">
+            <button type="button" class="tool" id="photoBtn" title="Send a photo" aria-label="Send a photo">&#128247;</button>
+            <button type="button" class="tool" id="gifBtn" title="Send a GIF" aria-label="Send a GIF">GIF</button>
+            <button type="button" id="send">Send</button>
+          </div>
+        </div>
+        <input type="file" id="photoPick" accept="image/*" hidden>
+        <input type="file" id="gifPick" accept="image/gif" hidden>
+
+        <!-- GIF search. Hidden until asked for; the query goes to GIPHY, the
+             chosen GIF is re-stored by us so viewing it later leaks nothing. -->
+        <div class="gifbox" id="gifBox" hidden>
+          <div class="gifsearch">
+            <input type="text" id="gifQ" placeholder="Search GIFs&hellip;" autocomplete="off" aria-label="Search GIFs">
+            <button type="button" id="gifClose" aria-label="Close GIF search">&times;</button>
+          </div>
+          <div class="gifgrid" id="gifGrid"><p class="gifnote" id="gifNote">Type to search.</p></div>
+        </div>
+      </div>
+      <div class="thread" id="thread">
+        <div class="empty" id="empty">Loading&hellip;</div>
+      </div>
+    </div>
+
+    <aside class="side" id="side">
+      <h2>Files</h2>
+      <!-- Populated from /api/nicole/files. Nothing is listed here in the markup,
+           because the markup is public and the file list is not. -->
+      <div id="fileList"><p class="none">Loading&hellip;</p></div>
+
+      <div class="upload">
+        <label class="pick" for="pick" id="pickLabel">Send a file</label>
+        <input type="file" id="pick" hidden>
+        <div class="uhint" id="uhint">Encrypted, and never touches the public repo.</div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = '/api/nicole/';
+  var POLL_MS = 6000;
+
+  var gate = document.getElementById('gate');
+  var app = document.getElementById('app');
+  var gateForm = document.getElementById('gateForm');
+  var pinInput = document.getElementById('pin');
+  var gateGo = document.getElementById('gateGo');
+  var gateErr = document.getElementById('gateErr');
+  var thread = document.getElementById('thread');
+  var empty = document.getElementById('empty');
+  var textArea = document.getElementById('text');
+  var sendBtn = document.getElementById('send');
+  var hint = document.getElementById('hint');
+  var side = document.getElementById('side');
+  var fileList = document.getElementById('fileList');
+  var filesToggle = document.getElementById('filesToggle');
+  var pick = document.getElementById('pick');
+  var pickLabel = document.getElementById('pickLabel');
+  var uhint = document.getElementById('uhint');
+  var whoStrip = document.getElementById('whoStrip');
+  var notifyBtn = document.getElementById('notifyBtn');
+  var photoBtn = document.getElementById('photoBtn');
+  var photoPick = document.getElementById('photoPick');
+  var gifBtn = document.getElementById('gifBtn');
+  var gifBox = document.getElementById('gifBox');
+  var gifQ = document.getElementById('gifQ');
+  var gifGrid = document.getElementById('gifGrid');
+  var gifNote = document.getElementById('gifNote');
+  var gifClose = document.getElementById('gifClose');
+
+  var me = null;          // 'dad' | 'nicole'
+  var latestKey = null;   // newest key already rendered; drives incremental polls
+  var rendered = 0;
+  var timer = null;
+  var maxUpload = 4 * 1024 * 1024;  // replaced by the server's real limit on load
+
+  function api(path, opts) {
+    return fetch(API + path, Object.assign({
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store'
+    }, opts || {})).then(function (r) {
+      return r.json().catch(function () { return { ok: false, error: 'parse' }; })
+        .then(function (body) { body._status = r.status; return body; });
+    });
+  }
+
+  // -------------------------------------------------------------- rendering
+
+  function stamp(ts) {
+    var d = new Date(ts);
+    var sameDay = d.toDateString() === new Date().toDateString();
+    var time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    return sameDay ? time : d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ', ' + time;
+  }
+
+  /**
+   * Message bodies become text nodes, never HTML. Links are turned into real
+   * anchor elements by splitting the string and building nodes, so there is no
+   * path by which message content can become markup.
+   */
+  function bodyInto(p, text) {
+    var re = /(https?:\/\/[^\s<>"']+)/g;
+    var last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) p.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = document.createElement('a');
+      a.href = m[1];
+      a.textContent = m[1];
+      a.rel = 'noopener noreferrer nofollow';
+      a.target = '_blank';
+      p.appendChild(a);
+      last = m.index + m[1].length;
+    }
+    if (last < text.length) p.appendChild(document.createTextNode(text.slice(last)));
+  }
+
+  function node(msg) {
+    var div = document.createElement('div');
+    div.className = 'msg' + (msg.who === me ? ' mine' : '') + (msg.unreadable ? ' broken' : '');
+    div.setAttribute('data-key', msg.key);
+
+    var head = document.createElement('div');
+    head.className = 'who';
+    var b = document.createElement('b');
+    b.textContent = msg.who === me ? 'You' : msg.name;
+    var t = document.createElement('time');
+    t.textContent = stamp(msg.ts);
+    t.dateTime = new Date(msg.ts).toISOString();
+    head.appendChild(b);
+    head.appendChild(t);
+
+    div.appendChild(head);
+
+    if (msg.unreadable) {
+      // Rule 1: a message we cannot decrypt is still shown to exist.
+      var warn = document.createElement('p');
+      warn.textContent = 'This message could not be decrypted. It is still stored — nothing was lost.';
+      div.appendChild(warn);
+    } else if (msg.text) {
+      var p = document.createElement('p');
+      bodyInto(p, msg.text);
+      div.appendChild(p);
+    }
+
+    // An image sent into the thread is shown in the thread. The src is the
+    // authenticated endpoint -- the browser sends the session cookie with it,
+    // so the picture loads for us and 401s for anyone else. It is stored
+    // encrypted in Netlify Blobs and never enters the public repository.
+    if (msg.att) {
+      var href = API + 'file?name=' + encodeURIComponent(msg.att.file);
+      if (msg.att.image) {
+        var link = document.createElement('a');
+        link.href = href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'shot';
+        var img = document.createElement('img');
+        img.src = href;
+        img.alt = msg.att.name;
+        img.loading = 'lazy';
+        img.addEventListener('error', function () {
+          // Never leave a broken-image icon with no explanation.
+          var oops = document.createElement('div');
+          oops.className = 'attach';
+          oops.textContent = msg.att.name + ' — could not be displayed. Tap to download.';
+          link.replaceChild(oops, img);
+        });
+        link.appendChild(img);
+        div.appendChild(link);
+      } else {
+        var a2 = document.createElement('a');
+        a2.className = 'attach';
+        a2.href = href;
+        a2.setAttribute('download', msg.att.name);
+        a2.textContent = '⬇ ' + msg.att.name + ' · ' + size(msg.att.size || 0);
+        div.appendChild(a2);
+      }
+    }
+
+    return div;
+  }
+
+  /** Newest first, so new arrivals go on top. */
+  function add(messages) {
+    if (!messages.length) return;
+    var frag = document.createDocumentFragment();
+    messages.forEach(function (m) { frag.appendChild(node(m)); });
+    thread.insertBefore(frag, thread.firstChild);
+    rendered += messages.length;
+    if (empty.parentNode) empty.parentNode.removeChild(empty);
+  }
+
+  // ------------------------------------------------------------- who is here
+
+  function ago(ts) {
+    if (!ts) return 'not yet';
+    var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+    if (s < 90) return 'just now';
+    var m = Math.round(s / 60);
+    if (m < 60) return m + 'm ago';
+    var h = Math.round(m / 60);
+    if (h < 24) return h + 'h ago';
+    return Math.round(h / 24) + 'd ago';
+  }
+
+  function drawPresence(list) {
+    whoStrip.textContent = '';
+    (list || []).forEach(function (p) {
+      var el = document.createElement('span');
+      el.className = 'p' + (p.online ? ' on' : '') + (p.id === me ? ' self' : '');
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      var nm = document.createElement('b');
+      nm.textContent = p.id === me ? p.name + ' (you)' : p.name;
+      el.appendChild(dot);
+      el.appendChild(nm);
+      var state = document.createElement('span');
+      state.className = 'ago';
+      state.textContent = p.online ? 'online' : ago(p.lastSeen);
+      el.appendChild(state);
+      whoStrip.appendChild(el);
+    });
+  }
+
+  function poll() {
+    var q = latestKey ? '?after=' + encodeURIComponent(latestKey) : '';
+    return api('messages' + q).then(function (r) {
+      if (r._status === 401) { lock(); return; }
+      if (!r.ok) return;
+      if (r.presence) drawPresence(r.presence);
+      var fresh = (r.messages || []).filter(function (m) { return m.who !== me; });
+      add(r.messages || []);
+      if (r.latestKey) latestKey = r.latestKey;
+      if (!rendered && empty.parentNode) empty.textContent = 'Nothing here yet. Say something.';
+      // Only nudge for messages from the other person, and only when this tab
+      // is not the thing being looked at.
+      if (fresh.length && document.visibilityState !== 'visible') localNotify(fresh);
+    }).catch(function () { /* offline; the next tick tries again */ });
+  }
+
+  // --------------------------------------------------------- notifications
+
+  /**
+   * Two layers, because they cover different situations.
+   *
+   *   local  fires from this page while it is open. Instant, no setup.
+   *   push   fires from the server through a service worker, so it arrives with
+   *          the browser closed. That is the one that matters on a phone.
+   *
+   * On iPhone, web push only works once the page has been added to the Home
+   * Screen -- Apple's rule, not ours -- so the button says so rather than
+   * failing silently.
+   */
+  function localNotify(msgs) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var m = msgs[msgs.length - 1];
+    var body = m.text || (m.att ? (m.att.image ? 'sent a photo' : 'sent ' + m.att.name) : '');
+    try {
+      new Notification(m.name + ' sent a message', { body: body.slice(0, 120), tag: 'nicole-thread', icon: '/favicon.svg' });
+    } catch (e) { /* some browsers only allow this from a service worker */ }
+  }
+
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+
+  function urlB64ToUint8(b64) {
+    var pad = '='.repeat((4 - (b64.length % 4)) % 4);
+    var raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+
+  /**
+   * iPhone Safari does not define Notification AT ALL until the page has been
+   * added to the Home Screen. The first version of this hid the button in that
+   * case, which meant the one device that needed the instructions was the one
+   * device that could not see them. Show it and say what to do instead.
+   */
+  function refreshNotifyBtn() {
+    notifyBtn.hidden = false;
+    notifyBtn.disabled = false;
+    notifyBtn.title = '';
+
+    if (isIOS && !isStandalone) {
+      notifyBtn.textContent = 'Notifications: add to Home Screen';
+      notifyBtn.title = 'On iPhone, notifications only work once this page is installed.';
+      return;
+    }
+    if (!('Notification' in window)) {
+      notifyBtn.textContent = 'Notifications unsupported';
+      notifyBtn.disabled = true;
+      notifyBtn.title = 'This browser cannot show notifications.';
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      notifyBtn.textContent = 'Notifications on';
+      notifyBtn.disabled = true;
+    } else if (Notification.permission === 'denied') {
+      notifyBtn.textContent = 'Notifications blocked';
+      notifyBtn.disabled = true;
+      notifyBtn.title = 'Blocked for this site. Turn them back on via the padlock in the address bar.';
+    } else {
+      notifyBtn.textContent = 'Turn on notifications';
+    }
+  }
+
+  /**
+   * Background push. Reports what went wrong rather than swallowing it -- the
+   * first version caught every error silently, so "notifications don't work"
+   * was indistinguishable from "notifications are working", which is a terrible
+   * place to debug from.
+   */
+  function enablePush() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      hint.textContent = 'Notifications will show while this page is open. This browser can’t do background ones.';
+      return Promise.resolve();
+    }
+    return navigator.serviceWorker.register('/nicole-sw.js')
+      .then(function (reg) { return navigator.serviceWorker.ready.then(function () { return reg; }); })
+      .then(function (reg) {
+        return api('push-key').then(function (k) {
+          if (!k.ok || !k.publicKey) throw new Error('no key from server');
+          return reg.pushManager.getSubscription().then(function (existing) {
+            return existing || reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlB64ToUint8(k.publicKey)
+            });
+          });
+        });
+      })
+      .then(function (sub) {
+        return fetch(API + 'subscribe', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub)
+        }).then(function (r) { return r.json(); });
+      })
+      .then(function (r) {
+        hint.textContent = r && r.ok
+          ? 'Notifications on — you’ll get them even with this closed.'
+          : 'Notifications on for this page, but background ones didn’t register.';
+        setTimeout(function () { hint.textContent = 'Enter sends · Shift+Enter for a new line'; }, 6000);
+      })
+      .catch(function (e) {
+        // Local notifications still work; say exactly that rather than nothing.
+        hint.textContent = 'Notifications on while this page is open. Background ones failed: ' + (e && e.message ? e.message : 'unknown');
+      });
+  }
+
+  notifyBtn.addEventListener('click', function () {
+    if (isIOS && !isStandalone) {
+      hint.textContent = 'On iPhone: tap Share (□↑) → Add to Home Screen, open it from that icon, then tap this again.';
+      return;
+    }
+    if (!('Notification' in window)) {
+      hint.textContent = 'This browser can’t show notifications.';
+      return;
+    }
+    hint.textContent = 'Asking your browser…';
+    var ask;
+    try { ask = Notification.requestPermission(); } catch (e) { ask = null; }
+    // Older Safari only supports the callback form and returns undefined here.
+    if (!ask || typeof ask.then !== 'function') {
+      ask = new Promise(function (res) { Notification.requestPermission(res); });
+    }
+    ask.then(function (p) {
+      refreshNotifyBtn();
+      if (p === 'granted') { enablePush(); return; }
+      hint.textContent = p === 'denied'
+        ? 'You blocked notifications. Re-enable them via the padlock in the address bar.'
+        : 'No answer given — tap again and choose Allow.';
+    });
+  });
+
+  function startPolling() {
+    stopPolling();
+    timer = setInterval(function () {
+      if (document.visibilityState === 'visible') poll();
+    }, POLL_MS);
+  }
+  function stopPolling() { if (timer) { clearInterval(timer); timer = null; } }
+
+  // ----------------------------------------------------------------- files
+
+  function size(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
+  /**
+   * Downloads go through the API so the session cookie is checked. The files
+   * are not served from the publish directory at all -- there is no URL that
+   * reaches them without a valid PIN.
+   */
+  function drawFiles(files) {
+    fileList.textContent = '';
+    if (!files.length) {
+      var none = document.createElement('p');
+      none.className = 'none';
+      none.textContent = 'Nothing here right now.';
+      fileList.appendChild(none);
+      return;
+    }
+    files.forEach(function (f) {
+      var card = document.createElement('div');
+      card.className = 'file';
+
+      var a = document.createElement('a');
+      a.className = 'name';
+      a.href = API + 'file?name=' + encodeURIComponent(f.name);
+      a.textContent = f.label;
+      // Images open for viewing; everything else downloads.
+      if (f.image) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      else { a.setAttribute('download', f.display || f.name); }
+      card.appendChild(a);
+
+      // A shipped file lives in the public repo. Say so plainly rather than
+      // letting either of us assume everything in this rail is private.
+      var tag = document.createElement('span');
+      tag.className = 'tag' + (f.origin === 'shipped' ? ' pub' : '');
+      tag.textContent = f.origin === 'shipped' ? 'in public repo' : 'encrypted';
+      tag.title = f.origin === 'shipped'
+        ? 'Committed to the public GitHub repo. Off siegestack.com, but downloadable from GitHub.'
+        : 'Encrypted and stored outside the repo. Only reachable with a PIN.';
+      a.appendChild(tag);
+
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = (f.display || f.name) + ' · ' + size(f.size) + (f.from ? ' · from ' + f.from : '');
+      card.appendChild(meta);
+
+      if (f.note) {
+        var note = document.createElement('div');
+        note.className = 'note';
+        note.textContent = f.note;
+        card.appendChild(note);
+      }
+      if (f.password) {
+        var pw = document.createElement('div');
+        pw.className = 'pw';
+        pw.appendChild(document.createTextNode('Password: '));
+        var strong = document.createElement('b');
+        strong.textContent = f.password;
+        pw.appendChild(strong);
+        card.appendChild(pw);
+      }
+      fileList.appendChild(card);
+    });
+  }
+
+  function loadFiles() {
+    return api('files').then(function (r) {
+      if (r.ok) { maxUpload = r.maxUpload || maxUpload; drawFiles(r.files || []); }
+    }).catch(function () { /* the rail is not worth an error state */ });
+  }
+
+  var IMAGE_RE = /\.(png|jpe?g|gif|webp|avif|heic|heif|bmp)$/i;
+
+  /**
+   * Shrink a photo before sending it.
+   *
+   * A phone camera produces 4-12 MB per shot, well over the server's limit, and
+   * "too big" is a useless answer to a kid trying to send his dad a picture.
+   * Anything over the threshold is re-drawn at a sane size and re-encoded as
+   * JPEG.
+   *
+   * Resolves with the ORIGINAL file whenever it cannot do better: formats the
+   * browser will not decode (HEIC outside Safari is the common one), a canvas
+   * that comes back empty, or any error at all. Sending the original and maybe
+   * hitting the size limit beats silently sending nothing.
+   */
+  function shrinkImage(file) {
+    var MAX_EDGE = 2000, TRIGGER = 1200000;
+    return new Promise(function (resolve) {
+      if (!IMAGE_RE.test(file.name) || file.size <= TRIGGER || !window.createImageBitmap) return resolve(file);
+      var done = false;
+      var bail = function () { if (!done) { done = true; resolve(file); } };
+      setTimeout(bail, 8000);   // never hang the send on a decode that stalls
+      createImageBitmap(file).then(function (bmp) {
+        var scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
+        var w = Math.max(1, Math.round(bmp.width * scale));
+        var h = Math.max(1, Math.round(bmp.height * scale));
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(bmp, 0, 0, w, h);
+        c.toBlob(function (blob) {
+          if (done) return;
+          done = true;
+          // Keep the original if the "shrunk" version somehow got bigger.
+          if (!blob || blob.size >= file.size) return resolve(file);
+          var renamed = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+          resolve(new File([blob], renamed, { type: 'image/jpeg' }));
+        }, 'image/jpeg', 0.85);
+      }).catch(bail);
+    });
+  }
+
+  /**
+   * The file is POSTed as a raw body with the name in the query string. No
+   * multipart, no base64 -- base64 would inflate it by a third and push more
+   * files over the size limit for nothing.
+   */
+  /**
+   * The one upload path. Both the rail's "Send a file" and the composer's
+   * camera button come through here, so a fix to one is a fix to both.
+   */
+  function sendUpload(chosen, done) {
+    if (!chosen) return;
+    done = done || function () {};
+
+    pickLabel.classList.add('busy');
+    pickLabel.textContent = 'Sending…';
+    uhint.textContent = IMAGE_RE.test(chosen.name) && chosen.size > 1200000 ? 'Resizing…' : size(chosen.size);
+    hint.textContent = 'Sending ' + chosen.name + '…';
+
+    var reset = function (msg) {
+      pickLabel.classList.remove('busy');
+      pickLabel.textContent = 'Send a file';
+      pick.value = '';
+      uhint.textContent = msg;
+      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      done();
+    };
+
+    shrinkImage(chosen).then(function (file) {
+      if (file.size > maxUpload) {
+        reset('Too big — ' + size(file.size) + '. The limit is ' + size(maxUpload) + '.');
+        return null;
+      }
+      if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(file.name)) {
+        reset('Rename it first — letters, numbers, dots, dashes and underscores only.');
+        return null;
+      }
+
+      // Whatever is already typed in the box rides along as the caption.
+      var caption = textArea.value.trim();
+      var url = API + 'upload?name=' + encodeURIComponent(file.name) +
+                (caption ? '&text=' + encodeURIComponent(caption.slice(0, 4000)) : '');
+
+      return file.arrayBuffer().then(function (buf) {
+        return fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/octet-stream' },
+          body: buf
+        }).then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+          .then(function (r) { return { r: r, file: file }; });
+      });
+    }).then(function (out) {
+      if (!out) return;
+      if (out.r.ok) {
+        textArea.value = '';
+        drawFiles(out.r.files || []);
+        if (out.r.message) {
+          add([out.r.message]);
+          if (out.r.message.key > (latestKey || '')) latestKey = out.r.message.key;
+          thread.scrollTop = 0;
+        }
+        reset(out.file.name + ' sent.');
+        setTimeout(function () { uhint.textContent = 'Encrypted, and never touches the public repo.'; }, 4000);
+      } else {
+        reset(out.r.error === 'too_big' ? 'Too big for one upload.' : 'That didn’t go through. Try again.');
+      }
+    }).catch(function () {
+      reset('No connection. Nothing was sent.');
+    });
+  }
+
+  pick.addEventListener('change', function () {
+    if (pick.files && pick.files[0]) sendUpload(pick.files[0]);
+  });
+
+  filesToggle.addEventListener('click', function () {
+    var open = side.classList.toggle('open');
+    filesToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // ----------------------------------------------------------------- state
+
+  function unlock(who, name) {
+    me = who;
+    gate.style.display = 'none';
+    app.classList.add('on');
+    // Don't steal focus on a phone -- it throws up the keyboard over the thread
+    // before you have read a word of it.
+    poll().then(function () { if (window.innerWidth > 860) textArea.focus(); });
+    loadFiles();
+    startPolling();
+    refreshNotifyBtn();
+    // Already granted from a previous visit? Re-subscribe silently; push
+    // subscriptions expire and a stale one fails without telling anyone.
+    if ('Notification' in window && Notification.permission === 'granted') enablePush();
+  }
+
+  function lock() {
+    me = null;
+    latestKey = null;
+    rendered = 0;
+    stopPolling();
+    app.classList.remove('on');
+    gate.style.display = '';
+    side.classList.remove('open');
+    Array.prototype.slice.call(thread.querySelectorAll('.msg')).forEach(function (n) { n.remove(); });
+    fileList.textContent = '';
+    whoStrip.textContent = '';
+    closeGif();
+    if (!empty.parentNode) thread.appendChild(empty);
+    empty.textContent = 'Loading…';
+    pinInput.value = '';
+    pinInput.focus();
+  }
+
+  // ----------------------------------------------------------------- login
+
+  gateForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var pin = pinInput.value.trim();
+    if (!pin) return;
+    gateGo.disabled = true;
+    gateErr.textContent = '';
+    api('login', { method: 'POST', body: JSON.stringify({ pin: pin }) }).then(function (r) {
+      gateGo.disabled = false;
+      if (r.ok) { unlock(r.who, r.name); return; }
+      pinInput.value = '';
+      pinInput.focus();
+      if (r.error === 'locked') gateErr.textContent = 'Too many tries. Wait ' + r.retryAfter + 's.';
+      else if (r.error === 'not_configured') gateErr.textContent = 'Not set up yet.';
+      else if (r.retryAfter) gateErr.textContent = 'Wrong PIN. Locked for ' + r.retryAfter + 's.';
+      else gateErr.textContent = 'Wrong PIN.';
+    }).catch(function () {
+      gateGo.disabled = false;
+      gateErr.textContent = 'No connection.';
+    });
+  });
+
+  // ------------------------------------------------------------------ send
+
+  function send() {
+    var body = textArea.value.trim();
+    if (!body) return;
+    sendBtn.disabled = true;
+    hint.textContent = 'Sending…';
+    api('send', { method: 'POST', body: JSON.stringify({ text: body }) }).then(function (r) {
+      sendBtn.disabled = false;
+      if (r._status === 401) { lock(); return; }
+      if (!r.ok) {
+        hint.textContent = r.error === 'too_long' ? 'Too long — trim it a bit.' : 'Didn’t send. Try again.';
+        return;
+      }
+      textArea.value = '';
+      hint.textContent = 'Enter sends · Shift+Enter for a new line';
+      add([r.message]);
+      if (r.message.key > (latestKey || '')) latestKey = r.message.key;
+      thread.scrollTop = 0;
+      textArea.focus();
+    }).catch(function () {
+      sendBtn.disabled = false;
+      // The message is still sitting in the box -- nothing typed is thrown away.
+      hint.textContent = 'No connection. Your text is still here — try again.';
+    });
+  }
+
+  // ------------------------------------------------- photo button, next to send
+
+  // Same pipeline as the rail's uploader -- resize, encrypt, post into the
+  // thread -- just reached from the composer, where sending a photo belongs.
+  photoBtn.addEventListener('click', function () { photoPick.click(); });
+  photoPick.addEventListener('change', function () {
+    if (photoPick.files && photoPick.files[0]) {
+      sendUpload(photoPick.files[0], function () { photoPick.value = ''; });
+    }
+  });
+
+  // --------------------------------------------------------------- gif button
+
+  var gifTimer = null;
+
+  function note(text) {
+    gifGrid.textContent = '';
+    var p = document.createElement('p');
+    p.className = 'gifnote';
+    p.textContent = text;
+    gifGrid.appendChild(p);
+  }
+
+  function drawGifs(gifs) {
+    gifGrid.textContent = '';
+    if (!gifs.length) { note('Nothing found. Try another word.'); return; }
+    gifs.forEach(function (g) {
+      var img = document.createElement('img');
+      img.src = g.preview;
+      img.alt = g.title;
+      img.loading = 'lazy';
+      img.addEventListener('click', function () {
+        note('Sending…');
+        api('gif-send', { method: 'POST', body: JSON.stringify({ url: g.full, title: g.title }) })
+          .then(function (r) {
+            if (r.ok && r.message) {
+              add([r.message]);
+              if (r.message.key > (latestKey || '')) latestKey = r.message.key;
+              thread.scrollTop = 0;
+              closeGif();
+              loadFiles();
+            } else {
+              note(r.error === 'too_big' ? 'That one is too big. Pick another.' : 'That didn’t send. Try another.');
+            }
+          })
+          .catch(function () { note('No connection.'); });
+      });
+      gifGrid.appendChild(img);
+    });
+  }
+
+  function searchGifs() {
+    var q = gifQ.value.trim();
+    if (!q) { note('Type to search.'); return; }
+    note('Searching…');
+    api('gif?q=' + encodeURIComponent(q)).then(function (r) {
+      if (r.ok) { drawGifs(r.gifs || []); return; }
+      if (r.error === 'no_key') {
+        // Degrade honestly rather than pretending the button is broken.
+        note('GIF search isn’t set up yet (it needs a free GIPHY key). You can still send a .gif with the 📷 button.');
+      } else {
+        note('Search failed. Try again.');
+      }
+    }).catch(function () { note('No connection.'); });
+  }
+
+  function closeGif() {
+    gifBox.hidden = true;
+    gifBtn.classList.remove('on');
+    gifQ.value = '';
+    note('Type to search.');
+  }
+
+  /**
+   * The GIF button must never be a dead control.
+   *
+   * GIPHY search needs an API key, which needs an account, which is a lot to
+   * ask before a button does anything. So the button asks the server once
+   * whether search is available: if it is, it opens the search box; if it is
+   * not, it opens a .gif file picker and sends it the same way. Either way
+   * pressing GIF sends a GIF.
+   *
+   * `searchable` is null until we know, so the first press asks and then acts
+   * rather than guessing wrong.
+   */
+  var searchable = null;
+
+  function gifSearchAvailable() {
+    if (searchable !== null) return Promise.resolve(searchable);
+    return api('gif?q=test')
+      .then(function (r) { searchable = !(r && r.error === 'no_key'); return searchable; })
+      .catch(function () { return false; });
+  }
+
+  gifBtn.addEventListener('click', function () {
+    if (!gifBox.hidden) { closeGif(); return; }
+    gifBtn.disabled = true;
+    gifSearchAvailable().then(function (canSearch) {
+      gifBtn.disabled = false;
+      if (canSearch) {
+        gifBox.hidden = false;
+        gifBtn.classList.add('on');
+        gifQ.focus();
+      } else {
+        // No key: go straight to picking a .gif. No error, no dead end.
+        gifPick.click();
+      }
+    });
+  });
+
+  gifPick.addEventListener('change', function () {
+    if (gifPick.files && gifPick.files[0]) {
+      sendUpload(gifPick.files[0], function () { gifPick.value = ''; });
+    }
+  });
+  gifClose.addEventListener('click', closeGif);
+  gifQ.addEventListener('input', function () {
+    clearTimeout(gifTimer);
+    gifTimer = setTimeout(searchGifs, 350);
+  });
+  gifQ.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); clearTimeout(gifTimer); searchGifs(); }
+    if (e.key === 'Escape') closeGif();
+  });
+
+  sendBtn.addEventListener('click', send);
+  textArea.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.altKey) { e.preventDefault(); send(); }
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', function () {
+    window.location.href = API + 'export';
+  });
+
+  document.getElementById('signOut').addEventListener('click', function () {
+    api('logout', { method: 'POST' }).then(lock).catch(lock);
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' && me) poll();
+  });
+
+  // ------------------------------------------------------------------ boot
+
+  // Ask the server who we are. A valid cookie means no PIN prompt at all.
+  api('session').then(function (r) {
+    if (r.ok && r.who) unlock(r.who, r.name);
+    else pinInput.focus();
+  }).catch(function () { pinInput.focus(); });
+})();
+</script>
+</body>
+</html>

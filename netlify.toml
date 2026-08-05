@@ -228,6 +228,46 @@
     Service-Worker-Allowed = "/"
     X-Robots-Tag = "noindex, nofollow"
 
+# -----------------------------------------------------------------------------
+# /nicole -- a second private thread, built from the same code as /jesse but
+# sharing nothing with it: separate blob stores, separate session cookie,
+# separate encryption keys, separate files, separate push subscriptions.
+# NICOLES_PIN opens this and nothing else; JESSES_PIN does not open it.
+# -----------------------------------------------------------------------------
+
+[[redirects]]
+  from = "/nicole"
+  to = "/nicole.html"
+  status = 200
+
+[[headers]]
+  for = "/nicole"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet, noimageindex"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/nicole.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet, noimageindex"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/api/nicole/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "no-store, no-cache, must-revalidate, private"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/nicole-sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Service-Worker-Allowed = "/"
+    X-Robots-Tag = "noindex, nofollow"
+
 # The publish directory is the repo root, so anything committed is on the web by
 # default. These files must not be. This closes the door; the function opens it
 # only for a valid session.
@@ -237,10 +277,16 @@
   status = 404
   force = true
 
+[[redirects]]
+  from = "/private-files-nicole/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # ...and this is what puts them inside the function bundle so it can read them.
 # Without it the rail is empty and the reason is not obvious from the logs.
 [functions]
-  included_files = ["private-files/**"]
+  included_files = ["private-files/**", "private-files-nicole/**"]
 
 [[redirects]]
   from = "/favicon.ico"

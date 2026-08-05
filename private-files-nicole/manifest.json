@@ -1,0 +1,15 @@
+{
+  "_readme": [
+    "Files for the /nicole thread. Drop a file in this folder and push and it",
+    "appears in that thread's rail -- and ONLY that thread's.",
+    "",
+    "This folder is committed to a PUBLIC repository, so anything here is",
+    "downloadable from GitHub even though netlify.toml 404s the path on the",
+    "live site. For anything actually private, use the upload button in the",
+    "page instead: that encrypts into Netlify Blobs and never touches git.",
+    "",
+    "Entries under \"files\" are optional; a file with no entry still shows up",
+    "under its own name."
+  ],
+  "files": {}
+}
