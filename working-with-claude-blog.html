@@ -36,7 +36,7 @@
 <meta property="article:author" content="Scott Allen Willis">
 <meta property="article:section" content="AI & Engineering">
 <meta property="article:published_time" content="2026-04-10T00:00:00-05:00">
-<meta property="article:modified_time" content="2026-08-04T00:00:00-05:00">
+<meta property="article:modified_time" content="2026-08-10T00:00:00-05:00">
 <meta property="article:tag" content="Claude AI">
 <meta property="article:tag" content="AI Workflow">
 <meta property="article:tag" content="Pro Se Litigation">
@@ -63,7 +63,7 @@
   "description": "How to use Claude AI effectively, from someone who ships real work with it daily. Covers the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.",
   "image": "https://siegestack.com/og-working-with-claude-card.jpg",
   "datePublished": "2026-04-10T00:00:00-05:00",
-  "dateModified": "2026-08-04T00:00:00-05:00",
+  "dateModified": "2026-08-10T00:00:00-05:00",
   "url": "https://siegestack.com/working-with-claude-blog",
   "mainEntityOfPage": "https://siegestack.com/working-with-claude-blog",
   "inLanguage": "en-US",
@@ -103,11 +103,13 @@
   "mainEntity": [
     {"@type":"Question","name":"What is Claude AI used for?","acceptedAnswer":{"@type":"Answer","text":"Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent and tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents."}},
     {"@type":"Question","name":"How do you use Claude AI effectively?","acceptedAnswer":{"@type":"Answer","text":"Use the iteration loop: define the outcome, let Claude draft, test against reality, give precise feedback, then ship or repeat. Feed real artifacts (not summaries), keep an externalized context file, time-box each loop, and verify everything before shipping. Effective Claude use is system design, not prompt cleverness."}},
-    {"@type":"Question","name":"Is Claude better than ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features. Most serious users keep both open and route work to whichever fits the task."}},
+    {"@type":"Question","name":"Is Claude better than ChatGPT?","acceptedAnswer":{"@type":"Answer","text":"Neither is universally better. Claude tends to win on long-context work, careful editing, conservative tone, and agent and tool-use workflows. ChatGPT tends to win on fast breadth-first ideation, the plugin ecosystem, and native image generation. Do not use \"multi-modal\" as the dividing line: every current Claude model accepts image input and has vision, Claude reads PDFs, and voice mode runs in the Claude mobile, desktop and web apps. The defensible difference is image generation specifically, which Claude does not do natively — it builds SVG, charts and code-based artifacts instead, or calls an image model through MCP. Most serious users keep both open and route work to whichever fits the task."}},
     {"@type":"Question","name":"How do you write good prompts for Claude?","acceptedAnswer":{"@type":"Answer","text":"The best Claude prompts are specific, not clever. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague 'try again' prompts."}},
     {"@type":"Question","name":"Can Claude replace developers?","acceptedAnswer":{"@type":"Answer","text":"No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output, catch hallucinations, and define what 'done' actually means, you get confident-sounding garbage. The human is the quality gate."}},
     {"@type":"Question","name":"What is the biggest mistake people make with Claude?","acceptedAnswer":{"@type":"Answer","text":"Treating it like a search engine instead of a junior collaborator. They paste a vague question, take the first answer, and walk away. The leverage is in the loop — defining done, drafting, testing against reality, giving precise feedback, and repeating until production-ready."}},
-    {"@type":"Question","name":"Does Claude have memory between sessions?","acceptedAnswer":{"@type":"Answer","text":"Default chat has no persistent cross-session memory. What feels like continuity is you re-establishing context every time. Serious workflows externalize memory in project files, system prompts, or tool-based memory APIs."}}
+    {"@type":"Question","name":"Does Claude have memory between sessions?","acceptedAnswer":{"@type":"Answer","text":"Yes, on paid plans. Claude can search and reference your past chats, and can generate a memory summary from your chat history automatically — carrying forward details such as your role, your preferences and your ongoing project context. Memory is scoped separately for each Project, so work in one Project does not leak into another. When Claude references an earlier conversation you get citations linking back to the original chats, with the option to delete specific ones, and there is an experimental import and export so you can move memory between Claude and other assistants. Incognito chats are excluded entirely and write nothing to memory. Free accounts do not have memory. An earlier version of this page said default chat had no persistent cross-session memory; that was accurate when written and is no longer accurate, and the correction is stated rather than made silently. The underlying workflow advice still holds: for constraints you cannot afford to lose, deliberately externalized memory — a context file, Project instructions, a skill — beats an automatically extracted summary, because you choose what persists instead of discovering afterwards what was kept."}},
+    {"@type":"Question","name":"Should I use Claude Code or the Claude chat app?","acceptedAnswer":{"@type":"Answer","text":"Use the chat app for thinking, drafting and reasoning over documents. Use Claude Code when the work involves reading and writing files, running commands and verifying its own output — audits, refactors, migrations, and anything where the test-against-reality step can be automated. Cowork is for handing off a multi-step task and reviewing finished work rather than supervising a conversation, and Claude for Microsoft 365 puts the same capability inside Excel, PowerPoint and Word, with Outlook in beta. The iteration loop is identical across all of them. The surface only changes who executes the verification step, and an agent that can run its own tests raises the value of verification discipline rather than lowering it."}},
+    {"@type":"Question","name":"Which Claude model should I use?","acceptedAnswer":{"@type":"Answer","text":"Route by difficulty instead of defaulting to the largest model. Haiku is the fastest and cheapest tier and suits high-volume mechanical work that is easy to check. Sonnet is the best balance of speed and intelligence and handles most day-to-day work. Opus is for complex agentic coding and enterprise work where a subtle error is expensive. Fable is the top tier, aimed at long-running autonomous agents. Routing across tiers within one provider is usually cheaper and higher-leverage than routing across providers, and it follows the same rule you would use to staff the work with people: give the expensive resource the ambiguous, high-consequence tasks and the cheap resource the well-specified, easily-verified ones. Check the official models page for current context windows and pricing before committing."}}
   ]
 }
 </script>
@@ -202,9 +204,9 @@ footer a{color:var(--blue-accent);text-decoration:none}
     <span>·</span>
     <span>April 10, 2026</span>
     <span>·</span>
-    <span>Updated August 4, 2026</span>
+    <span>Updated August 10, 2026</span>
     <span>·</span>
-    <span>~24 min read</span>
+    <span>~30 min read</span>
     <span>·</span>
     <a href="/working-with-claude">View as slide deck →</a>
   </div>
@@ -217,7 +219,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>Below is the exact workflow I use to ship production code, file pro se legal documents, run a serverless honeypot, harden the things I have already shipped, and generate organic content with zero ad spend. The same loop, every time, across every domain.</p>
 
-  <div class="callout"><strong>Updated August 2026.</strong> This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Two claims in the original have been corrected rather than quietly edited — the outcome of the litigation, and an invented statistic about how often the model is wrong. Both corrections are marked where they appear, because an article about verification that silently rewrites its own history is worth nothing.</div>
+  <div class="callout"><strong>Updated August 2026.</strong> This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Four are marked so far: the outcome of the litigation, an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, and the claim that multi-modal work belongs to ChatGPT. <a href="#what-moved">What changed on the product side, and how I checked it</a>, is its own section — with sources.</div>
 
   <div class="callout"><strong>What is Claude AI?</strong> Claude is a large language model built by <a href="https://www.anthropic.com/" target="_blank" rel="noopener">Anthropic</a> for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it's wrapping the model in a structured workflow with real artifacts, real tests, and tight feedback loops. Prompting is Stage 1. System design is Stage 2. This guide is about Stage 2.</div>
 
@@ -275,8 +277,10 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <h2>Pro Tips to Make Your Loop Tighter</h2>
   <ul>
-    <li><strong>Keep a "war room" context file.</strong> Paste it at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers.</li>
-    <li><strong>Build a personal pattern library.</strong> After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online.</li>
+    <li><strong>Keep a "war room" context file.</strong> Paste it at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers. <em>This is a Project — see <a href="#what-moved">what moved</a>.</em></li>
+    <li><strong>Build a personal pattern library.</strong> After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online. <em>This is an Agent Skill — see <a href="#what-moved">what moved</a>.</em></li>
+    <li><strong>Include one worked example of a finished output.</strong> Not a description of the format — an actual instance of the thing. This is the single highest-yield addition I have made to the loop since writing the original version of this article, and it was missing from my own template for two years. An example pins length, tone, structure and level of detail simultaneously, in a way that no amount of adjectives does. If you don't have a real one to hand, write a fake one; a fabricated example of the right shape works nearly as well as a real one.</li>
+    <li><strong>Say that "I don't know" is an acceptable answer.</strong> One sentence in the brief. A model with no explicit permission to report a gap will bridge it, because producing something is the default behaviour and the bridge is usually plausible. A model that has been told an admitted gap is a valid deliverable will hand you the gap — and a gap is actionable in a way that a confident wrong answer is not.</li>
     <li><strong>Time-box every loop to 15–20 minutes.</strong> If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Don't keep prompting.</li>
   </ul>
 
@@ -447,7 +451,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>One detail makes the technique trustworthy: <strong>always measure a control file the change never touched.</strong> If the control reports differences too, your instrument is broken rather than your site. That is exactly how a run of false positives got caught before it buried the one real error underneath it.</p>
 
-  <h2>Personal: Rewriting a Reference Site, and Catching Four Errors In It</h2>
+  <h2 id="four-errors">Personal: Rewriting a Reference Site, and Catching Four Errors In It</h2>
 
   <p>A separate long-running project is a public reference site explaining a narrow area of procedure. Recently I put a full day into deepening it — several guides roughly tripled in length, each claim tied to a specific rule or decision rather than to a summary of one.</p>
 
@@ -456,6 +460,8 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <p>Checking existing pages against primary sources turned up four substantive errors that had been live for months. One of them appeared on four separate pages and was the kind of mistake a reader could act on and be harmed by — a widely repeated shortcut that is true in a narrow case and misleading in most. Another described a cited authority as supporting a position when it had in fact decided the opposite. A third stated a deadline rule that applies to one category of matter as though it applied to a different one.</p>
 
   <p>Every one of those was found the same way: by pulling the actual source and reading it, rather than asking whether the earlier draft was right. Asking a model to check its own work tends to produce agreement. Comparing its output against something external produces corrections.</p>
+
+  <p>That is the diagnosis. The fix follows from it, and it took me embarrassingly long to state it plainly: <strong>make opening the source a tool call, not a resolution.</strong> Instruct the model to fetch and quote the primary text before it asserts anything about that text, and to say explicitly when it could not reach the source. A resolution — "I'll be careful about citations" — fails on the day you are tired or in a hurry, which is the same day the error ships. A step the model has to execute leaves a quote in the transcript that you or anyone else can check against the original. It converts a discipline problem into an artifact problem, and artifacts are the only kind of problem this article has ever been able to solve.</p>
 
   <div class="stat-grid">
     <div class="stat"><div class="num">12</div><div class="label">pages rewritten</div></div>
@@ -472,12 +478,61 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>That is the strangest validation I've ever received as a builder. It also taught me something concrete: <strong>the content has to be good enough to make someone else want to amplify it</strong>. That bar is much higher than "good enough to ship," and it's the only bar that matters for organic growth.</p>
 
+  <h2 id="what-moved">What Moved Since April — and How I Checked</h2>
+
+  <p>The original version of this article was written in April 2026. The method in it has held up; several of the product facts underneath it have not. An article whose central argument is <em>verify against the primary source</em> does not get to leave stale claims standing because they are load-bearing for its own narrative. So here is what changed, what it costs my argument, and where I checked. <strong>Everything below was verified on 10 August 2026.</strong> If you are reading this much later, go and check it again rather than trusting me — that is the whole point.</p>
+
+  <h3>Claude has memory now (corrected)</h3>
+
+  <p>This article said, in four different places, that default chat has no cross-session memory. That is wrong as written. On paid plans there are two separate controls: one for searching and referencing past chats, and one that generates a memory summary from your chat history automatically, carrying forward things like your role, your preferences and your ongoing project context. Memory is scoped separately per Project, so one body of work does not bleed into another. When Claude draws on an earlier conversation you get citations back to the original chats and can delete specific ones. There is an experimental import and export for moving memory between Claude and other assistants. Incognito chats are excluded and write nothing. Free accounts have no memory at all. See <a href="https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context" target="_blank" rel="noopener">Claude's chat search and memory documentation</a>.</p>
+
+  <p><strong>What survives:</strong> the advice, essentially intact. Curated memory still beats extracted memory for anything you cannot afford to lose. Automatic memory is a summary of what you happened to <em>say</em>; a war room file is a statement of what must be <em>true</em>. Those are different objects, and only one of them is a specification. Keep writing the file for hard constraints; let memory handle the ambient context you would otherwise re-explain.</p>
+
+  <p><strong>What it cost:</strong> more than an edit. That memory claim sat inside this page's FAQ structured data — the machine-readable block that search engines and assistants quote back verbatim. My own <a href="#four-errors">four-errors story</a> says the worst of those errors was the one inside structured data, for exactly that reason. I then shipped the same class of mistake on this page and left it there for four months, where it was quoted back as current. That is not a footnote; it is the strongest available evidence for the argument this article is making.</p>
+
+  <h3>Compaction is a named feature, not a law of nature (sharpened)</h3>
+
+  <p>I wrote that "when the context window fills up, Claude summarizes the older parts." That describes something real, but it flattens three different behaviours into one and the deck's authority comes from precision. In Claude Code it is auto-compaction as the session approaches its context window, plus <code>/compact</code> on demand with optional instructions about what to preserve. On the API it is an opt-in beta with an explicit trigger threshold you configure — nothing summarizes unless you switch it on (<a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank" rel="noopener">compaction docs</a>). On claude.ai, automatic context management summarizes earlier messages when a conversation approaches the limit, but <strong>code execution has to be enabled</strong> for it to happen (<a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">usage and length limits</a>). The warning stands on all three — the summary is not lossless. Know which one you are relying on before you rely on it.</p>
+
+  <h3>Thirty-odd thousand words about working with Claude that never named a model</h3>
+
+  <p>This is the omission that cost me the most, and it is not a correction — it is a gap. There is no model routing anywhere in the original: no Haiku, no Sonnet, no Opus. The "using multiple AIs together" section routes work across four <em>companies</em> while ignoring the cheaper and higher-leverage version of the same idea, which is routing across tiers inside one of them. For two years I sent everything to the largest available model, which is the same mistake as running every report against the production server because it is the one you know the name of.</p>
+
+  <p>The current lineup, with Anthropic's own descriptions from the <a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">models overview</a>: <strong>Haiku 4.5</strong>, the fastest model with near-frontier intelligence. <strong>Sonnet 5</strong>, the best combination of speed and intelligence. <strong>Opus 5</strong>, for complex agentic coding and enterprise work. <strong>Fable 5</strong>, next-generation intelligence for long-running agents. Mapped onto the work in this article: the 62-script batch is Haiku work — mechanical, high-volume, verifiable by diff. Most of the loop is Sonnet. The attorney-immunity briefing is Opus, because a subtle error there is expensive in a way a slow query is not. Switch with <code>/model</code> in Claude Code or the model picker in the app.</p>
+
+  <p>The routing rule turns out to be the delegation rule you already know: give the expensive resource the ambiguous, high-consequence work and the cheap resource the well-specified, easily-checked work. If the models were people on your team, you would not need this explained.</p>
+
+  <h3>Most of the hard work in this article is Claude Code, and I never said so</h3>
+
+  <p>The 300-view audit, the two-port computed-property hash comparison, the control file that proved the checker worked before I trusted its output — none of that is chat work. That is an agent with a terminal, file access, and the ability to run its own verification. Naming the tool is not an endorsement; it is the difference between a reader being able to reproduce this and a reader assuming I did it by pasting into a text box and getting discouraged when that doesn't work.</p>
+
+  <p>Same omission for two other surfaces. <a href="https://claude.com/product/cowork" target="_blank" rel="noopener">Cowork</a> — "give it a goal, and it works across your files and tools" — is for handing off a multi-step task and reviewing finished work rather than supervising a conversation. <a href="https://claude.com/claude-for-microsoft-365" target="_blank" rel="noopener">Claude for Microsoft 365</a> puts Claude inside Excel, PowerPoint and Word as add-ins that read and write the open file, with Outlook in beta, and context carrying between the apps. That last one is the nine-macro problem from earlier in this article, solved from the other direction — the same job, without me writing the replacement first.</p>
+
+  <p><strong>The loop does not change across surfaces. It only changes who executes step 3.</strong> And this matters more than it sounds: an agent that can run its own tests is enormously more useful than one that cannot, and it is also an agent that can be confidently wrong <em>and have already deployed</em>. Every verification discipline in this article gets <em>more</em> important as the surface gets more capable, not less.</p>
+
+  <h3>The war room file and the pattern library are both shipped features now</h3>
+
+  <p>I am not claiming anyone built these because of me. I am pointing at a convergence, because it is a stronger argument for the two habits than "here is my tip" was: the patterns were load-bearing enough that they became product.</p>
+
+  <p><strong>The war room file is a Project.</strong> Persistent context for one body of work, and since memory shipped, its own isolated memory space and project summary. What the manual version still has over it is authorship — I decide what survives, rather than finding out afterwards what was extracted.</p>
+
+  <p><strong>The pattern library is an Agent Skill.</strong> A skill is a folder built around a <code>SKILL.md</code> file — instructions, plus optional scripts and reference material — that loads on demand when the task matches, so long reference material costs almost nothing until it is needed. Personal skills live at <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> and are available across all your projects; per-project skills live at <code>.claude/skills/&lt;name&gt;/SKILL.md</code> and are checked into the repo (<a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Claude Code skills documentation</a>). On claude.ai you upload a <code>.zip</code> containing the skill folder under Customize → Skills (<a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener">use skills in Claude</a>). "Save the final output plus the exact feedback that got it there" is a <code>SKILL.md</code>, near enough exactly. <strong>The difference is that a skill fires by itself.</strong> A pattern library only works when you remember you have it, which is precisely when you are least likely to remember.</p>
+
+  <p>Two things worth knowing before you rebuild your library this way. The format was published as an <a href="https://agentskills.io/specification" target="_blank" rel="noopener">open specification</a> in December 2025 and is read by agents from other vendors out of the same directories, so adopting it is not a lock-in decision. But custom skills <strong>do not sync across surfaces</strong> — a skill uploaded on claude.ai is not automatically available in Claude Code, and the reverse. Plan on one source of truth and a deliberate copy step rather than on it just working.</p>
+
+  <h3>Two smaller fixes</h3>
+
+  <p><strong>"Use ChatGPT for multi-modal work (images, voice)" is too broad</strong> and is corrected below. Every current Claude model takes image input and has vision, Claude reads PDFs, and voice mode runs in the Claude mobile, desktop and web apps. The defensible version of the claim is image <em>generation</em> specifically, which Claude does not do natively — it produces SVG, charts and code-built artifacts, or calls an image model through MCP.</p>
+
+  <p><strong>The documentation link in earlier versions pointed at <code>docs.anthropic.com</code>.</strong> That host now redirects. Current documentation is at <a href="https://platform.claude.com/docs" target="_blank" rel="noopener">platform.claude.com/docs</a> for the API and platform, and <a href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com/docs</a> for Claude Code. Worth noting that <code>docs.claude.com</code> redirects too — if you are updating your own links, go straight to the platform host.</p>
+
   <h2>The Honest Limitations</h2>
 
   <p>Everything above is real. So is everything below. Anyone selling Claude as a magic co-founder is lying.</p>
 
   <h3>Compaction is not lossless</h3>
-  <p>When the context window fills, Claude summarizes the older parts of the conversation. That summary drops nuance and edge cases. You will lose things. Plan for it: checkpoint your decisions in external files, restart sessions deliberately, don't rely on Claude to remember what happened ten thousand tokens ago.</p>
+  <p>When the context window fills, older parts of the conversation get summarized. That summary drops nuance and edge cases. You will lose things. Plan for it: checkpoint your decisions in external files, restart sessions deliberately, don't rely on Claude to remember what happened ten thousand tokens ago.</p>
+  <p>As <a href="#what-moved">sharpened above</a>, this is three different mechanisms rather than one ambient property — auto-compaction and <code>/compact</code> in Claude Code, an opt-in beta with a configurable threshold on the API, and automatic context management on claude.ai that requires code execution to be enabled. The warning holds for all three. Which one you get depends on where you are working.</p>
 
   <h3>Confidently wrong, often enough to matter</h3>
   <p>Claude will produce answers that sound right and aren't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always. If you don't have the domain expertise to catch the wrong answers, you cannot use Claude safely for that domain.</p>
@@ -489,10 +544,14 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <h3>Instructions get ignored in long sessions</h3>
   <p>"Don't change X" gets violated. "Use the function we wrote earlier" gets ignored. Re-state critical constraints in every meaningful turn. Treat the assistant as memoryless even when it isn't.</p>
 
-  <h3>Not actually a stateful partner</h3>
-  <p>Default chat has no cross-session memory. What feels like continuity is you re-establishing context every time. That's a workflow you build, not a feature the model gives you.</p>
+  <h3>It will bridge a gap rather than report one — unless you say otherwise</h3>
+  <p>This is the limitation with the cheapest fix in the whole article, and I left it out of the original entirely. A model's default behaviour is to produce something. Absent explicit permission to return "I don't know" or "I could not verify this," it will construct the most plausible available answer and hand it to you in the same confident register as everything else — which is exactly the failure mode described two sections up. Put one line in the brief stating that an admitted gap is an acceptable, expected deliverable. You will get gaps back instead of inventions, and a gap tells you precisely where to go and look.</p>
 
-  <div class="callout"><strong>The honest framing:</strong> Claude is a smart but unreliable junior, not a co-founder. The leverage comes from how you wrap it, not from the model alone.</div>
+  <h3>Memory is real now — and still not your system of record <em>(corrected)</em></h3>
+  <p>This section used to read: "Default chat has no cross-session memory. What feels like continuity is you re-establishing context every time." That is no longer true, and it is corrected rather than deleted — the <a href="#what-moved">full correction and its sources are above</a>. On paid plans Claude searches past chats and generates a memory summary automatically, scoped per Project, with citations back to the chats it drew from.</p>
+  <p>The limitation that remains is narrower and more useful than the one I originally wrote. Automatically generated memory is an <em>extraction</em> — a summary of what you happened to say across past conversations. It is not a specification of what must hold. For anything load-bearing, keep authoring the context deliberately, because the failure mode of extracted memory is that you find out what it kept at the moment it matters. Incognito chats write nothing; free accounts have no memory at all. Design for what you control.</p>
+
+  <div class="callout"><strong>The honest framing:</strong> Claude is a smart but unreliable junior, not a co-founder. The leverage comes from how you wrap it, not from the model alone. That framing has survived every product change since April — the model got considerably better, the surfaces got considerably more capable, and the verification discipline got <em>more</em> load-bearing rather than less, because a junior who can now deploy unsupervised is a junior whose mistakes reach production faster.</div>
 
   <h2>From Prompting to System Design</h2>
 
@@ -532,11 +591,13 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <h3>Use ChatGPT when:</h3>
   <ul>
     <li><strong>You need fast, breadth-first ideation.</strong> Brainstorming, naming, quick research summaries — ChatGPT is faster to first draft and willing to free-associate.</li>
-    <li><strong>You need image generation, voice, or DALL-E inline.</strong> Multi-modal feature parity favors OpenAI for casual creative work.</li>
+    <li><strong>You need images generated.</strong> <em>Corrected August 2026 — this bullet used to read "image generation, voice, or DALL-E inline" and claim general multi-modal parity favoured OpenAI. That was too broad.</em> Every current Claude model takes image input and has vision, Claude reads PDFs, and voice mode runs in the Claude mobile, desktop and web apps. What Claude does not do is generate raster images natively — it builds SVG, charts and code-based artifacts instead, or calls an image model through MCP. If you want a photograph produced from a prompt, that is the real dividing line, and it is narrower than the one I originally drew.</li>
     <li><strong>You need niche plugin integrations.</strong> The ChatGPT plugin/GPT ecosystem is broader for end-user automations.</li>
   </ul>
 
-  <p>My personal split is roughly 80/20 Claude/ChatGPT for production work and roughly 50/50 for exploration. Both have their place. Anyone telling you "X is better than Y, period" is selling you something. <a href="https://docs.anthropic.com/" target="_blank" rel="noopener">Anthropic's documentation</a> is also worth reading directly — most people skip it, and most "Claude tips" articles you see are downstream of it.</p>
+  <p>Worth noting that the more interesting routing question is not Claude-versus-ChatGPT at all — it is <a href="#what-moved">which Claude</a>. Routing across tiers inside one provider is cheaper and higher-leverage than routing across providers, and I spent two years not doing it.</p>
+
+  <p>My personal split is roughly 80/20 Claude/ChatGPT for production work and roughly 50/50 for exploration. Both have their place. Anyone telling you "X is better than Y, period" is selling you something. The official documentation is also worth reading directly — most people skip it, and most "Claude tips" articles you see are downstream of it. It lives at <a href="https://platform.claude.com/docs" target="_blank" rel="noopener">platform.claude.com/docs</a> for the API and <a href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com/docs</a> for Claude Code; the <code>docs.anthropic.com</code> link that used to sit in this paragraph now redirects.</p>
 
   <h2>Common Mistakes That Break Claude</h2>
 
@@ -545,8 +606,10 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <ul>
     <li><strong>Prompting in summary form.</strong> "Help me fix my login bug." Wrong. Paste the actual error stack, the actual code, the actual reproduction steps. Real artifacts only.</li>
     <li><strong>Defining "done" in the middle of a session.</strong> If you don't know what success looks like before you start, the model can't help you converge on it.</li>
-    <li><strong>Letting compaction happen silently.</strong> Long sessions hit the context limit, Claude summarizes the older history, and that summary loses your earlier constraints. Restart deliberately. Don't drift.</li>
-    <li><strong>Trusting citations without verifying.</strong> Claude will fabricate case law, library names, function signatures, and config flags. Verify everything against the source — and verify it by opening the source, not by asking whether it was right.</li>
+    <li><strong>Letting compaction happen silently.</strong> Long sessions hit the context limit, older history gets summarized, and that summary loses your earlier constraints. Restart deliberately. Don't drift. And know which compaction your surface actually performs — it differs between Claude Code, the API and claude.ai.</li>
+    <li><strong>Trusting citations without verifying.</strong> Claude will fabricate case law, library names, function signatures, and config flags. Verify everything against the source — and verify it by opening the source, not by asking whether it was right. Better: make fetching and quoting the source a required step in the task, so the check produces an artifact instead of relying on your diligence.</li>
+    <li><strong>Never granting permission to say "I don't know."</strong> One line in the brief. Without it you get a plausible bridge over every gap; with it you get the gap, which is the thing you can actually act on.</li>
+    <li><strong>Sending everything to the biggest model.</strong> Route by difficulty. Mechanical, high-volume, diff-checkable work does not need your most expensive tier, and the ambiguous high-consequence work should never be on your cheapest.</li>
     <li><strong>Skipping the test-against-reality step.</strong> "It looked right" is not a test. Run the code. File the draft. Deploy the function. The model lives in word-space. Reality lives in error-space. Bridge it yourself.</li>
     <li><strong>Re-prompting instead of correcting.</strong> When Claude gets it wrong, don't say "try again." Say "you got X wrong because Y; the fix is Z." Specific corrections converge in one round; vague ones loop forever.</li>
     <li><strong>Asking it to remember things it can't.</strong> Default chat has no cross-session memory. Re-establish context every time. Or use a project file / system prompt to externalize it.</li>
@@ -571,6 +634,11 @@ footer a{color:var(--blue-accent);text-decoration:none}
 ## Context (real artifacts only)
 - [Paste the actual code / log / document / data — never summaries]
 
+## Example of output that would count as done
+- [One worked instance of the thing I want. A real one if I have it,
+   a fabricated one of the right shape if I don't. Not a description
+   of the format — the format itself.]
+
 ## Prior failures (so we don't repeat them)
 - [What did the last attempt get wrong?]
 - [What was the precise reason?]
@@ -578,9 +646,15 @@ footer a{color:var(--blue-accent);text-decoration:none}
 ## Verification plan
 - [How will I test this output before shipping?]
 - [What command / step proves it works?]
+- [Where a claim rests on an external source: fetch and quote that
+   source before asserting anything about it.]
+- ["I could not verify this" is an acceptable and expected answer.
+   Report gaps; do not bridge them.]
 </code></pre>
 
-  <p>That's it. Five sections. If you can't fill all five in before you start prompting, you're not ready to prompt — go figure out the missing piece first. I can't overstate how much faster work moves once you internalize this.</p>
+  <p>That's it. Six sections. If you can't fill all six in before you start prompting, you're not ready to prompt — go figure out the missing piece first. I can't overstate how much faster work moves once you internalize this.</p>
+
+  <p><strong>The example section was added in August 2026 and it was the biggest omission in the original.</strong> Few-shot prompting is one of the highest-yield techniques available and my template had no slot for it — five sections describing what I wanted and not one instance of it. A single worked example pins format, length, tone and level of detail simultaneously and does it better than any quantity of adjectives. The two additions to the verification section are the other half of the <a href="#four-errors">four-errors</a> lesson: make source-checking a step the model performs rather than a standard you hold, and say out loud that reporting a gap beats inventing a bridge.</p>
 
   <h2>Frequently Asked Questions</h2>
 
@@ -588,7 +662,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <p>Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent / tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents.</p>
 
   <h3>Is Claude better than ChatGPT?</h3>
-  <p>Neither is universally better. Claude tends to win on long-context work, careful editing, and conservative tone. ChatGPT tends to win on fast breadth-first ideation and multi-modal features. Most serious users keep both open and route work to whichever fits the task. See the comparison section above for the split I use.</p>
+  <p>Neither is universally better. Claude tends to win on long-context work, careful editing, conservative tone, and agent and tool-use workflows. ChatGPT tends to win on fast breadth-first ideation, the plugin ecosystem, and native image generation. Don't use "multi-modal" as the dividing line — every current Claude model takes image input and has vision, Claude reads PDFs, and voice mode runs in the Claude apps. Image generation specifically is the real difference. Most serious users keep both open and route work to whichever fits the task. See the comparison section above for the split I use.</p>
 
   <h3>How do you write good prompts for Claude?</h3>
   <p>The best Claude prompts aren't clever — they're specific. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague "try again" prompts. The Claude workflow template above is exactly this, formalized.</p>
@@ -600,7 +674,17 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <p>Treating it like a search engine instead of a junior collaborator. They paste a vague question, take the first answer, and walk away. The leverage is in the loop — defining done, drafting, testing against reality, giving precise feedback, and repeating until production-ready. Skip the loop and you're just chatting with an autocomplete.</p>
 
   <h3>Does Claude have memory between sessions?</h3>
-  <p>Default chat has no persistent cross-session memory. What feels like continuity is you re-establishing context every time. Serious workflows externalize memory in project files, system prompts, or the Anthropic Memory Tool. Treat the chat as stateless and your reliability goes way up.</p>
+  <p><strong>Yes, on paid plans — this answer was corrected in August 2026.</strong> Claude can search and reference your past chats, and can generate a memory summary from your chat history automatically, carrying forward details such as your role, your preferences and your ongoing project context. Memory is scoped separately for each Project, references are cited back to the original chats so you can inspect and delete what it drew from, and there is an experimental import and export for moving memory between Claude and other assistants. Incognito chats write nothing to memory. Free accounts do not have it. Earlier versions of this page said default chat had no persistent cross-session memory; that was true when written and is no longer true, and it is corrected here rather than quietly deleted.</p>
+  <p>The workflow advice underneath the wrong fact survives intact: for constraints you cannot afford to lose, deliberately externalized memory — a context file, Project instructions, a skill — still beats an automatically extracted summary, because you choose what persists rather than discovering afterwards what was kept. Use memory for the ambient context you would otherwise re-explain; author the hard constraints yourself.</p>
+
+  <h3>Should I use Claude Code or the Claude chat app?</h3>
+  <p>Use the chat app for thinking, drafting and reasoning over documents. Use Claude Code when the work involves reading and writing files, running commands and verifying its own output — audits, refactors, migrations, anything where the test-against-reality step can be automated. Cowork is for handing off a multi-step task and reviewing finished work, and Claude for Microsoft 365 puts the same capability inside Excel, PowerPoint and Word, with Outlook in beta. The iteration loop is identical on all of them; the surface only changes who executes the verification step.</p>
+
+  <h3>Which Claude model should I use?</h3>
+  <p>Route by difficulty rather than defaulting to the largest. Haiku is the fastest and cheapest and suits high-volume mechanical work that is easy to check. Sonnet is the best balance of speed and intelligence and handles most day-to-day work. Opus is for complex agentic coding and enterprise work where a subtle error is expensive. Fable is the top tier, aimed at long-running autonomous agents. Routing across tiers within one provider is usually cheaper and higher-leverage than routing across providers.</p>
+
+  <h3>What are Agent Skills, and do I need them?</h3>
+  <p>A skill is a folder built around a <code>SKILL.md</code> file — instructions plus optional scripts and reference material — that loads on demand when the task matches, so long reference material costs nothing until it is needed. Personal skills live at <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> and apply across all your projects; per-project skills live at <code>.claude/skills/&lt;name&gt;/SKILL.md</code> and can be checked into the repository. On claude.ai you upload a <code>.zip</code> of the skill folder under Customize → Skills. You need them once you notice you are pasting the same instructions repeatedly — a skill is that paste, automated, firing when relevant rather than when you remember. The format is an open specification other vendors' agents also read, so it is not a lock-in decision, but custom skills do not sync between surfaces.</p>
 
   <h2>What I'd Tell Someone Starting Today</h2>
 
@@ -614,10 +698,28 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p><strong>AI levels the playing field — up to a point.</strong> Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. The court still granted the dismissal. Access to the argument is not the same as winning it, and the gap between those two things is where the honest version of this whole article lives.</p>
 
+  <h2 id="sources">Sources</h2>
+
+  <p>Every product claim added or corrected in the August 2026 revision, with the page it came from. <strong>All checked 10 August 2026.</strong> An article that tells you to open the primary source owes you the primary sources — and if you are reading this a year from now, the honest instruction is to check them again rather than to trust this list.</p>
+
+  <ul>
+    <li><strong>Memory:</strong> <a href="https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context" target="_blank" rel="noopener">Use Claude's chat search and memory to build on previous context</a> — the two controls, per-Project memory spaces, citations back to source chats, import/export, incognito exclusion, and per-plan availability.</li>
+    <li><strong>Compaction on the API:</strong> <a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank" rel="noopener">Compaction</a> — opt-in beta, configurable trigger threshold, supported models.</li>
+    <li><strong>Context management on claude.ai:</strong> <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">How do usage and length limits work?</a> — automatic summarization near the limit, and the code-execution requirement for it.</li>
+    <li><strong>Models and tiers:</strong> <a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">Models overview</a> — the tier descriptions quoted above, plus context windows and per-token pricing.</li>
+    <li><strong>Skills in Claude Code:</strong> <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with skills</a> — the on-disk paths for personal, project and plugin skills.</li>
+    <li><strong>Skills on claude.ai:</strong> <a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener">Use skills in Claude</a> — the <code>.zip</code> upload flow and the no-sync-across-surfaces caveat.</li>
+    <li><strong>The Agent Skills format:</strong> <a href="https://agentskills.io/specification" target="_blank" rel="noopener">the open specification</a>, with reference material at <a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">github.com/anthropics/skills</a>.</li>
+    <li><strong>Surfaces:</strong> <a href="https://claude.com/product/cowork" target="_blank" rel="noopener">Cowork</a> &middot; <a href="https://claude.com/claude-for-microsoft-365" target="_blank" rel="noopener">Claude for Microsoft 365</a>.</li>
+    <li><strong>Documentation hosts:</strong> <a href="https://platform.claude.com/docs" target="_blank" rel="noopener">platform.claude.com/docs</a> and <a href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com/docs</a>. Both <code>docs.anthropic.com</code> and <code>docs.claude.com</code> redirect to the former.</li>
+  </ul>
+
+  <div class="callout"><strong>Why this section exists.</strong> The worst of the four errors on the reference site was the one sitting inside structured data — the exact text search engines and assistants quote back. The memory claim corrected above was in this page's own FAQ structured data, and it was quoted back as current for four months. I would rather publish the list of things I checked than ask you to assume I checked them.</div>
+
   <div class="related">
     <h3>Related</h3>
     <ul>
-      <li><a href="/working-with-claude">View this case study as a 33-slide presentation &rarr;</a></li>
+      <li><a href="/working-with-claude">View this case study as a 37-slide presentation &rarr;</a></li>
       <li><a href="/operations-modernization">Operations Modernization &mdash; consolidate, then optimize &rarr;</a></li>
       <li><a href="/etl-showcase">SiegeStack ETL Showcase — what we build for distributors →</a></li>
       <li><a href="/#solutions">SiegeStack Solutions overview →</a></li>
