@@ -3086,7 +3086,7 @@ Everything below is evidence for those two claims, including the times they cost
 
 
 
-**Updated August 2026.** This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Three are marked so far: an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, and the claim that multi-modal work belongs to ChatGPT. What changed on the product side, and how I checked it, is its own section — with sources.
+**Updated August 2026.** This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Four are marked so far: an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, the claim that multi-modal work belongs to ChatGPT, and the outcome of the litigation — kept in the corrections record even though the section it belonged to has been removed. What changed on the product side, and how I checked it, is its own section — with sources.
 
 
 
@@ -3896,6 +3896,25 @@ A skill is a folder built around a `SKILL.md` file — instructions plus optiona
 
 
 **AI levels the playing field — up to a point.** Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. The court still granted the dismissal. Access to the argument is not the same as winning it, and the gap between those two things is where the honest version of this whole article lives.
+
+
+
+
+### Corrections Record
+
+
+Corrections on this page are marked where they appear rather than quietly edited. This one is kept here because the section it originally belonged to has since been removed, and deleting a correction along with its subject is how a record stops being a record.
+
+
+
+**The litigation outcome (corrected 4 August 2026).**
+For months this article, and the accompanying deck, said the motion to dismiss was *denied* and the case was *set for trial*. That was wrong. **The motion to dismiss was granted.** The suit was dismissed with prejudice in March 2026, and the motion for new trial was overruled by operation of law that June when the court did not rule on it.
+
+
+The claim that survives is narrower and is the only one I make: filings produced by someone with no legal training forced a thirty-year attorney to brief the immunity question substantively rather than dispose of it on the pleadings. **That is not the same as winning**, and an article that blurred the two would be committing the exact error the rest of this piece is about.
+
+
+It is recorded rather than deleted for the same reason as the others: a piece arguing that you must verify against the primary source does not get to erase the occasions when it did not.
 
 
 
