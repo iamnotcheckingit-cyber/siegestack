@@ -20,10 +20,10 @@
      twitter:title, twitter:description, schema name, schema description, the #counter span,
      and the hidden <article> below. Adding a slide means changing all of them.
      (This comment said NINE until 2026-08-10; the list below it always had ten entries.) -->
-<title>Working with Claude: A 37-Slide Case Study | SiegeStack</title>
+<title>Working with Claude: A 14-Slide Case Study | SiegeStack</title>
 
 <!-- Primary SEO Meta Tags -->
-<meta name="description" content="A 37-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.">
+<meta name="description" content="A 14-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.">
 <meta name="keywords" content="how to use Claude AI effectively, Claude AI workflow, Claude prompting guide, Claude best practices, Claude AI prompting, Claude vs ChatGPT, Claude for coding, Claude for SEO, Claude workflow system, Claude AI tutorial, AI iteration loop, prompting vs system design, working with Claude, Anthropic Claude, content security policy hardening, row level security audit">
 <meta name="author" content="Scott Allen Willis">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -33,8 +33,8 @@
 <!-- Open Graph / Facebook / iMessage / Android RCS -->
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://siegestack.com/working-with-claude">
-<meta property="og:title" content="Working with Claude: A 37-Slide Case Study on Shipping Production Work">
-<meta property="og:description" content="Stop treating Claude like a chatbot. A 37-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
+<meta property="og:title" content="Working with Claude: A 14-Slide Case Study on Shipping Production Work">
+<meta property="og:description" content="Stop treating Claude like a chatbot. A 14-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta property="og:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta property="og:image:secure_url" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -50,14 +50,13 @@
 <meta property="article:tag" content="Claude AI">
 <meta property="article:tag" content="AI Workflow">
 <meta property="article:tag" content="Application Security">
-<meta property="article:tag" content="Pro Se Litigation">
-<meta property="article:tag" content="Threat Intelligence">
+<meta property="article:tag" content="Production Verification">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://siegestack.com/working-with-claude">
-<meta name="twitter:title" content="Working with Claude: A 37-Slide Case Study">
-<meta name="twitter:description" content="A 37-slide case study on the Claude workflow, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
+<meta name="twitter:title" content="Working with Claude: A 14-Slide Case Study">
+<meta name="twitter:description" content="A 14-slide case study on the Claude workflow, common mistakes, Claude vs ChatGPT, and a copy-paste template.">
 <meta name="twitter:image" content="https://siegestack.com/og-working-with-claude-card.jpg">
 <meta name="twitter:image:alt" content="Working with Claude — Scott Allen Willis presentation cover">
 <meta name="twitter:creator" content="@SiegeStack">
@@ -76,9 +75,9 @@
 {
   "@context": "https://schema.org",
   "@type": "PresentationDigitalDocument",
-  "name": "Working with Claude: A 37-Slide Case Study on Shipping Production Work",
+  "name": "Working with Claude: A 14-Slide Case Study on Shipping Production Work",
   "headline": "Working with Claude",
-  "description": "How to use Claude AI effectively, presented as a 37-slide case study covering the Claude workflow, the iteration loop, common mistakes that break Claude, Claude vs ChatGPT, and a copy-paste template.",
+  "description": "How to use Claude AI effectively, presented as a 14-slide case study covering the Claude workflow, the iteration loop, common mistakes that break Claude, Claude vs ChatGPT, and a copy-paste template.",
   "url": "https://siegestack.com/working-with-claude",
   "image": "https://siegestack.com/og-working-with-claude-card.jpg",
   "inLanguage": "en-US",
@@ -107,12 +106,10 @@
     {"@type": "Thing", "name": "SQL Performance Optimization"},
     {"@type": "Thing", "name": "Content Security Policy"},
     {"@type": "Thing", "name": "Row Level Security"},
-    {"@type": "Thing", "name": "Pro Se Litigation"},
-    {"@type": "Thing", "name": "Threat Intelligence"},
     {"@type": "Thing", "name": "Netlify Edge Functions"},
     {"@type": "Thing", "name": "Supabase"}
   ],
-  "keywords": "Claude AI, AI workflow, AI partnership, iteration loop, prompting vs system design, content security policy, row level security, pro se litigation, threat intelligence honeypot, edge functions"
+  "keywords": "Claude AI, AI workflow, AI partnership, iteration loop, prompting vs system design, content security policy, row level security, production verification, model routing, edge functions"
 }
 </script>
 
@@ -154,7 +151,6 @@
     "Row level security and data exposure audits",
     "Transactional email deliverability",
     "Technical SEO and crawlability",
-    "Pro se litigation",
     "Family law",
     "Threat intelligence honeypots",
     "Edge functions",
@@ -246,31 +242,24 @@ a.link:hover{opacity:.75}
 <div class="progress" id="progress"></div>
 <div class="deck" id="deck">
 
-<!-- 1 -->
 <div class="slide slide--dark active" data-slide="0">
   <h1>Working with <span class="gold">Claude</span></h1>
-  <p class="subtitle">How one person uses AI to create, iterate, and ship — across enterprise software, law, security, and content — with zero ad spend.</p>
-  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Allen Willis &nbsp;·&nbsp; Enterprise Distribution Software Specialist &nbsp;·&nbsp; Pro Se Litigant &nbsp;·&nbsp; Builder</p>
+  <p class="subtitle">A working method for shipping production software with AI — the loop, six pieces of real work, and the limitations nobody advertises.</p>
+  <p style="color:var(--muted);font-size:.95rem;margin-top:2rem">Scott Allen Willis &nbsp;·&nbsp; Enterprise Distribution Software Specialist</p>
 </div>
 
-<!-- 2 -->
 <div class="slide slide--dark" data-slide="1">
   <div class="accent-bar"></div>
   <h2>What We'll Cover</h2>
   <div style="margin-top:.5rem">
-    <div class="agenda-item"><div class="agenda-num">1</div><span>How I actually work with AI (the honest version)</span></div>
-    <div class="agenda-item"><div class="agenda-num">2</div><span>Professional work: databases, automation, migration</span></div>
-    <div class="agenda-item"><div class="agenda-num">3</div><span>Legal: representing myself after a default judgment</span></div>
-    <div class="agenda-item"><div class="agenda-num">4</div><span>Personal project: building a threat intelligence honeypot</span></div>
-    <div class="agenda-item"><div class="agenda-num">5</div><span>Hardening it: security, data exposure, and the bugs nothing reports</span></div>
-    <div class="agenda-item"><div class="agenda-num">6</div><span>Getting real users with $0 and no marketing background</span></div>
-    <div class="agenda-item"><div class="agenda-num">7</div><span>Using multiple AIs together — and knowing when not to</span></div>
-    <div class="agenda-item"><div class="agenda-num">8</div><span>What I got wrong, what I'd do differently</span></div>
+    <div class="agenda-item"><div class="agenda-num">1</div><span>The method &mdash; and the one step most people skip</span></div>
+    <div class="agenda-item"><div class="agenda-num">2</div><span>Six pieces of shipped work, and what each one cost to get wrong</span></div>
+    <div class="agenda-item"><div class="agenda-num">3</div><span>Choosing a model tier, because the largest is rarely the right one</span></div>
+    <div class="agenda-item"><div class="agenda-num">4</div><span>What I got wrong, and the limitations nobody advertises</span></div>
   </div>
-  <p style="margin-top:1.5rem;font-size:.85rem;color:var(--muted)">~50 minutes &nbsp;·&nbsp; Q&A at the end</p>
+  <p style="margin-top:1.5rem;font-size:.85rem;color:var(--muted)">Ten minutes &nbsp;&middot;&nbsp; the detail is in the <a class="link" href="/working-with-claude-blog">long-form version</a>, and the rest is a conversation</p>
 </div>
 
-<!-- 3 -->
 <div class="slide slide--light" data-slide="2">
   <h2>How I Actually Work with Claude</h2>
   <p style="margin-bottom:1rem">These aren't tips from a blog post. They're patterns I learned by shipping real things and failing first.</p>
@@ -281,13 +270,38 @@ a.link:hover{opacity:.75}
   <div class="item-row"><span class="label tag">5</span><span class="detail"><strong>Nothing ships until it's copy-paste ready</strong> — No placeholder text, no "insert X here." If I can't deploy it or file it immediately, it's not done.</span></div>
 </div>
 
-<!-- 4 -->
-<div class="slide slide--navy" data-slide="3">
-  <h2 class="display" style="text-align:center">Professional Work<br><span class="gold">Databases & Automation</span></h2>
-  <p class="subtitle" style="text-align:center">The same problems you have at work — just with an AI collaborator</p>
+<div class="slide slide--light" data-slide="3">
+  <h2>The Loop</h2>
+  <p class="lead">Define done &rarr; draft &rarr; <strong>test against reality</strong> &rarr; precise feedback &rarr; ship or repeat. Most people stop after the draft, which is why most people conclude the tool does not work.</p>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <h3>1 &middot; Define done</h3>
+      <p>Before a word is typed. "Copy-pastes into the live environment with zero errors" is a target. "Good" is not. A fuzzy definition produces a fuzzy output and there is no prompt that recovers it.</p>
+    </div>
+    <div class="card">
+      <h3>2 &middot; Draft on real artifacts</h3>
+      <p>Actual code, actual logs, actual data &mdash; never a summary of them. State the hard constraints up front, then leave the first pass alone.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--gold)">3 &middot; Test against reality</h3>
+      <p><strong>This is the step that gets skipped, and it is the whole value.</strong> Run it in dev. Deploy it and send traffic at it. The model lives in word-space; production does not.</p>
+    </div>
+    <div class="card">
+      <h3>4 &middot; Feedback precise enough to converge</h3>
+      <p>"Make it better" wanders. "Line 47 throws on the temp buffer because the alias only exists in the older code path" converges. Reproducible beats vague.</p>
+    </div>
+    <div class="card">
+      <h3>5 &middot; Ship or repeat</h3>
+      <p>Two outcomes, no third. Ship means it passed production with no caveats. Repeat means back to step 3 with new failure data. Never "one more prompt".</p>
+    </div>
+    <div class="card">
+      <h3>Keep it tight</h3>
+      <p>A context file carried into every session, a library of what shipped and the feedback that got it there, and a hard 15&ndash;20 minute cap per loop. If it is not converging, step 1 was wrong &mdash; go back, do not prompt harder.</p>
+    </div>
+  </div>
+  <p style="margin-top:1.2rem;font-size:.9rem;color:var(--muted)">The loop is model-agnostic. The leverage is in the discipline, not the vendor &mdash; and the human stays the domain expert throughout.</p>
 </div>
 
-<!-- 5 -->
 <div class="slide slide--light" data-slide="4">
   <h2>Auditing 300+ Database Views</h2>
   <div class="card-grid cols-2">
@@ -305,7 +319,6 @@ a.link:hover{opacity:.75}
   </div>
 </div>
 
-<!-- 6 -->
 <div class="slide slide--light" data-slide="5">
   <h2>Replacing What Nobody Understood</h2>
   <div class="card-grid cols-2">
@@ -322,167 +335,7 @@ a.link:hover{opacity:.75}
   </div>
 </div>
 
-<!-- 7 -->
-<div class="slide slide--navy" data-slide="6">
-  <h2 class="display" style="text-align:center">Legal<br><span class="gold">Representing Myself</span></h2>
-  <p class="subtitle" style="text-align:center">What happens when you can't afford a lawyer but you can think clearly</p>
-</div>
-
-<!-- 8 -->
-<div class="slide slide--light" data-slide="7">
-  <h2>The Default Judgment</h2>
-  <div class="card" style="max-width:none">
-    <h3>What Happened</h3>
-    <p>A certificate of last known address filed with the court listed an address I had not lived at in over ten years — filed 103 days after the same side had served me in person at my actual address. On the strength of that filing a judge entered a default custody order I knew nothing about. My children and I have been separated since December 2024.</p>
-    <h3 style="margin-top:1.2rem">What I Did About It</h3>
-    <p>I filed suit pro se. Every document — the petition, the response to the motion to dismiss, the bill of review — was co-authored with Claude. I brought the facts and the anger. Claude helped me structure them into something a court would take seriously.</p>
-    <p style="margin-top:.6rem">A criminal referral has been made and complaints have been filed with the relevant professional licensing bodies. No court has made findings on any of it.</p>
-    <p style="margin-top:1rem"><strong class="gold">The suit was dismissed with prejudice on attorney immunity in March 2026. The motion for new trial was overruled by operation of law in June when the court did not rule. A trial setting stands for October 2026.</strong></p>
-  </div>
-</div>
-
-<!-- 9 -->
-<div class="slide slide--light" data-slide="8">
-  <h2>What "Co-Authoring" Actually Means</h2>
-  <p style="margin-bottom:.8rem">Claude didn't write my case. I lived my case. Here's how the collaboration actually worked:</p>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">I brought</span><span class="detail">The timeline, the documents, the emotional weight, the public records underlying the claim — and the refusal to accept what happened</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">Claude brought</span><span class="detail">Legal structure, case law research, statutory formatting, and the ability to organize my facts into causes of action</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The key moment</span><span class="detail">The defence moved to dismiss on attorney immunity. Claude helped me frame the 103-day gap between personal service and the certificate as the fact the whole case turned on</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">The result</span><span class="detail">A thirty-year attorney had to brief the immunity question substantively against filings written by someone with no legal training. <strong>Then the court granted the motion and dismissed with prejudice.</strong> Being taken seriously is not the same as winning, and a deck that claimed otherwise would be doing exactly what this one warns against</span></div>
-  <div class="item-row"><span class="label" style="color:var(--gold);min-width:10rem">What that costs</span><span class="detail">A default judgment is attacked by bill of review, and in Texas that runs on a four-year clock. The "void judgments can be challenged at any time" line you will read everywhere requires the defect to be apparent from the face of the record — where the return recites valid service, it is not. Plan around four years, not forever</span></div>
-</div>
-
-<!-- 10 -->
-<div class="slide slide--navy" data-slide="9">
-  <h2 class="display" style="text-align:center">Personal Project<br><a class="link gold" href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a></h2>
-  <p class="subtitle" style="text-align:center">A public reference site with a threat intelligence honeypot attached</p>
-  <p style="text-align:center;color:var(--muted);font-size:.85rem;margin:1rem auto 0">The repository was public for 388 commits and is now private. The site is live; the source is not.</p>
-</div>
-
-<!-- 11 -->
-<div class="slide slide--light" data-slide="10">
-  <h2>Why Build a Honeypot?</h2>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>The Idea</h3>
-      <p>I wanted to understand how attackers actually behave — not from reading about it, but from watching it happen. So I built a site that <em>looks</em> like a vulnerable WordPress install, deployed it for free, and started logging every probe.</p>
-      <p style="margin-top:.6rem">The domain name does double duty. It pulls in people researching the legal topic from my own case, and every bot scanning for vulnerable installs finds it automatically.</p>
-    </div>
-    <div class="card">
-      <h3>Simple on Purpose</h3>
-      <p><strong>Netlify</strong> hosts the site for free and runs edge functions that act as a serverless firewall.</p>
-      <p style="margin-top:.4rem"><strong>Supabase</strong> stores every probe in a database — IP, path, user agent, headers — structured and queryable.</p>
-      <p style="margin-top:.4rem"><strong>Claude</strong> helps me analyze the logs, cluster threat actors by behavior, and build dashboards.</p>
-      <p style="margin-top:.6rem"><strong>Total monthly cost: $0.</strong></p>
-    </div>
-  </div>
-</div>
-
-<!-- 12 -->
-<div class="slide slide--light" data-slide="11">
-  <h2>What Attackers Actually Do</h2>
-  <p style="margin-bottom:.5rem">Every path below came from a real probe against my site. Nobody was sent there; scanners find it on their own:</p>
-  <table class="data-table">
-    <thead><tr><th>What They Tried</th><th>Why</th></tr></thead>
-    <tbody>
-      <tr><td class="mono">/wp-login.php</td><td>Trying to brute-force WordPress login credentials</td></tr>
-      <tr><td class="mono">/xmlrpc.php <span class="red">(POST)</span></td><td>Exploiting WordPress's remote API for amplification attacks</td></tr>
-      <tr><td class="mono">/wp-admin/setup-config.php</td><td>Checking if WordPress was installed but never configured</td></tr>
-      <tr><td class="mono">/admin/.env</td><td>Hunting for accidentally exposed passwords and API keys</td></tr>
-      <tr><td class="mono">/shell.php</td><td>Looking for web shells — evidence of a previous compromise</td></tr>
-      <tr><td class="mono">/backup.sql</td><td>Hoping someone left a database dump in a public folder</td></tr>
-      <tr><td class="mono">/phpmyadmin/</td><td>Trying to access database admin panels directly</td></tr>
-    </tbody>
-  </table>
-  <p style="margin-top:.8rem;font-size:.8rem;color:var(--muted);font-style:italic">Every probe is logged in real time. No servers to manage. No infrastructure to maintain.</p>
-</div>
-
-<!-- 13 -->
-<div class="slide slide--light" data-slide="12">
-  <h2>Rewriting the Reference Side of It</h2>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>The Work</h3>
-      <p>The same site carries a set of plain-English guides explaining a narrow area of procedure. I spent a day deepening them — several roughly tripled in length, with every claim tied to a specific rule or decision rather than to somebody's summary of one.</p>
-      <p style="margin-top:.6rem">Writing was the easy half. The audit was the half that mattered.</p>
-    </div>
-    <div class="card">
-      <h3>What the Audit Found</h3>
-      <p><strong>Four substantive errors</strong> that had been live for months. One appeared on <strong>four separate pages</strong> and was the kind a reader could act on and be harmed by — a widely repeated shortcut that holds in a narrow case and misleads in most.</p>
-      <p style="margin-top:.4rem">Another described a cited authority as supporting a position when it had decided the opposite.</p>
-      <p style="margin-top:.6rem"><strong>None were caught by asking whether the draft was right.</strong> All four came from opening the primary source and comparing.</p>
-    </div>
-  </div>
-  <div class="callout"><strong>The fix follows from the diagnosis:</strong> make opening the source a <em>tool call</em>, not a resolution. Instruct the model to fetch and quote the primary text before it asserts anything about it, and to say plainly when it cannot reach the source — an admitted gap is worth more than a confident paraphrase. A rule you have to remember to follow is a rule that fails on the day you are tired. A step the model must execute is one you can check.</div>
-</div>
-
-<!-- 14 -->
-<div class="slide slide--light" data-slide="13">
-  <h2>A Tool Instead of More Prose</h2>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>The Problem With Writing More</h3>
-      <p>The most common question the site gets has a genuinely different answer depending on two dates. I had answered it with several hundred words of prose, which is to say I had answered it badly. Nobody reads a decision tree written as paragraphs.</p>
-    </div>
-    <div class="card">
-      <h3>What Replaced It</h3>
-      <p>Enter two dates, get back which options are still open and how many days each has left. Colour-coded open, closing, closed. Runs entirely in the browser — nothing typed into it leaves the machine, which matters when the input is somebody's own situation.</p>
-      <p style="margin-top:.6rem">Most of the effort went into the branch nobody designs for: <strong>what to show when every option has already expired.</strong></p>
-    </div>
-  </div>
-</div>
-
-<!-- 15 -->
-<div class="slide slide--light" data-slide="14">
-  <h2>When the Numbers Stopped Making Sense</h2>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>The Symptom</h3>
-      <p>The analytics did not match reality. Traffic looked wrong in a way I could not explain — the device split was inverted for the audience, and the top pages were ones no reader would land on.</p>
-      <p style="margin-top:.6rem">This is the least glamorous kind of work and the easiest to skip.</p>
-    </div>
-    <div class="card">
-      <h3>What Was Actually Wrong</h3>
-      <p>Three separate faults, none visible from the reports alone. One measurement property was receiving data from more than one site. Half the pages carried two tags and counted every visit twice. And no tag was restricted by host, so every preview build reported as live traffic.</p>
-      <p style="margin-top:.6rem"><strong>No code was written to fix any of it.</strong> The value was checking things methodically that I would otherwise have assumed were fine.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 16 -->
-<div class="slide slide--navy" data-slide="15">
-  <h2 class="display" style="text-align:center">Hardening It<br><span class="gold">The Unglamorous Half</span></h2>
-  <p class="subtitle" style="text-align:center">Everything above is the part that gets demoed. This is the part that decides whether it survives contact with the internet.</p>
-</div>
-
-<!-- 17 -->
-<div class="slide slide--light" data-slide="16">
-  <h2>From B to A+</h2>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>What Was Wrong</h3>
-      <p>The site scored a <strong>B</strong>. The content security policy needed <span class="mono">unsafe-inline</span> because the markup was full of things that required it — event handlers on elements, executable script blocks, style tags, and inline style attributes by the thousand.</p>
-      <p style="margin-top:.6rem">A policy with <span class="mono">unsafe-inline</span> in it is not a policy. It is a header that looks like one.</p>
-    </div>
-    <div class="card">
-      <h3>What It Took</h3>
-      <table class="data-table" style="margin-top:0">
-        <thead><tr><th>&nbsp;</th><th>Before</th><th>After</th></tr></thead>
-        <tbody>
-          <tr><td>Inline event handlers</td><td class="mono red">258</td><td class="mono">0</td></tr>
-          <tr><td>Executable inline scripts</td><td class="mono red">118</td><td class="mono">0</td></tr>
-          <tr><td>Style blocks</td><td class="mono red">49</td><td class="mono">0</td></tr>
-          <tr><td>Inline style attributes</td><td class="mono red">1,316</td><td class="mono">0</td></tr>
-        </tbody>
-      </table>
-      <p style="margin-top:.6rem">No <span class="mono">unsafe-inline</span> and no <span class="mono">unsafe-eval</span> in any directive. <strong>A+, 125/100.</strong></p>
-    </div>
-  </div>
-  <div class="callout"><strong>The exception that is not an exception:</strong> 203 structured-data blocks stayed inline and are correct. Browsers never execute them and the script policy does not govern them. Knowing which rule does not apply is worth as much as knowing which does.</div>
-</div>
-
-<!-- 18 -->
-<div class="slide slide--light" data-slide="17">
+<div class="slide slide--light" data-slide="6">
   <h2>Closing a Data Exposure</h2>
   <div class="card-grid cols-2">
     <div class="card">
@@ -498,8 +351,7 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>Two traps worth carrying to any project.</strong> The table already had four dormant access policies, inert only because row-level security was switched off — enabling it would have <em>activated</em> them. Revoking the grants is what saved it, because privilege denial is evaluated before policies are. And do not write a policy matching a token claim when your identity provider is not the database's own: the claim is null, the policy matches nothing, and it looks exactly like working access control.</div>
 </div>
 
-<!-- 19 -->
-<div class="slide slide--light" data-slide="18">
+<div class="slide slide--light" data-slide="7">
   <h2>The Bugs Nothing Reports</h2>
   <p style="margin-bottom:.5rem">Three production faults that returned no error, logged nothing, and read correctly in every file involved.</p>
   <div class="card-grid cols-3">
@@ -519,8 +371,7 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>The common thread:</strong> every one of these passes review, passes config validation, and produces no error anywhere. The only thing that finds them is probing the live URL and parsing what actually comes back. <strong>Config that reads correctly is not evidence.</strong></div>
 </div>
 
-<!-- 20 -->
-<div class="slide slide--light" data-slide="19">
+<div class="slide slide--light" data-slide="8">
   <h2>Never Put a Credential on the Critical Path</h2>
   <div class="card-grid cols-2">
     <div class="card">
@@ -537,8 +388,7 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>Generalise it:</strong> anything that can fail independently of the user's intent belongs after the durable write, not before it. A form whose success depends on a third-party credential is a form that quietly deletes messages the day that credential expires.</div>
 </div>
 
-<!-- 21 -->
-<div class="slide slide--light" data-slide="20">
+<div class="slide slide--light" data-slide="9">
   <h2>Proving a Refactor Changed Nothing</h2>
   <div class="card-grid cols-2">
     <div class="card">
@@ -556,71 +406,14 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>Instrument the instrument.</strong> Always measure one file the change never touched. If the control reports differences too, your checker is broken, not the site — that is exactly how a run of false positives got caught before it buried the one real error.</div>
 </div>
 
-<!-- 22 -->
-<div class="slide slide--navy" data-slide="21">
-  <h2 class="display" style="text-align:center"><span class="gold">$0 Ad Spend</span><br>Real Users Anyway</h2>
-  <p class="subtitle" style="text-align:center">What happens when you build something people actually want to read</p>
-</div>
-
-<!-- 17 -->
-<div class="slide slide--light" data-slide="22">
-  <h2>What the Numbers Were Actually Worth</h2>
-  <p style="margin-bottom:.8rem">This slide used to show a tidy 30-day dashboard. Those figures came from the period the previous slide is about — double-counted pages, preview builds reporting as live traffic, one property fed by more than one site. <strong>I have removed them rather than restate them, because I cannot reproduce them.</strong> What survived the audit is the part that was never about volume:</p>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3>Head terms are a trap</h3>
-      <p>The obvious high-volume query for the subject produced <strong>209 impressions and zero clicks</strong>. Ranking for the term everyone writes about is worth nothing if the people searching it are not looking for what you have.</p>
-      <p style="margin-top:.6rem">One narrow procedural term converts at <strong>6.8%</strong> against a site average of <strong>0.59%</strong> — more than ten times the rate, on a fraction of the traffic.</p>
-    </div>
-    <div class="card">
-      <h3>What that changes</h3>
-      <p>The site's own machine-readable index is ordered by that finding rather than by search volume: the narrow, high-intent material leads, because it exists nowhere else in depth and it is the material that actually converts.</p>
-      <p style="margin-top:.6rem">Writing more pages was the tempting move and the wrong one. The remaining gains were depth and trust, not coverage.</p>
-    </div>
-  </div>
-  <div class="callout"><strong>The uncomfortable part:</strong> the tidy dashboard was on this slide for months and nobody questioned it, including me. A number is not evidence until you know what produced it.</div>
-</div>
-
-<!-- 18 -->
-<div class="slide slide--dark" data-slide="23">
-  <div class="card-grid cols-2">
-    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
-      <div style="font-family:var(--font-display);font-size:clamp(4rem,12vw,7rem);font-weight:700;color:var(--gold);line-height:1">$0</div>
-      <p style="font-size:1.2rem;color:var(--ice);margin-top:.5rem">personal ad spend</p>
-      <p style="color:var(--muted);margin-top:1rem;font-size:.9rem">$0/month hosting<br>80+ bot probes / day = free threat intelligence</p>
-    </div>
-    <div style="display:flex;flex-direction:column;justify-content:center">
-      <h2>Strangers Ran Paid Ads for My Site</h2>
-      <p style="color:var(--ice)">People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting <a class="link gold" href="https://safesapcrtx.org" target="_blank" rel="noopener">safesapcrtx.org</a>.</p>
-      <p style="color:var(--ice);margin-top:1rem">I didn't ask them to. I didn't know they were doing it. They just thought the content mattered enough to spend their own money on.</p>
-      <p class="gold" style="font-family:var(--font-display);font-style:italic;font-size:clamp(1.1rem,2vw,1.5rem);margin-top:1.5rem">The content spoke for itself.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 19 -->
-<div class="slide slide--light" data-slide="24">
-  <h2>Using Multiple AIs Together</h2>
-  <p style="margin-bottom:.5rem">Claude is the primary builder. But I use other AIs to stress-test, analyze, and create feedback loops:</p>
-  <div class="ai-hub">Claude — Where Things Get Built</div>
-  <div class="card-grid cols-4">
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">ChatGPT</h3><p>SEO audits, content gap analysis — "what's missing?"</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Grok</h3><p>Real-time social signal analysis — what's getting traction?</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Copilot</h3><p>Bing indexing behavior, alternative perspectives</p></div>
-    <div class="card" style="text-align:center;border-top:4px solid var(--accent)"><h3 style="color:var(--accent)">Gemini</h3><p>Google Search patterns, traffic analysis</p></div>
-  </div>
-  <div class="callout">The other AIs analyze the site. That feedback loops back to Claude for the next build. <strong>Social posts force real-time Google indexing.</strong> The cycle runs continuously.</div>
-</div>
-
-<!-- NEW: model-tier routing -->
-<div class="slide slide--light" data-slide="25">
+<div class="slide slide--light" data-slide="10">
   <h2>Route Across Tiers, Not Just Vendors</h2>
   <p style="margin-bottom:.5rem">The previous slide routes work across four companies. The cheaper, higher-leverage version of the same idea routes it across tiers inside one of them — and for two years I did not do it. Every task got the biggest model, which is the same mistake as running every report on the production server.</p>
   <table class="data-table">
     <thead><tr><th>Model</th><th>What Anthropic says it is for</th><th>What I actually send it</th></tr></thead>
     <tbody>
       <tr><td class="mono">Haiku 4.5</td><td>The fastest model with near-frontier intelligence</td><td>The 62-script batch. Mechanical, high-volume, verifiable by diff</td></tr>
-      <tr><td class="mono">Sonnet 5</td><td>The best combination of speed and intelligence</td><td>Most of the loop. Drafting, refactors, the honeypot dashboards</td></tr>
+      <tr><td class="mono">Sonnet 5</td><td>The best combination of speed and intelligence</td><td>Most of the loop. Drafting, refactors, dashboard work</td></tr>
       <tr><td class="mono">Opus 5</td><td>Complex agentic coding and enterprise work</td><td>The immunity briefing. The migration plan. Anything I would regret getting subtly wrong</td></tr>
       <tr><td class="mono">Fable 5</td><td>Next-generation intelligence for long-running agents</td><td>Long autonomous runs I check on rather than watch</td></tr>
     </tbody>
@@ -628,32 +421,7 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>The routing rule is the delegation rule.</strong> Give the expensive model the ambiguous, high-consequence work and the cheap model the well-specified, easily-checked work — which is exactly how you would staff it if the models were people. Switch with <span class="mono">/model</span> in Claude Code or the model picker in the app. Prices, context windows and tier descriptions are on the models page in the sources at the end.</div>
 </div>
 
-<!-- NEW: surfaces -->
-<div class="slide slide--light" data-slide="26">
-  <h2>Half This Deck Is Claude Code Without Saying So</h2>
-  <p style="margin-bottom:.5rem">The 300-view audit, the two-port computed-style comparison, the control file that proved the checker worked — that is not chat work. That is an agent with a terminal, file access and the ability to run its own verification. Naming the tool is not a product endorsement; it is the difference between a reader reproducing this and a reader assuming I did it by pasting into a text box.</p>
-  <div class="card-grid cols-3">
-    <div class="card">
-      <h3 style="color:var(--accent)">Claude Code</h3>
-      <p>Terminal, desktop, web and IDE. It reads and writes files, runs commands, and can execute step 3 of the loop itself instead of handing me something to test.</p>
-      <p style="margin-top:.4rem"><strong>This is where the audit work happened.</strong></p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Cowork</h3>
-      <p>Anthropic's framing: "Give it a goal, and it works across your files and tools." You hand off a task rather than supervise a conversation. Runs on web, desktop and mobile.</p>
-      <p style="margin-top:.4rem">The loop still applies — you just run step 3 when it comes back.</p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Claude for Microsoft 365</h3>
-      <p>Add-ins that read and write open Excel, PowerPoint and Word files, with Outlook in beta. Context carries between the apps.</p>
-      <p style="margin-top:.4rem"><strong>This is the nine-macro problem</strong> — the same job, without me writing the replacement first.</p>
-    </div>
-  </div>
-  <div class="callout"><strong>The surface changes who runs step 3, not whether it runs.</strong> An agent that can execute its own tests is enormously better than one that cannot — and it is also an agent that can now be confidently wrong <em>and</em> have already deployed. Every verification discipline in this deck gets more important as the surface gets more capable, not less.</div>
-</div>
-
-<!-- 20 -->
-<div class="slide slide--dark" data-slide="27">
+<div class="slide slide--dark" data-slide="11">
   <h2>What I Got Wrong <span class="gold">(Honest Version)</span></h2>
   <div class="card-grid cols-3" style="margin-top:1rem">
     <div class="card">
@@ -677,83 +445,7 @@ a.link:hover{opacity:.75}
   <div class="callout"><strong>The rule I follow now:</strong> If the problem is well-defined and the output format is clear — delegate to AI. If the problem is ambiguous and I need to <em>think</em> — I do that myself first, then bring Claude the result.</div>
 </div>
 
-<!-- 21 -->
-<div class="slide slide--light" data-slide="28">
-  <h2>The Iteration Loop</h2>
-  <p style="margin-bottom:.5rem">This is the actual cycle. It ran dozens of times across every project in this presentation.</p>
-  <div class="flow">
-    <div class="flow-step">Define the<br>outcome</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Claude<br>drafts</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Test against<br>reality</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Specific<br>feedback</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Ship or<br>repeat</div>
-  </div>
-  <div class="callout"><strong>The critical insight:</strong> Most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering.</div>
-</div>
-
-<!-- Loop step-by-step -->
-<div class="slide slide--light" data-slide="29">
-  <h2>The Loop, Step by Step</h2>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">1. Define done</span><span class="detail"><strong>Before you type a word.</strong> "Copy-paste into the live environment with zero errors." "Filed with zero procedural defects." If the target is fuzzy, the output is fuzzy.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">2. Claude drafts</span><span class="detail"><strong>Feed real artifacts, never summaries.</strong> Actual code, actual logs, actual filings. State hard constraints up front. Let it go full creative on the first pass.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">3. Test reality</span><span class="detail"><strong>Where 95% of users fail.</strong> Run the code in dev. File in test mode. Deploy and hit it with traffic. You are the merciless QA department.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">4. Precise feedback</span><span class="detail"><strong>The convergence engine.</strong> Bad: "make it better." Good: "Line 47 throws an invalid handle on the temp buffer because the alias only exists in the older code path." Reproducible &gt; vague.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:11rem">5. Ship or repeat</span><span class="detail"><strong>Two choices only.</strong> Ship = passes production with zero caveats. Repeat = back to step 3 with new failure data. No "maybe one more prompt." The loop is sacred.</span></div>
-</div>
-
-<!-- Pro tips -->
-<div class="slide slide--light" data-slide="30">
-  <h2>Make Your Loop Tighter</h2>
-  <div class="card-grid cols-3">
-    <div class="card">
-      <h3 style="color:var(--accent)">War room file</h3>
-      <p>Keep a context file you paste at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers.</p>
-      <p style="margin-top:.4rem;font-size:.8em;color:var(--muted)">This is a Project. Next slide.</p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Pattern library</h3>
-      <p>After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online.</p>
-      <p style="margin-top:.4rem;font-size:.8em;color:var(--muted)">This is an Agent Skill. Next slide.</p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Time-box</h3>
-      <p>15–20 minutes per loop, hard cap. If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Stop prompting.</p>
-    </div>
-  </div>
-  <div class="callout" style="margin-top:1rem"><strong>Why it crushes other workflows:</strong> the human is the constant. You stay the domain expert. Every hallucination becomes fuel. The loop is model-agnostic — Claude, Grok, Gemini, GPT — because the leverage is in the discipline, not the tool.</div>
-</div>
-
-<!-- NEW: convergence -->
-<div class="slide slide--light" data-slide="31">
-  <h2>Both of Those Are Shipped Features Now</h2>
-  <p style="margin-bottom:.5rem">I am not claiming credit for anyone's roadmap. I am saying the two habits on the previous slide were the manual version of two things that now exist as product — and that is a better argument for the habits than "here is my tip," because it means the pattern was load-bearing enough that it got built.</p>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3 style="color:var(--accent)">War room file &rarr; Projects</h3>
-      <p>A Project holds the persistent context for one body of work and — since memory shipped — gets its own separate memory space and project summary, isolated from your other chats.</p>
-      <p style="margin-top:.6rem">What the manual version still has over it: <strong>I decide what survives.</strong> Automatic extraction is a summary of what I said. A context file is a statement of what must be true. For hard constraints, keep writing the file.</p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Pattern library &rarr; Agent Skills</h3>
-      <p>A skill is a folder with a <span class="mono">SKILL.md</span> in it — instructions plus optional scripts and reference files — that loads on demand when the task matches. Personal skills live at <span class="mono">~/.claude/skills/&lt;name&gt;/SKILL.md</span>, per-project ones at <span class="mono">.claude/skills/&lt;name&gt;/SKILL.md</span>, and you upload a <span class="mono">.zip</span> under Customize &rarr; Skills on claude.ai.</p>
-      <p style="margin-top:.6rem">"Save the final output plus the exact feedback that got it there" is a SKILL.md. <strong>The difference is that it fires by itself.</strong></p>
-    </div>
-  </div>
-  <div class="callout"><strong>Two things worth knowing before you rebuild your library as skills.</strong> The format was published as an open standard in December 2025 and other vendors' agents read the same <span class="mono">SKILL.md</span> from the same directories, so this is not a lock-in decision. But custom skills <em>do not sync across surfaces</em> — a skill uploaded on claude.ai is not automatically present in Claude Code, and vice versa. Plan for one source of truth and a copy step, not for magic.</div>
-</div>
-
-<!-- 24 -->
-<div class="slide slide--light" data-slide="32">
-  <h2>What I'd Tell Someone Starting Today</h2>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">You're the expert</span><span class="detail">Claude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Specificity compounds</span><span class="detail">One precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Ship real things</span><span class="detail">The gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">Side projects matter</span><span class="detail">My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.</span></div>
-  <div class="item-row"><span class="label" style="color:var(--accent);min-width:12rem">AI levels the field</span><span class="detail">Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. It also wasn't enough — the court granted the dismissal. Access to the argument is not the same as winning it, and anyone telling you otherwise is selling something.</span></div>
-</div>
-
-<!-- 25 -->
-<div class="slide slide--light" data-slide="33">
+<div class="slide slide--light" data-slide="12">
   <h2>The Honest Limitations</h2>
   <p style="margin-bottom:.5rem">Everything in this deck is real. So is everything below. Anyone selling you Claude as a magic co-founder is lying.</p>
   <div class="item-row"><span class="label" style="color:var(--red);min-width:12rem">Compaction loses things</span><span class="detail"><em>Sharpened, August 2026:</em> "the context window fills up and Claude summarizes" is real but it is not one uniform behaviour. In Claude Code it is auto-compaction, plus <span class="mono">/compact</span> on demand. On the API it is an opt-in beta you switch on, with a trigger threshold you set. On claude.ai it happens automatically <strong>only when code execution is enabled</strong>. Whichever surface you are on, the summary drops nuance and edge cases — it is not lossless. Know which one you are relying on before you rely on it.</span></div>
@@ -764,37 +456,7 @@ a.link:hover{opacity:.75}
   <div class="callout" style="margin-top:1rem"><strong>The honest framing:</strong> Claude is a smart but unreliable junior — not a co-founder. The leverage comes from how you wrap it, not from the model alone. And tell it, explicitly, that <em>saying "I don't know" is an acceptable answer</em>. Models default to producing something; a model that has been given permission to return a gap will return a gap instead of inventing a bridge, and a gap is a thing you can go and fill.</div>
 </div>
 
-<!-- 26 -->
-<div class="slide slide--light" data-slide="34">
-  <h2>From Prompting to System Design</h2>
-  <p style="margin-bottom:.8rem">Stage 1 thinking: "How do I write a better prompt?" Stage 2 thinking: "How do I build a system around the model?" That's the actual leap.</p>
-  <div class="card-grid cols-2">
-    <div class="card">
-      <h3 style="color:var(--red)">Don't</h3>
-      <p style="color:var(--charcoal)">&#8226; Giant kitchen-sink prompts<br>&#8226; Long messy chat threads<br>&#8226; "Just keep going" sessions until compaction breaks them<br>&#8226; Rely on auto-generated memory for a constraint you cannot afford to lose<br>&#8226; Skip verification because the answer "sounds right"</p>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--accent)">Do</h3>
-      <p style="color:var(--charcoal)">&#8226; Break work into discrete phases with checkpoints<br>&#8226; Externalize memory deliberately: Projects, skills, files, MCP tools<br>&#8226; Restart sessions with clean, curated context<br>&#8226; Use real tools (file I/O, APIs, databases) — not just chat<br>&#8226; Match the model tier to the task, not to your anxiety<br>&#8226; Verify every claim against reality before shipping</p>
-    </div>
-  </div>
-  <div class="callout" style="margin-top:1rem"><strong>The real formula:</strong> <span class="mono">Claude + external memory + structured workflows = leverage</span>. The honeypot, the SQL audit, the legal filings — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.</div>
-</div>
-
-<!-- NEW: sources -->
-<div class="slide slide--light" data-slide="35">
-  <h2>What Changed Since April, and How I Checked</h2>
-  <p style="margin-bottom:.5rem">A deck that tells you to open the primary source owes you the primary sources. Every product claim added or corrected in the August 2026 revision, with the page it came from. <strong>Checked 10 August 2026</strong> — if you are reading this much later, check them again rather than trusting me.</p>
-  <div class="item-row"><span class="label" style="min-width:9rem">Memory</span><span class="detail"><a class="link" href="https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context" target="_blank" rel="noopener">Chat search and memory</a> — per-Project memory spaces, citations back to source chats, incognito excluded, memory import/export, and which plans have it</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Compaction</span><span class="detail"><a class="link" href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank" rel="noopener">Compaction (API)</a> for the opt-in beta and its trigger threshold &nbsp;·&nbsp; <a class="link" href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">Usage and length limits</a> for the claude.ai behaviour and the code-execution requirement</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Models</span><span class="detail"><a class="link" href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">Models overview</a> — the tier descriptions quoted on the routing slide, plus context windows and per-token pricing</span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Skills</span><span class="detail"><a class="link" href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Skills in Claude Code</a> for the on-disk paths &nbsp;·&nbsp; <a class="link" href="https://support.claude.com/en/articles/12512180-use-skills-in-claude" target="_blank" rel="noopener">Use skills in Claude</a> for the .zip upload and the no-sync caveat &nbsp;·&nbsp; <a class="link" href="https://agentskills.io/specification" target="_blank" rel="noopener">the open specification</a></span></div>
-  <div class="item-row"><span class="label" style="min-width:9rem">Surfaces</span><span class="detail"><a class="link" href="https://claude.com/product/cowork" target="_blank" rel="noopener">Cowork</a> &nbsp;·&nbsp; <a class="link" href="https://claude.com/claude-for-microsoft-365" target="_blank" rel="noopener">Claude for Microsoft 365</a> &nbsp;·&nbsp; documentation now lives at <a class="link" href="https://platform.claude.com/docs" target="_blank" rel="noopener">platform.claude.com/docs</a> and <a class="link" href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com/docs</a> — the old <span class="mono">docs.anthropic.com</span> link in earlier versions of this deck now redirects</span></div>
-  <div class="callout"><strong>Why this slide exists at all.</strong> The worst of the four errors on the reference site was inside structured data — the exact text search engines and assistants quote back. This deck's own memory claim had the same problem: wrong, and sitting in the machine-readable block. It was quoted back for four months. Marking the correction is the cost of having made it.</div>
-</div>
-
-<!-- 27 -->
-<div class="slide slide--dark" data-slide="36">
+<div class="slide slide--dark" data-slide="13">
   <div style="text-align:center">
     <h2 class="display">Questions?</h2>
     <div class="big-quote">"The best AI results come from people who know their domain and refuse to accept anything less than production-ready."</div>
@@ -813,13 +475,22 @@ a.link:hover{opacity:.75}
     <div class="repo-links">
       <a class="repo-link" href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">&#10209; github.com/iamnotcheckingit-cyber/siegestack</a>
     </div>
+    <p style="color:var(--muted);margin-top:1.6rem;font-size:.8rem;max-width:640px;margin-left:auto;margin-right:auto">
+      <strong style="color:var(--gold)">Sources.</strong> A deck that tells you to open the primary source owes you the primary sources. Every product claim here was checked against
+      <a class="link" style="color:var(--ice)" href="https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context" target="_blank" rel="noopener">chat search and memory</a>,
+      <a class="link" style="color:var(--ice)" href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank" rel="noopener">compaction</a>,
+      <a class="link" style="color:var(--ice)" href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">usage and length limits</a>,
+      <a class="link" style="color:var(--ice)" href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">the models overview</a> and
+      <a class="link" style="color:var(--ice)" href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">the Skills documentation</a>
+      on <strong>10 August 2026</strong>. If you are reading this much later, check them again rather than trusting me.
+    </p>
   </div>
 </div>
 
 </div>
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
-  <span class="counter" id="counter">1 / 37</span>
+  <span class="counter" id="counter">1 / 14</span>
   <button id="next" aria-label="Next slide">&#8594;</button>
 </nav>
 <script>
@@ -836,7 +507,7 @@ goTo(0);
 <!-- Semantic SEO content for crawlers — visually hidden, fully readable to search engines and screen readers. The slideshow above is the user-facing presentation; the structured article below mirrors its content for indexing. -->
 <article style="position:absolute;left:-99999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="false">
   <h2>How to Use Claude AI Effectively</h2>
-  <p>Most people are using Claude wrong. They treat it like a chatbot. The most effective way to use Claude AI is as a production system — wrapped in a structured workflow with real artifacts, real tests, and tight feedback loops. This 37-slide presentation walks through that workflow with real case studies.</p>
+  <p>Most people are using Claude wrong. They treat it like a chatbot. The most effective way to use Claude AI is as a production system — wrapped in a structured workflow with real artifacts, real tests, and tight feedback loops. This 14-slide presentation walks through that workflow with real case studies.</p>
 
   <h2>What Claude AI Actually Is</h2>
   <p>Claude is a large language model built by Anthropic for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it is wrapping the model in a structured workflow. Prompting is Stage 1 thinking. System design is Stage 2 thinking. This presentation is about Stage 2.</p>
