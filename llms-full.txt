@@ -135,7 +135,7 @@ Solutions that solve real problems and deliver measurable results. Worked exampl
 Automate data flows between your tools. No more copy-pasting between spreadsheets and systems.
 
 
-→ ETL Pipelines
+[→ ETL Pipelines](https://siegestack.com/etl-showcase)
 
 
 
@@ -145,7 +145,7 @@ Automate data flows between your tools. No more copy-pasting between spreadsheet
 Custom dashboards that actually answer your questions. Know what's happening without digging through reports.
 
 
-→ BI Dashboards
+[→ BI Dashboards](https://siegestack.com/case-studies)
 
 
 
@@ -155,7 +155,7 @@ Custom dashboards that actually answer your questions. Know what's happening wit
 Make your systems talk to each other. CRM to ERP, e-commerce to inventory, whatever you need.
 
 
-→ API Integration
+[→ API Integration](https://siegestack.com/etl-showcase)
 
 
 
@@ -165,7 +165,7 @@ Make your systems talk to each other. CRM to ERP, e-commerce to inventory, whate
 Built-in monitoring, smart retries, and automatic recovery. Problems get fixed before you know they happened.
 
 
-→ Monitoring & Alerts
+[→ Monitoring & Alerts](https://siegestack.com/etl-showcase)
 
 
 
@@ -175,7 +175,7 @@ Built-in monitoring, smart retries, and automatic recovery. Problems get fixed b
 Consolidate data from everywhere into a single warehouse. Stop hunting through 5 different systems to answer one question.
 
 
-→ Data Warehousing
+[→ Data Warehousing](https://siegestack.com/operations-modernization)
 
 
 
@@ -185,7 +185,7 @@ Consolidate data from everywhere into a single warehouse. Stop hunting through 5
 Daily summaries, weekly KPIs, monthly board reports—generated and delivered automatically. No more manual Excel work.
 
 
-→ Automated Reporting
+[→ Automated Reporting](https://siegestack.com/operations-modernization)
 
 
 
@@ -195,7 +195,7 @@ Daily summaries, weekly KPIs, monthly board reports—generated and delivered au
 Reports that time out and queries that crawl usually have a cause, not a mystery. We find which ones are actually slow, fix the reason, and measure the difference.
 
 
-→ Performance Tuning
+[→ Performance Tuning](https://siegestack.com/sql-server-erp-performance)
 
 
 
@@ -205,7 +205,7 @@ Reports that time out and queries that crawl usually have a cause, not a mystery
 Systems nobody documented, built by people who left. We map how it actually fits together so your team can change it without holding their breath.
 
 
-→ System Mapping
+[→ System Mapping](https://siegestack.com/operations-modernization)
 
 
 
@@ -215,7 +215,7 @@ Systems nobody documented, built by people who left. We map how it actually fits
 Spreadsheet macros that only run on one person's machine, in the right order, when they remember. Replaced with something scheduled, logged, and monitored.
 
 
-→ Legacy Automation
+[→ Legacy Automation](https://siegestack.com/case-studies)
 
 
 
@@ -225,7 +225,7 @@ Spreadsheet macros that only run on one person's machine, in the right order, wh
 Small, purpose-built tools that replace a manual process, with validation that catches mistakes before they cost you and documentation people will read.
 
 
-→ Internal Tools
+[→ Internal Tools](https://siegestack.com/case-studies)
 
 
 
@@ -235,7 +235,7 @@ Small, purpose-built tools that replace a manual process, with validation that c
 The person who knows how the process works will eventually leave. We turn what is in their head into guides your team will actually open, organised the way they already think.
 
 
-→ Training & Documentation
+[→ Training & Documentation](https://siegestack.com/operations-modernization)
 
 
 
@@ -767,7 +767,7 @@ That is the common shape of operational software work: the request describes the
 If a report is slow on longer date ranges, or a number nobody trusts is driving a decision, the first conversation is short and costs nothing.
 
 
-[Get in touch](https://siegestack.com/#contact) · [See the engagement model](https://siegestack.com/operations-modernization)
+[Get in touch](https://siegestack.com/#schedule) · [See the engagement model](https://siegestack.com/operations-modernization)
 
 ---
 
@@ -945,7 +945,7 @@ Ask a narrower question instead: *what exactly does the date filter filter on, a
 Usually diagnosable from the execution plan and the index list in a single sitting. The first conversation costs nothing.
 
 
-[Get in touch](https://siegestack.com/#contact) · [Read the case studies](https://siegestack.com/case-studies)
+[Get in touch](https://siegestack.com/#schedule) · [Read the case studies](https://siegestack.com/case-studies)
 
 ---
 
@@ -1794,7 +1794,7 @@ This is a different job from reporting, and the two work best together. A dashbo
 The first conversation is about what you can measure today, because that determines what any of this can be held to later.
 
 
-[Get in touch](https://siegestack.com/#contact) · [See the integration work](https://siegestack.com/etl-showcase) · [How the analysis actually gets done](https://siegestack.com/working-with-claude-blog)
+[Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase) · [How the analysis actually gets done](https://siegestack.com/working-with-claude-blog)
 
 ---
 
@@ -4458,7 +4458,7 @@ Memory is real — and it is still not your system of record*Corrected, August 2
 "The best AI results come from people who know their domain and refuse to accept anything less than production-ready."
 
 
-Scott Allen Willis · [iamnotcheckingit@gmail.com](mailto:iamnotcheckingit@gmail.com)
+Scott Allen Willis · [info@siegestack.com](mailto:info@siegestack.com)
 
 
 
@@ -4615,7 +4615,7 @@ If you are running into one of these, the [case studies](https://siegestack.com/
 The first conversation is short and costs nothing.
 
 
-[Get in touch](https://siegestack.com/#contact) · [See the integration work](https://siegestack.com/etl-showcase)
+[Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
 
 ---
 
@@ -4768,7 +4768,7 @@ We may update this privacy policy from time to time. Changes will be posted on t
 If you have questions about this privacy policy, please contact us at:
 
 
-[iamnotcheckingit@gmail.com](mailto:iamnotcheckingit@gmail.com)
+[info@siegestack.com](mailto:info@siegestack.com)
 
 
 

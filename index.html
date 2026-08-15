@@ -20,7 +20,6 @@
 
     <!-- Primary SEO Meta Tags -->
     <meta name="description" content="SiegeStack builds custom integrations, dashboards and apps — and audits the ones you already have. ETL pipelines, BI, security and access-control review.">
-    <meta name="keywords" content="full stack web development, data reporting, ETL development, business intelligence, cross-platform integration, data pipeline, custom web development, e-commerce development, SaaS development, enterprise web development, ERP integration, CRM integration, API development, data analytics, dashboard development, data visualization, reporting solutions, system integration, digital transformation, application security hardening, content security policy, access control audit, row level security, web analytics audit, refactor verification">
     <meta name="author" content="SiegeStack">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://siegestack.com/">
@@ -519,24 +518,44 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+    
+        /* Site footer — shared across pages. Uses only the four custom properties
+           every page defines (--navy-dark, --slate, --blue-accent, --white), so it
+           renders identically everywhere without a shared stylesheet. */
+        .site-footer { background: var(--navy-dark); border-top: 1px solid rgba(100,255,218,0.1); padding: 3rem 2rem 2rem; }
+        .foot-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .foot-grid h3 { color: var(--white); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem; font-weight: 600; }
+        .foot-grid a { display: block; color: var(--slate); text-decoration: none; font-size: .9rem; margin-bottom: .5rem; }
+        .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
+        .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
+        .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+
+        /* A .tag either goes somewhere or it does not, and it must look like
+           whichever it is. The whole grid previously used link-coloured arrows
+           on plain spans, which read as seventeen broken links. */
+        .value-card a.tag-link { color: var(--blue-accent); text-decoration: none; }
+        .value-card a.tag-link:hover, .value-card a.tag-link:focus-visible { text-decoration: underline; }
+        .value-card .tag-label { color: var(--slate); }
+</style>
 </head>
 <body>
 
     <!-- Navigation -->
     <nav>
-        <a href="#" class="nav-logo">SiegeStack</a>
+        <a href="/" class="nav-logo">SiegeStack</a>
         <div class="nav-links">
-            <a href="#solutions">Solutions</a>
-            <a href="#process">Process</a>
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
             <a href="/operations-modernization">Operations</a>
             <a href="/etl-showcase">ETL Showcase</a>
             <a href="/case-studies">Case Studies</a>
             <a href="/insights">Insights</a>
-            <a href="#faq">FAQ</a>
-            <a href="#schedule" class="btn btn-primary">Get Started</a>
+            <a href="/#faq">FAQ</a>
+            <a href="/#schedule" class="btn btn-primary">Get Started</a>
         </div>
-        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
+        <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
     </nav>
 
     <!-- Hero -->
@@ -609,87 +628,87 @@
             <div class="value-card">
                 <h3>Stop Manual Data Entry</h3>
                 <p>Automate data flows between your tools. No more copy-pasting between spreadsheets and systems.</p>
-                <span class="tag">&#8594; ETL Pipelines</span>
+                <a class="tag tag-link" href="/etl-showcase">&#8594; ETL Pipelines</a>
             </div>
             <div class="value-card">
                 <h3>See Your Numbers, Real-Time</h3>
                 <p>Custom dashboards that actually answer your questions. Know what's happening without digging through reports.</p>
-                <span class="tag">&#8594; BI Dashboards</span>
+                <a class="tag tag-link" href="/case-studies">&#8594; BI Dashboards</a>
             </div>
             <div class="value-card">
                 <h3>Connect Everything</h3>
                 <p>Make your systems talk to each other. CRM to ERP, e-commerce to inventory, whatever you need.</p>
-                <span class="tag">&#8594; API Integration</span>
+                <a class="tag tag-link" href="/etl-showcase">&#8594; API Integration</a>
             </div>
             <div class="value-card">
                 <h3>Sleep Through the Night</h3>
                 <p>Built-in monitoring, smart retries, and automatic recovery. Problems get fixed before you know they happened.</p>
-                <span class="tag">&#8594; Monitoring & Alerts</span>
+                <a class="tag tag-link" href="/etl-showcase">&#8594; Monitoring & Alerts</a>
             </div>
             <div class="value-card">
                 <h3>One Source of Truth</h3>
                 <p>Consolidate data from everywhere into a single warehouse. Stop hunting through 5 different systems to answer one question.</p>
-                <span class="tag">&#8594; Data Warehousing</span>
+                <a class="tag tag-link" href="/operations-modernization">&#8594; Data Warehousing</a>
             </div>
             <div class="value-card">
                 <h3>Reports That Run Themselves</h3>
                 <p>Daily summaries, weekly KPIs, monthly board reports—generated and delivered automatically. No more manual Excel work.</p>
-                <span class="tag">&#8594; Automated Reporting</span>
+                <a class="tag tag-link" href="/operations-modernization">&#8594; Automated Reporting</a>
             </div>
             <div class="value-card">
                 <h3>Make the Slow Things Fast</h3>
                 <p>Reports that time out and queries that crawl usually have a cause, not a mystery. We find which ones are actually slow, fix the reason, and measure the difference.</p>
-                <span class="tag">&#8594; Performance Tuning</span>
+                <a class="tag tag-link" href="/sql-server-erp-performance">&#8594; Performance Tuning</a>
             </div>
             <div class="value-card">
                 <h3>Understand What You Inherited</h3>
                 <p>Systems nobody documented, built by people who left. We map how it actually fits together so your team can change it without holding their breath.</p>
-                <span class="tag">&#8594; System Mapping</span>
+                <a class="tag tag-link" href="/operations-modernization">&#8594; System Mapping</a>
             </div>
             <div class="value-card">
                 <h3>Retire the Fragile Macros</h3>
                 <p>Spreadsheet macros that only run on one person's machine, in the right order, when they remember. Replaced with something scheduled, logged, and monitored.</p>
-                <span class="tag">&#8594; Legacy Automation</span>
+                <a class="tag tag-link" href="/case-studies">&#8594; Legacy Automation</a>
             </div>
             <div class="value-card">
                 <h3>Tools Your Team Will Actually Use</h3>
                 <p>Small, purpose-built tools that replace a manual process, with validation that catches mistakes before they cost you and documentation people will read.</p>
-                <span class="tag">&#8594; Internal Tools</span>
+                <a class="tag tag-link" href="/case-studies">&#8594; Internal Tools</a>
             </div>
             <div class="value-card">
                 <h3>Knowledge That Outlives the People Who Have It</h3>
                 <p>The person who knows how the process works will eventually leave. We turn what is in their head into guides your team will actually open, organised the way they already think.</p>
-                <span class="tag">&#8594; Training &amp; Documentation</span>
+                <a class="tag tag-link" href="/operations-modernization">&#8594; Training &amp; Documentation</a>
             </div>
             <div class="value-card">
                 <h3>Find Out Who Can Actually Read Your Data</h3>
                 <p>Most exposures are not break-ins. They are a key in a page, a table with access control that was never switched on, or a policy that matches nothing while looking like it works. We check what an anonymous browser can actually retrieve, and close it properly.</p>
-                <span class="tag">&#8594; Access Control Audit</span>
+                <span class="tag tag-label">&#8594; Access Control Audit</span>
             </div>
             <div class="value-card">
                 <h3>Lock Down What You Already Shipped</h3>
                 <p>Security headers that permit exactly what they were added to prevent are the norm, not the exception. We remove what forces the loophole open rather than documenting why it has to stay, and we show you the grade before and after.</p>
-                <span class="tag">&#8594; Application Hardening</span>
+                <span class="tag tag-label">&#8594; Application Hardening</span>
             </div>
             <div class="value-card">
                 <h3>Forms That Don't Lose Submissions</h3>
                 <p>A form that sends an email and reports success only if the send worked will silently destroy enquiries the day a credential expires. We move the durable write in front of the notification, so a delivery failure is an alert, not a deletion.</p>
-                <span class="tag">&#8594; Reliability Review</span>
+                <span class="tag tag-label">&#8594; Reliability Review</span>
             </div>
             <div class="value-card">
                 <h3>The Bugs Nothing Reports</h3>
                 <p>Redirect rules that never run. A sitemap the whole internet says is fine and no parser will accept. Assets cached for a year against markup that changed yesterday. These pass every check, return no error, and stay broken for months. We probe the live system instead of reading the config.</p>
-                <span class="tag">&#8594; Delivery &amp; Config Audit</span>
+                <span class="tag tag-label">&#8594; Delivery &amp; Config Audit</span>
             </div>
             <div class="value-card">
                 <h3>Numbers You Can Actually Trust</h3>
                 <p>Before you act on a dashboard, it is worth knowing whether pages are tagged twice, whether one property is fed by several sites, and whether your staging traffic is counted as real. Frequently no code needs writing — the reports were just never true.</p>
-                <span class="tag">&#8594; Measurement Audit</span>
+                <span class="tag tag-label">&#8594; Measurement Audit</span>
             </div>
             <div class="value-card">
                 <h3>Prove Nothing Broke</h3>
                 <p>For a large mechanical change, "the diff looks equivalent" is not evidence. We measure the old and new versions side by side and compare what actually renders, so a refactor ships with proof instead of confidence.</p>
-                <span class="tag">&#8594; Refactor Verification</span>
+                <span class="tag tag-label">&#8594; Refactor Verification</span>
             </div>
         </div>
         <p class="section-subtitle" style="margin-top:2.5rem;margin-bottom:0">Running a distribution or manufacturing operation? The heavier operational work &mdash; EDI, ERP carve-outs, opening and moving sites, quality systems, vendor-managed inventory, inventory accuracy and system selection &mdash; is described under <a href="/operations-modernization" style="color:inherit;text-decoration:underline">operations modernization</a>.</p>
@@ -817,9 +836,34 @@
     </section>
 
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 SiegeStack. All rights reserved.</p>
-        <p style="margin-top: 0.5rem;"><a href="mailto:iamnotcheckingit@gmail.com">iamnotcheckingit@gmail.com</a> | <a href="/privacy-policy">Privacy Policy</a></p>
+    <footer class="site-footer">
+        <div class="foot-grid">
+            <div>
+                <h3>Solutions</h3>
+                <a href="/#solutions">All services</a>
+                <a href="/etl-showcase">ETL &amp; integration</a>
+                <a href="/operations-modernization">Operations modernization</a>
+                <a href="/sql-server-erp-performance">Performance tuning</a>
+            </div>
+            <div>
+                <h3>Platforms &amp; Work</h3>
+                <a href="/epicor-p21-kinetic-reporting">Prophet 21 &amp; Kinetic</a>
+                <a href="/erp-report-slow-month-to-date">ERP reporting write-ups</a>
+                <a href="/case-studies">Case studies</a>
+                <a href="/insights">Insights</a>
+            </div>
+            <div>
+                <h3>Company</h3>
+                <a href="/#process">Process</a>
+                <a href="/#faq">FAQ</a>
+                <a href="/#schedule">Contact</a>
+                <a href="/privacy-policy">Privacy policy</a>
+            </div>
+        </div>
+        <div class="foot-bottom">
+            <p>&copy; 2026 SiegeStack. All rights reserved.</p>
+            <p><a href="mailto:info@siegestack.com">info@siegestack.com</a> &middot; Remote, working with distribution and manufacturing operations &middot; <a href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">GitHub</a></p>
+        </div>
     </footer>
 
     <!-- Simple mobile menu toggle -->
