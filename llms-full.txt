@@ -3075,11 +3075,18 @@ This guide is for people who already opened a Claude tab, got an answer that *al
 
 
 
-Below is the exact workflow I use to ship production code, file pro se legal documents, run a serverless honeypot, harden the things I have already shipped, and generate organic content with zero ad spend. The same loop, every time, across every domain.
+Below is the exact workflow I use to ship production code, audit databases nobody documented, and harden the things I have already shipped. The same loop, every time, across every domain.
 
 
 
-**Updated August 2026.** This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Four are marked so far: the outcome of the litigation, an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, and the claim that multi-modal work belongs to ChatGPT. What changed on the product side, and how I checked it, is its own section — with sources.
+**The short version, if you are deciding rather than doing.**
+The value is not in the prompt. It is in the loop around it: **define what done means, draft, test against the real system, give feedback precise enough to converge, then ship or repeat.** Almost everyone stops after the draft, which is why almost everyone concludes the tool does not work.
+Two consequences worth a manager's attention. **Verification has to be a step somebody owns**, not a habit you hope for — the failure mode is output that is plausible, well-structured and wrong, and it is discovered in production or not at all. And **route work by difficulty, not by defaulting to the biggest model**; it is the same delegation judgement you already apply to people, and it is where most of the cost savings live.
+Everything below is evidence for those two claims, including the times they cost me. If you want the argument rather than the receipts, you have already got it — the rest is a conversation.
+
+
+
+**Updated August 2026.** This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Three are marked so far: an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, and the claim that multi-modal work belongs to ChatGPT. What changed on the product side, and how I checked it, is its own section — with sources.
 
 
 
@@ -3177,7 +3184,7 @@ You are training the model on your exact domain reality in real time. That train
 Two choices only. **Ship** = it passes your production test with zero caveats. **Repeat** = go straight back to step 3 with the new failure data. No "maybe one more prompt." The loop is sacred.
 
 
-You keep repeating until the output is production-ready every single time. That's why the audit work delivered real measurable gains, why the filings forced substantive responses from experienced opposing counsel, and why the honeypot logs hostile probes while serving clean content to humans.
+You keep repeating until the output is production-ready every single time. That's why the audit work delivered measurable gains, and why the exposures and silent faults described below were found at all.
 
 
 
@@ -3190,7 +3197,7 @@ You keep repeating until the output is production-ready every single time. That'
 
 - **It turns hallucinations into fuel.** Every failure becomes training data for the next iteration.
 
-- **It compounds across domains.** The more loops you run on legal filings, the faster honeypot analysis converges, because your feedback style is now elite.
+- **It compounds across domains.** The more loops you run on one kind of work, the faster the next kind converges, because precise feedback becomes a habit rather than an effort.
 
 - **It's model-agnostic.** Swap Claude for Grok, Gemini, GPT — the loop still works because the human is the constant.
 
@@ -3348,72 +3355,6 @@ Illustrating it produced the most instructive failure of the whole project. The 
 
 
 That is the loop doing its job. The first idea was reasonable, it was wrong, and finding that out took minutes instead of an afternoon.
-
-
-
-
-### Legal: Pro Se Litigation
-
-
-This is where the "Claude as smart junior" framing matters most.
-
-
-
-A certificate of last known address was filed with the court listing an address I had not lived at in over ten years — 103 days after the same side had personally served me at my actual address. A default judgment based on that filing took custody from me without my knowledge. My children and I have been separated since December 2024. When I found out, I filed pro se.
-
-
-
-The defense moved to dismiss under attorney immunity. Their lawyer had been practicing for thirty years. I had Claude.
-
-
-
-Claude helped me do three things that mattered:
-
-
-
-
-
-- **Surfaced controlling precedent.** The line of cases that define when conduct falls outside attorney immunity. I read every one of them in full before citing any of them.
-
-- **Framed the dispositive fact.** The 103-day timeline between personal service at my actual address and the false filing is the entire case. Claude didn't find that — I did — but Claude helped me articulate why that fact alone defeats the immunity defense as a matter of law.
-
-- **Drafted the structural skeleton.** Causes of action, statutory citations, prayer for relief. I rewrote substantially every paragraph, but starting from a reasonable structure saved me weeks.
-
-
-
-**The motion to dismiss was granted.** The suit was dismissed with prejudice in March 2026, and the motion for new trial was overruled by operation of law that June when the court did not rule on it. A trial setting stands for October 2026. A criminal referral has been made and complaints have been filed with the relevant professional licensing bodies; no court has made findings on any of it.
-
-
-
-I am leaving that paragraph in its corrected form rather than deleting the section, because the earlier version of this article said the motion was denied and the case was set for trial, and that was wrong for months. The honest lesson survives the loss: filings produced by someone with no legal training forced a thirty-year attorney to brief the immunity question substantively instead of disposing of it on the pleadings. That is a real change in what one person can do. It is not the same as winning, and an article that blurred the two would be committing the exact error the rest of this piece is about.
-
-
-
-**The four-year trap:** you will read everywhere that a void judgment can be challenged "at any time." That is true only where the defect is apparent from the face of the record. Where the return of service recites valid service, the record looks regular, and proving otherwise takes evidence from outside it — which means a bill of review inside the four-year limitations period. Plan around four years, not forever. A parent who reads the unqualified version, waits, and lets the clock run out has lost the only remedy they had.
-
-
-
-**The verification rule:** Claude fabricates citations. Not often, but enough that you must independently verify every case, every statute, every quote against the actual source before it goes in a filing. If you can't be bothered to do that, don't use AI for legal work. The cost of a hallucinated citation in front of a judge is your credibility — and credibility is the only currency a pro se litigant has.
-
-
-
-
-### Personal Project: A Honeypot at safesapcrtx.org
-
-
-I wanted to understand how attackers actually behave by watching them — not by reading about it. So I built [safesapcrtx.org](https://safesapcrtx.org): a static site that looks like a vulnerable WordPress install, deployed on Netlify's free tier, with edge functions acting as a serverless firewall and Supabase logging every probe.
-
-
-
-Total monthly cost: **$0**. Daily intake: **80+ probes**.
-
-
-
-The probe paths are exactly what you'd expect: `/wp-login.php`, `/xmlrpc.php`, `/admin/.env`, `/shell.php`, `/backup.sql`, `/phpmyadmin/`. Each one tells you something about the attacker's playbook — credential stuffing, environment variable hunting, webshell discovery, database dump fishing. The interesting work isn't catching probes — it's clustering them into actor groups by behavior.
-
-
-
-Claude helped me build the edge function classifier, the Supabase schema, and the dashboard. Two weekends of work, end to end. The honeypot is live and writing data right now. The repository was public for 388 commits and is now private — the site is live, the source is not.
 
 
 
@@ -3610,110 +3551,30 @@ The same day also produced a small interactive tool for the site — the user en
 
 
 
-### Zero Ad Spend: The Strangest Validation
+### What I Got Wrong in My Own Article
 
 
-I have never paid for an ad. Not for SiegeStack, not for the honeypot site, not for anything. But people I have never met — strangers, completely unknown to me — independently paid for advertising campaigns promoting safesapcrtx.org. They thought the content mattered enough to spend their own money on it.
+This was written in April 2026. The method held up. Several product facts underneath it did not, and an article whose central argument is *verify against the primary source* does not get to leave stale claims standing because they flatter its own narrative. Everything below was checked on **10 August 2026**; if you are reading this much later, check it again rather than trusting me.
 
 
 
-That is the strangest validation I've ever received as a builder. It also taught me something concrete: **the content has to be good enough to make someone else want to amplify it**. That bar is much higher than "good enough to ship," and it's the only bar that matters for organic growth.
+**I said Claude had no memory between sessions. It does.** On paid plans it searches past chats and generates a memory summary automatically, scoped per Project, cited back to the chats it drew from. Incognito writes nothing; free accounts have none.
 
 
 
+**That wrong claim sat inside this page's FAQ structured data** — the machine-readable block that search engines and assistants quote back verbatim. Further down, this same article argues that the worst of four errors I found on another site was the one inside structured data, for exactly that reason. I then shipped the identical class of mistake here and left it live for four months, where it was quoted back as current. That is not a footnote. It is the best evidence in this article for the argument the article is making.
 
-### What Moved Since April — and How I Checked
 
 
-The original version of this article was written in April 2026. The method in it has held up; several of the product facts underneath it have not. An article whose central argument is *verify against the primary source* does not get to leave stale claims standing because they are load-bearing for its own narrative. So here is what changed, what it costs my argument, and where I checked. **Everything below was verified on 10 August 2026.** If you are reading this much later, go and check it again rather than trusting me — that is the whole point.
+The advice survives intact, because it was never really about the feature: **curated memory beats extracted memory for anything you cannot afford to lose.** Automatic memory summarises what you happened to say. A context file states what must be true. Only one of those is a specification.
 
 
 
+**Thirty-odd thousand words about working with AI that never named a model.** Not a correction — an omission, and the expensive one. For two years I sent everything to the largest available model, which is the same mistake as running every report against production because it is the server whose name you know. Route by difficulty: the mechanical, high-volume, diff-verifiable work goes to the cheapest tier; the ambiguous, high-consequence work goes to the most capable. **It is the delegation rule you already use with people.** If these were staff, nobody would need to explain it.
 
-#### Claude has memory now (corrected)
 
 
-This article said, in four different places, that default chat has no cross-session memory. That is wrong as written. On paid plans there are two separate controls: one for searching and referencing past chats, and one that generates a memory summary from your chat history automatically, carrying forward things like your role, your preferences and your ongoing project context. Memory is scoped separately per Project, so one body of work does not bleed into another. When Claude draws on an earlier conversation you get citations back to the original chats and can delete specific ones. There is an experimental import and export for moving memory between Claude and other assistants. Incognito chats are excluded and write nothing. Free accounts have no memory at all. See [Claude's chat search and memory documentation](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context).
-
-
-
-**What survives:** the advice, essentially intact. Curated memory still beats extracted memory for anything you cannot afford to lose. Automatic memory is a summary of what you happened to *say*; a war room file is a statement of what must be *true*. Those are different objects, and only one of them is a specification. Keep writing the file for hard constraints; let memory handle the ambient context you would otherwise re-explain.
-
-
-
-**What it cost:** more than an edit. That memory claim sat inside this page's FAQ structured data — the machine-readable block that search engines and assistants quote back verbatim. My own four-errors story says the worst of those errors was the one inside structured data, for exactly that reason. I then shipped the same class of mistake on this page and left it there for four months, where it was quoted back as current. That is not a footnote; it is the strongest available evidence for the argument this article is making.
-
-
-
-
-#### Compaction is a named feature, not a law of nature (sharpened)
-
-
-I wrote that "when the context window fills up, Claude summarizes the older parts." That describes something real, but it flattens three different behaviours into one and the deck's authority comes from precision. In Claude Code it is auto-compaction as the session approaches its context window, plus `/compact` on demand with optional instructions about what to preserve. On the API it is an opt-in beta with an explicit trigger threshold you configure — nothing summarizes unless you switch it on ([compaction docs](https://platform.claude.com/docs/en/build-with-claude/compaction)). On claude.ai, automatic context management summarizes earlier messages when a conversation approaches the limit, but **code execution has to be enabled** for it to happen ([usage and length limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)). The warning stands on all three — the summary is not lossless. Know which one you are relying on before you rely on it.
-
-
-
-
-#### Thirty-odd thousand words about working with Claude that never named a model
-
-
-This is the omission that cost me the most, and it is not a correction — it is a gap. There is no model routing anywhere in the original: no Haiku, no Sonnet, no Opus. The "using multiple AIs together" section routes work across four *companies* while ignoring the cheaper and higher-leverage version of the same idea, which is routing across tiers inside one of them. For two years I sent everything to the largest available model, which is the same mistake as running every report against the production server because it is the one you know the name of.
-
-
-
-The current lineup, with Anthropic's own descriptions from the [models overview](https://platform.claude.com/docs/en/about-claude/models/overview): **Haiku 4.5**, the fastest model with near-frontier intelligence. **Sonnet 5**, the best combination of speed and intelligence. **Opus 5**, for complex agentic coding and enterprise work. **Fable 5**, next-generation intelligence for long-running agents. Mapped onto the work in this article: the 62-script batch is Haiku work — mechanical, high-volume, verifiable by diff. Most of the loop is Sonnet. The attorney-immunity briefing is Opus, because a subtle error there is expensive in a way a slow query is not. Switch with `/model` in Claude Code or the model picker in the app.
-
-
-
-The routing rule turns out to be the delegation rule you already know: give the expensive resource the ambiguous, high-consequence work and the cheap resource the well-specified, easily-checked work. If the models were people on your team, you would not need this explained.
-
-
-
-
-#### Most of the hard work in this article is Claude Code, and I never said so
-
-
-The 300-view audit, the two-port computed-property hash comparison, the control file that proved the checker worked before I trusted its output — none of that is chat work. That is an agent with a terminal, file access, and the ability to run its own verification. Naming the tool is not an endorsement; it is the difference between a reader being able to reproduce this and a reader assuming I did it by pasting into a text box and getting discouraged when that doesn't work.
-
-
-
-Same omission for two other surfaces. [Cowork](https://claude.com/product/cowork) — "give it a goal, and it works across your files and tools" — is for handing off a multi-step task and reviewing finished work rather than supervising a conversation. [Claude for Microsoft 365](https://claude.com/claude-for-microsoft-365) puts Claude inside Excel, PowerPoint and Word as add-ins that read and write the open file, with Outlook in beta, and context carrying between the apps. That last one is the nine-macro problem from earlier in this article, solved from the other direction — the same job, without me writing the replacement first.
-
-
-
-**The loop does not change across surfaces. It only changes who executes step 3.** And this matters more than it sounds: an agent that can run its own tests is enormously more useful than one that cannot, and it is also an agent that can be confidently wrong *and have already deployed*. Every verification discipline in this article gets *more* important as the surface gets more capable, not less.
-
-
-
-
-#### The war room file and the pattern library are both shipped features now
-
-
-I am not claiming anyone built these because of me. I am pointing at a convergence, because it is a stronger argument for the two habits than "here is my tip" was: the patterns were load-bearing enough that they became product.
-
-
-
-**The war room file is a Project.** Persistent context for one body of work, and since memory shipped, its own isolated memory space and project summary. What the manual version still has over it is authorship — I decide what survives, rather than finding out afterwards what was extracted.
-
-
-
-**The pattern library is an Agent Skill.** A skill is a folder built around a `SKILL.md` file — instructions, plus optional scripts and reference material — that loads on demand when the task matches, so long reference material costs almost nothing until it is needed. Personal skills live at `~/.claude/skills/<name>/SKILL.md` and are available across all your projects; per-project skills live at `.claude/skills/<name>/SKILL.md` and are checked into the repo ([Claude Code skills documentation](https://code.claude.com/docs/en/skills)). On claude.ai you upload a `.zip` containing the skill folder under Customize → Skills ([use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude)). "Save the final output plus the exact feedback that got it there" is a `SKILL.md`, near enough exactly. **The difference is that a skill fires by itself.** A pattern library only works when you remember you have it, which is precisely when you are least likely to remember.
-
-
-
-Two things worth knowing before you rebuild your library this way. The format was published as an [open specification](https://agentskills.io/specification) in December 2025 and is read by agents from other vendors out of the same directories, so adopting it is not a lock-in decision. But custom skills **do not sync across surfaces** — a skill uploaded on claude.ai is not automatically available in Claude Code, and the reverse. Plan on one source of truth and a deliberate copy step rather than on it just working.
-
-
-
-
-#### Two smaller fixes
-
-
-**"Use ChatGPT for multi-modal work (images, voice)" is too broad** and is corrected below. Every current Claude model takes image input and has vision, Claude reads PDFs, and voice mode runs in the Claude mobile, desktop and web apps. The defensible version of the claim is image *generation* specifically, which Claude does not do natively — it produces SVG, charts and code-built artifacts, or calls an image model through MCP.
-
-
-
-**The documentation link in earlier versions pointed at `docs.anthropic.com`.** That host now redirects. Current documentation is at [platform.claude.com/docs](https://platform.claude.com/docs) for the API and platform, and [code.claude.com/docs](https://code.claude.com/docs) for Claude Code. Worth noting that `docs.claude.com` redirects too — if you are updating your own links, go straight to the platform host.
+**Most of the hard work here was an agent with a terminal, not a chat window** — the schema audit, the two-port comparison, the control file that proved a checker worked before its output was trusted. Naming that is not an endorsement; it is the difference between a reader reproducing this and a reader assuming it came from pasting into a text box. It also raises the stakes on everything above: an agent that runs its own tests is far more useful, and is also an agent that can be confidently wrong *and have already deployed.*
 
 
 
@@ -3818,7 +3679,7 @@ This is the actual leap, and it's the part most articles miss. Stage 1 thinking 
 
 
 
-**The real formula:** `Claude + external memory + structured workflows = leverage`. The honeypot, the database audit, the legal filings — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.
+**The real formula:** `Claude + external memory + structured workflows = leverage`. The database audit, the macro retirement, the schema mapping — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.
 
 
 
@@ -4030,7 +3891,7 @@ A skill is a folder built around a `SKILL.md` file — instructions plus optiona
 
 
 
-**Side projects matter.** My honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.
+**Side projects matter.** Work done outside the day job sharpens the day job — log analysis, writing, and verification discipline all cross-pollinate.
 
 
 
@@ -4086,8 +3947,6 @@ Every product claim added or corrected in the August 2026 revision, with the pag
 
 - [SiegeStack Solutions overview →](https://siegestack.com/#solutions)
 
-- [safesapcrtx.org — honeypot site →](https://safesapcrtx.org)
-
 - [Case studies — three problems, described without the specifics →](https://siegestack.com/case-studies)
 
 - [GitHub: siegestack →](https://github.com/iamnotcheckingit-cyber/siegestack)
@@ -4100,11 +3959,10 @@ https://siegestack.com/working-with-claude
 
 ## Working with Claude
 
-How one person uses AI to create, iterate, and ship — across enterprise software, law, security, and content — with zero ad spend.
+A working method for shipping production software with AI — the loop, six pieces of real work, and the limitations nobody advertises.
 
 
-Scott Allen Willis · Enterprise Distribution Software Specialist · Pro Se Litigant · Builder
-
+Scott Allen Willis · Enterprise Distribution Software Specialist
 
 
 
@@ -4119,48 +3977,27 @@ Scott Allen Willis · Enterprise Distribution Software Specialist · Pro Se Liti
 
 1
 
-How I actually work with AI (the honest version)
+The method — and the one step most people skip
 
 
 2
 
-Professional work: databases, automation, migration
+Six pieces of shipped work, and what each one cost to get wrong
 
 
 3
 
-Legal: representing myself after a default judgment
+Choosing a model tier, because the largest is rarely the right one
 
 
 4
 
-Personal project: building a threat intelligence honeypot
-
-
-5
-
-Hardening it: security, data exposure, and the bugs nothing reports
-
-
-6
-
-Getting real users with $0 and no marketing background
-
-
-7
-
-Using multiple AIs together — and knowing when not to
-
-
-8
-
-What I got wrong, what I'd do differently
+What I got wrong, and the limitations nobody advertises
 
 
 
 
-~50 minutes · Q&A at the end
-
+Ten minutes · the detail is in the [long-form version](https://siegestack.com/working-with-claude-blog), and the rest is a conversation
 
 
 
@@ -4193,11 +4030,69 @@ These aren't tips from a blog post. They're patterns I learned by shipping real 
 
 
 
+### The Loop
 
-### Professional WorkDatabases & Automation
+Define done → draft → **test against reality** → precise feedback → ship or repeat. Most people stop after the draft, which is why most people conclude the tool does not work.
 
-The same problems you have at work — just with an AI collaborator
 
+
+
+
+#### 1 · Define done
+
+Before a word is typed. "Copy-pastes into the live environment with zero errors" is a target. "Good" is not. A fuzzy definition produces a fuzzy output and there is no prompt that recovers it.
+
+
+
+
+
+
+#### 2 · Draft on real artifacts
+
+Actual code, actual logs, actual data — never a summary of them. State the hard constraints up front, then leave the first pass alone.
+
+
+
+
+
+
+#### 3 · Test against reality
+
+**This is the step that gets skipped, and it is the whole value.** Run it in dev. Deploy it and send traffic at it. The model lives in word-space; production does not.
+
+
+
+
+
+
+#### 4 · Feedback precise enough to converge
+
+"Make it better" wanders. "Line 47 throws on the temp buffer because the alias only exists in the older code path" converges. Reproducible beats vague.
+
+
+
+
+
+
+#### 5 · Ship or repeat
+
+Two outcomes, no third. Ship means it passed production with no caveats. Repeat means back to step 3 with new failure data. Never "one more prompt".
+
+
+
+
+
+
+#### Keep it tight
+
+A context file carried into every session, a library of what shipped and the feedback that got it there, and a hard 15–20 minute cap per loop. If it is not converging, step 1 was wrong — go back, do not prompt harder.
+
+
+
+
+
+
+The loop is model-agnostic. The leverage is in the discipline, not the vendor — and the human stays the domain expert throughout.
 
 
 
@@ -4231,7 +4126,6 @@ performance improvement
 
 
 measured after deployment
-
 
 
 
@@ -4277,332 +4171,6 @@ The mapping strategy came out of conversation. The domain knowledge came from me
 
 
 
-
-### LegalRepresenting Myself
-
-What happens when you can't afford a lawyer but you can think clearly
-
-
-
-
-
-
-
-
-### The Default Judgment
-
-
-
-#### What Happened
-
-A certificate of last known address filed with the court listed an address I had not lived at in over ten years — filed 103 days after the same side had served me in person at my actual address. On the strength of that filing a judge entered a default custody order I knew nothing about. My children and I have been separated since December 2024.
-
-
-
-#### What I Did About It
-
-I filed suit pro se. Every document — the petition, the response to the motion to dismiss, the bill of review — was co-authored with Claude. I brought the facts and the anger. Claude helped me structure them into something a court would take seriously.
-
-
-A criminal referral has been made and complaints have been filed with the relevant professional licensing bodies. No court has made findings on any of it.
-
-
-**The suit was dismissed with prejudice on attorney immunity in March 2026. The motion for new trial was overruled by operation of law in June when the court did not rule. A trial setting stands for October 2026.**
-
-
-
-
-
-
-
-
-
-
-### What "Co-Authoring" Actually Means
-
-Claude didn't write my case. I lived my case. Here's how the collaboration actually worked:
-
-
-I broughtThe timeline, the documents, the emotional weight, the public records underlying the claim — and the refusal to accept what happened
-
-
-Claude broughtLegal structure, case law research, statutory formatting, and the ability to organize my facts into causes of action
-
-
-The key momentThe defence moved to dismiss on attorney immunity. Claude helped me frame the 103-day gap between personal service and the certificate as the fact the whole case turned on
-
-
-The resultA thirty-year attorney had to brief the immunity question substantively against filings written by someone with no legal training. **Then the court granted the motion and dismissed with prejudice.** Being taken seriously is not the same as winning, and a deck that claimed otherwise would be doing exactly what this one warns against
-
-
-What that costsA default judgment is attacked by bill of review, and in Texas that runs on a four-year clock. The "void judgments can be challenged at any time" line you will read everywhere requires the defect to be apparent from the face of the record — where the return recites valid service, it is not. Plan around four years, not forever
-
-
-
-
-
-
-
-
-### Personal Project[safesapcrtx.org](https://safesapcrtx.org)
-
-A public reference site with a threat intelligence honeypot attached
-
-
-The repository was public for 388 commits and is now private. The site is live; the source is not.
-
-
-
-
-
-
-
-
-### Why Build a Honeypot?
-
-
-
-
-#### The Idea
-
-I wanted to understand how attackers actually behave — not from reading about it, but from watching it happen. So I built a site that *looks* like a vulnerable WordPress install, deployed it for free, and started logging every probe.
-
-
-The domain name does double duty. It pulls in people researching the legal topic from my own case, and every bot scanning for vulnerable installs finds it automatically.
-
-
-
-
-
-
-#### Simple on Purpose
-
-**Netlify** hosts the site for free and runs edge functions that act as a serverless firewall.
-
-
-**Supabase** stores every probe in a database — IP, path, user agent, headers — structured and queryable.
-
-
-**Claude** helps me analyze the logs, cluster threat actors by behavior, and build dashboards.
-
-
-**Total monthly cost: $0.**
-
-
-
-
-
-
-
-
-
-
-
-
-### What Attackers Actually Do
-
-Every path below came from a real probe against my site. Nobody was sent there; scanners find it on their own:
-
-
-
-| What They Tried | Why |
-
-
-| /wp-login.php | Trying to brute-force WordPress login credentials |
-
-| /xmlrpc.php (POST) | Exploiting WordPress's remote API for amplification attacks |
-
-| /wp-admin/setup-config.php | Checking if WordPress was installed but never configured |
-
-| /admin/.env | Hunting for accidentally exposed passwords and API keys |
-
-| /shell.php | Looking for web shells — evidence of a previous compromise |
-
-| /backup.sql | Hoping someone left a database dump in a public folder |
-
-| /phpmyadmin/ | Trying to access database admin panels directly |
-
-
-
-
-Every probe is logged in real time. No servers to manage. No infrastructure to maintain.
-
-
-
-
-
-
-
-
-### Rewriting the Reference Side of It
-
-
-
-
-#### The Work
-
-The same site carries a set of plain-English guides explaining a narrow area of procedure. I spent a day deepening them — several roughly tripled in length, with every claim tied to a specific rule or decision rather than to somebody's summary of one.
-
-
-Writing was the easy half. The audit was the half that mattered.
-
-
-
-
-
-
-#### What the Audit Found
-
-**Four substantive errors** that had been live for months. One appeared on **four separate pages** and was the kind a reader could act on and be harmed by — a widely repeated shortcut that holds in a narrow case and misleads in most.
-
-
-Another described a cited authority as supporting a position when it had decided the opposite.
-
-
-**None were caught by asking whether the draft was right.** All four came from opening the primary source and comparing.
-
-
-
-
-
-
-**The fix follows from the diagnosis:** make opening the source a *tool call*, not a resolution. Instruct the model to fetch and quote the primary text before it asserts anything about it, and to say plainly when it cannot reach the source — an admitted gap is worth more than a confident paraphrase. A rule you have to remember to follow is a rule that fails on the day you are tired. A step the model must execute is one you can check.
-
-
-
-
-
-
-
-
-### A Tool Instead of More Prose
-
-
-
-
-#### The Problem With Writing More
-
-The most common question the site gets has a genuinely different answer depending on two dates. I had answered it with several hundred words of prose, which is to say I had answered it badly. Nobody reads a decision tree written as paragraphs.
-
-
-
-
-
-
-#### What Replaced It
-
-Enter two dates, get back which options are still open and how many days each has left. Colour-coded open, closing, closed. Runs entirely in the browser — nothing typed into it leaves the machine, which matters when the input is somebody's own situation.
-
-
-Most of the effort went into the branch nobody designs for: **what to show when every option has already expired.**
-
-
-
-
-
-
-
-
-
-
-
-
-### When the Numbers Stopped Making Sense
-
-
-
-
-#### The Symptom
-
-The analytics did not match reality. Traffic looked wrong in a way I could not explain — the device split was inverted for the audience, and the top pages were ones no reader would land on.
-
-
-This is the least glamorous kind of work and the easiest to skip.
-
-
-
-
-
-
-#### What Was Actually Wrong
-
-Three separate faults, none visible from the reports alone. One measurement property was receiving data from more than one site. Half the pages carried two tags and counted every visit twice. And no tag was restricted by host, so every preview build reported as live traffic.
-
-
-**No code was written to fix any of it.** The value was checking things methodically that I would otherwise have assumed were fine.
-
-
-
-
-
-
-
-
-
-
-
-
-### Hardening ItThe Unglamorous Half
-
-Everything above is the part that gets demoed. This is the part that decides whether it survives contact with the internet.
-
-
-
-
-
-
-
-
-### From B to A+
-
-
-
-
-#### What Was Wrong
-
-The site scored a **B**. The content security policy needed unsafe-inline because the markup was full of things that required it — event handlers on elements, executable script blocks, style tags, and inline style attributes by the thousand.
-
-
-A policy with unsafe-inline in it is not a policy. It is a header that looks like one.
-
-
-
-
-
-
-#### What It Took
-
-
-| | Before | After |
-
-
-| Inline event handlers | 258 | 0 |
-
-| Executable inline scripts | 118 | 0 |
-
-| Style blocks | 49 | 0 |
-
-| Inline style attributes | 1,316 | 0 |
-
-
-
-
-No unsafe-inline and no unsafe-eval in any directive. **A+, 125/100.**
-
-
-
-
-
-
-**The exception that is not an exception:** 203 structured-data blocks stayed inline and are correct. Browsers never execute them and the script policy does not govern them. Knowing which rule does not apply is worth as much as knowing which does.
-
-
-
-
-
-
-
-
 ### Closing a Data Exposure
 
 
@@ -4630,7 +4198,6 @@ All four operations moved server-side behind a function that takes the caller's 
 
 
 **Two traps worth carrying to any project.** The table already had four dormant access policies, inert only because row-level security was switched off — enabling it would have *activated* them. Revoking the grants is what saved it, because privilege denial is evaluated before policies are. And do not write a policy matching a token claim when your identity provider is not the database's own: the claim is null, the policy matches nothing, and it looks exactly like working access control.
-
 
 
 
@@ -4681,7 +4248,6 @@ Assets served immutable for a year with no fingerprinting. Ship markup that need
 
 
 
-
 ### Never Put a Credential on the Critical Path
 
 
@@ -4712,7 +4278,6 @@ I initially wrote the slow handshakes off as an artifact of my home connection. 
 
 
 **Generalise it:** anything that can fail independently of the user's intent belongs after the durable write, not before it. A form whose success depends on a third-party credential is a form that quietly deletes messages the day that credential expires.
-
 
 
 
@@ -4760,135 +4325,6 @@ Converting 1,316 inline styles to classes silently lost six declarations to high
 
 
 
-
-### $0 Ad SpendReal Users Anyway
-
-What happens when you build something people actually want to read
-
-
-
-
-
-
-
-
-### What the Numbers Were Actually Worth
-
-This slide used to show a tidy 30-day dashboard. Those figures came from the period the previous slide is about — double-counted pages, preview builds reporting as live traffic, one property fed by more than one site. **I have removed them rather than restate them, because I cannot reproduce them.** What survived the audit is the part that was never about volume:
-
-
-
-
-
-#### Head terms are a trap
-
-The obvious high-volume query for the subject produced **209 impressions and zero clicks**. Ranking for the term everyone writes about is worth nothing if the people searching it are not looking for what you have.
-
-
-One narrow procedural term converts at **6.8%** against a site average of **0.59%** — more than ten times the rate, on a fraction of the traffic.
-
-
-
-
-
-
-#### What that changes
-
-The site's own machine-readable index is ordered by that finding rather than by search volume: the narrow, high-intent material leads, because it exists nowhere else in depth and it is the material that actually converts.
-
-
-Writing more pages was the tempting move and the wrong one. The remaining gains were depth and trust, not coverage.
-
-
-
-
-
-
-**The uncomfortable part:** the tidy dashboard was on this slide for months and nobody questioned it, including me. A number is not evidence until you know what produced it.
-
-
-
-
-
-
-
-
-
-$0
-
-
-personal ad spend
-
-
-$0/month hosting
-80+ bot probes / day = free threat intelligence
-
-
-
-
-
-
-### Strangers Ran Paid Ads for My Site
-
-People I have never met or spoken to noticed my work and independently paid for advertising campaigns promoting [safesapcrtx.org](https://safesapcrtx.org).
-
-
-I didn't ask them to. I didn't know they were doing it. They just thought the content mattered enough to spend their own money on.
-
-
-The content spoke for itself.
-
-
-
-
-
-
-
-
-
-
-
-
-### Using Multiple AIs Together
-
-Claude is the primary builder. But I use other AIs to stress-test, analyze, and create feedback loops:
-
-
-Claude — Where Things Get Built
-
-
-
-
-#### ChatGPT
-SEO audits, content gap analysis — "what's missing?"
-
-
-
-#### Grok
-Real-time social signal analysis — what's getting traction?
-
-
-
-#### Copilot
-Bing indexing behavior, alternative perspectives
-
-
-
-#### Gemini
-Google Search patterns, traffic analysis
-
-
-
-
-The other AIs analyze the site. That feedback loops back to Claude for the next build. **Social posts force real-time Google indexing.** The cycle runs continuously.
-
-
-
-
-
-
-
-
 ### Route Across Tiers, Not Just Vendors
 
 The previous slide routes work across four companies. The cheaper, higher-leverage version of the same idea routes it across tiers inside one of them — and for two years I did not do it. Every task got the biggest model, which is the same mistake as running every report on the production server.
@@ -4900,7 +4336,7 @@ The previous slide routes work across four companies. The cheaper, higher-levera
 
 | Haiku 4.5 | The fastest model with near-frontier intelligence | The 62-script batch. Mechanical, high-volume, verifiable by diff |
 
-| Sonnet 5 | The best combination of speed and intelligence | Most of the loop. Drafting, refactors, the honeypot dashboards |
+| Sonnet 5 | The best combination of speed and intelligence | Most of the loop. Drafting, refactors, dashboard work |
 
 | Opus 5 | Complex agentic coding and enterprise work | The immunity briefing. The migration plan. Anything I would regret getting subtly wrong |
 
@@ -4910,60 +4346,6 @@ The previous slide routes work across four companies. The cheaper, higher-levera
 
 
 **The routing rule is the delegation rule.** Give the expensive model the ambiguous, high-consequence work and the cheap model the well-specified, easily-checked work — which is exactly how you would staff it if the models were people. Switch with /model in Claude Code or the model picker in the app. Prices, context windows and tier descriptions are on the models page in the sources at the end.
-
-
-
-
-
-
-
-
-### Half This Deck Is Claude Code Without Saying So
-
-The 300-view audit, the two-port computed-style comparison, the control file that proved the checker worked — that is not chat work. That is an agent with a terminal, file access and the ability to run its own verification. Naming the tool is not a product endorsement; it is the difference between a reader reproducing this and a reader assuming I did it by pasting into a text box.
-
-
-
-
-
-#### Claude Code
-
-Terminal, desktop, web and IDE. It reads and writes files, runs commands, and can execute step 3 of the loop itself instead of handing me something to test.
-
-
-**This is where the audit work happened.**
-
-
-
-
-
-
-#### Cowork
-
-Anthropic's framing: "Give it a goal, and it works across your files and tools." You hand off a task rather than supervise a conversation. Runs on web, desktop and mobile.
-
-
-The loop still applies — you just run step 3 when it comes back.
-
-
-
-
-
-
-#### Claude for Microsoft 365
-
-Add-ins that read and write open Excel, PowerPoint and Word files, with Outlook in beta. Context carries between the apps.
-
-
-**This is the nine-macro problem** — the same job, without me writing the replacement first.
-
-
-
-
-
-
-**The surface changes who runs step 3, not whether it runs.** An agent that can execute its own tests is enormously better than one that cannot — and it is also an agent that can now be confidently wrong *and* have already deployed. Every verification discipline in this deck gets more important as the surface gets more capable, not less.
-
 
 
 
@@ -5023,186 +4405,6 @@ An outside tool then reported the site as hostile to crawlers. It was not a poli
 
 
 
-
-### The Iteration Loop
-
-This is the actual cycle. It ran dozens of times across every project in this presentation.
-
-
-
-Define the
-outcome
-
-→
-
-
-Claude
-drafts
-
-→
-
-
-Test against
-reality
-
-→
-
-
-Specific
-feedback
-
-→
-
-
-Ship or
-repeat
-
-
-
-
-**The critical insight:** Most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering.
-
-
-
-
-
-
-
-
-### The Loop, Step by Step
-
-1. Define done**Before you type a word.** "Copy-paste into the live environment with zero errors." "Filed with zero procedural defects." If the target is fuzzy, the output is fuzzy.
-
-
-2. Claude drafts**Feed real artifacts, never summaries.** Actual code, actual logs, actual filings. State hard constraints up front. Let it go full creative on the first pass.
-
-
-3. Test reality**Where 95% of users fail.** Run the code in dev. File in test mode. Deploy and hit it with traffic. You are the merciless QA department.
-
-
-4. Precise feedback**The convergence engine.** Bad: "make it better." Good: "Line 47 throws an invalid handle on the temp buffer because the alias only exists in the older code path." Reproducible > vague.
-
-
-5. Ship or repeat**Two choices only.** Ship = passes production with zero caveats. Repeat = back to step 3 with new failure data. No "maybe one more prompt." The loop is sacred.
-
-
-
-
-
-
-
-
-### Make Your Loop Tighter
-
-
-
-
-#### War room file
-
-Keep a context file you paste at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers.
-
-
-This is a Project. Next slide.
-
-
-
-
-
-
-#### Pattern library
-
-After every successful ship, save the final output plus the exact feedback that got it there. That library is more valuable than any prompt template you'll find online.
-
-
-This is an Agent Skill. Next slide.
-
-
-
-
-
-
-#### Time-box
-
-15–20 minutes per loop, hard cap. If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Stop prompting.
-
-
-
-
-
-
-**Why it crushes other workflows:** the human is the constant. You stay the domain expert. Every hallucination becomes fuel. The loop is model-agnostic — Claude, Grok, Gemini, GPT — because the leverage is in the discipline, not the tool.
-
-
-
-
-
-
-
-
-### Both of Those Are Shipped Features Now
-
-I am not claiming credit for anyone's roadmap. I am saying the two habits on the previous slide were the manual version of two things that now exist as product — and that is a better argument for the habits than "here is my tip," because it means the pattern was load-bearing enough that it got built.
-
-
-
-
-
-#### War room file → Projects
-
-A Project holds the persistent context for one body of work and — since memory shipped — gets its own separate memory space and project summary, isolated from your other chats.
-
-
-What the manual version still has over it: **I decide what survives.** Automatic extraction is a summary of what I said. A context file is a statement of what must be true. For hard constraints, keep writing the file.
-
-
-
-
-
-
-#### Pattern library → Agent Skills
-
-A skill is a folder with a SKILL.md in it — instructions plus optional scripts and reference files — that loads on demand when the task matches. Personal skills live at ~/.claude/skills/<name>/SKILL.md, per-project ones at .claude/skills/<name>/SKILL.md, and you upload a .zip under Customize → Skills on claude.ai.
-
-
-"Save the final output plus the exact feedback that got it there" is a SKILL.md. **The difference is that it fires by itself.**
-
-
-
-
-
-
-**Two things worth knowing before you rebuild your library as skills.** The format was published as an open standard in December 2025 and other vendors' agents read the same SKILL.md from the same directories, so this is not a lock-in decision. But custom skills *do not sync across surfaces* — a skill uploaded on claude.ai is not automatically present in Claude Code, and vice versa. Plan for one source of truth and a copy step, not for magic.
-
-
-
-
-
-
-
-
-### What I'd Tell Someone Starting Today
-
-You're the expertClaude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.
-
-
-Specificity compoundsOne precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.
-
-
-Ship real thingsThe gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.
-
-
-Side projects matterMy honeypot made me better at log analysis at work. My legal filings made me a better writer. Everything cross-pollinates.
-
-
-AI levels the fieldSomeone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. It also wasn't enough — the court granted the dismissal. Access to the argument is not the same as winning it, and anyone telling you otherwise is selling something.
-
-
-
-
-
-
-
-
 ### The Honest Limitations
 
 Everything in this deck is real. So is everything below. Anyone selling you Claude as a magic co-founder is lying.
@@ -5224,80 +4426,6 @@ Memory is real — and it is still not your system of record*Corrected, August 2
 
 
 **The honest framing:** Claude is a smart but unreliable junior — not a co-founder. The leverage comes from how you wrap it, not from the model alone. And tell it, explicitly, that *saying "I don't know" is an acceptable answer*. Models default to producing something; a model that has been given permission to return a gap will return a gap instead of inventing a bridge, and a gap is a thing you can go and fill.
-
-
-
-
-
-
-
-
-### From Prompting to System Design
-
-Stage 1 thinking: "How do I write a better prompt?" Stage 2 thinking: "How do I build a system around the model?" That's the actual leap.
-
-
-
-
-
-#### Don't
-
-• Giant kitchen-sink prompts
-• Long messy chat threads
-• "Just keep going" sessions until compaction breaks them
-• Rely on auto-generated memory for a constraint you cannot afford to lose
-• Skip verification because the answer "sounds right"
-
-
-
-
-
-
-#### Do
-
-• Break work into discrete phases with checkpoints
-• Externalize memory deliberately: Projects, skills, files, MCP tools
-• Restart sessions with clean, curated context
-• Use real tools (file I/O, APIs, databases) — not just chat
-• Match the model tier to the task, not to your anxiety
-• Verify every claim against reality before shipping
-
-
-
-
-
-
-**The real formula:** Claude + external memory + structured workflows = leverage. The honeypot, the SQL audit, the legal filings — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.
-
-
-
-
-
-
-
-
-### What Changed Since April, and How I Checked
-
-A deck that tells you to open the primary source owes you the primary sources. Every product claim added or corrected in the August 2026 revision, with the page it came from. **Checked 10 August 2026** — if you are reading this much later, check them again rather than trusting me.
-
-
-Memory[Chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) — per-Project memory spaces, citations back to source chats, incognito excluded, memory import/export, and which plans have it
-
-
-Compaction[Compaction (API)](https://platform.claude.com/docs/en/build-with-claude/compaction) for the opt-in beta and its trigger threshold · [Usage and length limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work) for the claude.ai behaviour and the code-execution requirement
-
-
-Models[Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) — the tier descriptions quoted on the routing slide, plus context windows and per-token pricing
-
-
-Skills[Skills in Claude Code](https://code.claude.com/docs/en/skills) for the on-disk paths · [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude) for the .zip upload and the no-sync caveat · [the open specification](https://agentskills.io/specification)
-
-
-Surfaces[Cowork](https://claude.com/product/cowork) · [Claude for Microsoft 365](https://claude.com/claude-for-microsoft-365) · documentation now lives at [platform.claude.com/docs](https://platform.claude.com/docs) and [code.claude.com/docs](https://code.claude.com/docs) — the old docs.anthropic.com link in earlier versions of this deck now redirects
-
-
-**Why this slide exists at all.** The worst of the four errors on the reference site was inside structured data — the exact text search engines and assistants quote back. This deck's own memory claim had the same problem: wrong, and sitting in the machine-readable block. It was quoted back for four months. Marking the correction is the cost of having made it.
-
 
 
 
@@ -5328,6 +4456,16 @@ Scott Allen Willis · [iamnotcheckingit@gmail.com](mailto:iamnotcheckingit@gmail
 
 
 [⟡ github.com/iamnotcheckingit-cyber/siegestack](https://github.com/iamnotcheckingit-cyber/siegestack)
+
+
+
+**Sources.** A deck that tells you to open the primary source owes you the primary sources. Every product claim here was checked against
+[chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context),
+[compaction](https://platform.claude.com/docs/en/build-with-claude/compaction),
+[usage and length limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work),
+[the models overview](https://platform.claude.com/docs/en/about-claude/models/overview) and
+[the Skills documentation](https://code.claude.com/docs/en/skills)
+on **10 August 2026**. If you are reading this much later, check them again rather than trusting me.
 
 ---
 
