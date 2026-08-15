@@ -43,6 +43,15 @@
 <title>Private</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+/* The browser's own rule for the hidden attribute is [hidden]{display:none},
+   and ANY author `display:` beats it -- author styles win over the user-agent
+   sheet regardless of specificity. Several panels below are flex containers
+   that are shown and hidden by toggling `hidden`, so without this they ignore
+   the attribute completely. That is not hypothetical: it is how the recording
+   bar came to sit permanently under the composer, and how a full-screen call
+   overlay covered the entire thread. !important so a later `display:` on one
+   of those panels cannot quietly reintroduce it. */
+[hidden]{display:none!important}
 :root{--navy-dark:#0a192f;--navy:#112240;--accent:#64ffda;--bright:#57cbff;--slate:#8892b0;--light:#a8b2d1;--lightest:#ccd6f6;--white:#e6f1ff;--gold:#F9A825}
 /* iOS counts the address bar in 100vh, so a full-height flex column ends up
    taller than the screen and the composer sits under the browser chrome. dvh
@@ -1945,16 +1954,40 @@ details.how summary:hover{color:var(--accent)}
   /**
    * Two-person WebRTC over the polled signalling endpoint.
    *
-   * STUN only, deliberately, for now. STUN discovers the public address a NAT
-   * has given you and is free; it is enough whenever at least one side is not
-   * behind a symmetric NAT, which covers most home networks. It is NOT enough
-   * when both sides are behind carrier-grade NAT, which is the normal case on
-   * mobile data. There is no in-page fix for that -- the media has to be
-   * relayed by a TURN server, which costs money and needs credentials. So when
-   * it fails, this says so plainly instead of showing a black rectangle
-   * forever. Adding TURN later means adding one entry to ICE and nothing else.
+   * The ICE servers are fetched from the server rather than written here,
+   * because TURN credentials are minted per call and must not sit in a public
+   * repository. STUN discovers the public address a NAT gave you and is free;
+   * it is enough when at least one side is not behind a symmetric NAT. TURN
+   * relays the media itself and is what makes a call work when both sides are
+   * on mobile data behind carrier-grade NAT.
+   *
+   * The fallback is STUN-only, which is what this did before TURN existed --
+   * a server that cannot mint credentials degrades the call rather than
+   * refusing it.
    */
-  var ICE = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }] };
+  var STUN_ONLY = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }] };
+
+  var iceConf = null;      // last fetched config
+  var iceConfAt = 0;       // when, so short-lived credentials are not reused past their life
+  var iceMode = 'unknown'; // what the server said it could offer
+
+  function getIce() {
+    // Credentials expire. Re-fetch once they are past half their stated life,
+    // which is cheap and avoids a call failing on a credential that died
+    // between two rings.
+    var age = (Date.now() - iceConfAt) / 1000;
+    if (iceConf && age < (iceConf._ttl || 3600) / 2) return Promise.resolve(iceConf);
+
+    return api('turn').then(function (r) {
+      if (!r || !r.ok || !r.iceServers || !r.iceServers.length) return STUN_ONLY;
+      iceConf = { iceServers: r.iceServers, _ttl: r.ttl || 3600 };
+      iceConfAt = Date.now();
+      iceMode = r.mode || 'unknown';
+      return iceConf;
+    }).catch(function () {
+      return STUN_ONLY;
+    });
+  }
 
   var CALL_POLL_MS = 1000;      // while a call is being set up or is running
   var CALL_TIMEOUT_MS = 45000;  // unanswered offers give up rather than ring forever
@@ -2040,8 +2073,8 @@ details.how summary:hover{color:var(--accent)}
       });
   }
 
-  function newPeer() {
-    var conn = new RTCPeerConnection(ICE);
+  function newPeer(conf) {
+    var conn = new RTCPeerConnection(conf || STUN_ONLY);
 
     conn.onicecandidate = function (e) {
       if (e.candidate) signal('ice', e.candidate.toJSON ? e.candidate.toJSON() : e.candidate);
@@ -2061,10 +2094,14 @@ details.how summary:hover{color:var(--accent)}
       if (s === 'connected') setCallState('');
       else if (s === 'connecting') setCallState('Connecting…');
       else if (s === 'failed') {
-        // This is the STUN-only limitation showing up, and it is the single
-        // most likely way this feature fails. Name it, so it is not mistaken
-        // for the app being broken.
-        setCallState('Could not connect — this network needs a relay (TURN).');
+        // Distinguish the two failures. Without a relay configured this is the
+        // expected outcome on mobile data and the fix is a server setting, not
+        // a retry. With one configured it is a genuine fault, and saying "needs
+        // TURN" when TURN is already on would send someone to fix the wrong
+        // thing.
+        setCallState(iceMode === 'stun-only' || iceMode === 'unknown'
+          ? 'Could not connect — this network needs a relay (TURN is not configured).'
+          : 'Could not connect. The relay did not work on this network.');
         setTimeout(function () { endCall(true); }, 4000);
       } else if (s === 'disconnected' || s === 'closed') {
         endCall(false);
@@ -2089,13 +2126,16 @@ details.how summary:hover{color:var(--accent)}
     openCallUI();
     setCallState('Asking for camera…');
 
-    getMedia().then(function (stream) {
-      localStream = stream;
+    // Media and relay credentials are fetched together: neither is useful
+    // without the other, and asking for them in series adds a round trip to
+    // every call.
+    Promise.all([getMedia(), getIce()]).then(function (both) {
+      localStream = both[0];
       localVid.srcObject = localStream;
       localVid.play().catch(function () {});
       setCallState('Ringing…');
 
-      pc = newPeer();
+      pc = newPeer(both[1]);
       localStream.getTracks().forEach(function (t) { pc.addTrack(t, localStream); });
 
       return pc.createOffer().then(function (offer) {
@@ -2142,13 +2182,13 @@ details.how summary:hover{color:var(--accent)}
     openCallUI();
     setCallState('Asking for camera…');
 
-    getMedia().then(function (stream) {
-      localStream = stream;
+    Promise.all([getMedia(), getIce()]).then(function (both) {
+      localStream = both[0];
       localVid.srcObject = localStream;
       localVid.play().catch(function () {});
       setCallState('Connecting…');
 
-      pc = newPeer();
+      pc = newPeer(both[1]);
       localStream.getTracks().forEach(function (t) { pc.addTrack(t, localStream); });
 
       return pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () {
