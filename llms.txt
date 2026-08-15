@@ -78,10 +78,13 @@ Contact is a 30-minute booking link on the homepage.
 
 ## Services
 
-- [Homepage](https://siegestack.com/): the full offering set and process. Seventeen
-  service areas, including the audit-side work — access control, application hardening,
-  form and notification reliability, delivery and configuration auditing, measurement
-  integrity, and refactor verification.
+- [Homepage](https://siegestack.com/): the full offering set and process. Twenty-four
+  service areas. The audit-side work — access control, application hardening, form and
+  notification reliability, delivery and configuration auditing, measurement integrity,
+  and refactor verification. And the distribution-operations side — EDI operations across
+  X12 and EDIFACT, ERP carve-out and cutover when a facility is acquired, site standup and
+  relocation, quality and compliance systems, vendor- and customer-managed inventory,
+  inventory accuracy and demand planning, and vendor-neutral system selection.
 - [CRM and ERP integration showcase](https://siegestack.com/etl-showcase): integration
   patterns with production-shaped code — retries, circuit breakers, monitoring — across
   Salesforce, HubSpot, Zoho, Epicor P21 and Kinetic, Infor, Dynamics NAV.
