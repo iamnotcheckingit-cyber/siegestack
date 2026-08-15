@@ -61,6 +61,7 @@ export const config = {
     '/api/nicole/logout',
     '/api/nicole/messages',
     '/api/nicole/send',
+    '/api/nicole/react',
     '/api/nicole/export',
     '/api/nicole/files',
     '/api/nicole/file',
@@ -336,6 +337,102 @@ async function loadMessages({ after = null, limit = PAGE_SIZE } = {}) {
   };
 }
 
+// ------------------------------------------------------------------ reactions
+
+/**
+ * Tap-to-react, without breaking rule 1.
+ *
+ * A reaction is not stored as a mutable field on the message -- that would mean
+ * read-modify-writing a message blob, which is the one thing the whole storage
+ * design refuses to do. Each tap is its own append-only record instead, and the
+ * CURRENT state is whatever each person's newest record says. Changing your mind
+ * appends; taking it back appends a `none`. Nothing is ever overwritten and
+ * nothing is ever deleted, so the history of who reacted with what and when
+ * survives in full even though the thread only renders the latest.
+ *
+ * EVERYTHING NEEDED TO READ THEM IS IN THE KEY.
+ *
+ *   rx/<message id>/<timestamp>-<who>-<code>
+ *
+ * That is the point of the layout, not a cosmetic choice. Reactions have to be
+ * returned on every poll -- someone can react to a message from last week, which
+ * an incremental `after=` cursor would never surface -- so this runs constantly.
+ * With the facts in the key, a single list() answers it and not one blob body is
+ * fetched. The body is written anyway, so a future reader that does not trust
+ * this key format can still recover the same answer from the records.
+ *
+ * The set is fixed and small. An arbitrary emoji from a caller would be a
+ * caller-supplied string rendered next to a message, and a short allowlist is a
+ * cheaper defence than trusting the renderer to stay safe forever.
+ */
+const REACTIONS = {
+  heart: '❤️',
+  up: '👍',
+  haha: '😂',
+  wow: '😮',
+  fire: '🔥',
+  sad: '😢',
+};
+
+/** Not a reaction: the record that says "I took mine back". */
+const CLEAR_CODE = 'none';
+
+/** The shape newMessageKey() produces, after the `msg/` prefix. */
+const MSG_ID_RE = /^\d{16}-[0-9a-f]{8}$/;
+
+/**
+ * A caller hands us a full message key. Only the id half may go into a blob
+ * key, and only after it is proved to be exactly what newMessageKey() writes --
+ * a caller-supplied string that reaches a key path is how one thread's storage
+ * would end up writable from a request meant for something else.
+ */
+function messageId(key) {
+  const raw = String(key || '');
+  const id = raw.startsWith('msg/') ? raw.slice(4) : raw;
+  return MSG_ID_RE.test(id) ? id : null;
+}
+
+const RX_KEY_RE = /^(\d{16})-([a-z]+)-([a-z]+)$/;
+
+/**
+ * Returns { '<message key>': { code: ['who', ...] } } for the whole thread.
+ *
+ * Latest-record-wins per (message, person). Ties cannot happen for one person
+ * because nextStamp() is strictly increasing.
+ */
+async function loadReactions() {
+  const { blobs } = await threadStore().list({ prefix: 'rx/' });
+
+  const latest = new Map(); // `${id}|${who}` -> { ts, code, id, who }
+  for (const b of blobs) {
+    const parts = b.key.split('/');
+    if (parts.length !== 3) continue;
+    const id = parts[1];
+    if (!MSG_ID_RE.test(id)) continue;
+    const m = RX_KEY_RE.exec(parts[2]);
+    if (!m) continue;
+    const [, ts, who, code] = m;
+    // Anything unrecognised is ignored rather than rendered. A code retired in
+    // a later version must not come back as an empty pill.
+    if (!PEOPLE[who]) continue;
+    if (code !== CLEAR_CODE && !REACTIONS[code]) continue;
+    const slot = `${id}|${who}`;
+    const prev = latest.get(slot);
+    // Fixed-width zero-padded stamps, so a string compare is a time compare.
+    if (!prev || prev.ts < ts) latest.set(slot, { ts, code, id, who });
+  }
+
+  const out = {};
+  for (const { id, who, code } of latest.values()) {
+    if (code === CLEAR_CODE) continue;
+    const key = `msg/${id}`;
+    if (!out[key]) out[key] = {};
+    if (!out[key][code]) out[key][code] = [];
+    out[key][code].push(who);
+  }
+  return out;
+}
+
 // ----------------------------------------------------------------- the rail
 
 /**
@@ -440,6 +537,7 @@ function shippedFiles() {
         name, display: name, size, mtime, origin: 'shipped',
         label: m.label || name, note: m.note || '', password: m.password || '', from: '',
         image: Boolean(imageTypeFor(name)),
+        audio: Boolean(audioTypeFor(name)),
       };
     })
     .filter(Boolean)
@@ -489,6 +587,7 @@ async function uploadedFiles() {
           password: '',
           from: PEOPLE[m.who]?.name || '',
           image: Boolean(imageTypeFor(display)),
+          audio: Boolean(audioTypeFor(display)),
         };
       })
     );
@@ -558,6 +657,31 @@ const INLINE_IMAGE_TYPES = {
 };
 
 const imageTypeFor = (name) => INLINE_IMAGE_TYPES[path.extname(name).toLowerCase()] || null;
+
+/**
+ * The same idea for sound, so a voice message can be played where it was sent
+ * instead of downloading as a file you have to go and find.
+ *
+ * Media containers, all of them, and none of them scriptable -- which is the
+ * whole test this list has to pass, for the same reason SVG is missing from the
+ * image list above.
+ *
+ * `.mp4` is deliberately absent even though the recorder on iOS produces
+ * `audio/mp4`: the extension is ambiguous between sound and video, and a real
+ * video served as `audio/mp4` would be a file that plays with no picture and no
+ * explanation. Recordings are written as `.m4a`, which means only one thing.
+ */
+const INLINE_AUDIO_TYPES = {
+  '.webm': 'audio/webm',
+  '.m4a': 'audio/mp4',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.oga': 'audio/ogg',
+  '.wav': 'audio/wav',
+  '.aac': 'audio/aac',
+};
+
+const audioTypeFor = (name) => INLINE_AUDIO_TYPES[path.extname(name).toLowerCase()] || null;
 
 // ------------------------------------------------------------------ presence
 
@@ -645,6 +769,13 @@ const subKey = (who, endpoint) =>
  * A dead subscription (410/404) is deleted rather than retried -- that is the
  * browser telling us the device is gone, and keeping it would mean failing on
  * every send forever.
+ *
+ * The title is the sender's NAME ALONE and the body is what they did. It used
+ * to read "Nicole sent a message" over a body of "sent a photo", which was
+ * merely redundant -- until reactions arrived and it started announcing "sent a
+ * message" for something that was not one. The action belongs in exactly one of
+ * the two lines. localNotify() in the page says the same thing the same way, so
+ * a notification looks identical whichever layer produced it.
  */
 async function notifyOther(sender, preview) {
   try {
@@ -657,8 +788,8 @@ async function notifyOther(sender, preview) {
     // "sent a photo"), never message content. Sliced anyway as a belt-and-braces
     // guard against a future caller passing something longer.
     const payload = JSON.stringify({
-      title: `${PEOPLE[sender]?.name || sender} sent a message`,
-      body: String(preview || '').slice(0, 60),
+      title: PEOPLE[sender]?.name || sender,
+      body: String(preview || 'sent a message').slice(0, 60),
       url: '/nicole',
     });
 
@@ -852,8 +983,14 @@ export default async (req, context) => {
       const after = new URL(req.url).searchParams.get('after');
       // Both people, always, in a fixed order -- the bar across the top shows
       // the pair, so "who is here" reads the same for whoever is looking.
-      const [thread, dad, nicole] = await Promise.all([
+      // Reactions are NOT filtered by `after`. The cursor exists so a poll does
+      // not re-send messages already on screen, but a reaction can land on a
+      // message from last week -- one an incremental poll will never mention
+      // again. So the whole map goes every time, and the page repaints from it.
+      // It costs one list() and no blob reads; see loadReactions().
+      const [thread, reactions, dad, nicole] = await Promise.all([
         loadMessages({ after }),
+        loadReactions(),
         presenceOf('dad'),
         presenceOf('nicole'),
       ]);
@@ -864,6 +1001,7 @@ export default async (req, context) => {
           { id: 'dad', name: PEOPLE.dad.name, ...dad },
           { id: 'nicole', name: PEOPLE.nicole.name, ...nicole },
         ],
+        reactions,
         ...thread,
       });
     }
@@ -956,6 +1094,41 @@ export default async (req, context) => {
       });
     }
 
+    if (action === 'react') {
+      if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
+
+      const { key, code } = (await req.json().catch(() => ({}))) || {};
+      const id = messageId(key);
+      if (!id) return json({ ok: false, error: 'bad_message' }, { status: 400 });
+
+      const chosen = String(code || '');
+      if (chosen !== CLEAR_CODE && !REACTIONS[chosen]) {
+        return json({ ok: false, error: 'bad_reaction' }, { status: 400 });
+      }
+
+      // Refuse to react to a message that is not there. Without this, a typo in
+      // a key would quietly create reactions hanging off nothing, which would
+      // then be listed and parsed on every poll forever with no way to see them
+      // and no way to remove them.
+      const target = await threadStore().get(`msg/${id}`, { type: 'json' });
+      if (!target) return json({ ok: false, error: 'bad_message' }, { status: 404 });
+
+      const ts = nextStamp();
+      await threadStore().setJSON(
+        `rx/${id}/${String(ts).padStart(16, '0')}-${me.id}-${chosen}`,
+        { ts, who: me.id, code: chosen, msg: `msg/${id}` }
+      );
+
+      // Only for reacting to something the other person said, and never for
+      // taking one back. A notification for "Dad removed a thumbs up" is noise
+      // on a phone, and reacting to your own message is not news to anybody.
+      if (chosen !== CLEAR_CODE && target.who !== me.id) {
+        await notifyOther(me.id, `reacted ${REACTIONS[chosen]}`);
+      }
+
+      return json({ ok: true, reactions: await loadReactions() });
+    }
+
     if (action === 'files') {
       return json({ ok: true, files: await listFiles(), maxUpload: MAX_UPLOAD_BYTES });
     }
@@ -987,12 +1160,26 @@ export default async (req, context) => {
       // Anything sent through the page becomes part of the conversation, not
       // just a row in a sidebar. A photo you have to go hunting for in a file
       // list is not "sending someone a photo".
-      const att = { file: stored, name, size: raw.length, image: Boolean(imageTypeFor(name)) };
+      //
+      // `secs` is the recorder's own count of how long it recorded for, so the
+      // player can show a length before anything has been downloaded. It is
+      // cosmetic and it comes from the client, so it is clamped rather than
+      // trusted -- nothing depends on it being right.
+      const audio = Boolean(audioTypeFor(name));
+      const secs = Math.min(3600, Math.max(0, Math.round(Number(params.get('secs')) || 0)));
+      const att = {
+        file: stored,
+        name,
+        size: raw.length,
+        image: Boolean(imageTypeFor(name)),
+        audio,
+        secs: audio ? secs : 0,
+      };
       const caption = (params.get('text') || '').trim().slice(0, MAX_MESSAGE_CHARS);
       const key = newMessageKey(ts);
       await threadStore().setJSON(key, { ts, who: me.id, enc: encrypt(caption), att });
 
-      await notifyOther(me.id, att.image ? 'sent a photo' : 'sent a file');
+      await notifyOther(me.id, att.audio ? 'sent a voice message' : att.image ? 'sent a photo' : 'sent a file');
 
       return json({
         ok: true,
@@ -1014,16 +1201,66 @@ export default async (req, context) => {
        */
       const headersFor = (display) => {
         const safeDisplay = String(display || name).replace(/[^\w. \-()]/g, '_').slice(0, 100);
-        const image = imageTypeFor(display || name);
+        // Inline for the two short media allowlists -- pictures so they render
+        // in the thread, sound so it plays there. Everything else is
+        // octet-stream + attachment, so the browser never interprets it.
+        const media = imageTypeFor(display || name) || audioTypeFor(display || name);
         return {
-          // Inline only for the short image allowlist. Everything else is
-          // octet-stream + attachment, so the browser never interprets it.
-          'Content-Type': image || CONTENT_TYPES[path.extname(name).toLowerCase()] || 'application/octet-stream',
-          'Content-Disposition': `${image ? 'inline' : 'attachment'}; filename="${safeDisplay}"`,
+          'Content-Type': media || CONTENT_TYPES[path.extname(name).toLowerCase()] || 'application/octet-stream',
+          'Content-Disposition': `${media ? 'inline' : 'attachment'}; filename="${safeDisplay}"`,
           'X-Content-Type-Options': 'nosniff',
           'Cache-Control': 'no-store, private',
           'X-Robots-Tag': 'noindex, nofollow, noarchive',
         };
+      };
+
+      /**
+       * Byte ranges, for the sake of <audio>.
+       *
+       * Everything here is already in memory -- the file was decrypted whole to
+       * answer the request at all -- so this is not a streaming optimisation and
+       * it saves nothing. It is here because Safari asks for a range before it
+       * will play a sound file, and answering 200-with-everything to a Range
+       * request is the well-worn reason a voice message plays on a laptop and
+       * silently refuses to on an iPhone. The iPhone is the device this is for.
+       *
+       * Advertising Accept-Ranges on every file is harmless and means a resumed
+       * download of a large attachment works too.
+       */
+      const serve = (buf, headers) => {
+        const base = { ...headers, 'Accept-Ranges': 'bytes' };
+        const asked = /^bytes=(\d*)-(\d*)$/.exec(req.headers.get('range') || '');
+        if (!asked || !buf.length) {
+          return new Response(buf, { headers: { ...base, 'Content-Length': String(buf.length) } });
+        }
+
+        let start;
+        let end;
+        if (asked[1] === '') {
+          // A suffix range: "the last N bytes". N of 0 asks for nothing, which
+          // is unsatisfiable rather than empty.
+          const n = Number(asked[2] || 0);
+          if (!n) return new Response(null, { status: 416, headers: { ...base, 'Content-Range': `bytes */${buf.length}` } });
+          start = Math.max(0, buf.length - n);
+          end = buf.length - 1;
+        } else {
+          start = Number(asked[1]);
+          end = asked[2] === '' ? buf.length - 1 : Math.min(Number(asked[2]), buf.length - 1);
+        }
+
+        if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= buf.length) {
+          return new Response(null, { status: 416, headers: { ...base, 'Content-Range': `bytes */${buf.length}` } });
+        }
+
+        const slice = buf.subarray(start, end + 1);
+        return new Response(slice, {
+          status: 206,
+          headers: {
+            ...base,
+            'Content-Length': String(slice.length),
+            'Content-Range': `bytes ${start}-${end}/${buf.length}`,
+          },
+        });
       };
 
       // An upload shadows a shipped file of the same name, matching the rail.
@@ -1031,12 +1268,12 @@ export default async (req, context) => {
       if (blob) {
         const plain = decryptBytes(blob.data, blob.metadata?.iv, blob.metadata?.tag);
         if (!plain) return json({ ok: false, error: 'undecryptable' }, { status: 500 });
-        return new Response(plain, { headers: headersFor(blob.metadata?.name) });
+        return serve(plain, headersFor(blob.metadata?.name));
       }
 
       const dir = fileDir();
       if (dir && shippedFiles().some((f) => f.name === name)) {
-        return new Response(fs.readFileSync(path.join(dir, name)), { headers: headersFor(name) });
+        return serve(fs.readFileSync(path.join(dir, name)), headersFor(name));
       }
       return json({ ok: false, error: 'not_found' }, { status: 404 });
     }
@@ -1047,12 +1284,25 @@ export default async (req, context) => {
       const store = threadStore();
       const { blobs } = await store.list({ prefix: 'msg/' });
       const keys = blobs.map((b) => b.key).sort();
+      // Reactions and attachments come out too. "Everything" that stops at the
+      // words is not everything, and a backup you cannot rebuild the thread
+      // from is not a backup.
+      const reacted = await loadReactions();
       const all = await Promise.all(
         keys.map(async (key) => {
           const rec = await store.get(key, { type: 'json' });
           if (!rec) return null;
           const text = rec.enc ? decrypt(rec.enc) : null;
-          return { key, ts: rec.ts, at: new Date(rec.ts).toISOString(), who: rec.who, text, unreadable: text === null };
+          return {
+            key,
+            ts: rec.ts,
+            at: new Date(rec.ts).toISOString(),
+            who: rec.who,
+            text,
+            unreadable: text === null,
+            att: rec.att || null,
+            reactions: reacted[key] || null,
+          };
         })
       );
       return new Response(JSON.stringify({ exportedAt: new Date().toISOString(), count: all.length, messages: all.filter(Boolean) }, null, 2), {

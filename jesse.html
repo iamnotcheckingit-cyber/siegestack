@@ -88,6 +88,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 button.tool{background:transparent;border:1px solid rgba(100,255,218,.35);color:var(--accent);font-size:.95rem;font-weight:700;padding:.55rem .8rem;line-height:1;min-width:3rem}
 button.tool:hover{background:rgba(100,255,218,.12)}
 button.tool.on{background:rgba(100,255,218,.18)}
+button.tool:disabled{opacity:.35;cursor:default}
+button.tool:disabled:hover{background:transparent}
 
 /* ------------------------------------------------------------ who is here */
 .who-strip{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;min-width:0}
@@ -128,6 +130,45 @@ button.tool.on{background:rgba(100,255,218,.18)}
 .msg .attach{display:inline-block;margin-top:.5rem;background:rgba(100,255,218,.08);border:1px solid rgba(100,255,218,.3);color:var(--accent);border-radius:8px;padding:.5rem .8rem;font-size:.88rem;text-decoration:none;line-height:1.4}
 .msg .attach:hover{background:rgba(100,255,218,.16)}
 .empty{color:var(--slate);text-align:center;padding:2.5rem 1rem;font-size:.95rem}
+
+/* ------------------------------------------------------------ voice notes */
+/* Native controls, deliberately. A hand-built player would have to reimplement
+   scrubbing, the lock-screen handoff and the "another sound started, stop this
+   one" behaviour that the browser already gets right, and it would still be a
+   worse tap target on a phone than the one the OS ships. */
+.msg .voice{display:flex;align-items:center;gap:.6rem;margin-top:.55rem;flex-wrap:wrap}
+/* Width is constrained, height deliberately is not -- every browser sizes its
+   own control strip, and forcing a height clips the buttons on some of them. */
+.msg .voice audio{flex:1;min-width:200px;max-width:340px}
+.msg .voice .vlen{color:var(--slate);font-size:.8rem;font-variant-numeric:tabular-nums;flex:none}
+
+/* ------------------------------------------------------------- reactions */
+/* display:contents so the pills are laid out by .rxrow's flex, even though
+   they live in their own box -- that box gets its innerHTML replaced on every
+   repaint, and the picker beside it must survive that. */
+.msg .rxrow{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-top:.55rem}
+.msg .rx{display:contents}
+.pill{display:inline-flex;align-items:center;gap:.3rem;background:rgba(136,146,176,.12);border:1px solid rgba(136,146,176,.32);color:var(--light);border-radius:999px;padding:.18rem .55rem;font-size:.95rem;line-height:1.25;cursor:pointer;font-family:inherit}
+.pill:hover{border-color:var(--accent)}
+.pill.mine{background:rgba(100,255,218,.14);border-color:rgba(100,255,218,.5)}
+.pill .n{font-size:.74rem;color:var(--slate);font-variant-numeric:tabular-nums}
+.pill.mine .n{color:var(--accent)}
+.addrx{background:transparent;border:1px dashed rgba(136,146,176,.4);color:var(--slate);border-radius:999px;padding:.18rem .5rem;font-size:.85rem;line-height:1.25;cursor:pointer;font-family:inherit}
+.addrx:hover{color:var(--accent);border-color:var(--accent)}
+.rxpick{flex-basis:100%;display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.3rem}
+.rxpick button{background:var(--navy-dark);border:1px solid rgba(100,255,218,.3);border-radius:8px;font-size:1.15rem;line-height:1;padding:.35rem .5rem;cursor:pointer;font-family:inherit}
+.rxpick button:hover{background:rgba(100,255,218,.14)}
+
+/* ------------------------------------------------------------- recording */
+.rec{display:flex;align-items:center;gap:.7rem;margin-top:.6rem;background:rgba(249,168,37,.08);border:1px solid rgba(249,168,37,.45);border-radius:10px;padding:.6rem .8rem;flex-wrap:wrap}
+.rec .live{width:.6rem;height:.6rem;border-radius:50%;background:var(--gold);flex:none;animation:blink 1.1s steps(2,start) infinite}
+@keyframes blink{50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.rec .live{animation:none}}
+.rec .t{color:var(--gold);font-family:ui-monospace,Consolas,monospace;font-size:1rem;font-variant-numeric:tabular-nums;flex:none}
+.rec .rhint{color:var(--light);font-size:.84rem;flex:1;min-width:0}
+.rec button{border-radius:8px;font-size:.9rem;font-weight:700;padding:.45rem 1rem;cursor:pointer;font-family:inherit;border:1px solid rgba(100,255,218,.4);background:transparent;color:var(--accent);flex:none}
+.rec button#recStop{background:var(--accent);color:#08131f;border-color:var(--accent)}
+.rec button#recCancel{border-color:rgba(136,146,176,.4);color:var(--slate)}
 
 /* ----------------------------------------------------------------- rail */
 .side{flex:none;width:290px;border-left:1px solid rgba(100,255,218,.15);overflow-y:auto;padding:1.15rem 1.1rem 3rem}
@@ -198,6 +239,14 @@ details.how summary:hover{color:var(--accent)}
   .tools #send{flex:1;margin-left:.3rem}
   button.tool{padding:.65rem .9rem}
   .gifgrid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));max-height:40vh}
+
+  /* Thumb-sized targets. A reaction pill at desktop size is a 20px-tall thing
+     to hit while walking, which is how it will mostly be used. */
+  .pill,.addrx{padding:.35rem .7rem;font-size:1rem}
+  .rxpick button{padding:.5rem .7rem;font-size:1.3rem}
+  .msg .voice audio{min-width:0;max-width:none;width:100%}
+  .rec .rhint{flex-basis:100%;order:3}
+  .rec button{flex:1}
 }
 
 /* Safe-area padding applies at EVERY width, not just phone-width. An installed
@@ -264,13 +313,29 @@ details.how summary:hover{color:var(--accent)}
         <div class="crow">
           <span class="hint" id="hint">Enter sends &middot; Shift+Enter for a new line</span>
           <div class="tools">
+            <button type="button" class="tool" id="micBtn" title="Send a voice message" aria-label="Send a voice message">&#127908;</button>
             <button type="button" class="tool" id="photoBtn" title="Send a photo" aria-label="Send a photo">&#128247;</button>
             <button type="button" class="tool" id="gifBtn" title="Send a GIF" aria-label="Send a GIF">GIF</button>
             <button type="button" id="send">Send</button>
           </div>
         </div>
+
+        <!-- Only while the microphone is live. Nothing is sent until Send is
+             pressed, and Cancel throws the recording away without it ever
+             leaving the device. -->
+        <div class="rec" id="recBar" hidden>
+          <span class="live" aria-hidden="true"></span>
+          <span class="t" id="recTime" role="timer" aria-live="off">0:00</span>
+          <span class="rhint" id="recHint">Recording&hellip;</span>
+          <button type="button" id="recStop">Send</button>
+          <button type="button" id="recCancel">Cancel</button>
+        </div>
+
         <input type="file" id="photoPick" accept="image/*" hidden>
         <input type="file" id="gifPick" accept="image/gif" hidden>
+        <!-- The fallback when this browser cannot record: pick a sound file
+             that already exists. On iOS this reaches Voice Memos. -->
+        <input type="file" id="audioPick" accept="audio/*" hidden>
 
         <!-- GIF search. Hidden until asked for; the query goes to GIPHY, the
              chosen GIF is re-stored by us so viewing it later leaks nothing. -->
@@ -362,12 +427,40 @@ details.how summary:hover{color:var(--accent)}
   var gifGrid = document.getElementById('gifGrid');
   var gifNote = document.getElementById('gifNote');
   var gifClose = document.getElementById('gifClose');
+  var micBtn = document.getElementById('micBtn');
+  var audioPick = document.getElementById('audioPick');
+  var recBar = document.getElementById('recBar');
+  var recTime = document.getElementById('recTime');
+  var recHint = document.getElementById('recHint');
+  var recStop = document.getElementById('recStop');
+  var recCancel = document.getElementById('recCancel');
 
   var me = null;          // 'dad' | 'jesse'
   var latestKey = null;   // newest key already rendered; drives incremental polls
   var rendered = 0;
   var timer = null;
   var maxUpload = 4 * 1024 * 1024;  // replaced by the server's real limit on load
+
+  /**
+   * The reaction set, mirroring REACTIONS in jesse-api.mjs.
+   *
+   * The server validates against its own copy and this one is only for drawing,
+   * so a drift between them cannot let anything unexpected be stored -- it would
+   * just mean a reaction that will not render. Change one, change the other.
+   */
+  var RX = [
+    ['heart', '❤️'],
+    ['up', '👍'],
+    ['haha', '😂'],
+    ['wow', '😮'],
+    ['fire', '🔥'],
+    ['sad', '😢']
+  ];
+  var RX_EMOJI = {};
+  RX.forEach(function (r) { RX_EMOJI[r[0]] = r[1]; });
+
+  var reactions = {};     // message key -> { code: [who, ...] }, whole thread
+  var names = {};         // 'dad' -> 'Dad', filled from the presence list
 
   function api(path, opts) {
     return fetch(API + path, Object.assign({
@@ -444,7 +537,36 @@ details.how summary:hover{color:var(--accent)}
     // encrypted in Netlify Blobs and never enters the public repository.
     if (msg.att) {
       var href = API + 'file?name=' + encodeURIComponent(msg.att.file);
-      if (msg.att.image) {
+      if (msg.att.audio) {
+        // Played in place. The src is the same authenticated endpoint the
+        // pictures use, so the sound is no more reachable than they are, and
+        // the server answers byte ranges because Safari will not start a sound
+        // file without them.
+        var voice = document.createElement('div');
+        voice.className = 'voice';
+        var audio = document.createElement('audio');
+        audio.controls = true;
+        audio.preload = 'metadata';
+        audio.src = href;
+        voice.appendChild(audio);
+        if (msg.att.secs) {
+          var vlen = document.createElement('span');
+          vlen.className = 'vlen';
+          vlen.textContent = clock(msg.att.secs);
+          voice.appendChild(vlen);
+        }
+        audio.addEventListener('error', function () {
+          // Same rule as a picture that will not load: say so, and leave a way
+          // to get at the file rather than a silent dead player.
+          var fall = document.createElement('a');
+          fall.className = 'attach';
+          fall.href = href;
+          fall.setAttribute('download', msg.att.name);
+          fall.textContent = '⬇ ' + msg.att.name + ' — this browser cannot play it. Tap to download.';
+          voice.replaceChild(fall, audio);
+        });
+        div.appendChild(voice);
+      } else if (msg.att.image) {
         var link = document.createElement('a');
         link.href = href;
         link.target = '_blank';
@@ -473,6 +595,41 @@ details.how summary:hover{color:var(--accent)}
       }
     }
 
+    // The reaction row is built empty and filled by paintReactions(), which runs
+    // on every poll. It has to work that way round: a reaction can land on a
+    // message that has been on screen since last week, and the incremental
+    // message cursor will never mention that message again.
+    var rxrow = document.createElement('div');
+    rxrow.className = 'rxrow';
+
+    var rx = document.createElement('div');
+    rx.className = 'rx';
+    rxrow.appendChild(rx);
+
+    var addrx = document.createElement('button');
+    addrx.type = 'button';
+    addrx.className = 'addrx';
+    addrx.textContent = '☺ +';
+    addrx.title = 'React';
+    addrx.setAttribute('aria-label', 'React to this message');
+    addrx.setAttribute('aria-expanded', 'false');
+    rxrow.appendChild(addrx);
+
+    var pickBox = document.createElement('div');
+    pickBox.className = 'rxpick';
+    pickBox.hidden = true;
+    RX.forEach(function (r) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('data-code', r[0]);
+      b.textContent = r[1];
+      b.setAttribute('aria-label', 'React ' + r[1]);
+      pickBox.appendChild(b);
+    });
+    rxrow.appendChild(pickBox);
+
+    div.appendChild(rxrow);
+
     return div;
   }
 
@@ -500,6 +657,115 @@ details.how summary:hover{color:var(--accent)}
     if (empty.parentNode) empty.parentNode.removeChild(empty);
   }
 
+  // ------------------------------------------------------------- reactions
+
+  /**
+   * Repaint every visible message's reaction row from the whole-thread map.
+   *
+   * Guarded by a signature per row, because this runs every six seconds against
+   * up to two hundred messages and almost every run has nothing to do. Without
+   * it, a poll would rebuild hundreds of buttons -- and destroy whichever one
+   * was under a thumb at the time.
+   */
+  function paintReactions() {
+    var rows = thread.querySelectorAll('.msg[data-key]');
+    for (var i = 0; i < rows.length; i++) {
+      var msgEl = rows[i];
+      var box = msgEl.querySelector('.rx');
+      if (!box) continue;
+      var have = reactions[msgEl.getAttribute('data-key')] || {};
+
+      var sig = RX.map(function (r) { return r[0] + ':' + ((have[r[0]] || []).slice().sort().join(',')); }).join('|');
+      if (box.getAttribute('data-sig') === sig) continue;
+      box.setAttribute('data-sig', sig);
+      box.textContent = '';
+
+      RX.forEach(function (r) {
+        var who = have[r[0]] || [];
+        if (!who.length) return;
+        var mine = who.indexOf(me) > -1;
+        var pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'pill' + (mine ? ' mine' : '');
+        pill.setAttribute('data-code', r[0]);
+        pill.appendChild(document.createTextNode(r[1]));
+        if (who.length > 1) {
+          var n = document.createElement('span');
+          n.className = 'n';
+          n.textContent = String(who.length);
+          pill.appendChild(n);
+        }
+        // Who reacted, spelled out -- with two people a count alone does not
+        // say which of them it was.
+        var listed = who.map(function (w) { return w === me ? 'You' : (names[w] || w); }).join(' and ');
+        pill.title = listed + (mine ? ' — tap to take yours back' : ' — tap to add yours');
+        pill.setAttribute('aria-label', listed + ' reacted ' + r[1]);
+        box.appendChild(pill);
+      });
+    }
+  }
+
+  function react(key, code) {
+    api('react', { method: 'POST', body: JSON.stringify({ key: key, code: code }) })
+      .then(function (r) {
+        if (r._status === 401) { lock(); return; }
+        // The server answers with the whole map rather than a delta, so this is
+        // the same painting path a poll takes -- one way for the row to be
+        // right, not two that can disagree.
+        if (r.ok && r.reactions) { reactions = r.reactions; paintReactions(); }
+      })
+      .catch(function () { /* the next poll will show the truth either way */ });
+  }
+
+  function closePickers(except) {
+    var open = thread.querySelectorAll('.rxpick');
+    for (var i = 0; i < open.length; i++) {
+      if (open[i] === except) continue;
+      open[i].hidden = true;
+      var btn = open[i].parentNode && open[i].parentNode.querySelector('.addrx');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  /**
+   * One delegated listener, because message nodes are created constantly and
+   * binding three handlers to each of them would leak a little more with every
+   * poll for as long as the tab stays open.
+   */
+  thread.addEventListener('click', function (e) {
+    var target = e.target;
+
+    var pill = target.closest ? target.closest('.pill') : null;
+    if (pill) {
+      var msgEl = pill.closest('.msg[data-key]');
+      if (!msgEl) return;
+      // Tapping your own reaction takes it back; tapping someone else's adds
+      // yours alongside it. One person holds at most one reaction per message,
+      // so picking a different one replaces it.
+      react(msgEl.getAttribute('data-key'), pill.classList.contains('mine') ? 'none' : pill.getAttribute('data-code'));
+      return;
+    }
+
+    var add = target.closest ? target.closest('.addrx') : null;
+    if (add) {
+      var box = add.parentNode.querySelector('.rxpick');
+      if (!box) return;
+      var opening = box.hidden;
+      closePickers(box);
+      box.hidden = !opening;
+      add.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      return;
+    }
+
+    var choice = target.closest ? target.closest('.rxpick button[data-code]') : null;
+    if (choice) {
+      var owner = choice.closest('.msg[data-key]');
+      if (!owner) return;
+      react(owner.getAttribute('data-key'), choice.getAttribute('data-code'));
+      closePickers(null);
+    }
+  });
+
   // ------------------------------------------------------------- who is here
 
   function ago(ts) {
@@ -517,6 +783,9 @@ details.how summary:hover{color:var(--accent)}
     whoStrip.textContent = '';
     notice.hidden = true;
     (list || []).forEach(function (p) {
+      // Reaction pills name whoever reacted, and this is where the page learns
+      // that 'dad' is called Dad.
+      names[p.id] = p.name;
       var el = document.createElement('span');
       el.className = 'p' + (p.online ? ' on' : '') + (p.id === me ? ' self' : '');
       var dot = document.createElement('span');
@@ -541,6 +810,9 @@ details.how summary:hover{color:var(--accent)}
       if (r.presence) drawPresence(r.presence);
       var fresh = (r.messages || []).filter(function (m) { return m.who !== me; });
       add(r.messages || []);
+      if (r.reactions) reactions = r.reactions;
+      // After add(), so rows that arrived in this same poll get painted too.
+      paintReactions();
       if (r.latestKey) latestKey = r.latestKey;
       if (!rendered && empty.parentNode) empty.textContent = 'Nothing here yet. Say something.';
       // Only nudge for messages from the other person, and only when this tab
@@ -565,13 +837,16 @@ details.how summary:hover{color:var(--accent)}
   function localNotify(msgs) {
     if (!canNotify || Notification.permission !== 'granted') return;
     var m = msgs[msgs.length - 1];
-    // Same wording the server uses in notifyOther(), so the two collapse into
-    // one line under the shared tag instead of reading as two different events.
-    var what = m.att ? (m.att.image ? 'sent a photo' : 'sent a file') : 'sent a message';
+    // Same shape the server uses in notifyOther() -- name in the title, what
+    // they did in the body -- so the two collapse into one line under the
+    // shared tag instead of reading as two different events.
+    var what = m.att
+      ? (m.att.audio ? 'sent a voice message' : m.att.image ? 'sent a photo' : 'sent a file')
+      : 'sent a message';
     var body = PREVIEW_TEXT
       ? String(m.text || (m.att ? m.att.name : '')).slice(0, 120)
       : what;
-    var title = m.name + ' sent a message';
+    var title = m.name;
     var opts = { body: body, tag: TAG, icon: ICON, badge: BADGE, renotify: true };
 
     // Through the service worker where there is one. `new Notification()` does
@@ -877,6 +1152,11 @@ details.how summary:hover{color:var(--accent)}
     return (bytes / 1048576).toFixed(1) + ' MB';
   }
 
+  function clock(secs) {
+    var s = Math.max(0, Math.round(secs));
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
   /**
    * Downloads go through the API so the session cookie is checked. The files
    * are not served from the publish directory at all -- there is no URL that
@@ -899,8 +1179,9 @@ details.how summary:hover{color:var(--accent)}
       a.className = 'name';
       a.href = API + 'file?name=' + encodeURIComponent(f.name);
       a.textContent = f.label;
-      // Images open for viewing; everything else downloads.
-      if (f.image) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      // Pictures and sound open for viewing and listening; everything else
+      // downloads. Both are served inline by the API, so both play in a tab.
+      if (f.image || f.audio) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
       else { a.setAttribute('download', f.display || f.name); }
       card.appendChild(a);
 
@@ -991,12 +1272,17 @@ details.how summary:hover{color:var(--accent)}
    * files over the size limit for nothing.
    */
   /**
-   * The one upload path. Both the rail's "Send a file" and the composer's
-   * camera button come through here, so a fix to one is a fix to both.
+   * The one upload path. The rail's "Send a file", the composer's camera button
+   * and the voice recorder all come through here, so a fix to one is a fix to
+   * all three.
+   *
+   * `extra` carries anything only one caller knows -- today just the recorder's
+   * `secs`, which the server clamps and treats as cosmetic.
    */
-  function sendUpload(chosen, done) {
+  function sendUpload(chosen, done, extra) {
     if (!chosen) return;
     done = done || function () {};
+    extra = extra || {};
 
     pickLabel.classList.add('busy');
     pickLabel.textContent = 'Sending…';
@@ -1025,7 +1311,8 @@ details.how summary:hover{color:var(--accent)}
       // Whatever is already typed in the box rides along as the caption.
       var caption = textArea.value.trim();
       var url = API + 'upload?name=' + encodeURIComponent(file.name) +
-                (caption ? '&text=' + encodeURIComponent(caption.slice(0, 4000)) : '');
+                (caption ? '&text=' + encodeURIComponent(caption.slice(0, 4000)) : '') +
+                (extra.secs ? '&secs=' + encodeURIComponent(String(Math.round(extra.secs))) : '');
 
       return file.arrayBuffer().then(function (buf) {
         return fetch(url, {
@@ -1085,6 +1372,11 @@ details.how summary:hover{color:var(--accent)}
     me = null;
     latestKey = null;
     rendered = 0;
+    reactions = {};
+    // Signing out with the microphone live would leave it recording behind a
+    // locked screen. Abandon it -- nothing half-recorded is worth keeping, and
+    // a session that just ended cannot upload it anyway.
+    stopRecording(true);
     stopPolling();
     app.classList.remove('on');
     gate.style.display = '';
@@ -1159,6 +1451,200 @@ details.how summary:hover{color:var(--accent)}
   photoPick.addEventListener('change', function () {
     if (photoPick.files && photoPick.files[0]) {
       sendUpload(photoPick.files[0], function () { photoPick.value = ''; });
+    }
+  });
+
+  // ------------------------------------------------------- voice messages
+
+  /**
+   * Hold the microphone, then send what it heard.
+   *
+   * Why this earns its place: a thirteen-year-old will say twenty seconds of
+   * something he will not type three sentences of. It is the lowest-effort way
+   * into this thread that exists.
+   *
+   * Nothing is uploaded until Send. Cancel drops the recording on the floor --
+   * the audio never leaves the device, which is the one part of this feature
+   * that has to be true rather than merely convenient. Note the asymmetry with
+   * everything else here: once a voice message IS sent it is as permanent as
+   * any other message, because storage is append-only and there is no delete.
+   *
+   * 32 kbps is chosen so five minutes lands comfortably inside the upload
+   * limit; Opus at that rate is more than good enough for a voice. Some
+   * browsers ignore the hint, so the size check in sendUpload() is still the
+   * thing that actually holds.
+   */
+  var MAX_REC_SECS = 300;
+  var REC_BITS = 32000;
+
+  var rec = null;
+  var recChunks = [];
+  var recStream = null;
+  var recTicker = null;
+  var recStartedAt = 0;
+  var recAbandoned = false;
+
+  /**
+   * The first container this browser admits to supporting.
+   *
+   * Chrome and Firefox give WebM/Opus; Safari gives MP4/AAC and nothing else.
+   * Asking rather than sniffing the user agent is the same rule the
+   * notification code follows -- capabilities are tested, never predicted.
+   */
+  var REC_TYPES = [
+    ['audio/webm;codecs=opus', '.webm'],
+    ['audio/webm', '.webm'],
+    ['audio/mp4;codecs=mp4a.40.2', '.m4a'],
+    ['audio/mp4', '.m4a'],
+    ['audio/ogg;codecs=opus', '.ogg']
+  ];
+
+  function recFormat() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return null;
+    for (var i = 0; i < REC_TYPES.length; i++) {
+      try {
+        if (MediaRecorder.isTypeSupported(REC_TYPES[i][0])) return REC_TYPES[i];
+      } catch (e) { /* a browser that throws on the question cannot do it */ }
+    }
+    return null;
+  }
+
+  var canRecord = Boolean(
+    navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder && recFormat()
+  );
+
+  function recTick() {
+    var secs = (Date.now() - recStartedAt) / 1000;
+    recTime.textContent = clock(secs);
+    if (secs >= MAX_REC_SECS) {
+      recHint.textContent = 'Five minutes is the limit — sending what you have.';
+      stopRecording(false);
+    }
+  }
+
+  function showRecBar(on) {
+    recBar.hidden = !on;
+    micBtn.classList.toggle('on', on);
+    micBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    // Re-armed only when a new recording starts. Both buttons disable
+    // themselves the instant either is pressed, because MediaRecorder's stop
+    // event is asynchronous and a second press in that window would tear the
+    // recorder down before the first press had finished reading it.
+    recStop.disabled = !on;
+    recCancel.disabled = !on;
+    // The camera and GIF buttons would both start a second thing competing for
+    // the composer while a recording is live.
+    photoBtn.disabled = on;
+    gifBtn.disabled = on;
+  }
+
+  function teardownRecorder() {
+    if (recTicker) { clearInterval(recTicker); recTicker = null; }
+    if (recStream) {
+      // Releases the microphone. Without this the browser keeps showing the
+      // recording indicator after we are done with it, which on a phone looks
+      // exactly like an app that is still listening.
+      recStream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });
+      recStream = null;
+    }
+    rec = null;
+    recChunks = [];
+    showRecBar(false);
+    recTime.textContent = '0:00';
+    recHint.textContent = 'Recording…';
+  }
+
+  function startRecording() {
+    var fmt = recFormat();
+    micBtn.disabled = true;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      micBtn.disabled = false;
+      recStream = stream;
+      recChunks = [];
+      recAbandoned = false;
+      try {
+        rec = new MediaRecorder(stream, { mimeType: fmt[0], audioBitsPerSecond: REC_BITS });
+      } catch (e) {
+        // A browser that rejects the options object still records with none.
+        rec = new MediaRecorder(stream);
+      }
+      rec.addEventListener('dataavailable', function (e) {
+        if (e.data && e.data.size) recChunks.push(e.data);
+      });
+      rec.addEventListener('stop', function () { finishRecording(fmt[1]); });
+      rec.start();
+      recStartedAt = Date.now();
+      recTime.textContent = '0:00';
+      showRecBar(true);
+      recTicker = setInterval(recTick, 250);
+    }).catch(function (err) {
+      micBtn.disabled = false;
+      teardownRecorder();
+      // Say which wall was hit. "Could not record" sends someone hunting
+      // through settings that were never the problem.
+      var kind = err && err.name;
+      if (kind === 'NotAllowedError' || kind === 'SecurityError') {
+        hint.textContent = 'Microphone blocked. Allow it for this site, then try again.';
+      } else if (kind === 'NotFoundError' || kind === 'DevicesNotFoundError') {
+        hint.textContent = 'No microphone found on this device.';
+      } else {
+        hint.textContent = 'Could not start recording. Tap 🎤 again to pick a sound file instead.';
+        // Next press goes to the picker rather than failing the same way twice.
+        canRecord = false;
+      }
+    });
+  }
+
+  function stopRecording(abandon) {
+    recAbandoned = Boolean(abandon);
+    recStop.disabled = true;
+    recCancel.disabled = true;
+    if (recTicker) { clearInterval(recTicker); recTicker = null; }
+    if (rec && rec.state !== 'inactive') {
+      try { rec.stop(); return; } catch (e) { /* fall through to the teardown */ }
+    }
+    teardownRecorder();
+  }
+
+  function finishRecording(ext) {
+    var secs = Math.round((Date.now() - recStartedAt) / 1000);
+    var chunks = recChunks.slice();
+    var type = (rec && rec.mimeType) || '';
+    var abandoned = recAbandoned;
+
+    teardownRecorder();
+
+    if (abandoned) { hint.textContent = 'Recording discarded. Nothing was sent.'; return; }
+    if (!chunks.length) { hint.textContent = 'Nothing was recorded. Try again.'; return; }
+    if (secs < 1) { hint.textContent = 'Too short — hold it a moment longer.'; return; }
+
+    var blob = new Blob(chunks, type ? { type: type } : undefined);
+    // The stamp keeps two recordings from the same phone apart, the same way
+    // storedName() does on the server. Letters, digits, dots and dashes only,
+    // because the upload endpoint's allowlist is strict and rejects the rest.
+    var file = new File([blob], 'voice-' + Date.now() + ext, { type: blob.type || 'application/octet-stream' });
+    hint.textContent = 'Sending ' + clock(secs) + ' voice message…';
+    sendUpload(file, null, { secs: secs });
+  }
+
+  /**
+   * The microphone button must never be a dead control -- the same rule the GIF
+   * button follows. Where recording is impossible, it opens a sound-file
+   * picker, which on iOS reaches Voice Memos. Either way pressing 🎤 sends a
+   * voice message.
+   */
+  micBtn.addEventListener('click', function () {
+    if (rec) { stopRecording(false); return; }
+    if (!canRecord) { audioPick.click(); return; }
+    startRecording();
+  });
+
+  recStop.addEventListener('click', function () { stopRecording(false); });
+  recCancel.addEventListener('click', function () { stopRecording(true); });
+
+  audioPick.addEventListener('change', function () {
+    if (audioPick.files && audioPick.files[0]) {
+      sendUpload(audioPick.files[0], function () { audioPick.value = ''; });
     }
   });
 
