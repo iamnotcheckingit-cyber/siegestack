@@ -78,20 +78,26 @@ Contact is a 30-minute booking link on the homepage.
 
 ## Services
 
-- [Homepage](https://siegestack.com/): the full offering set and process. Twenty-four
-  service areas. The audit-side work — access control, application hardening, form and
-  notification reliability, delivery and configuration auditing, measurement integrity,
-  and refactor verification. And the distribution-operations side — EDI operations across
-  X12 and EDIFACT, ERP carve-out and cutover when a facility is acquired, site standup and
-  relocation, quality and compliance systems, vendor- and customer-managed inventory,
-  inventory accuracy and demand planning, and vendor-neutral system selection.
+- [Homepage](https://siegestack.com/): the full offering set and process. Seventeen
+  service areas, including the audit-side work — access control, application hardening,
+  form and notification reliability, delivery and configuration auditing, measurement
+  integrity, and refactor verification. The heavier operational work lives on
+  `/operations-modernization` rather than here.
 - [CRM and ERP integration showcase](https://siegestack.com/etl-showcase): integration
   patterns with production-shaped code — retries, circuit breakers, monitoring — across
   Salesforce, HubSpot, Zoho, Epicor P21 and Kinetic, Infor, Dynamics NAV.
 - [Operations modernization](https://siegestack.com/operations-modernization): the larger
   engagement shape — consolidate onto one system of record, then optimize on top of it.
   Migration sequencing and history strategy, slotting, multi-order consolidation,
-  purchasing analysis, network replenishment.
+  purchasing analysis, network replenishment. Also seven engagements that are bought
+  singly, usually because something has a date on it: EDI operations across X12 and
+  EDIFACT (including the suspense-monitoring and handover work that decides whether it
+  survives the person who built it); ERP carve-out and cutover when an acquired facility
+  must leave the seller's system before a transition agreement expires; site standup,
+  relocation and consolidation; quality and compliance systems, where the risk is a
+  document migration that flattens the revision history that made a certificate evidence;
+  vendor- and customer-managed inventory; inventory accuracy and demand planning; and
+  vendor-neutral system selection with no reseller relationship behind it.
 - [Insights](https://siegestack.com/insights): index of technical articles and anonymised
   problem breakdowns.
 - [Privacy policy](https://siegestack.com/privacy-policy).
