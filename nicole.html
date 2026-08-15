@@ -170,6 +170,40 @@ button.tool:disabled:hover{background:transparent}
 .rec button#recStop{background:var(--accent);color:#08131f;border-color:var(--accent)}
 .rec button#recCancel{border-color:rgba(136,146,176,.4);color:var(--slate)}
 
+/* ------------------------------------------------------------------ emoji */
+.emojibox{margin-top:.6rem;background:var(--navy);border:1px solid rgba(100,255,218,.25);border-radius:10px;padding:.5rem}
+.emojigrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:.15rem;max-height:190px;overflow-y:auto}
+.emojigrid button{border:none;background:transparent;font-size:1.35rem;line-height:1;padding:.35rem 0;border-radius:8px;cursor:pointer;font-family:inherit}
+.emojigrid button:hover,.emojigrid button:focus-visible{background:rgba(100,255,218,.15)}
+
+/* ------------------------------------------------------------ incoming call */
+/* Same shape as .rec on purpose -- both are "something is live right now, and
+   you have two ways out of it", and they never appear at the same time. */
+.ring{display:flex;align-items:center;gap:.7rem;margin-top:.6rem;background:rgba(100,255,218,.09);border:1px solid rgba(100,255,218,.5);border-radius:10px;padding:.6rem .8rem;flex-wrap:wrap}
+.ring .live{width:.6rem;height:.6rem;border-radius:50%;background:var(--accent);flex:none;animation:blink 1.1s steps(2,start) infinite}
+@media (prefers-reduced-motion:reduce){.ring .live{animation:none}}
+.ring .rhint{color:var(--white);font-size:.9rem;font-weight:600;flex:1;min-width:0}
+.ring button{border-radius:8px;font-size:.9rem;font-weight:700;padding:.45rem 1rem;cursor:pointer;font-family:inherit;border:1px solid rgba(100,255,218,.4);background:transparent;color:var(--accent);flex:none}
+.ring button#ringAccept{background:var(--accent);color:#08131f;border-color:var(--accent)}
+.ring button#ringDecline{border-color:rgba(136,146,176,.4);color:var(--slate)}
+
+/* ------------------------------------------------------------------- call */
+.callwrap{position:fixed;inset:0;z-index:900;background:#04070d;display:flex;flex-direction:column}
+.callstage{position:relative;flex:1;min-height:0;background:#04070d}
+/* contain, not cover: a face cropped by the viewport is worse than letterboxing. */
+.callstage .remote{width:100%;height:100%;object-fit:contain;background:#04070d;display:block}
+/* Self-view is a thumbnail and mirrored, because everyone expects a mirror of
+   themselves and nobody expects a mirror of the other person. */
+.callstage .local{position:absolute;right:.9rem;bottom:.9rem;width:29vw;max-width:190px;border-radius:10px;border:1px solid rgba(100,255,218,.35);object-fit:cover;transform:scaleX(-1);background:#0a192f;box-shadow:0 6px 22px rgba(0,0,0,.5)}
+.callstate{position:absolute;top:1rem;left:0;right:0;text-align:center;color:var(--light);font-size:.9rem;pointer-events:none;text-shadow:0 1px 6px #000}
+.callbar{flex:none;display:flex;justify-content:center;gap:1rem;padding:1rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom));background:#08131f;border-top:1px solid rgba(100,255,218,.15)}
+/* 52px, not the 34px the composer tools use: these are hit while holding a
+   phone one-handed, and one of them hangs up on your son. */
+.cbtn{width:52px;height:52px;border-radius:50%;border:1px solid rgba(100,255,218,.4);background:transparent;color:var(--accent);font-size:1.2rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center}
+.cbtn[aria-pressed="true"]{background:rgba(136,146,176,.25);color:var(--slate);border-color:rgba(136,146,176,.5)}
+.cbtn.end{width:auto;padding:0 1.4rem;border-radius:26px;background:#c0392b;border-color:#c0392b;color:#fff;font-weight:700;font-size:.95rem}
+@media (max-width:560px){.callstage .local{width:34vw}}
+
 /* ----------------------------------------------------------------- rail */
 .side{flex:none;width:290px;border-left:1px solid rgba(100,255,218,.15);overflow-y:auto;padding:1.15rem 1.1rem 3rem}
 .side h2{color:var(--slate);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:.9rem}
@@ -313,8 +347,10 @@ details.how summary:hover{color:var(--accent)}
         <div class="crow">
           <span class="hint" id="hint">Enter sends &middot; Shift+Enter for a new line</span>
           <div class="tools">
+            <button type="button" class="tool" id="callBtn" title="Start a video call" aria-label="Start a video call">&#128249;</button>
             <button type="button" class="tool" id="micBtn" title="Send a voice message" aria-label="Send a voice message">&#127908;</button>
             <button type="button" class="tool" id="photoBtn" title="Send a photo" aria-label="Send a photo">&#128247;</button>
+            <button type="button" class="tool" id="emojiBtn" title="Insert an emoji" aria-label="Insert an emoji" aria-expanded="false">&#128512;</button>
             <button type="button" class="tool" id="gifBtn" title="Send a GIF" aria-label="Send a GIF">GIF</button>
             <button type="button" id="send">Send</button>
           </div>
@@ -331,11 +367,29 @@ details.how summary:hover{color:var(--accent)}
           <button type="button" id="recCancel">Cancel</button>
         </div>
 
+        <!-- Incoming call. Deliberately a bar rather than a modal: a modal that
+             steals focus while you are mid-sentence is worse than a ringing
+             phone, and declining has to be as easy as ignoring it. -->
+        <div class="ring" id="ringBar" hidden>
+          <span class="live" aria-hidden="true"></span>
+          <span class="rhint" id="ringWho">Incoming call</span>
+          <button type="button" id="ringAccept">Answer</button>
+          <button type="button" id="ringDecline">Decline</button>
+        </div>
+
         <input type="file" id="photoPick" accept="image/*" hidden>
         <input type="file" id="gifPick" accept="image/gif" hidden>
         <!-- The fallback when this browser cannot record: pick a sound file
              that already exists. On iOS this reaches Voice Memos. -->
         <input type="file" id="audioPick" accept="audio/*" hidden>
+
+        <!-- Emoji. A fixed local set rather than a picker library: every
+             character here is already in the font the page renders with, so
+             there is nothing to fetch and nothing that can be swapped out.
+             Filled by script from EMOJI so the markup stays short. -->
+        <div class="emojibox" id="emojiBox" hidden>
+          <div class="emojigrid" id="emojiGrid" role="listbox" aria-label="Emoji"></div>
+        </div>
 
         <!-- GIF search. Hidden until asked for; the query goes to GIPHY, the
              chosen GIF is re-stored by us so viewing it later leaks nothing. -->
@@ -350,6 +404,23 @@ details.how summary:hover{color:var(--accent)}
       <div class="thread" id="thread">
         <div class="notice" id="notice" hidden></div>
         <div class="empty" id="empty">Loading&hellip;</div>
+      </div>
+    </div>
+
+    <!-- The call surface. Fixed and above everything, because a call is the
+         only thing on this page that is worth interrupting the thread for.
+         playsinline on both videos is not optional: without it iOS takes the
+         remote stream fullscreen on play and the controls below go unreachable. -->
+    <div class="callwrap" id="callWrap" hidden>
+      <div class="callstage">
+        <video id="remoteVid" class="remote" autoplay playsinline></video>
+        <video id="localVid" class="local" autoplay playsinline muted></video>
+        <div class="callstate" id="callState">Connecting&hellip;</div>
+      </div>
+      <div class="callbar">
+        <button type="button" class="cbtn" id="micTgl" aria-pressed="false" title="Mute microphone">&#127908;</button>
+        <button type="button" class="cbtn" id="camTgl" aria-pressed="false" title="Turn camera off">&#128247;</button>
+        <button type="button" class="cbtn end" id="callEnd" title="End call">End</button>
       </div>
     </div>
 
@@ -1139,7 +1210,13 @@ details.how summary:hover{color:var(--accent)}
   function startPolling() {
     stopPolling();
     timer = setInterval(function () {
-      if (document.visibilityState === 'visible') poll();
+      if (document.visibilityState !== 'visible') return;
+      poll();
+      // Also drain call signalling. An incoming offer has to be noticed by the
+      // ordinary poll, because the fast call poll does not start until there is
+      // a call -- leaving it to the fast poll alone means the first offer is
+      // never seen and the phone never rings.
+      if (typeof drainSignals === 'function' && !callActive) drainSignals();
     }, POLL_MS);
   }
   function stopPolling() { if (timer) { clearInterval(timer); timer = null; } }
@@ -1377,6 +1454,10 @@ details.how summary:hover{color:var(--accent)}
     // locked screen. Abandon it -- nothing half-recorded is worth keeping, and
     // a session that just ended cannot upload it anyway.
     stopRecording(true);
+    // Same reasoning as the recording above: a call must not outlive the
+    // session that authorised it, and the camera must not stay lit behind a
+    // locked screen.
+    if (typeof endCall === 'function') endCall(true);
     stopPolling();
     app.classList.remove('on');
     gate.style.display = '';
@@ -1787,6 +1868,395 @@ details.how summary:hover{color:var(--accent)}
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible' && me) poll();
   });
+
+  // ------------------------------------------------------------------ emoji
+
+  /**
+   * Inserts at the caret rather than appending, because the obvious use is
+   * putting one in the middle of a sentence you have already typed.
+   */
+  var EMOJI = (
+    '😀😃😄😁😆😅😂🤣🙂🙃😉😊😇🥰😍😘😋😜🤪🤗🤔🤨😐😑😴😪😌😔😞😢😭😤😠😡🥺😳🤯😱' +
+    '👍👎👌✌️🤞🤙👏🙌🙏💪🤝👋🫶❤️🧡💛💚💙💜🖤🤍💔💯🔥⭐✨🎉🎂🎁' +
+    '☕🍕🍔🍟🌮🍎🍌🍺🍻🥤🍦🍪' +
+    '⚽🏀🏈⚾🎾🎣🎸🎮🎯🚗🚙🛻🚚✈️🏠🌧️☀️🌙⛄🐶🐱🐟🦌'
+  );
+
+  var emojiBtn = document.getElementById('emojiBtn');
+  var emojiBox = document.getElementById('emojiBox');
+  var emojiGrid = document.getElementById('emojiGrid');
+
+  function insertEmoji(ch) {
+    var el = textArea;
+    var start = el.selectionStart, end = el.selectionEnd;
+    if (typeof start !== 'number') { el.value += ch; }
+    else {
+      el.value = el.value.slice(0, start) + ch + el.value.slice(end);
+      var at = start + ch.length;
+      el.setSelectionRange(at, at);
+    }
+    // Fire input so anything watching the composer (autogrow, send-enable)
+    // sees the change -- setting .value directly does not dispatch one.
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.focus();
+  }
+
+  function buildEmoji() {
+    if (emojiGrid.childNodes.length) return;
+    // Array.from, not split(''), because these are surrogate pairs and several
+    // carry a variation selector -- splitting by code unit tears them in half.
+    var seen = {};
+    Array.from(EMOJI).reduce(function (acc, ch) {
+      // Recombine variation selectors onto the character they modify.
+      if (ch === '️' && acc.length) { acc[acc.length - 1] += ch; return acc; }
+      acc.push(ch); return acc;
+    }, []).forEach(function (ch) {
+      if (seen[ch]) return;
+      seen[ch] = 1;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = ch;
+      b.setAttribute('aria-label', ch);
+      b.addEventListener('click', function () { insertEmoji(ch); });
+      emojiGrid.appendChild(b);
+    });
+  }
+
+  function closeEmoji() {
+    emojiBox.hidden = true;
+    emojiBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  if (emojiBtn) emojiBtn.addEventListener('click', function () {
+    if (emojiBox.hidden) {
+      buildEmoji();
+      if (typeof closeGif === 'function') closeGif();   // never both open at once
+      emojiBox.hidden = false;
+      emojiBtn.setAttribute('aria-expanded', 'true');
+    } else closeEmoji();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && emojiBox && !emojiBox.hidden) closeEmoji();
+  });
+
+  // ------------------------------------------------------------- video calls
+
+  /**
+   * Two-person WebRTC over the polled signalling endpoint.
+   *
+   * STUN only, deliberately, for now. STUN discovers the public address a NAT
+   * has given you and is free; it is enough whenever at least one side is not
+   * behind a symmetric NAT, which covers most home networks. It is NOT enough
+   * when both sides are behind carrier-grade NAT, which is the normal case on
+   * mobile data. There is no in-page fix for that -- the media has to be
+   * relayed by a TURN server, which costs money and needs credentials. So when
+   * it fails, this says so plainly instead of showing a black rectangle
+   * forever. Adding TURN later means adding one entry to ICE and nothing else.
+   */
+  var ICE = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }] };
+
+  var CALL_POLL_MS = 1000;      // while a call is being set up or is running
+  var CALL_TIMEOUT_MS = 45000;  // unanswered offers give up rather than ring forever
+
+  var pc = null;               // RTCPeerConnection
+  var localStream = null;
+  var callTimer = null;        // fast signal poll
+  var ringTimer = null;        // gives up on an unanswered call
+  var callActive = false;      // we are in or setting up a call
+  var pendingOffer = null;     // an offer that arrived and is waiting on Answer
+  var politeQueue = [];        // ICE that arrived before the description did
+
+  var callWrap = document.getElementById('callWrap');
+  var remoteVid = document.getElementById('remoteVid');
+  var localVid = document.getElementById('localVid');
+  var callState = document.getElementById('callState');
+  var callBtn = document.getElementById('callBtn');
+  var callEnd = document.getElementById('callEnd');
+  var micTgl = document.getElementById('micTgl');
+  var camTgl = document.getElementById('camTgl');
+  var ringBar = document.getElementById('ringBar');
+  var ringWho = document.getElementById('ringWho');
+  var ringAccept = document.getElementById('ringAccept');
+  var ringDecline = document.getElementById('ringDecline');
+
+  // getUserMedia is absent, not merely unsupported, on a page served over
+  // plain HTTP -- and it throws rather than returning false.
+  var canCall = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.RTCPeerConnection);
+  if (!canCall && callBtn) {
+    callBtn.disabled = true;
+    callBtn.title = 'This browser cannot make calls';
+  }
+
+  function signal(type, data) {
+    return api('call', { method: 'POST', body: JSON.stringify({ type: type, data: data || null }) })
+      .catch(function () { /* a dropped candidate is survivable; a dropped offer is not, and is retried by the caller giving up */ });
+  }
+
+  function setCallState(t) { if (callState) callState.textContent = t; }
+
+  function startCallPolling() {
+    stopCallPolling();
+    callTimer = setInterval(drainSignals, CALL_POLL_MS);
+  }
+  function stopCallPolling() { if (callTimer) { clearInterval(callTimer); callTimer = null; } }
+
+  /**
+   * The thread poll runs at 6s, which is the right cadence for messages and far
+   * too slow to set a call up -- an offer would sit unseen for most of a
+   * ringing cycle. This runs alongside it and only while it is needed.
+   */
+  function drainSignals() {
+    return api('call').then(function (r) {
+      if (!r || !r.ok || !r.signals) return;
+      return r.signals.reduce(function (chain, sig) {
+        return chain.then(function () { return handleSignal(sig); });
+      }, Promise.resolve());
+    }).catch(function () {});
+  }
+
+  function handleSignal(sig) {
+    if (sig.type === 'offer')   return onOffer(sig);
+    if (sig.type === 'answer')  return onAnswer(sig);
+    if (sig.type === 'ice')     return onIce(sig);
+    if (sig.type === 'decline') { endCall(false); showNote('Call declined.'); return; }
+    if (sig.type === 'busy')    { endCall(false); showNote('They are already on a call.'); return; }
+    if (sig.type === 'hangup')  { endCall(false); return; }
+  }
+
+  function showNote(text) {
+    // The composer's hint line, which is where every other transient message on
+    // this page goes. Never alert() -- a modal dialog blocks every later browser
+    // event, including the poll that would tell us the call ended.
+    hint.textContent = text;
+  }
+
+  function getMedia() {
+    // Audio-only is a real outcome, not a failure: a laptop with no camera, or
+    // a phone where camera permission was refused but the microphone was not.
+    return navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .catch(function () {
+        return navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+      });
+  }
+
+  function newPeer() {
+    var conn = new RTCPeerConnection(ICE);
+
+    conn.onicecandidate = function (e) {
+      if (e.candidate) signal('ice', e.candidate.toJSON ? e.candidate.toJSON() : e.candidate);
+    };
+
+    conn.ontrack = function (e) {
+      if (remoteVid.srcObject !== e.streams[0]) {
+        remoteVid.srcObject = e.streams[0];
+        // Safari will not start a remote stream without an explicit play(), and
+        // rejects it silently if it does not consider this a user gesture.
+        remoteVid.play().catch(function () {});
+      }
+    };
+
+    conn.onconnectionstatechange = function () {
+      var s = conn.connectionState;
+      if (s === 'connected') setCallState('');
+      else if (s === 'connecting') setCallState('Connecting…');
+      else if (s === 'failed') {
+        // This is the STUN-only limitation showing up, and it is the single
+        // most likely way this feature fails. Name it, so it is not mistaken
+        // for the app being broken.
+        setCallState('Could not connect — this network needs a relay (TURN).');
+        setTimeout(function () { endCall(true); }, 4000);
+      } else if (s === 'disconnected' || s === 'closed') {
+        endCall(false);
+      }
+    };
+
+    return conn;
+  }
+
+  function openCallUI() {
+    callWrap.hidden = false;
+    // A call is the one thing here worth keeping the screen awake for, but
+    // wake locks are not universally available and must never break the call.
+    if (navigator.wakeLock && navigator.wakeLock.request) {
+      navigator.wakeLock.request('screen').then(function (l) { callWrap._lock = l; }).catch(function () {});
+    }
+  }
+
+  function startCall() {
+    if (!canCall || callActive) return;
+    callActive = true;
+    openCallUI();
+    setCallState('Asking for camera…');
+
+    getMedia().then(function (stream) {
+      localStream = stream;
+      localVid.srcObject = localStream;
+      localVid.play().catch(function () {});
+      setCallState('Ringing…');
+
+      pc = newPeer();
+      localStream.getTracks().forEach(function (t) { pc.addTrack(t, localStream); });
+
+      return pc.createOffer().then(function (offer) {
+        return pc.setLocalDescription(offer);
+      }).then(function () {
+        return signal('offer', { sdp: pc.localDescription.sdp, type: pc.localDescription.type });
+      }).then(function () {
+        startCallPolling();
+        ringTimer = setTimeout(function () {
+          if (pc && pc.connectionState !== 'connected') {
+            endCall(true);
+            showNote('No answer.');
+          }
+        }, CALL_TIMEOUT_MS);
+      });
+    }).catch(function () {
+      setCallState('');
+      endCall(false);
+      showNote('Camera and microphone are both blocked, so there is nothing to call with.');
+    });
+  }
+
+  function onOffer(sig) {
+    // Already busy: tell them so, rather than letting a second offer quietly
+    // replace the call currently in progress.
+    if (callActive) { signal('busy'); return; }
+    pendingOffer = sig.data;
+    ringWho.textContent = (whoName(sig.from) || 'Someone') + ' is calling';
+    ringBar.hidden = false;
+    startCallPolling();   // so a hangup before we answer still reaches us
+  }
+
+  function whoName(id) {
+    if (!id) return '';
+    return id.charAt(0).toUpperCase() + id.slice(1);
+  }
+
+  function acceptCall() {
+    if (!pendingOffer) return;
+    var offer = pendingOffer;
+    pendingOffer = null;
+    ringBar.hidden = true;
+    callActive = true;
+    openCallUI();
+    setCallState('Asking for camera…');
+
+    getMedia().then(function (stream) {
+      localStream = stream;
+      localVid.srcObject = localStream;
+      localVid.play().catch(function () {});
+      setCallState('Connecting…');
+
+      pc = newPeer();
+      localStream.getTracks().forEach(function (t) { pc.addTrack(t, localStream); });
+
+      return pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () {
+        return flushIce();
+      }).then(function () {
+        return pc.createAnswer();
+      }).then(function (answer) {
+        return pc.setLocalDescription(answer);
+      }).then(function () {
+        return signal('answer', { sdp: pc.localDescription.sdp, type: pc.localDescription.type });
+      }).then(function () {
+        startCallPolling();
+      });
+    }).catch(function () {
+      setCallState('');
+      signal('decline');
+      endCall(false);
+      showNote('Camera and microphone are both blocked, so the call could not be answered.');
+    });
+  }
+
+  function onAnswer(sig) {
+    if (!pc || !sig.data) return Promise.resolve();
+    // An answer arriving twice would tear down a working connection.
+    if (pc.signalingState === 'stable') return Promise.resolve();
+    return pc.setRemoteDescription(new RTCSessionDescription(sig.data)).then(function () {
+      return flushIce();
+    }).then(function () {
+      if (ringTimer) { clearTimeout(ringTimer); ringTimer = null; }
+    });
+  }
+
+  function onIce(sig) {
+    if (!sig.data) return Promise.resolve();
+    // Candidates routinely arrive before the description they belong to.
+    // Adding one then throws, so they are held and replayed once it lands.
+    if (!pc || !pc.remoteDescription || !pc.remoteDescription.type) {
+      politeQueue.push(sig.data);
+      return Promise.resolve();
+    }
+    return pc.addIceCandidate(new RTCIceCandidate(sig.data)).catch(function () {});
+  }
+
+  function flushIce() {
+    var queued = politeQueue.splice(0, politeQueue.length);
+    return queued.reduce(function (chain, cand) {
+      return chain.then(function () {
+        return pc.addIceCandidate(new RTCIceCandidate(cand)).catch(function () {});
+      });
+    }, Promise.resolve());
+  }
+
+  /**
+   * @param tell  whether to send a hangup. False when we are reacting to the
+   *              other side's hangup, so the two do not bounce one back and
+   *              forth at each other.
+   */
+  function endCall(tell) {
+    if (tell && callActive) signal('hangup');
+
+    callActive = false;
+    pendingOffer = null;
+    politeQueue.length = 0;
+
+    if (ringTimer) { clearTimeout(ringTimer); ringTimer = null; }
+    stopCallPolling();
+
+    if (pc) { try { pc.close(); } catch (e) {} pc = null; }
+    if (localStream) {
+      // Stopping every track is what actually turns the camera light off.
+      localStream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });
+      localStream = null;
+    }
+    localVid.srcObject = null;
+    remoteVid.srcObject = null;
+
+    if (callWrap._lock) { try { callWrap._lock.release(); } catch (e) {} callWrap._lock = null; }
+    callWrap.hidden = true;
+    ringBar.hidden = true;
+    setCallState('Connecting…');
+    micTgl.setAttribute('aria-pressed', 'false');
+    camTgl.setAttribute('aria-pressed', 'false');
+  }
+
+  function toggleTrack(kind, btn) {
+    if (!localStream) return;
+    var tracks = kind === 'audio' ? localStream.getAudioTracks() : localStream.getVideoTracks();
+    if (!tracks.length) return;
+    var off = tracks[0].enabled;          // about to become the new state
+    tracks.forEach(function (t) { t.enabled = !off; });
+    btn.setAttribute('aria-pressed', off ? 'true' : 'false');
+  }
+
+  if (callBtn) callBtn.addEventListener('click', function () { startCall(); });
+  if (callEnd) callEnd.addEventListener('click', function () { endCall(true); });
+  if (micTgl) micTgl.addEventListener('click', function () { toggleTrack('audio', micTgl); });
+  if (camTgl) camTgl.addEventListener('click', function () { toggleTrack('video', camTgl); });
+  if (ringAccept) ringAccept.addEventListener('click', function () { acceptCall(); });
+  if (ringDecline) ringDecline.addEventListener('click', function () {
+    pendingOffer = null;
+    ringBar.hidden = true;
+    stopCallPolling();
+    signal('decline');
+  });
+
+  // Closing the tab mid-call must hang up, or the other end rings until it
+  // times out. pagehide rather than unload -- unload never fires on iOS.
+  window.addEventListener('pagehide', function () { if (callActive) endCall(true); });
 
   // ------------------------------------------------------------------ boot
 
