@@ -42,6 +42,8 @@ const PAGES = [
   ['working-with-claude-blog.html', '/working-with-claude-blog', 'How to use Claude AI effectively'],
   ['working-with-claude.html', '/working-with-claude', 'Working with Claude — the slide deck'],
   ['insights.html', '/insights', 'Insights'],
+  ['about.html', '/about', 'About SiegeStack'],
+  ['contact.html', '/contact', 'Contact'],
   ['privacy-policy.html', '/privacy-policy', 'Privacy policy'],
 ];
 
