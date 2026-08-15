@@ -46,6 +46,22 @@
  *                          `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
  *                          -- BEFORE you ever rotate a PIN, and rule 1 holds.
  *                          Undecryptable messages are surfaced, never dropped.
+ *
+ *   TURN_URLS              optional, but video calls between two phones on
+ *   TURN_SECRET            mobile data will not connect without it. Both sides
+ *                          are usually behind carrier-grade NAT, and STUN
+ *                          cannot punch through that -- the media has to be
+ *                          relayed. See iceServers() for the three supported
+ *                          configurations; TURN_URLS + TURN_SECRET is the one
+ *                          to prefer, because what reaches the browser then
+ *                          expires within the hour.
+ *                          Alternatives: TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN,
+ *                          or TURN_URLS + TURN_USERNAME + TURN_PASSWORD.
+ *                          Unset means STUN only, which is where this started.
+ *
+ *                          Scope these to Functions in Netlify, not just
+ *                          Builds. A build that sees the value says nothing
+ *                          about whether process.env here does.
  */
 
 import { getStore } from '@netlify/blobs';
@@ -71,6 +87,7 @@ export const config = {
     '/api/nicole/gif',
     '/api/nicole/gif-send',
     '/api/nicole/call',
+    '/api/nicole/turn',
   ],
 };
 
@@ -783,6 +800,108 @@ const CALL_TTL_MS = 90_000;
 const signalKey = (to) =>
   `sig/${to}/${String(nextStamp()).padStart(16, '0')}-${crypto.randomBytes(4).toString('hex')}`;
 
+// ------------------------------------------------------------------ TURN/STUN
+
+/**
+ * ICE servers, minted here rather than written into the page.
+ *
+ * STUN alone only works when at least one side is not behind a symmetric NAT.
+ * Two phones on mobile data usually are, and then the media has to be relayed
+ * by a TURN server. TURN costs money, so its credentials are worth stealing --
+ * and this repository is PUBLIC, so they exist only as Netlify environment
+ * variables and only ever reach the browser as a short-lived derivative.
+ *
+ * Three ways to configure it, checked in this order. Set exactly one.
+ *
+ *   1. HMAC (coturn's "TURN REST API", and what most providers speak)
+ *        TURN_URLS    comma-separated, e.g. turn:host:3478,turns:host:5349
+ *        TURN_SECRET  the shared secret. NEVER sent to the browser.
+ *      The username is an expiry timestamp and the password is derived from it,
+ *      so what the page receives stops working within the hour. This is the one
+ *      to prefer: a leaked credential is worthless tomorrow.
+ *
+ *   2. Twilio Network Traversal Service
+ *        TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
+ *      Twilio mints the ephemeral credentials; we just relay them. Costs one
+ *      outbound request per call setup, which is why it is not first.
+ *
+ *   3. Static credentials (some providers issue only these)
+ *        TURN_URLS, TURN_USERNAME, TURN_PASSWORD
+ *      Long-lived, so the browser holds a credential that keeps working. Use
+ *      only if the provider offers nothing better.
+ *
+ * With none of them set this returns STUN only, which is exactly the behaviour
+ * before TURN existed -- the feature degrades to where it started rather than
+ * breaking.
+ *
+ * NOTE: the Netlify variable scope must include Functions. "Builds" is the
+ * default and the build seeing a value tells you nothing about whether
+ * process.env here does.
+ */
+const STUN_URLS = ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'];
+
+const TURN_TTL_SECONDS = 3600;
+
+function turnUrls() {
+  return String(process.env.TURN_URLS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+async function iceServers() {
+  const servers = [{ urls: STUN_URLS }];
+  const urls = turnUrls();
+
+  // 1. HMAC / coturn REST.
+  if (urls.length && process.env.TURN_SECRET) {
+    const expiry = Math.floor(Date.now() / 1000) + TURN_TTL_SECONDS;
+    const username = `${expiry}:nicole`;
+    const credential = crypto
+      .createHmac('sha1', process.env.TURN_SECRET)
+      .update(username)
+      .digest('base64');
+    servers.push({ urls, username, credential });
+    return { servers, ttl: TURN_TTL_SECONDS, mode: 'hmac' };
+  }
+
+  // 2. Twilio NTS.
+  if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+    try {
+      const sid = process.env.TWILIO_ACCOUNT_SID;
+      const auth = Buffer.from(`${sid}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64');
+      const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Tokens.json`, {
+        method: 'POST',
+        headers: { authorization: `Basic ${auth}` },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        for (const s of body.ice_servers || []) {
+          // Twilio returns one entry per URL, under `url` or `urls` depending
+          // on how old the account is.
+          const u = s.urls || s.url;
+          if (!u) continue;
+          servers.push(s.username ? { urls: u, username: s.username, credential: s.credential } : { urls: u });
+        }
+        return { servers, ttl: Number(body.ttl) || TURN_TTL_SECONDS, mode: 'twilio' };
+      }
+      console.error(JSON.stringify({ event: 'NICOLE_TURN_TWILIO_HTTP', status: res.status }));
+    } catch (err) {
+      // A TURN failure must degrade to STUN, never fail the call outright.
+      console.error(JSON.stringify({ event: 'NICOLE_TURN_TWILIO_ERROR', detail: String(err?.message || err).slice(0, 200) }));
+    }
+    return { servers, ttl: 300, mode: 'stun-only' };
+  }
+
+  // 3. Static.
+  if (urls.length && process.env.TURN_USERNAME && process.env.TURN_PASSWORD) {
+    servers.push({ urls, username: process.env.TURN_USERNAME, credential: process.env.TURN_PASSWORD });
+    return { servers, ttl: TURN_TTL_SECONDS, mode: 'static' };
+  }
+
+  return { servers, ttl: 3600, mode: 'stun-only' };
+}
+
 /** One key per device, derived from its endpoint, so re-subscribing replaces. */
 const subKey = (who, endpoint) =>
   `sub/${who}/${crypto.createHash('sha256').update(endpoint).digest('hex').slice(0, 32)}`;
@@ -1041,6 +1160,14 @@ export default async (req, context) => {
     if (action === 'push-key') {
       const { publicKey } = await vapid();
       return json({ ok: true, publicKey });
+    }
+
+    if (action === 'turn') {
+      // Behind the session check like everything else: these are paid relay
+      // credentials, and an open endpoint handing them out is someone else's
+      // bandwidth bill.
+      const { servers, ttl, mode } = await iceServers();
+      return json({ ok: true, iceServers: servers, ttl, mode });
     }
 
     if (action === 'call') {
