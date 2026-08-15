@@ -20,6 +20,22 @@
 /og-card.jpg
   Cache-Control: public, max-age=31536000, immutable
 
+# Browser-side encrypted messages. connect-src 'none' is the load-bearing part:
+# it is what stops the page being able to send the message anywhere, and it is
+# why this page carries no analytics. Duplicated from netlify.toml on purpose,
+# same as the two blocks below. Change one, change the other.
+/secret
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
+/secret.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: no-store, must-revalidate
+  Referrer-Policy: no-referrer
+
 # The private thread. These duplicate netlify.toml on purpose -- the two files
 # agree so that whichever one wins a conflict, the page is still noindex and
 # still uncached. Change one, change the other.

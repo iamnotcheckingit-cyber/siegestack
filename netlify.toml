@@ -174,6 +174,58 @@
   status = 200
 
 # -----------------------------------------------------------------------------
+# /secret -- browser-side encrypted messages.
+#
+# The page's whole claim is that the message never leaves the browser: it is
+# encrypted with Web Crypto and parked in the URL fragment, which browsers do
+# not transmit. The CSP below is what turns that from a promise into something
+# the browser enforces.
+#
+#   connect-src 'none'   no fetch, no XHR, no beacon, no WebSocket. The page
+#                        cannot send the message anywhere even if it tried.
+#   default-src 'self'   no third-party anything. This is also why the page
+#                        carries no analytics, unlike every other page here.
+#   form-action 'none'   nothing can be POSTed off the page either.
+#   base-uri 'none'      an injected <base> cannot re-point relative URLs.
+#
+# 'unsafe-inline' is present because the page is a single self-contained file
+# with an inline <script> and inline <style>. That is a deliberate trade: it
+# weakens the XSS story in exchange for there being no external asset to fetch,
+# pin, or have swapped. connect-src 'none' is what carries the actual guarantee,
+# and it holds regardless of what any inline script does.
+#
+# noindex, because a tool for sending secrets does not need to be in search
+# results, and the URL is more useful shared directly than crawled.
+# -----------------------------------------------------------------------------
+
+[[redirects]]
+  from = "/secret"
+  to = "/secret.html"
+  status = 200
+
+[[redirects]]
+  from = "/secret.html"
+  to = "/secret"
+  status = 301
+  force = true
+
+[[headers]]
+  for = "/secret"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'"
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/secret.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'"
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+    Cache-Control = "no-store, must-revalidate"
+    Referrer-Policy = "no-referrer"
+
+# -----------------------------------------------------------------------------
 # /jesse -- the private thread. See netlify/functions/jesse-api.mjs.
 #
 # Four things keep it private and all four are load-bearing:
