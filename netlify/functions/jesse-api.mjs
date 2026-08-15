@@ -70,6 +70,7 @@ export const config = {
     '/api/jesse/subscribe',
     '/api/jesse/gif',
     '/api/jesse/gif-send',
+    '/api/jesse/call',
   ],
 };
 
@@ -751,6 +752,37 @@ async function vapid() {
 
 const pushStore = () => getStore({ name: 'jesse-push', consistency: 'strong' });
 
+// ------------------------------------------------------------ call signalling
+
+/**
+ * WebRTC signalling. Deliberately NOT the thread store: these are ephemeral
+ * routing details, not messages, and they must never survive into the
+ * transcript or the export.
+ *
+ * Netlify Functions cannot hold a socket open, so there is nowhere to put a
+ * persistent signalling channel -- the page polls this instead, fast while a
+ * call is being set up and not at all otherwise.
+ *
+ * Signals are read-once: the poll deletes what it hands back. An ICE candidate
+ * replayed after the fact is not merely useless, it re-adds a dead transport
+ * to a live connection. Anything left unread is swept after CALL_TTL_MS,
+ * because the common way for a signal to go unread is the callee never picking
+ * up, and a stale offer must not ring a phone ten minutes later.
+ */
+const callStore = () => getStore({ name: 'jesse-call', consistency: 'strong' });
+
+const CALL_TTL_MS = 90_000;
+
+/**
+ * Addressed to the RECIPIENT, not the sender, so a poll is a prefix list with
+ * no filtering. Zero-padded for the same reason message keys are: lexical order
+ * has to equal chronological order, and nextStamp() rather than Date.now()
+ * because ICE candidates arrive in bursts inside a single millisecond and
+ * bare timestamps collide -- the same defect that once reordered messages.
+ */
+const signalKey = (to) =>
+  `sig/${to}/${String(nextStamp()).padStart(16, '0')}-${crypto.randomBytes(4).toString('hex')}`;
+
 /** One key per device, derived from its endpoint, so re-subscribing replaces. */
 const subKey = (who, endpoint) =>
   `sub/${who}/${crypto.createHash('sha256').update(endpoint).digest('hex').slice(0, 32)}`;
@@ -1009,6 +1041,55 @@ export default async (req, context) => {
     if (action === 'push-key') {
       const { publicKey } = await vapid();
       return json({ ok: true, publicKey });
+    }
+
+    if (action === 'call') {
+      const store = callStore();
+
+      // GET -- drain everything addressed to me, oldest first, and sweep
+      // anything stale belonging to either of us on the way past.
+      if (req.method === 'GET') {
+        const { blobs } = await store.list({ prefix: `sig/${me.id}/` });
+        const keys = blobs.map((b) => b.key).sort();
+        const cutoff = Date.now() - CALL_TTL_MS;
+
+        const signals = [];
+        await Promise.all(keys.map(async (key) => {
+          const sig = await store.get(key, { type: 'json' });
+          await store.delete(key);           // read-once, see callStore()
+          if (!sig) return;
+          if (typeof sig.at === 'number' && sig.at < cutoff) return;   // too old to act on
+          signals.push(sig);
+        }));
+
+        signals.sort((a, b) => (a.at || 0) - (b.at || 0));
+        return json({ ok: true, signals });
+      }
+
+      if (req.method !== 'POST') return json({ ok: false, error: 'method' }, { status: 405 });
+
+      const body = await req.json().catch(() => null);
+      const type = String(body?.type || '');
+      if (!['offer', 'answer', 'ice', 'hangup', 'decline', 'busy'].includes(type)) {
+        return json({ ok: false, error: 'bad_type' }, { status: 400 });
+      }
+
+      // The payload is opaque here -- SDP and ICE are only meaningful to the two
+      // browsers. Capped so a malformed client cannot park unbounded data in a
+      // store that has no user-facing way to clear it.
+      const data = body?.data ?? null;
+      if (data !== null && JSON.stringify(data).length > 64_000) {
+        return json({ ok: false, error: 'too_large' }, { status: 413 });
+      }
+
+      const to = otherPerson(me.id);
+      await store.setJSON(signalKey(to), { from: me.id, type, data, at: Date.now() });
+
+      // Only an offer rings. Answers, candidates and hangups are traffic between
+      // two people who are already looking at the call.
+      if (type === 'offer') await notifyOther(me.id, 'is calling');
+
+      return json({ ok: true });
     }
 
     if (action === 'subscribe') {
