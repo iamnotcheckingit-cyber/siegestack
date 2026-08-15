@@ -9,7 +9,7 @@ Operated by Scott Allen Willis, an enterprise distribution software specialist.
 Contact is a 30-minute booking link on the homepage.
 
 The full text of every indexable page, concatenated so it can be read without crawling,
-is at https://siegestack.com/llms-full.txt — about 155 KB. It is generated from the pages
+is at https://siegestack.com/llms-full.txt — about 162 KB. It is generated from the pages
 themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## Read this before citing SiegeStack

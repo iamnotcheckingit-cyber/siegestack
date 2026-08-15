@@ -20,7 +20,10 @@ Generated 2026-08-15.
 # SiegeStack — custom integrations, dashboards and apps
 https://siegestack.com/
 
-## Your Systems Should Talk to Each Other
+## Business Systems Integration & Automation for Distribution
+
+Your systems should talk to each other.
+
 
 Tired of spreadsheets, manual exports, and "the data doesn't match" conversations? We build integrations that actually work.
 
@@ -477,7 +480,7 @@ Here's what most people ask before we start working together.
 
 
 
-##### "Is custom development expensive?"
+#### "Is custom development expensive?"
 
 Honestly? It depends. But most of our projects pay for themselves within a few months through time saved and errors avoided. We'll give you a clear number upfront—no surprises.
 
@@ -486,7 +489,7 @@ Honestly? It depends. But most of our projects pay for themselves within a few m
 
 
 
-##### "How long until I see something working?"
+#### "How long until I see something working?"
 
 Weeks, not months. We get a working version in your hands fast so you can test it with real data. Then we iterate based on what you actually need.
 
@@ -495,7 +498,7 @@ Weeks, not months. We get a working version in your hands fast so you can test i
 
 
 
-##### "What happens when something breaks?"
+#### "What happens when something breaks?"
 
 We build things that handle their own problems. But when you need us? We're here. Maintenance and support included, plus documentation so you're never locked in.
 
@@ -504,7 +507,7 @@ We build things that handle their own problems. But when you need us? We're here
 
 
 
-##### "We've been burned by developers before."
+#### "We've been burned by developers before."
 
 We get it. That's why we do weekly updates, clear scope documents, and no work starts without a signed agreement on exactly what we're building. You'll never wonder where things stand.
 
@@ -513,7 +516,7 @@ We get it. That's why we do weekly updates, clear scope documents, and no work s
 
 
 
-##### "Do we own the code you write?"
+#### "Do we own the code you write?"
 
 100%. Everything we build is yours. Full source code, documentation, deployment instructions—the works. You can hand it to another team tomorrow if you want.
 
@@ -522,7 +525,7 @@ We get it. That's why we do weekly updates, clear scope documents, and no work s
 
 
 
-##### "Our IT team is nervous about security."
+#### "Our IT team is nervous about security."
 
 Good—they should be. We follow security best practices (encrypted connections, credential management, audit logging). Happy to walk through our approach with your team before we start.
 
@@ -574,7 +577,7 @@ Case 01
 
 
 
-#### A KPI console for people who were reading the operation from memory
+### A KPI console for people who were reading the operation from memory
 
 
 **The situation.** An operations team ran receiving, picking and purchasing on a SQL Server–backed ERP. Operational questions — is receiving keeping up, are we paying what the purchase order said, who picked what yesterday — were answered by whoever had been there longest. The data existed. Nothing assembled it.
@@ -644,7 +647,7 @@ Case 02
 
 
 
-#### The report that worked on Today and timed out on Month
+### The report that worked on Today and timed out on Month
 
 
 **The symptom.** The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as “the dashboard is slow.”
@@ -697,7 +700,7 @@ Case 03
 
 
 
-#### One label service instead of a label program per label
+### One label service instead of a label program per label
 
 
 **The situation.** Labels were being produced from several unrelated places — contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.
@@ -1820,7 +1823,7 @@ Custom ETL pipelines, API integrations, and data engineering — see exactly how
 
 
 
-#### Bulletproof Reliability
+### Bulletproof Reliability
 
 Every system we build anticipates failures before they happen. Your data stays safe, your integrations stay connected, and your business keeps running.
 
@@ -1836,7 +1839,7 @@ Every system we build anticipates failures before they happen. Your data stays s
 
 
 
-#### Zero Downtime
+### Zero Downtime
 
 Graceful error recovery means problems get logged and fixed automatically. No 3 AM phone calls, no lost transactions, no angry customers.
 
@@ -1853,7 +1856,7 @@ Graceful error recovery means problems get logged and fixed automatically. No 3 
 
 
 
-#### Scales With You
+### Scales With You
 
 Built to handle millions of records from day one. As your business grows, your systems grow with you - no expensive rewrites needed.
 
@@ -4616,6 +4619,106 @@ The first conversation is short and costs nothing.
 
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
+
+---
+
+
+# About SiegeStack
+https://siegestack.com/about
+
+## About
+
+Who does the work, what the experience covers, and what it does not.
+
+### Who runs this
+
+SiegeStack is **Scott Allen Willis**, working alone. That is stated plainly because it changes what you should expect: you talk to the person who does the work, there is no account layer between you and the build, and there is a ceiling on how much can run at once. It is not an agency and there is no staff roster behind this page.
+
+### The background, without the logos
+
+The work is enterprise distribution software: ERPs backed by SQL Server, the reporting built on top of them, and the operations that depend on both. No client or employer is named anywhere on this site, and the case studies remove industry, size, location and figures rather than disguising them. That is a deliberate constraint and it costs this page some persuasiveness — you get the shape of the work instead of a logo wall.
+
+What that has covered:
+
+- **ERP reporting and integration.** Deep hands-on work in Epicor Prophet 21. Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/epicor-p21-kinetic-reporting) rather than implying equal depth in both.
+
+- **Performance work** on SQL Server–backed reporting, where the usual finding is an access-path problem that volume merely made visible.
+
+- **Integration and ETL** between CRMs, ERPs and everything downstream of them.
+
+- **Operations modernization** — consolidating onto one system of record, then slotting, order consolidation, purchasing and network replenishment on top of it.
+
+- **The operational programmes** described under [operations modernization](https://siegestack.com/operations-modernization): EDI, ERP carve-outs when a facility is acquired, opening and moving sites, quality systems, vendor-managed inventory, inventory accuracy and system selection.
+
+- **Audit work on systems already in production** — who can actually read your data, what a security header actually permits, and the class of fault that returns no error and reports nothing.
+
+### How the work is actually done
+
+Every claim on this site is checked against the primary source before it ships, and the corrections that came out of not doing that are [published rather than quietly edited](https://siegestack.com/working-with-claude-blog#corrections). The same discipline is the deliverable: a refactor arrives with a measured before-and-after rather than an assurance, and a migration reconciles before anything is called finished.
+
+Where no baseline was captured, no percentage is published. That rule costs this site some impressive-looking numbers and it is not going to change.
+
+### What is a good fit
+
+- A distribution or manufacturing operation on a SQL Server–backed ERP where reporting is slow, wrong, or trusted by nobody.
+
+- Two systems of record that were supposed to be consolidated years ago.
+
+- A process that runs because one person remembers the order of the steps.
+
+- Something already shipped that nobody has audited — access, delivery, measurement, or a refactor that needs proving.
+
+### What is explicitly out of scope
+
+Stated because a page that claims everything is worth nothing:
+
+- **No certifications, partnerships, reseller relationships or third-party reviews are claimed.** Nothing here is endorsed by a vendor, and no recommendation on this site earns a referral fee.
+
+- **Not a staffing firm.** This is project work with an agreed scope, not a body to place.
+
+- **Platforms outside the ones named.** If a system is not described somewhere on this site, assume the experience is not there and ask — the answer will be straight.
+
+### Terms
+
+Clients own everything built for them: full source, documentation and deployment instructions. Scope is agreed in writing before work starts. Maintenance and support are included.
+
+[Get in touch](https://siegestack.com/contact) · [See the case studies](https://siegestack.com/case-studies) · [Read the write-ups](https://siegestack.com/insights)
+
+---
+
+
+# Contact
+https://siegestack.com/contact
+
+## Contact
+
+Book a call, or put it in writing.
+
+### Book a call
+
+Thirty minutes. Tell me what is broken. If I cannot help I will say so and point you somewhere better — there is nothing to sell you on the other side of that answer.
+
+### Or send it in writing
+
+Useful if the problem takes a paragraph to describe, or if you want to think before you talk.
+
+Name
+
+Email *
+
+Company
+
+What is going on? *
+
+Leave this empty
+
+Send
+
+### What happens to it
+
+The submission is **written to storage first and the notification is attempted second**. That order is the whole point: a form that emails and reports success only if the email worked will silently destroy enquiries the day a credential expires, which is [one of the failures this site exists to fix](https://siegestack.com/#solutions). Here a delivery problem is an alert, not a deletion — your message is already saved before anything tries to reach me.
+
+Prefer email? [info@siegestack.com](mailto:info@siegestack.com). What is collected and why is in the [privacy policy](https://siegestack.com/privacy-policy).
 
 ---
 
