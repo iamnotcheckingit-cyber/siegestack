@@ -232,6 +232,19 @@ rather than resend.dev. Not needed at all if you use Option A.
 3. **Redeploy.** Changing variable scope does not retroactively fix a deploy
    that was already built.
 
+## Two functions use these variables, not one
+
+`netlify/functions/contact-api.mjs` (`/api/contact`) and
+`netlify/functions/submit-expertise.mjs` (`/api/expertise`, the consultant
+matrix on `/consultant-expertise`) share the same six variables and the same
+notification code. Nothing extra needs setting for the second one — but it also
+means a wrong value breaks both at once, and a fix to the notification block in
+one file has to be applied to the other. Both files carry that notice at the
+top.
+
+The log events are prefixed differently, so they can be told apart:
+`CONTACT_*` versus `EXPERTISE_*`.
+
 ## Diagnosing it from outside
 
 The endpoint returns a coarse `reason` alongside `notified`, so a

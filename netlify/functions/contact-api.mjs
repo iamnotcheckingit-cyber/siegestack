@@ -21,6 +21,14 @@
  * provider configured at all, submissions are still captured and still
  * retrievable — the form degrades to "we have it, you just were not paged".
  *
+ * DELIBERATE COPY
+ * ---------------
+ * The notification block below (from "Best-effort notification" to the end) is
+ * duplicated in netlify/functions/submit-expertise.mjs, deliberately, the same
+ * way jesse-api and nicole-api are copies rather than a shared module. A FIX
+ * HERE MUST BE APPLIED THERE. Both files carry this notice. The env vars are
+ * shared, so the two are configured together and fail together.
+ *
  * CONFIGURATION (Netlify env vars — scope them to Functions, not just Builds)
  *   SMTP_HOST         optional, and the preferred route when set. ImprovMX
  *   SMTP_USER         already handles this domain's mail and its SPF and DKIM
@@ -259,7 +267,11 @@ export default async (req) => {
       reason = 'smtp_' + String(err?.code || 'unknown').toLowerCase() + (err?.responseCode ? '_' + err.responseCode : '');
       // The server's own words are the only thing that distinguishes one 550
       // from another. Addresses are stripped before it leaves the building.
-      smtpSaid = String(err?.response || err?.message || '').replace(/[^s<>@]+@[^s<>@]+/g, '[address]').slice(0, 160);
+      // \s, not s. Written as [^s<>@] this excluded the LETTER s rather than
+      // whitespace, and since real addresses are full of s the redaction
+      // matched nothing at all -- scott@siegestack.com went out verbatim in a
+      // response anyone can request. Caught by the submit-expertise suite.
+      smtpSaid = String(err?.response || err?.message || '').replace(/[^\s<>@]+@[^\s<>@]+/g, '[address]').slice(0, 160);
       console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', code: err?.code || null, responseCode: err?.responseCode || null, detail: String(err?.message || err).slice(0, 300) }));
     } finally {
       // Leaving the pool open holds the Lambda alive past the response.
