@@ -148,6 +148,12 @@ export default async (req) => {
 
   // ---- 2. Best-effort notification. Never allowed to fail the request. ----
   let notified = false;
+  // Coarse reason code returned alongside `notified`. It names which branch was
+  // taken and nothing else -- no hostnames, no addresses, no credentials -- so
+  // a misconfiguration is diagnosable from the outside instead of requiring
+  // dashboard access. "notified:false" on its own says something is wrong but
+  // not what, which is the same unhelpful shape as a form that fails silently.
+  let reason = null;
   const from = process.env.CONTACT_FROM;
   const to = process.env.CONTACT_TO || 'info@siegestack.com';
   const subject = `Enquiry from ${submission.name || submission.email}`;
@@ -173,6 +179,7 @@ export default async (req) => {
     // Misconfiguration, not a runtime failure. Say exactly what is wrong and
     // how to fix it, because the alternative is a rejection that reads as
     // "email is broken" and costs an afternoon.
+    reason = 'no_from';
     console.error(JSON.stringify({
       event: 'CONTACT_NOTIFY_MISCONFIGURED',
       detail: 'A mail provider is configured but CONTACT_FROM is not. Set it to an address the provider will accept, e.g. "SiegeStack <info@siegestack.com>" for ImprovMX SMTP. The submission was stored regardless.',
@@ -199,6 +206,7 @@ export default async (req) => {
       );
       notified = true;
     } catch (err) {
+      reason = 'smtp_failed';
       console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', detail: String(err?.message || err).slice(0, 200) }));
     } finally {
       // Leaving the pool open holds the Lambda alive past the response.
@@ -212,18 +220,20 @@ export default async (req) => {
         body: JSON.stringify({ from, to: [to], reply_to: submission.email, subject, text }),
       }), NOTIFY_BUDGET_MS, 'resend');
       notified = res.ok;
-      if (!res.ok) console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_HTTP', status: res.status }));
+      if (!res.ok) { reason = 'http_' + res.status; console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_HTTP', status: res.status })); }
     } catch (err) {
+      reason = 'resend_failed';
       console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_ERROR', detail: String(err?.message || err).slice(0, 200) }));
     }
   } else {
-    console.log(JSON.stringify({ event: 'CONTACT_NOTIFY_SKIPPED', reason: 'no SMTP_HOST and no RESEND_API_KEY' }));
+    reason = 'no_provider';
+    console.log(JSON.stringify({ event: 'CONTACT_NOTIFY_SKIPPED', reason: 'no SMTP_HOST and no RESEND_API_KEY visible to the function runtime' }));
   }
 
   // Stored is what success means here. `notified` is reported for observability,
   // and the page does not change its message based on it — the sender's
   // enquiry arrived either way, and telling them otherwise would be a lie about
   // our own plumbing.
-  console.log(JSON.stringify({ event: 'CONTACT_RECEIVED', id, notified }));
-  return json({ ok: true, notified });
+  console.log(JSON.stringify({ event: 'CONTACT_RECEIVED', id, notified, reason }));
+  return json({ ok: true, notified, ...(reason ? { reason } : {}) });
 };
