@@ -204,3 +204,29 @@ if (slideClaims.length) {
   process.exit(1);
 }
 console.log(`  slide-count check: clean (${actualSlides} slides)`);
+
+/**
+ * Root-markdown check: internal documentation must live in docs/.
+ *
+ * publish = "." means the repository root is the web root, so a .md file
+ * dropped there is served to anyone who asks. That is how MAIL.md and
+ * DNS-SNAPSHOT.md -- operational documentation, authoritative and current --
+ * came to be downloadable from the domain. Nobody decided it; publish = "."
+ * did, and nothing said otherwise.
+ *
+ * docs/ is 404'd as a directory in netlify.toml, which is the only file class
+ * Netlify redirects can actually express. This check is what makes that a rule
+ * rather than a note somebody has to remember, because the first version of
+ * this was a note somebody had to remember.
+ *
+ * README.md is exempt: GitHub reads it from the root, and it is named
+ * individually in netlify.toml.
+ */
+const ROOT_MD_ALLOWED = new Set(['README.md']);
+const strayMd = fs.readdirSync(ROOT)
+  .filter((f) => f.toLowerCase().endsWith('.md') && !ROOT_MD_ALLOWED.has(f));
+if (strayMd.length) {
+  console.error(`\n  FATAL: markdown in the repository root is served to the public.\n    ${strayMd.join('\n    ')}\n  Move it to docs/ (404'd as a directory) or add it to ROOT_MD_ALLOWED and give it its own rule in netlify.toml.`);
+  process.exit(1);
+}
+console.log('  root-markdown check: clean');

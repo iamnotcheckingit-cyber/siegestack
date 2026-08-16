@@ -319,7 +319,7 @@ async function suite(opts = {}) {
     eq(j.ok, true, 'ok');
     eq(j.notified, false, 'notified');
     // The outer race rejects with a plain Error carrying no .code, so this is
-    // smtp_unknown rather than smtp_etimedout. MAIL.md documents the same.
+    // smtp_unknown rather than smtp_etimedout. docs/MAIL.md documents the same.
     eq(j.reason, 'smtp_unknown', 'reason');
     truthy(/exceeded 300ms/.test(j.smtpSaid || ''), 'smtpSaid names the budget, got: ' + j.smtpSaid);
     if (ms > 5000) throw new Error('did not give up at the budget; took ' + ms + 'ms');

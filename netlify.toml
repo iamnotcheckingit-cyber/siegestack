@@ -298,7 +298,7 @@
 # URL in d0aa04a.
 [[redirects]]
   from = "/audit"
-  to = "/audit-2026-08-16.md"
+  to = "/docs/audit-2026-08-16.md"
   status = 200
 
 [[redirects]]
@@ -551,12 +551,21 @@
 # Adding a new class of internal file? Add it here, not to a list of names.
 # -----------------------------------------------------------------------------
 
-# Markdown is documentation, not a page. MAIL.md, DNS-SNAPSHOT.md and README.md
-# describe operational infrastructure; on GitHub someone chose to look, at a
-# domain it is handed to anything that asks. The audit report is the deliberate
-# exception and is served at /audit, above.
+# Internal documentation lives in docs/ and docs/ is not served. A DIRECTORY is
+# the only class Netlify can actually express here.
+#
+# The first attempt at this used `/*.md` and `/package*.json`, which Netlify
+# silently ignores: a splat may only END a path segment, so a splat followed by
+# literal characters matches nothing. Both rules deployed, neither ever ran, and
+# MAIL.md kept returning 200. That is a redirect rule that never runs -- the
+# first symptom named on /delivery-config-audit -- found the same way that page
+# recommends, by requesting the paths afterwards instead of trusting the config.
+#
+# So: put a new internal document in docs/. Do not put it in the root. The
+# root-markdown check in scripts/build-llms-full.mjs fails the build if you do,
+# because a convention nobody can enforce is how this happened in the first place.
 [[redirects]]
-  from = "/*.md"
+  from = "/docs/*"
   to = "/404.html"
   status = 404
   force = true
@@ -568,8 +577,23 @@
   status = 404
   force = true
 
+# These cannot move -- npm requires them at the root, and GitHub wants README.md
+# there -- so they are named individually. They are the exception the directory
+# rule above exists to keep small.
 [[redirects]]
-  from = "/package*.json"
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/README.md"
   to = "/404.html"
   status = 404
   force = true

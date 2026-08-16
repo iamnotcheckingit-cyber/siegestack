@@ -21,7 +21,7 @@ established, and what is not:
   been rebuilt since.** `SMTP_PASS` was corrected once during that evening; a
   rebuild is what carries a changed value into `process.env` inside a function.
 - **The zone was rebuilt** to clear a duplicate `MX` set and a group of records
-  pointing at a `send.siegestack.com` that does not exist. `DNS-SNAPSHOT.md`
+  pointing at a `send.siegestack.com` that does not exist. `docs/DNS-SNAPSHOT.md`
   holds the before-state and the rules that rebuild followed.
 - **The send budget was raised from 6s to 8s** because real ImprovMX handshakes
   were intermittently exceeding six seconds and losing notifications that would
@@ -54,7 +54,7 @@ the zone rebuild on 2026-08-16:
 | `TXT` | `_dmarc` → `v=DMARC1; p=none;` |
 
 One `MX` pair only, and `send.siegestack.com` is `NXDOMAIN` — both of which are
-the point, per rules 2 and 3 in `DNS-SNAPSHOT.md`. Check both whenever mail
+the point, per rules 2 and 3 in `docs/DNS-SNAPSHOT.md`. Check both whenever mail
 behaviour goes strange again: the original failure was two `MX` sets coexisting,
 which reads as intermittent rather than broken.
 
@@ -352,7 +352,7 @@ function logs are the interim inbox.
 receivers to do nothing about failures. **It was `p=quarantine` before the
 2026-08-15 zone rebuild and was deliberately relaxed** — quarantine tells
 receivers to hold anything failing alignment, which is the wrong instruction
-while DKIM is being re-established (`DNS-SNAPSHOT.md`, rule 4). So this is a
+while DKIM is being re-established (`docs/DNS-SNAPSHOT.md`, rule 4). So this is a
 knowing, temporary setting, not an oversight.
 
 **The first condition is now met: delivery was confirmed 2026-08-16.** What is
