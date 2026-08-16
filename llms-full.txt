@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-15.
+Generated 2026-08-16.
 
 ---
 
@@ -3832,7 +3832,7 @@ Every product claim added or corrected in the August 2026 revision, with the pag
 
 
 
-- [View this case study as a 37-slide presentation →](https://siegestack.com/working-with-claude)
+- [View this case study as a 14-slide presentation →](https://siegestack.com/working-with-claude)
 
 - [Operations Modernization — consolidate, then optimize →](https://siegestack.com/operations-modernization)
 
