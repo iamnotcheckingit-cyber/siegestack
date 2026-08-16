@@ -107,6 +107,9 @@ function key() {
   return `msg/${String(last).padStart(16, '0')}-${crypto.randomBytes(4).toString('hex')}`;
 }
 
+// Pulls the bare address out of either "Name <a@b.c>" or "a@b.c".
+const addr = (v) => (String(v || '').match(/<([^>]+)>/)?.[1] || String(v || '')).trim().toLowerCase();
+
 const clean = (v, max) => String(v ?? '').trim().slice(0, max);
 
 // Deliberately permissive. Rejecting a valid address is a lost enquiry, which
@@ -183,6 +186,17 @@ export default async (req) => {
     console.error(JSON.stringify({
       event: 'CONTACT_NOTIFY_MISCONFIGURED',
       detail: 'A mail provider is configured but CONTACT_FROM is not. Set it to an address the provider will accept, e.g. "SiegeStack <info@siegestack.com>" for ImprovMX SMTP. The submission was stored regardless.',
+    }));
+  } else if (smtpHost && smtpUser && smtpPass && addr(to) && addr(to) === addr(from)) {
+    // Refusing this is correct behaviour, not just diagnosis. ImprovMX is a
+    // FORWARDER: mail sent to the alias is relayed onward, so asking it to send
+    // FROM the alias TO the same alias asks it to feed its own forwarder. It
+    // rejects with 550, and it is right to. CONTACT_TO must be the mailbox the
+    // alias forwards to, not the alias.
+    reason = 'to_equals_from';
+    console.error(JSON.stringify({
+      event: 'CONTACT_NOTIFY_LOOP',
+      detail: 'CONTACT_TO resolves to the same address as CONTACT_FROM. Through a forwarding provider that is a loop and is rejected. Set CONTACT_TO to the real destination mailbox. The submission was stored regardless.',
     }));
   } else if (smtpHost && smtpUser && smtpPass) {
     let transport;
