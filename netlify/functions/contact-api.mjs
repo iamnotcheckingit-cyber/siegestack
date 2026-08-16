@@ -112,6 +112,8 @@ function key() {
 }
 
 // Pulls the bare address out of either "Name <a@b.c>" or "a@b.c".
+const domainOf = (a) => String(a || '').split('@')[1] || '';
+
 const addr = (v) => (String(v || '').match(/<([^>]+)>/)?.[1] || String(v || '')).trim().toLowerCase();
 
 const clean = (v, max) => String(v ?? '').trim().slice(0, max);
@@ -161,6 +163,7 @@ export default async (req) => {
   // dashboard access. "notified:false" on its own says something is wrong but
   // not what, which is the same unhelpful shape as a form that fails silently.
   let reason = null;
+  let smtpSaid = null;
   const from = process.env.CONTACT_FROM;
   // No default. The obvious one -- the same alias CONTACT_FROM sends as -- is a
   // loop through a forwarding provider and is exactly what produced a 550 here.
@@ -201,7 +204,7 @@ export default async (req) => {
       event: 'CONTACT_NOTIFY_MISCONFIGURED',
       detail: 'A mail provider is configured but CONTACT_FROM is not. Set it to an address the provider will accept, e.g. "SiegeStack <info@siegestack.com>" for ImprovMX SMTP. The submission was stored regardless.',
     }));
-  } else if (smtpHost && smtpUser && smtpPass && addr(to) && addr(to) === addr(from)) {
+  } else if (smtpHost && smtpUser && smtpPass && addr(to) && domainOf(addr(to)) === domainOf(addr(from))) {
     // Refusing this is correct behaviour, not just diagnosis. ImprovMX is a
     // FORWARDER: mail sent to the alias is relayed onward, so asking it to send
     // FROM the alias TO the same alias asks it to feed its own forwarder. It
@@ -210,7 +213,7 @@ export default async (req) => {
     reason = 'to_equals_from';
     console.error(JSON.stringify({
       event: 'CONTACT_NOTIFY_LOOP',
-      detail: 'CONTACT_TO resolves to the same address as CONTACT_FROM. Through a forwarding provider that is a loop and is rejected. Set CONTACT_TO to the real destination mailbox. The submission was stored regardless.',
+      detail: 'CONTACT_TO is on the same domain as CONTACT_FROM. Through a forwarding provider that is a loop and is rejected. Set CONTACT_TO to the real destination mailbox. The submission was stored regardless.',
     }));
   } else if (smtpHost && smtpUser && smtpPass) {
     let transport;
@@ -239,6 +242,9 @@ export default async (req) => {
       // port never opened; ETIMEDOUT means it opened and then sat there. Codes
       // only -- the message can echo the host and the envelope back at us.
       reason = 'smtp_' + String(err?.code || 'unknown').toLowerCase() + (err?.responseCode ? '_' + err.responseCode : '');
+      // The server's own words are the only thing that distinguishes one 550
+      // from another. Addresses are stripped before it leaves the building.
+      smtpSaid = String(err?.response || err?.message || '').replace(/[^s<>@]+@[^s<>@]+/g, '[address]').slice(0, 160);
       console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', code: err?.code || null, responseCode: err?.responseCode || null, detail: String(err?.message || err).slice(0, 300) }));
     } finally {
       // Leaving the pool open holds the Lambda alive past the response.
@@ -267,5 +273,5 @@ export default async (req) => {
   // enquiry arrived either way, and telling them otherwise would be a lie about
   // our own plumbing.
   console.log(JSON.stringify({ event: 'CONTACT_RECEIVED', id, notified, reason }));
-  return json({ ok: true, notified, ...(reason ? { reason } : {}) });
+  return json({ ok: true, notified, ...(reason ? { reason } : {}), ...(smtpSaid ? { smtpSaid } : {}) });
 };
