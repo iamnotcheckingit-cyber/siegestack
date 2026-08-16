@@ -66,6 +66,15 @@ const DEFECTS = {
     /\[\^\\s<>@\]\+@\[\^\\s<>@\]\+/,
     '[^s<>@]+@[^s<>@]+',
   ],
+  email_not_required: [
+    /if \(!email\) return json\(\{ ok: false, error: 'email_required' \}, 400\);/,
+    '',
+  ],
+  contact_fields_treated_as_skills: [
+    /'consultantName', 'email', 'phone', 'bestTimeToCall', 'timeZone',/,
+    "'consultantName',",
+  ],
+  reply_to_dropped: [/replyTo: email, /, ''],
 };
 
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'expertise-suite-'));
@@ -122,6 +131,10 @@ const post = (body) =>
 
 const FORM = {
   consultantName: 'A Consultant',
+  email: 'consultant@example.org',
+  phone: '',
+  bestTimeToCall: '',
+  timeZone: '',
   erpExperience: 'P21 17 Years',
   languagesSpoken: 'English',
   yearsInDistribution: '12',
@@ -209,6 +222,61 @@ async function suite(opts = {}) {
     eq(res.status, 400, 'status');
     eq((await res.json()).error, 'name_required', 'error');
     eq(store()?.size ?? 0, 0, 'nothing stored');
+  });
+
+  await check('a missing email is a 400 and stores nothing', async () => {
+    reset(SMTP_ENV);
+    const res = await (await load(opts))(post({ ...FORM, email: '' }));
+    eq(res.status, 400, 'status');
+    eq((await res.json()).error, 'email_required', 'error');
+    eq(store()?.size ?? 0, 0, 'nothing stored');
+  });
+
+  await check('a malformed email is a 400', async () => {
+    reset(SMTP_ENV);
+    const res = await (await load(opts))(post({ ...FORM, email: 'not-an-address' }));
+    eq(res.status, 400, 'status');
+    eq((await res.json()).error, 'email_invalid', 'error');
+  });
+
+  await check('the notification is addressed so a reply reaches the consultant', async () => {
+    reset(SMTP_ENV);
+    await (await load(opts))(post(FORM));
+    const sent = mailer.__mail.sent[0];
+    eq(sent.replyTo, 'consultant@example.org', 'replyTo');
+    // from must stay the authenticated alias; sending as the consultant's own
+    // domain would fail SPF.
+    eq(sent.from, SMTP_ENV.CONTACT_FROM, 'from');
+    truthy(sent.text.includes('consultant@example.org'), 'address in the body too');
+  });
+
+  await check('phone, call window and time zone are stored and shown together', async () => {
+    reset(SMTP_ENV);
+    await (await load(opts))(post({ ...FORM, phone: '+1 555 0134 x22', bestTimeToCall: 'Morning (8-11)', timeZone: 'CT' }));
+    const rec = [...store().values()][0];
+    eq(rec.phone, '+1 555 0134 x22', 'phone stored verbatim');
+    eq(rec.bestTimeToCall, 'Morning (8-11)', 'window');
+    eq(rec.timeZone, 'CT', 'time zone');
+    const line = mailer.__mail.sent[0].text.split('\n').find((l) => l.startsWith('Phone:'));
+    truthy(/\+1 555 0134 x22/.test(line), 'number in the summary, got: ' + line);
+    truthy(/best Morning \(8-11\)/.test(line), 'window in the summary, got: ' + line);
+    truthy(/CT/.test(line), 'time zone in the summary, got: ' + line);
+  });
+
+  await check('the contact fields are never filed as skill ratings', async () => {
+    reset(SMTP_ENV);
+    // "2" is a valid rating, so a contact field carrying that value is exactly
+    // how one would leak into the matrix if it fell out of the identity set.
+    await (await load(opts))(post({ ...FORM, phone: '2', timeZone: '3' }));
+    const rec = [...store().values()][0];
+    eq(Object.keys(rec.skills).sort(), ['Bank_Reconciliation', 'Cash_Receipts', 'Sales_Tax', 'Widgets'], 'skills');
+    eq(rec.phone, '2', 'phone kept as a contact field');
+  });
+
+  await check('an omitted phone reads as not given rather than an empty line', async () => {
+    reset(SMTP_ENV);
+    await (await load(opts))(post(FORM));
+    truthy(mailer.__mail.sent[0].text.includes('Phone:      (not given)'), 'phone line');
   });
 
   await check('out-of-range ratings are dropped, not fatal', async () => {
