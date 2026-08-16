@@ -37,9 +37,13 @@
  *                     configured. With neither set, nothing is emailed and the
  *                     submission is stored anyway. That is a deliberate
  *                     degradation, not a bug.
- *   CONTACT_TO        optional, defaults to info@siegestack.com. This is an
- *                     INBOUND address and ImprovMX forwards it, so it needs no
- *                     verification anywhere.
+ *   CONTACT_TO        REQUIRED once a provider is set, and it has NO default.
+ *                     It is the mailbox that receives the notification.
+ *
+ *                     It must NOT be the same alias CONTACT_FROM sends as. A
+ *                     forwarder relays mail addressed to the alias onward, so
+ *                     alias-to-alias asks it to feed its own forwarder and is
+ *                     rejected with 550. Use the real destination mailbox.
  *   CONTACT_FROM      REQUIRED once RESEND_API_KEY is set. There is deliberately
  *                     no default, and that is worth explaining.
  *
@@ -158,7 +162,11 @@ export default async (req) => {
   // not what, which is the same unhelpful shape as a form that fails silently.
   let reason = null;
   const from = process.env.CONTACT_FROM;
-  const to = process.env.CONTACT_TO || 'info@siegestack.com';
+  // No default. The obvious one -- the same alias CONTACT_FROM sends as -- is a
+  // loop through a forwarding provider and is exactly what produced a 550 here.
+  // An unset CONTACT_TO is a missing setting and should say so, not quietly
+  // construct a destination that cannot work.
+  const to = process.env.CONTACT_TO;
   const subject = `Enquiry from ${submission.name || submission.email}`;
   const text = [
     `Name:    ${submission.name || '(not given)'}`,
@@ -178,7 +186,13 @@ export default async (req) => {
   const smtpPass = process.env.SMTP_PASS;
   const apiKey = process.env.RESEND_API_KEY;
 
-  if ((smtpHost || apiKey) && !from) {
+  if ((smtpHost || apiKey) && !to) {
+    reason = 'no_to';
+    console.error(JSON.stringify({
+      event: 'CONTACT_NOTIFY_MISCONFIGURED',
+      detail: 'A mail provider is configured but CONTACT_TO is not set. It must be the mailbox that receives the notification -- through a forwarder, NOT the same alias CONTACT_FROM sends as. The submission was stored regardless.',
+    }));
+  } else if ((smtpHost || apiKey) && !from) {
     // Misconfiguration, not a runtime failure. Say exactly what is wrong and
     // how to fix it, because the alternative is a rejection that reads as
     // "email is broken" and costs an afternoon.
