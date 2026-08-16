@@ -53,14 +53,22 @@ mail and its SPF and DKIM already cover the domain, so the notification can come
 account, and **no new DNS**, which means no way to disturb the MX records that
 make the forwarding work.
 
-Set five variables in Netlify, **scoped to Functions**, then redeploy:
+Set five variables in Netlify, **scoped to Functions**, then redeploy.
+
+**Do not paste the real values into this file or any other file in the repo.**
+Netlify's secrets scanner fails the build when an env var's value appears in
+repo content, and it does not care whether the value is actually sensitive —
+writing the SMTP hostname into this document broke every build until it was
+taken out again.
+
+Values come from the ImprovMX console:
 
 ```
-SMTP_HOST    = smtp.improvmx.com
+SMTP_HOST    = <the SMTP host shown in the ImprovMX console>
 SMTP_PORT    = 587
-SMTP_USER    = info@siegestack.com
+SMTP_USER    = <the full alias, as shown in the console>
 SMTP_PASS    = the SMTP password from the ImprovMX console
-CONTACT_FROM = SiegeStack <info@siegestack.com>
+CONTACT_FROM = SiegeStack <that same alias>
 ```
 
 `CONTACT_TO` is optional and defaults to `info@siegestack.com`. Port 465 also

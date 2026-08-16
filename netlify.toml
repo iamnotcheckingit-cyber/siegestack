@@ -1,6 +1,21 @@
 [build]
   publish = "."
 
+# Netlify fails the build when an env var VALUE appears anywhere in the repo,
+# regardless of whether that value is sensitive. Several of these are public by
+# nature and cannot be removed from the source:
+#
+#   SMTP_USER / CONTACT_FROM / CONTACT_TO  contain the public contact address,
+#     which is printed in the footer of every page and in the privacy policy.
+#   SMTP_HOST / SMTP_PORT                  a hostname and a port number, both
+#     published by the provider and neither of them a credential.
+#
+# SMTP_PASS is deliberately NOT listed. It is the only real secret in this set
+# and must keep failing the build if it ever lands in a file.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SMTP_HOST,SMTP_PORT,SMTP_USER,CONTACT_FROM,CONTACT_TO"
+
+
 [build.processing.html]
   pretty_urls = true
 

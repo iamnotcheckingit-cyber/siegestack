@@ -28,9 +28,9 @@
  *   SMTP_PORT         legitimately come FROM info@siegestack.com rather than a
  *                     third party's sending address, and needs no new DNS and
  *                     no second vendor.
- *                       SMTP_HOST = smtp.improvmx.com
+ *                       SMTP_HOST = the provider's SMTP hostname
  *                       SMTP_PORT = 587   (465 also works; 465 is implicit TLS)
- *                       SMTP_USER = the full alias, e.g. info@siegestack.com
+ *                       SMTP_USER = the full alias the provider authenticates
  *                       SMTP_PASS = the SMTP password from the ImprovMX console
  *
  *   RESEND_API_KEY    optional alternative, used only when SMTP is not
