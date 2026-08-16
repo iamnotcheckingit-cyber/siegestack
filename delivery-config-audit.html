@@ -257,7 +257,7 @@
 
                 <p class="om-lead">A delivery and configuration audit asks a narrow question: does the running system behave the way its configuration says it does? The interesting answer is usually no, and the reason this class of fault survives is that nothing reports it. There is no error, no failed build and no alert. The config is readable and looks correct. The site returns 200.</p>
 
-                <p>The worked example below is this site, audited on 16 August 2026. It is used here instead of a client engagement for one reason: <strong>the finding is that the auditor was wrong</strong>, and that is not something worth demonstrating with somebody else's system. The config was mine, I had written it, and reading it still produced a remedy that would have caused the fault it was meant to prevent.</p>
+                <p>The worked examples below are this site, audited on 16 August 2026. They are used here instead of a client engagement for one reason: <strong>the findings are that the auditor was wrong</strong>, three times in one day, and that is not something worth demonstrating with somebody else's system. The config was mine, I had written it, and reading it still produced a remedy that would have caused the fault it was meant to prevent &mdash; then two of the fixes for that shipped with the same defect in a different form.</p>
 
                 <h2>What reading the config concluded</h2>
 
@@ -310,6 +310,32 @@
 
                 <p>The same pass found three faults the live system did confirm: a form posting to an endpoint that had never existed and returned 404 on every submission, a published figure that a generated file was faithfully reproducing from a stale source, and a script cached for a year with no version token, so a fix would have reached first-time visitors only. Those were real. The one that was written most confidently was the one that was wrong.</p>
 
+                <h2>Two more, on the same day, and they are not the same kind</h2>
+
+                <p>Writing the fixes produced two further instances. Taken together with the one above they separate into <strong>two species</strong>, and the distinction is the practical part &mdash; because it decides which check would have caught them.</p>
+
+                <p><strong>Species one: the file says one thing and does another.</strong></p>
+
+                <ul>
+                    <li><strong>A rule that never ran.</strong> Replacing the name list with something class-based produced <code>/*.md</code> and <code>/package*.json</code>. Netlify ignores both: a splat may only <em>end</em> a path segment, so a splat followed by literal characters matches nothing. No error, no warning. The rules deployed, read correctly in the file, and the documents kept returning 200.</li>
+                    <li><strong>A fail-open path that only worked when nothing was wrong.</strong> The gate that replaced them was written to fail open, because a gate on every request that fails closed is a sitewide outage caused by its own bug. Its <code>catch</code> block called the downstream chain again &mdash; the exact call that had just thrown &mdash; so the second exception escaped anyway. It read as fail-open and was not.</li>
+                </ul>
+
+                <p><strong>The first of those is the more dangerous, and the reason is review.</strong> A reader sees <code>/package*.json</code>, recognises the intent, and stops. The pattern is legible, the intent is correct, and nothing about it invites a second look; it is a lie in the shape of a fix. The fail-open bug at least required someone to follow the call to notice, so tracing it was already an act of suspicion. A defect that survives careful reading is worse than one that merely survives casual reading.</p>
+
+                <p><strong>Species two: the file is honest, the reading is correct, and the prescription is wrong.</strong> That is the header case at the top of this page. Nothing in that configuration misrepresented itself. The remedy was derived correctly from an accurate reading and would still have caused an outage.</p>
+
+                <p>This is why the distinction matters rather than being a taxonomy for its own sake:</p>
+
+                <ul>
+                    <li><strong>Species one is caught by knowing the platform.</strong> Someone who knows Netlify's splat rule sees the dead glob immediately. Someone who traces the exception path sees the fail-open bug. Both are, in principle, catchable from the source &mdash; by a sufficiently expert reader.</li>
+                    <li><strong>Species two cannot be caught by reading at all.</strong> Reading was never the failing step. No degree of care applied to the document reaches it, because the document was right. It is only reachable by leaving the document and asking the running system.</li>
+                </ul>
+
+                <p>An audit that only reads will find some of species one and none of species two. Which means the expertise that makes a reviewer good at the first kind is exactly what makes the second kind invisible: the better the reading, the more confident the wrong prescription.</p>
+
+                <p>Both of the day's species-one defects were caught the same way &mdash; by requesting the paths afterwards, and by a test written to drive the gate before it deployed. Neither was caught by re-reading the file that contained it, and both were written by the same person who had just written the page arguing that reading is not enough.</p>
+
                 <h2>What a live probe cannot tell you</h2>
 
                 <p>Stated plainly, because an audit method that only lists its strengths is the thing this page is arguing against:</p>
@@ -324,6 +350,8 @@
                 <h2>How this gets run</h2>
 
                 <p>Config first, to build the candidate list and know what the system claims. Then requests against the running system for every claim that can be checked with one. Then the two are compared, and only findings that survive both become items. Anything that cannot be settled from outside is written down as unverified with the specific check that would settle it, rather than being graded on likelihood.</p>
+
+                <p><strong>And then the same treatment for the fix.</strong> That is the part this day added. A remedy is a claim about behaviour like any other, so it gets probed after deploying rather than assumed from the diff &mdash; and where a check can be written instead, the check gets deliberately broken first to prove it fails, because a check that passes for the wrong reason is another file saying one thing and doing another. Both species-one defects here were found that way and neither was found by re-reading.</p>
 
                 <p>The full report from this pass is published, including the corrections trail and the section recording that the remedy above was wrong. Most of its verdicts are refutations, which is the ordinary outcome of checking claims rather than collecting them.</p>
 
