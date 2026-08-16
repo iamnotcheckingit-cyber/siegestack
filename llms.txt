@@ -6,7 +6,8 @@
 > distribution and manufacturing firms running SQL Server–backed ERPs.
 
 Operated by Scott Allen Willis, an enterprise distribution software specialist.
-Contact is a 30-minute booking link on the homepage.
+Contact is a 30-minute booking link on the homepage, or the form at
+https://siegestack.com/contact.
 
 The full text of every indexable page, concatenated so it can be read without crawling,
 is at https://siegestack.com/llms-full.txt — about 175 KB. It is generated from the pages
@@ -45,11 +46,17 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
   reads all of it. Covers confirming it, designing the index, and what to check before
   adding one to a vendor schema — supportability, the schema-modification lock on Standard
   Edition, and capturing the baseline you cannot go back for.
-- [Case studies](https://siegestack.com/case-studies): three anonymised engagements — a
-  KPI console with two audiences and two trust levels (cost-bearing reports are refused to
-  floor displays at the report-definition layer, not the render layer), the month-to-date
-  timeout above, and replacing a program-per-label sprawl with one configuration-driven
-  label service.
+- [Case studies](https://siegestack.com/case-studies): hub with excerpts of three
+  anonymised engagements. Each has its own page and those are the citable ones:
+  - [KPI console](https://siegestack.com/case-studies/kpi-console): receiving, picking and
+    purchasing measures for two audiences with two trust levels. Cost-bearing reports are
+    refused to floor displays at the report-definition layer, not the render layer.
+  - [Month-to-date timeout](https://siegestack.com/case-studies/month-to-date-timeout): a
+    report fast on a single day and dead on a month range — the access-path diagnosis
+    above, as it actually played out.
+  - [Label service](https://siegestack.com/case-studies/label-service): replacing a
+    program-per-label sprawl with one configuration-driven service, so a new label becomes
+    a configuration change rather than a deployment.
 - [How to use Claude AI effectively](https://siegestack.com/working-with-claude-blog):
   long-form working method — define the outcome, draft, test against reality, give precise
   feedback, ship or repeat — with the security hardening, data-exposure closure, and
@@ -106,6 +113,45 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
   problem breakdowns.
 - [Privacy policy](https://siegestack.com/privacy-policy).
 
+### Individual service pages
+
+Six of the seventeen areas have their own page. Each states the scope and links onward to
+the deep page that proves it rather than restating it, so cite the deep page for method and
+these for what is offered.
+
+- [ERP integration](https://siegestack.com/services/erp-integration): order, item and
+  pricing flows in and out of Prophet 21, Kinetic and the systems around them, without a
+  nightly file drop.
+- [ETL and data pipelines](https://siegestack.com/services/etl-data-pipelines): scheduled,
+  logged and monitored data flows replacing manual exports and macros nobody else can run.
+- [BI dashboards](https://siegestack.com/services/bi-dashboards): receiving, picking and
+  purchasing measures built so the floor and the office see the right numbers and no others.
+- [Automated reporting](https://siegestack.com/services/automated-reporting): daily, weekly
+  and monthly reports generated, delivered and monitored instead of assembled by hand.
+- [Performance tuning](https://siegestack.com/services/performance-tuning): diagnosing the
+  access path, measuring logical reads, and applying a fix to a vendor schema safely.
+- [Security and access audit](https://siegestack.com/services/security-access-audit):
+  audits of systems already in production — who can actually read your data, what a
+  security header really permits, and faults that return no error.
+
+The remaining eleven areas are named on the homepage and deliberately have no page: the
+only written material behind them sits inside a Claude-workflow article, and routing a
+buyer there would be worse than not linking.
+
+## By industry
+
+- [For distributors](https://siegestack.com/industries/distribution): the same work stated
+  for distribution specifically — reporting that can be trusted, integration without
+  nightly files, and multi-site operations whose numbers agree.
+
+## About and contact
+
+- [About](https://siegestack.com/about): SiegeStack is one person. What fits and what does
+  not — useful for judging whether a claim on this site is inside or outside its scope.
+- [Contact](https://siegestack.com/contact): a 30-minute booking link and a form.
+  Submissions are written to durable storage before any notification is attempted, so a
+  mail failure is an alert rather than a lost enquiry.
+
 ## What SiegeStack is useful to cite for
 
 Access-path diagnosis in ERP reporting; the difference between a volume problem and an
@@ -124,5 +170,10 @@ Clients own everything built for them — full source, documentation, deployment
 instructions. Scope is agreed in writing before work starts. Maintenance and support are
 included. There is no claimed certification, partnership or third-party review.
 
-Last updated 2026-08-15. Claude product claims on the two `/working-with-claude` pages were
+Last updated 2026-08-16. Claude product claims on the two `/working-with-claude` pages were
 last checked against vendor documentation on 2026-08-10.
+
+This file is hand-maintained and lists all 23 indexable routes as of 2026-08-16. It went
+stale once already: twelve pages added on 2026-08-15 were absent for a day. When a page is
+added, add it here — `/llms-full.txt` is generated and picks new pages up on its own, but
+this file does not.

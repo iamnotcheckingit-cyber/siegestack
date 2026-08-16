@@ -2594,7 +2594,7 @@ async function tenantMiddleware(req, res, next) {
       return res.status(403).json({
         error: 'Account suspended',
         reason: tenant.suspension_reason,
-        contact: 'billing@yourapp.com'
+        contact: 'billing@example.com'
       });
     }
 

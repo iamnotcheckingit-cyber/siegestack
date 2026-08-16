@@ -168,3 +168,38 @@ if (leaked.length) {
   process.exit(1);
 }
 console.log('  private-page check: clean');
+
+/**
+ * Derived-value check: any page saying "N-slide" must agree with the deck.
+ *
+ * This exists because of a real defect. The deck was condensed 37 -> 14 in
+ * 8288964, every reference inside working-with-claude.html was updated, and a
+ * link on working-with-claude-blog.html was missed. This file then FAITHFULLY
+ * REPRODUCED the wrong figure, because it is generated from the pages and the
+ * page was wrong -- so regenerating could never fix it and made it look
+ * freshly confirmed. It survived a day and an external audit before anyone
+ * counted the slides.
+ *
+ * The general lesson is that a generator with no assertion between source and
+ * output launders a stale claim into something that looks newly produced. This
+ * is not a grep for wrong text -- greps only find text you already suspect. It
+ * recomputes the number from the only thing that cannot lie about it (the
+ * slides themselves) and fails the build on disagreement.
+ *
+ * Add a check here whenever a figure on this site is derivable from the source
+ * rather than measured off it.
+ */
+const DECK = path.join(ROOT, 'working-with-claude.html');
+const actualSlides = (fs.readFileSync(DECK, 'utf8').match(/class="slide[ "]/g) || []).length;
+const slideClaims = [];
+for (const [file] of PAGES) {
+  const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  for (const m of src.matchAll(/(\d+)[- ]slide/gi)) {
+    if (Number(m[1]) !== actualSlides) slideClaims.push(`${file}: "${m[0]}" but the deck has ${actualSlides}`);
+  }
+}
+if (slideClaims.length) {
+  console.error(`\n  FATAL: slide count disagrees with the deck:\n    ${slideClaims.join('\n    ')}`);
+  process.exit(1);
+}
+console.log(`  slide-count check: clean (${actualSlides} slides)`);
