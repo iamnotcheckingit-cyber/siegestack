@@ -245,6 +245,13 @@ top.
 The log events are prefixed differently, so they can be told apart:
 `CONTACT_*` versus `EXPERTISE_*`.
 
+`npm test` exercises the shared notification logic through the expertise
+function without deploying anything — every `reason` branch, the loop guard, the
+redaction, and a hanging transport giving up at the budget. `npm run
+test:defects` proves the suite still fails on deliberately broken code, which is
+the only thing that makes a pass worth anything. Run both before changing either
+function.
+
 ## Diagnosing it from outside
 
 The endpoint returns a coarse `reason` alongside `notified`, so a
