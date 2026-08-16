@@ -1,3 +1,8 @@
+// This file is served immutable for a year (netlify.toml, the /*.js rule), and
+// consultant-expertise.html loads it as /consultant-form.js?v=YYYY-MM-DD.
+// EDITING THIS FILE WITHOUT BUMPING THAT TOKEN SHIPS NOTHING to anyone who has
+// visited the page before. There is no other cache key.
+
 // Define all skill categories
 const skillCategories = {
     coreEngagements: [
