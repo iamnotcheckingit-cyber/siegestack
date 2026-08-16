@@ -230,3 +230,25 @@ if (strayMd.length) {
   process.exit(1);
 }
 console.log('  root-markdown check: clean');
+
+/**
+ * Size check: llms.txt states how big this file is, and that figure goes stale.
+ *
+ * It said 175 KB, then 180, while the real file grew to 186 -- drifting twice in
+ * a single day as pages were added. Same class as the slide count: a number in
+ * a hand-maintained file describing a generated one, with nothing connecting
+ * them. Tolerance is 8 KB, because "about" is doing real work in that sentence
+ * and a check that fires on every page addition would just be noise.
+ */
+const stated = /about (\d+) KB/.exec(fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8'));
+if (!stated) {
+  console.error('\n  FATAL: llms.txt no longer states a size for llms-full.txt -- this check is stale.');
+  process.exit(1);
+}
+const actualKb = Math.round(out.length / 1024);
+const drift = Math.abs(Number(stated[1]) - actualKb);
+if (drift > 8) {
+  console.error(`\n  FATAL: llms.txt says llms-full.txt is about ${stated[1]} KB; it is ${actualKb} KB (off by ${drift}).\n  Update the figure in llms.txt.`);
+  process.exit(1);
+}
+console.log(`  stated-size check: clean (${stated[1]} KB stated, ${actualKb} KB actual)`);
