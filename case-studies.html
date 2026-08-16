@@ -273,6 +273,7 @@
         <div class="nav-links">
             <a href="/#solutions">Solutions</a>
             <a href="/#process">Process</a>
+            <a href="/prophet-21">Prophet 21</a>
             <a href="/operations-modernization">Operations</a>
             <a href="/etl-showcase">ETL Showcase</a>
             <a href="/case-studies">Case Studies</a>
@@ -300,88 +301,23 @@
 
             <div class="om-track">
                 <div class="om-num">Case 01</div>
-                <h2>A KPI console for people who were reading the operation from memory</h2>
-
-                <p><strong>The situation.</strong> An operations team ran receiving, picking and purchasing on a SQL Server&ndash;backed ERP. Operational questions &mdash; is receiving keeping up, are we paying what the purchase order said, who picked what yesterday &mdash; were answered by whoever had been there longest. The data existed. Nothing assembled it.</p>
-
-                <p><strong>What was built.</strong> A reporting console with two audiences and two very different trust levels. Supervisors get the full set in a browser. The floor gets a subset on wall-mounted displays, driven by scoped display tokens.</p>
-
-                <p>That split turned out to be the design constraint that mattered. Several reports carry cost and margin. A screen on an operations floor is visible to everyone who walks past it, including visitors and contractors. So report definitions carry a flag: anything with dollars in it is backend-only, the server refuses to attach it to a display token, and it is never listed in the publicly enumerable set. The restriction lives in the report definition rather than in the page that renders it, because the page is the thing most likely to be rewritten later by someone who does not know the rule.</p>
-
-                <p><strong>The receiving metrics.</strong> Volume was the easy part. The ones that changed conversations:</p>
-
-                <div class="om-table-wrap">
-                <table class="om-table">
-                    <thead><tr><th>Metric</th><th>What it measures, and the modelling decision behind it</th></tr></thead>
-                    <tbody>
-                        <tr><td>Purchase price variance</td><td>Receipt cost minus purchase-order line cost. Positive means the business paid above what the PO said. This is the number that gets attention, because it is the gap between what purchasing agreed and what accounts payable will actually be billed.</td></tr>
-                        <tr><td>On-time percentage</td><td>Receipt date against the due date, preferring promise date, then required, then original. Lines with <em>no</em> due date are excluded from the ratio rather than silently counted as on time &mdash; an undated line is missing data, not a success, and rolling it into the numerator flatters the number in exactly the cases nobody is watching.</td></tr>
-                        <tr><td>In-full percentage</td><td>Only open receipts carry an in-full flag; the posted-history table has no equivalent. History rows are therefore excluded from the ratio via an explicit marker instead of scoring zero, so a full month does not read worse than a single day purely because most of it has been posted.</td></tr>
-                        <tr><td>Lines per PO</td><td>Receiving effort per order. A cheap proxy for whether purchasing is consolidating or drip-feeding the dock.</td></tr>
-                    </tbody>
-                </table>
-                </div>
-
-                <p>Two of those four rows are decisions about what <em>not</em> to count. That ratio is normal. Most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence, and a dashboard that gets it wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks.</p>
-
-                <p><strong>Open versus posted.</strong> The same period can span unposted receipts and posted history, which live in separate tables with different columns. Today reads from open receipts only. Week and month union both. Getting this wrong is the classic ERP reporting bug: numbers that look right on a daily view and quietly drift on anything longer.</p>
-
-                <p><strong>Picker productivity.</strong> A parallel set covers lines picked, quantity, active hours and first and last pick per picker. The awkward part was not the aggregation, it was identity: pickers appear as initials on the transaction, and the mapping to a human runs through a chain of fallbacks &mdash; a description field, a Windows login, the local part of an email address, and finally an explicit <em>unmapped</em> bucket. Unmapped is displayed rather than hidden. An unattributed pick is a data-quality finding, and hiding it turns a fixable mapping gap into a permanently wrong leaderboard.</p>
-
-                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
-                <ul>
-                    <li>PPV dollars surfaced in the first full month, against what was being caught manually before.</li>
-                    <li>Time from &ldquo;how did receiving do last week&rdquo; to an answer, before and after.</li>
-                    <li>Share of picks landing in the unmapped bucket, tracked down over time as the mapping is cleaned.</li>
-                </ul>
+                <h2><a href="/case-studies/kpi-console" style="color:inherit">A KPI console for people who were reading the operation from memory</a></h2>
+                <p>Two audiences, two trust levels. Cost-bearing reports are refused to floor displays at the report-definition layer, not the render layer.</p>
+                <p><a href="/case-studies/kpi-console">Read the full case study &rarr;</a></p>
             </div>
 
             <div class="om-track">
                 <div class="om-num">Case 02</div>
-                <h2>The report that worked on Today and timed out on Month</h2>
-
-                <p><strong>The symptom.</strong> The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as &ldquo;the dashboard is slow.&rdquo;</p>
-
-                <p><strong>What it actually was.</strong> The week and month views filter invoice-history on a pick-date column. That column was not indexed. The indexes that existed on the table covered the order number, a history id and line, the lot, and a rowguid &mdash; every access path except the one the date filter needed. So the date range forced a full scan of the entire invoice-history table. Today was fast because it read a different, far smaller table; the period views were slow because they touched history, and the shape of the query meant touching history meant reading all of it.</p>
-
-                <p>This is the most common performance root cause in ERP reporting and the one most often misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. It is not a volume problem. It is an access-path problem that volume makes visible.</p>
-
-                <p><strong>Why the fix needed more care than the diagnosis.</strong> The tables shipped with the ERP; they were not locally created. Adding an index to a vendor schema is a supportability decision before it is a technical one, so the work went to the platform owner before anything was applied. Beyond that:</p>
-
-                <ul>
-                    <li>Index creation takes a schema-modification lock on SQL Server Standard Edition. It blocks live users for the duration of the build, so it belongs in a maintenance window, not in the afternoon it was diagnosed.</li>
-                    <li>An idle query window holding an open transaction will block the build and create a lock chain that looks, to everyone else, like the database has frozen. Close the tabs first. This sounds trivial until it happens.</li>
-                    <li>Size and current index state get captured before anything changes, so the change can be evaluated and reversed.</li>
-                </ul>
-
-                <p><strong>The transferable part.</strong> Written up in full as <a href="/erp-report-slow-month-to-date">why an ERP report is fast on today and times out on month-to-date</a>. In short: when a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index &mdash; it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.</p>
-
-                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
-                <ul>
-                    <li>Report runtime before and after, at each period setting. Capture it before you apply the index; you cannot go back for it.</li>
-                    <li>Logical reads for the query, which is the honest measure and does not move with server load.</li>
-                    <li>Index build duration, so the next maintenance window can be planned rather than guessed.</li>
-                </ul>
+                <h2><a href="/case-studies/month-to-date-timeout" style="color:inherit">The report that worked on Today and timed out on Month</a></h2>
+                <p>Fast on Today, dead on Month-to-date. The most consistently misdiagnosed complaint in ERP reporting.</p>
+                <p><a href="/case-studies/month-to-date-timeout">Read the full case study &rarr;</a></p>
             </div>
 
             <div class="om-track">
                 <div class="om-num">Case 03</div>
-                <h2>One label service instead of a label program per label</h2>
-
-                <p><strong>The situation.</strong> Labels were being produced from several unrelated places &mdash; contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.</p>
-
-                <p><strong>What was built.</strong> A single label service with the sources defined as data rather than as code. Configuration tables in the ERP database describe each label source: the query that produces the rows, the fields it exposes, and the template it maps into. A .NET API serves those sources, an admin panel maintains them, and the user-facing side becomes one interface that changes behaviour by configuration.</p>
-
-                <p>Output is native printer command language for industrial label printers, rather than a rendered image. For a floor printer this matters &mdash; it prints faster, positions predictably at the label edges, and does not degrade when the printer is asked to scale.</p>
-
-                <p><strong>The design decision worth stealing.</strong> Adding a label type should be a configuration change, not a deployment. Once the source is a row in a table &mdash; a query, a field list, a template &mdash; the fifth label type costs a fraction of the first, and the layouts stay consistent because they share one rendering path. Most label sprawl is not a printing problem. It is the absence of a place to define a label source.</p>
-
-                <p class="om-num" style="margin-top:1.2rem">Worth measuring if you run this</p>
-                <ul>
-                    <li>Elapsed time to add a new label type, before and after.</li>
-                    <li>Reprints caused by layout or alignment faults, per week.</li>
-                    <li>Number of distinct programs that can talk to a printer &mdash; the number you are trying to drive to one.</li>
-                </ul>
+                <h2><a href="/case-studies/label-service" style="color:inherit">One label service instead of a label program per label</a></h2>
+                <p>A program per label became one configuration-driven service. New labels stopped being deployments.</p>
+                <p><a href="/case-studies/label-service">Read the full case study &rarr;</a></p>
             </div>
 
             <h2>The pattern across all three</h2>
@@ -416,15 +352,18 @@
         <div class="foot-grid">
             <div>
                 <h3>Solutions</h3>
-                <a href="/#solutions">All services</a>
-                <a href="/etl-showcase">ETL &amp; integration</a>
-                <a href="/operations-modernization">Operations modernization</a>
-                <a href="/sql-server-erp-performance">Performance tuning</a>
+                <a href="/services/erp-integration">ERP integration</a>
+                <a href="/services/etl-data-pipelines">ETL &amp; pipelines</a>
+                <a href="/services/bi-dashboards">BI dashboards</a>
+                <a href="/services/automated-reporting">Automated reporting</a>
+                <a href="/services/performance-tuning">Performance tuning</a>
+                <a href="/services/security-access-audit">Security &amp; access audit</a>
             </div>
             <div>
                 <h3>Platforms &amp; Work</h3>
-                <a href="/epicor-p21-kinetic-reporting">Prophet 21 &amp; Kinetic</a>
-                <a href="/erp-report-slow-month-to-date">ERP reporting write-ups</a>
+                <a href="/prophet-21">Prophet 21 &amp; Kinetic</a>
+                <a href="/sql-server-erp-performance">SQL Server performance</a>
+                <a href="/industries/distribution">For distributors</a>
                 <a href="/case-studies">Case studies</a>
                 <a href="/insights">Insights</a>
             </div>

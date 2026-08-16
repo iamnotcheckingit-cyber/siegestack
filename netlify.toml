@@ -86,6 +86,116 @@
   force = true
 
 [[redirects]]
+  from = "/prophet-21"
+  to = "/prophet-21.html"
+  status = 200
+
+[[redirects]]
+  from = "/prophet-21.html"
+  to = "/prophet-21"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/erp-integration"
+  to = "/services/erp-integration.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/erp-integration.html"
+  to = "/services/erp-integration"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/etl-data-pipelines"
+  to = "/services/etl-data-pipelines.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/etl-data-pipelines.html"
+  to = "/services/etl-data-pipelines"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/bi-dashboards"
+  to = "/services/bi-dashboards.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/bi-dashboards.html"
+  to = "/services/bi-dashboards"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/automated-reporting"
+  to = "/services/automated-reporting.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/automated-reporting.html"
+  to = "/services/automated-reporting"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/performance-tuning"
+  to = "/services/performance-tuning.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/performance-tuning.html"
+  to = "/services/performance-tuning"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/services/security-access-audit"
+  to = "/services/security-access-audit.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/security-access-audit.html"
+  to = "/services/security-access-audit"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/case-studies/kpi-console"
+  to = "/case-studies/kpi-console.html"
+  status = 200
+
+[[redirects]]
+  from = "/case-studies/kpi-console.html"
+  to = "/case-studies/kpi-console"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/case-studies/month-to-date-timeout"
+  to = "/case-studies/month-to-date-timeout.html"
+  status = 200
+
+[[redirects]]
+  from = "/case-studies/month-to-date-timeout.html"
+  to = "/case-studies/month-to-date-timeout"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/case-studies/label-service"
+  to = "/case-studies/label-service.html"
+  status = 200
+
+[[redirects]]
+  from = "/case-studies/label-service.html"
+  to = "/case-studies/label-service"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/industries/distribution"
+  to = "/industries/distribution.html"
+  status = 200
+
+[[redirects]]
+  from = "/industries/distribution.html"
+  to = "/industries/distribution"
+  status = 301
+  force = true
+[[redirects]]
   from = "/about"
   to = "/about.html"
   status = 200
