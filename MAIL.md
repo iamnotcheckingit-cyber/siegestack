@@ -29,10 +29,10 @@ established, and what is not:
 - **The SMTP send itself works.** Re-tested live on 2026-08-16: two of three
   submissions returned `notified:true`, so authentication, the envelope and the
   loop guard are all past and the credentials are good.
-- **It is unreliable, and that is a latency problem rather than a mail
-  problem.** The third of those three exceeded the 8s budget. See the budget
-  discussion under Option A — the number cannot go higher, so either the misses
-  are accepted or the notification moves off the request path.
+- **Roughly one send in three exceeds the 8s budget**, which is a latency
+  problem rather than a mail problem. The number cannot go higher, so the fix
+  is the hourly sweep — see "The sweep" below. Nothing is ever lost either way;
+  the durable write happens first.
 - **Delivery is confirmed.** The 2026-08-16 test notifications arrived in the
   destination mailbox. Acceptance by the provider and delivery to a human are
   different claims and both now have evidence behind them, so the chain is good
@@ -160,12 +160,55 @@ budget and reported `smtp_unknown`. ImprovMX's handshake latency is simply that
 variable. But 8.6s against a 10s platform ceiling leaves under 1.4s, and going
 over the ceiling is the catastrophic case this whole file exists to avoid: the
 request dies *after* the submission was stored and the page tells the sender it
-failed. **Do not raise `NOTIFY_BUDGET_MS` past 8s.**
+failed. **Do not raise `NOTIFY_BUDGET_MS` past 8s.** The retry below is the
+remedy instead.
 
-The real options are to accept a missed page on roughly a third of submissions —
-which loses nothing, only immediacy — or to move the notification off the
-request path entirely, into a background function or a queue, where a slow
-handshake costs nobody anything. That is unbuilt.
+## The sweep: what catches the ones that time out
+
+`netlify/functions/notify-sweep.mjs` runs **hourly** and sends the notifications
+the request path could not. A miss becomes at most an hour late rather than
+indefinitely silent.
+
+It works off marker blobs, because the submission stores are append-only and
+"was this notified?" therefore cannot be a field on the record:
+
+```
+msg/0001786894456546-82aba12a          the submission, never rewritten
+sent/msg/0001786894456546-82aba12a     written only after a successful send
+sweep/watermark                        see below
+```
+
+A submission with no marker is pending. That is the whole protocol, and it
+**fails towards a duplicate, never a silence**: if a send succeeds and the
+marker write then fails, a second copy goes out an hour later. That is the
+right way round.
+
+**The watermark exists because of the first run.** Every submission that
+predates this feature has no marker and is indistinguishable from one that just
+failed — so a naive sweep mails the entire history of the store the moment it
+deploys. Instead the first run records the time, declares everything older
+already handled, logs how many it passed over (`SWEEP_*_INITIALISED`), and sends
+nothing. Only submissions stamped after that are ever retried.
+
+Other things worth knowing before changing it:
+
+- **Hourly is the floor.** Netlify's minimum schedule is `@hourly`; there is no
+  faster cron. A background function would notify immediately, but it is invoked
+  over HTTP — in a public repo that means a public endpoint plus a shared secret
+  — and it cannot report `notified` in the form's own response, which is what
+  makes this diagnosable with one `curl`. The hour was judged cheaper than that
+  complexity. If immediacy ever matters more, that is the trade to revisit.
+- **A scheduled function gets 30s**, not 10, and one send can take 8 of them. So
+  a run stops starting new sends with less than a budget-plus-margin left, and
+  caps at 8 per run. Anything deferred is logged (`SWEEP_*_DEFERRED`) rather
+  than silently dropped, because a truncated run that says nothing reads exactly
+  like a run with nothing to do.
+- **One failure stops the run.** If a send fails the rest almost certainly will
+  too, so it logs and waits an hour instead of burning the budget. A permanent
+  misconfiguration retries hourly and does nothing but log, which is the right
+  noise level for something needing a human.
+- Its notifications are prefixed `[late]` in the subject, so a duplicate is
+  identifiable at a glance.
 
 ### Option B — Resend with no DNS at all
 
@@ -245,12 +288,15 @@ top.
 The log events are prefixed differently, so they can be told apart:
 `CONTACT_*` versus `EXPERTISE_*`.
 
-`npm test` exercises the shared notification logic through the expertise
-function without deploying anything — every `reason` branch, the loop guard, the
-redaction, and a hanging transport giving up at the budget. `npm run
-test:defects` proves the suite still fails on deliberately broken code, which is
-the only thing that makes a pass worth anything. Run both before changing either
-function.
+The send itself is **one implementation**, `netlify/lib/notify.mjs`, used by all
+three. It was briefly copied between the two form functions; the sweep made that
+a third copy, and a redaction bug that had to be fixed twice in one day settled
+the argument.
+
+`npm test` exercises all of it without deploying anything — 37 cases across both
+forms and the sweep. `npm run test:defects` proves the suites still fail on 16
+deliberately broken variants, which is the only thing that makes a pass worth
+anything. Run both before changing any of these files.
 
 ## Diagnosing it from outside
 
