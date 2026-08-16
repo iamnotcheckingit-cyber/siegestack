@@ -223,6 +223,18 @@
         </form>
     </div>
 
-    <script src="/consultant-form.js"></script>
+    <!--
+      The ?v= is load-bearing. netlify.toml serves /*.js with
+      max-age=31536000, immutable, so without a token in the URL a returning
+      visitor keeps whatever copy of this file they already have -- for a year.
+      That is not theoretical: the 2026-08-16 fix repointing this form at
+      /api/expertise would never have reached anyone who had visited before,
+      and they would have gone on getting "There was an error submitting your
+      form" from a bug that was already fixed.
+
+      BUMP THE DATE WHENEVER consultant-form.js CHANGES. It is the only cache
+      key this page has.
+    -->
+    <script src="/consultant-form.js?v=2026-08-16"></script>
 </body>
 </html>
