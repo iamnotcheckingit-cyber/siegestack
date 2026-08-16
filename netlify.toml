@@ -68,6 +68,22 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Served on purpose, but not part of the published surface: everything reachable
+# and absent from sitemap.xml gets noindex. The audit report is the case that
+# motivated this -- llms.txt tells AI crawlers how to cite this site, and a
+# crawler citing an internal audit report as site content is a worse outcome
+# than a human following the link to it, which is what it exists for.
+[[headers]]
+  for = "/audit"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/LICENSE"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"
+
 # Block .git access
 [[headers]]
   for = "/.git/*"
@@ -259,6 +275,32 @@
   to = "/contact"
   status = 301
   force = true
+[[redirects]]
+  from = "/delivery-config-audit"
+  to = "/delivery-config-audit.html"
+  status = 200
+
+[[redirects]]
+  from = "/delivery-config-audit.html"
+  to = "/delivery-config-audit"
+  status = 301
+  force = true
+
+# The audit report is published deliberately -- it is linked from
+# /delivery-config-audit, which is the point of it being reachable. It is served
+# here under a stable path so the dated filename can change without breaking the
+# link, and so the blanket /*.md denial below does not have to make an exception
+# for a specific filename.
+#
+# THIS RULE MUST STAY AHEAD OF THE /*.md DENIAL. Netlify takes the first match;
+# if the denial came first this would 404. That is not hypothetical -- a stale
+# rule matching ahead of a newer one is exactly how the P21 page 404d on its own
+# URL in d0aa04a.
+[[redirects]]
+  from = "/audit"
+  to = "/audit-2026-08-16.md"
+  status = 200
+
 [[redirects]]
   from = "/privacy-policy"
   to = "/privacy-policy.html"
@@ -488,6 +530,58 @@
 # The publish directory is the repo root, so anything committed is on the web by
 # default. These files must not be. This closes the door; the function opens it
 # only for a valid session.
+# -----------------------------------------------------------------------------
+# WHAT IS NOT PUBLISHED
+#
+# publish = "." means the repository root IS the web root, so every file is
+# served unless something says otherwise. The rules below are keyed to CLASSES
+# of file rather than to the files that happen to exist today, because a denial
+# list of known filenames only blocks what someone thought of -- and the next
+# .md dropped in the root silently re-opens the question. That is how MAIL.md
+# and DNS-SNAPSHOT.md came to be served: nobody decided it, publish = "." did.
+#
+# Why not a true allow-list (a forced /* -> 404 catch-all with the published
+# routes ahead of it): a forced catch-all matches every asset too -- images,
+# the service workers, the manifests, favicons, robots.txt, the sitemap -- so it
+# only works if every one of those is enumerated ahead of it, and anything
+# forgotten disappears. A broad rule matching ahead of a specific one is the
+# precise mechanism that 404d the best page on this site in d0aa04a. The class
+# rules below close the same gap without a rule that can take the site down.
+#
+# Adding a new class of internal file? Add it here, not to a list of names.
+# -----------------------------------------------------------------------------
+
+# Markdown is documentation, not a page. MAIL.md, DNS-SNAPSHOT.md and README.md
+# describe operational infrastructure; on GitHub someone chose to look, at a
+# domain it is handed to anything that asks. The audit report is the deliberate
+# exception and is served at /audit, above.
+[[redirects]]
+  from = "/*.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Build and test tooling. No reader benefit, and it is noise in an index.
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package*.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Underscore-prefixed files are internal by convention here (_readme_for_zip.txt).
+# Netlify already withholds _headers and _redirects itself; this covers the rest.
+[[redirects]]
+  from = "/_*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 [[redirects]]
   from = "/private-files/*"
   to = "/404.html"

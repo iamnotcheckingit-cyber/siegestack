@@ -278,7 +278,7 @@ A form that sends an email and reports success only if the send worked will sile
 Redirect rules that never run. A sitemap the whole internet says is fine and no parser will accept. Assets cached for a year against markup that changed yesterday. These pass every check, return no error, and stay broken for months. We probe the live system instead of reading the config.
 
 
-→ Delivery & Config Audit
+[→ Delivery & Config Audit](https://siegestack.com/delivery-config-audit)
 
 
 
@@ -4428,6 +4428,19 @@ The most common performance complaint in ERP reporting and the most consistently
 
 
 
+Delivery · Configuration audit
+
+
+
+#### [The config was mine and the fix on paper was still wrong](https://siegestack.com/delivery-config-audit)
+
+A delivery and configuration audit run against this site, written up for the finding that the auditor was wrong rather than for the ones that held. Reading the config produced a defensible remediation item; three requests against the running system showed there was no defect, and that the item would have caused an outage-class fault. What config review can and cannot establish, and what a live probe still cannot tell you.
+
+
+
+
+
+
 ### Case studies
 
 
@@ -4490,6 +4503,94 @@ The first conversation is short and costs nothing.
 
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
+
+---
+
+
+# Delivery and configuration audit — when reading the config produces the wrong fix
+https://siegestack.com/delivery-config-audit
+
+## The config was mine and the fix on paper was still wrong
+
+A delivery and configuration audit, run against this site.
+
+A delivery and configuration audit asks a narrow question: does the running system behave the way its configuration says it does? The interesting answer is usually no, and the reason this class of fault survives is that nothing reports it. There is no error, no failed build and no alert. The config is readable and looks correct. The site returns 200.
+
+The worked example below is this site, audited on 16 August 2026. It is used here instead of a client engagement for one reason: **the finding is that the auditor was wrong**, and that is not something worth demonstrating with somebody else's system. The config was mine, I had written it, and reading it still produced a remedy that would have caused the fault it was meant to prevent.
+
+### What reading the config concluded
+
+This site sets HTTP headers in two places: `netlify.toml` and a `_headers` file. The `_headers` file states three times, in comments, that it deliberately mirrors `netlify.toml` — the two agree so that whichever one wins a conflict, the private pages stay uncached and unindexed.
+
+They had drifted. `netlify.toml` carried rules caching every `.js` and `.css` file for a year; `_headers` had no equivalent. So the audit wrote the obvious remediation item: *add the missing rules to* `_headers` *so the two files agree again.* It was filed with a severity, a file list, and a note about why it mattered.
+
+Every part of that reasoning is defensible from the source. It is also wrong.
+
+### What probing the live system showed
+
+Three requests, against production rather than the repository:
+
+| Asset | Live `Cache-Control` |
+
+| A page script | `public, max-age=31536000, immutable` |
+
+| Service worker (thread one) | `no-cache, must-revalidate` |
+
+| Service worker (thread two) | `no-cache, must-revalidate` |
+
+The service workers were already correct. Their own more specific rules were winning over the broad one, exactly as intended. **There was no defect.** The two files had diverged and the divergence was harmless, which is a state a config diff cannot distinguish from the other kind.
+
+### Why the written remedy was the dangerous part
+
+Adding a blanket `.js` rule to the second file would have brought both service workers into scope of a year-long immutable cache.
+
+A service worker cached for a year cannot be fixed by deploying. The browser keeps running the copy it already has, so the next deploy does not replace it, and neither does the one after that. The bug would have outlived every subsequent fix, on the two pages where it is least visible, and the symptom — a page that works for new visitors and is stale for returning ones — is the kind that gets attributed to the user's browser.
+
+So the audit item, written from a correct reading of the configuration, would have manufactured an outage-class fault in a system that was working. The only thing that separated those two outcomes was making three requests.
+
+### What the finding actually was
+
+Something real was underneath it, and it was smaller and duller than the item claimed: **nothing in either file recorded why the asymmetry existed.** The mirroring comments were scoped to the private-page blocks, and asset caching was never mirrored on purpose — but that had never been written down, so the next person to read the two files would reach the same conclusion and might act on it.
+
+The fix was documentation, in both files, naming the service-worker hazard so the tempting change is refused by whoever considers it next. No rule moved. Every changed line begins with a comment marker.
+
+### The general shape
+
+This is not an argument that configuration review is useless. It found the asymmetry; nothing else would have. It is an argument about ordering:
+
+- **Config review finds candidates. It cannot grade them.** “These two files disagree” is a fact about the files. Whether that disagreement reaches production is a fact about the running system, and the two are not related by inspection.
+
+- **A remediation item is a proposed change, and proposed changes need testing too.** An audit that ships a backlog without probing has shipped untested changes with a delay fuse. They are more dangerous than ordinary untested changes, because they arrive with the authority of a review attached.
+
+- **The failure is invisible from inside the audit.** Nothing in reading the config told me the item was wrong. It read as one of the clearer findings in the set.
+
+The same pass found three faults the live system did confirm: a form posting to an endpoint that had never existed and returned 404 on every submission, a published figure that a generated file was faithfully reproducing from a stale source, and a script cached for a year with no version token, so a fix would have reached first-time visitors only. Those were real. The one that was written most confidently was the one that was wrong.
+
+### What a live probe cannot tell you
+
+Stated plainly, because an audit method that only lists its strengths is the thing this page is arguing against:
+
+- It sees the current deploy, not intent. A header that is correct today because of a rule someone added by accident still reads as correct.
+
+- It cannot see what a crawler or a cache holds. What Google fetched last week is answerable only from that provider's own tooling.
+
+- It cannot prove a negative about paths it did not request. Coverage is a list you have to build deliberately.
+
+- Probing a production system is itself an action. Anything that writes — a form submission, a test enquiry — leaves records that have to be cleaned up, and that has to be planned before the first request rather than after.
+
+### How this gets run
+
+Config first, to build the candidate list and know what the system claims. Then requests against the running system for every claim that can be checked with one. Then the two are compared, and only findings that survive both become items. Anything that cannot be settled from outside is written down as unverified with the specific check that would settle it, rather than being graded on likelihood.
+
+The full report from this pass is published, including the corrections trail and the section recording that the remedy above was wrong. Most of its verdicts are refutations, which is the ordinary outcome of checking claims rather than collecting them.
+
+[Read the full audit report →](https://siegestack.com/audit)
+
+### Related
+
+[The full audit report](https://siegestack.com/audit) · [Security & access audit](https://siegestack.com/services/security-access-audit) · [Case studies](https://siegestack.com/case-studies)
+
+[Recognise any of these?](https://siegestack.com/contact)
 
 ---
 
