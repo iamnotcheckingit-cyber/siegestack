@@ -22,7 +22,19 @@
  * retrievable — the form degrades to "we have it, you just were not paged".
  *
  * CONFIGURATION (Netlify env vars — scope them to Functions, not just Builds)
- *   RESEND_API_KEY    optional. Without it, nothing is emailed and the
+ *   SMTP_HOST         optional, and the preferred route when set. ImprovMX
+ *   SMTP_USER         already handles this domain's mail and its SPF and DKIM
+ *   SMTP_PASS         already cover it, so a notification sent this way can
+ *   SMTP_PORT         legitimately come FROM info@siegestack.com rather than a
+ *                     third party's sending address, and needs no new DNS and
+ *                     no second vendor.
+ *                       SMTP_HOST = smtp.improvmx.com
+ *                       SMTP_PORT = 587   (465 also works; 465 is implicit TLS)
+ *                       SMTP_USER = the full alias, e.g. info@siegestack.com
+ *                       SMTP_PASS = the SMTP password from the ImprovMX console
+ *
+ *   RESEND_API_KEY    optional alternative, used only when SMTP is not
+ *                     configured. With neither set, nothing is emailed and the
  *                     submission is stored anyway. That is a deliberate
  *                     degradation, not a bug.
  *   CONTACT_TO        optional, defaults to info@siegestack.com. This is an
@@ -51,8 +63,29 @@
 
 import { getStore } from '@netlify/blobs';
 import crypto from 'node:crypto';
+import nodemailer from 'nodemailer';
 
 export const config = { path: ['/api/contact'] };
+
+/**
+ * The notification gets a hard budget well under the function's own ceiling.
+ *
+ * Netlify synchronous functions are killed at 10s by default and nothing here
+ * raises that. SMTP is a multi-round-trip handshake and can sit there; if it
+ * outlives the function, the request dies AFTER the submission was already
+ * stored, and the page tells the visitor it failed when it did not. Lying to a
+ * sender about a message we are holding is the worst outcome available.
+ *
+ * A timeout at or above the platform ceiling can never fire, which is precisely
+ * how this went wrong on another site. Six seconds leaves room for the store,
+ * the handshake, and a clean give-up inside the budget.
+ */
+const NOTIFY_BUDGET_MS = 6000;
+
+const withBudget = (promise, ms, label) => Promise.race([
+  promise,
+  new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms).unref?.()),
+]);
 
 const MAX = { name: 120, email: 200, company: 160, message: 5000 };
 const store = () => getStore({ name: 'siegestack-contact', consistency: 'strong' });
@@ -115,44 +148,76 @@ export default async (req) => {
 
   // ---- 2. Best-effort notification. Never allowed to fail the request. ----
   let notified = false;
-  const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM;
+  const to = process.env.CONTACT_TO || 'info@siegestack.com';
+  const subject = `Enquiry from ${submission.name || submission.email}`;
+  const text = [
+    `Name:    ${submission.name || '(not given)'}`,
+    `Email:   ${submission.email}`,
+    `Company: ${submission.company || '(not given)'}`,
+    `Stored:  ${id}`,
+    '',
+    submission.message,
+  ].join('\n');
 
-  if (apiKey && !from) {
+  // SMTP is preferred when configured: it is the mail vendor already paid for
+  // and already covered by this domain's SPF and DKIM, so the notification can
+  // legitimately come from the domain rather than a third party's sending
+  // address. Resend stays as the alternative.
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if ((smtpHost || apiKey) && !from) {
     // Misconfiguration, not a runtime failure. Say exactly what is wrong and
-    // exactly how to fix it, because the alternative is a 403 from the provider
-    // that reads as "email is broken" and costs an afternoon.
+    // how to fix it, because the alternative is a rejection that reads as
+    // "email is broken" and costs an afternoon.
     console.error(JSON.stringify({
       event: 'CONTACT_NOTIFY_MISCONFIGURED',
-      detail: 'RESEND_API_KEY is set but CONTACT_FROM is not. Set CONTACT_FROM to an address on the domain verified with the provider, e.g. "SiegeStack <hello@send.siegestack.com>". The submission was stored regardless.',
+      detail: 'A mail provider is configured but CONTACT_FROM is not. Set it to an address the provider will accept, e.g. "SiegeStack <info@siegestack.com>" for ImprovMX SMTP. The submission was stored regardless.',
     }));
+  } else if (smtpHost && smtpUser && smtpPass) {
+    let transport;
+    try {
+      const port = Number(process.env.SMTP_PORT || 587);
+      transport = nodemailer.createTransport({
+        host: smtpHost,
+        port,
+        secure: port === 465,               // 465 is implicit TLS; 587 upgrades via STARTTLS
+        auth: { user: smtpUser, pass: smtpPass },
+        // Every socket stage gets its own bound. Without these nodemailer will
+        // happily wait longer than the function is allowed to live.
+        connectionTimeout: NOTIFY_BUDGET_MS,
+        greetingTimeout: NOTIFY_BUDGET_MS,
+        socketTimeout: NOTIFY_BUDGET_MS,
+      });
+      await withBudget(
+        transport.sendMail({ from, to, replyTo: submission.email, subject, text }),
+        NOTIFY_BUDGET_MS,
+        'smtp',
+      );
+      notified = true;
+    } catch (err) {
+      console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', detail: String(err?.message || err).slice(0, 200) }));
+    } finally {
+      // Leaving the pool open holds the Lambda alive past the response.
+      try { transport?.close(); } catch { /* nothing useful to do */ }
+    }
   } else if (apiKey) {
     try {
-      const res = await fetch('https://api.resend.com/emails', {
+      const res = await withBudget(fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({
-          from,
-          to: [process.env.CONTACT_TO || 'info@siegestack.com'],
-          reply_to: submission.email,
-          subject: `Enquiry from ${submission.name || submission.email}`,
-          text: [
-            `Name:    ${submission.name || '(not given)'}`,
-            `Email:   ${submission.email}`,
-            `Company: ${submission.company || '(not given)'}`,
-            `Stored:  ${id}`,
-            '',
-            submission.message,
-          ].join('\n'),
-        }),
-      });
+        body: JSON.stringify({ from, to: [to], reply_to: submission.email, subject, text }),
+      }), NOTIFY_BUDGET_MS, 'resend');
       notified = res.ok;
       if (!res.ok) console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_HTTP', status: res.status }));
     } catch (err) {
       console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_ERROR', detail: String(err?.message || err).slice(0, 200) }));
     }
   } else {
-    console.log(JSON.stringify({ event: 'CONTACT_NOTIFY_SKIPPED', reason: 'no RESEND_API_KEY' }));
+    console.log(JSON.stringify({ event: 'CONTACT_NOTIFY_SKIPPED', reason: 'no SMTP_HOST and no RESEND_API_KEY' }));
   }
 
   // Stored is what success means here. `notified` is reported for observability,

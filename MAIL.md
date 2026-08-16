@@ -4,13 +4,13 @@ Two separate jobs, easy to conflate, and conflating them breaks the working one.
 
 | | Inbound (receiving) | Outbound (sending) |
 |---|---|---|
-| Who | ImprovMX | not configured yet |
+| Who | ImprovMX | ImprovMX SMTP (same vendor) |
 | Used by | the `mailto:` links across the site | the `/contact` form notification |
-| Status | **working** | **not wired** |
+| Status | **working** | **code ready, env vars not set** |
 
-ImprovMX forwards mail *to* you. It does not send mail *for* you. Wiring the
-contact form's notification is a separate provider and a separate set of DNS
-records.
+ImprovMX forwards mail *to* you. Forwarding alone does not send mail *for* you
+— but the paid tier adds SMTP, which does, and that is now the recommended
+route because it needs no second vendor and no new DNS.
 
 ## What is provisioned today
 
@@ -26,7 +26,10 @@ Verified against two independent resolvers on 2026-08-15:
 
 `info@siegestack.com` and `scott@siegestack.com` both deliver.
 
-## The collision to avoid
+## The collision to avoid (applies to Option C only)
+
+Skip this section if you use ImprovMX SMTP or Resend without a domain. It
+matters only when verifying a THIRD-PARTY sender on this domain.
 
 **Verify any outbound provider on a subdomain, not the root.**
 
@@ -39,14 +42,47 @@ Use `send.siegestack.com`. The root keeps ImprovMX; the subdomain gets the
 sender. DKIM selectors do not collide either way (`resend._domainkey` vs
 `dkimprovmx1/2._domainkey`), so DKIM is not the risk here — the MX is.
 
-## Wiring outbound — the short way first
+## Wiring outbound
 
-**ImprovMX being set up does not contribute to this.** It is inbound. Outbound
-is a separate provider. (ImprovMX's paid tier does include SMTP sending, which
-would avoid a second vendor entirely — but a Netlify Function cannot speak raw
-SMTP without adding a library, so it is not the cheap option here.)
+### Option A — ImprovMX SMTP (start here if you have the paid tier)
 
-### Option A — no DNS at all (start here)
+This is the best route when it is available, and an earlier version of this file
+talked you out of it for a weak reason. ImprovMX already handles this domain's
+mail and its SPF and DKIM already cover the domain, so the notification can come
+**from `info@siegestack.com`** legitimately. No second vendor, no second
+account, and **no new DNS**, which means no way to disturb the MX records that
+make the forwarding work.
+
+Set five variables in Netlify, **scoped to Functions**, then redeploy:
+
+```
+SMTP_HOST    = smtp.improvmx.com
+SMTP_PORT    = 587
+SMTP_USER    = info@siegestack.com
+SMTP_PASS    = the SMTP password from the ImprovMX console
+CONTACT_FROM = SiegeStack <info@siegestack.com>
+```
+
+`CONTACT_TO` is optional and defaults to `info@siegestack.com`. Port 465 also
+works and is selected automatically as implicit TLS; 587 upgrades via STARTTLS.
+
+SMTP takes precedence over Resend when both are configured.
+
+**The timeout matters more than the credentials here.** Netlify kills a
+synchronous function at 10s and nothing in this repo raises that. SMTP is a
+multi-round-trip handshake and can sit there. If the send outlives the function,
+the request dies *after* the submission was stored, and the page tells the
+sender it failed when it did not — the worst outcome available, because it
+invites them to give up on a message you are holding.
+
+So the notification gets a hard 6-second budget, enforced both by nodemailer's
+own connection/greeting/socket timeouts and by an outer race, and the transport
+is closed in a `finally`. A timeout set at or above the platform ceiling can
+never fire; that is exactly how this went wrong on the other site. Tested by
+making the transport hang for 60 seconds: it gave up at 6.6s, the request
+returned 200, and the submission was stored.
+
+### Option B — Resend with no DNS at all
 
 Resend lets you send from its own `onboarding@resend.dev` address **to the email
 you signed up with**, without verifying any domain. For a notification that only
@@ -70,10 +106,10 @@ says `resend.dev`. Neither matters for a message from your own server to you.
 Worth confirming the current free-tier terms in the dashboard rather than
 trusting this file — providers change these.
 
-### Option B — your own domain on the From line
+### Option C — Resend with a verified domain
 
-Only needed if notifications must come *from* siegestack.com, or go to someone
-other than you.
+Only needed if you are on Resend AND notifications must come from siegestack.com
+rather than resend.dev. Not needed at all if you use Option A.
 
 1. **Verify `send.siegestack.com` in Resend.** It will give you three records to
    add — copy the values from its dashboard, they are account and region
