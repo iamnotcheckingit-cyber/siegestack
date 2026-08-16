@@ -5,6 +5,7 @@
   "description": "siegestack.com. Static pages, plus one Netlify function for the private thread at /jesse.",
   "dependencies": {
     "@netlify/blobs": "^10.7.12",
+    "nodemailer": "^9.0.5",
     "web-push": "^3.6.7"
   }
 }
