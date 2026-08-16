@@ -81,10 +81,15 @@ export const config = { path: ['/api/contact'] };
  * sender about a message we are holding is the worst outcome available.
  *
  * A timeout at or above the platform ceiling can never fire, which is precisely
- * how this went wrong on another site. Six seconds leaves room for the store,
- * the handshake, and a clean give-up inside the budget.
+ * how this went wrong on another site.
+ *
+ * Started at 6s, raised to 8s once measured: ImprovMX intermittently takes
+ * longer than six seconds to complete a handshake on a cold connection, so the
+ * tighter budget was dropping perfectly good notifications. Eight still leaves
+ * roughly 1.5s of headroom after the durable write, and a timeout here costs a
+ * missed page, never a lost submission -- the write has already happened.
  */
-const NOTIFY_BUDGET_MS = 6000;
+const NOTIFY_BUDGET_MS = 8000;
 
 const withBudget = (promise, ms, label) => Promise.race([
   promise,
