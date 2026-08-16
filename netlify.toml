@@ -105,6 +105,15 @@
 #   function = "block-bots"
 #   path = "/*"
 #   excludedPath = ["/.netlify/*"]
+
+# Deny-by-default for the published surface. The allow-list, and the reasoning
+# for why this is an edge function rather than a forced catch-all redirect, are
+# in the file itself. It fails OPEN by design: a gate on /* that fails closed is
+# a sitewide outage caused by its own bug.
+[[edge_functions]]
+  function = "publish-gate"
+  path = "/*"
+  excludedPath = ["/.netlify/*"]
 # Pretty URL rewrites
 [[redirects]]
   from = "/working-with-claude"
@@ -551,57 +560,17 @@
 # Adding a new class of internal file? Add it here, not to a list of names.
 # -----------------------------------------------------------------------------
 
-# Internal documentation lives in docs/ and docs/ is not served. A DIRECTORY is
-# the only class Netlify can actually express here.
+# The name-based rules that used to sit here are gone. What replaced them is
+# netlify/edge-functions/publish-gate.ts: nothing is served unless it is on an
+# allow-list there. Read that file before adding a page -- an extensionless
+# route that is not listed will 404, which is the intended direction of failure.
 #
-# The first attempt at this used `/*.md` and `/package*.json`, which Netlify
-# silently ignores: a splat may only END a path segment, so a splat followed by
-# literal characters matches nothing. Both rules deployed, neither ever ran, and
-# MAIL.md kept returning 200. That is a redirect rule that never runs -- the
-# first symptom named on /delivery-config-audit -- found the same way that page
-# recommends, by requesting the paths afterwards instead of trusting the config.
-#
-# So: put a new internal document in docs/. Do not put it in the root. The
-# root-markdown check in scripts/build-llms-full.mjs fails the build if you do,
-# because a convention nobody can enforce is how this happened in the first place.
+# Two rules are kept below as defence in depth. They cost nothing, they are the
+# only protection if the gate is ever disabled, and the private-files one has an
+# independent reason to exist: it is what keeps files committed for the private
+# threads off the web while still being in the function bundle.
 [[redirects]]
   from = "/docs/*"
-  to = "/404.html"
-  status = 404
-  force = true
-
-# Build and test tooling. No reader benefit, and it is noise in an index.
-[[redirects]]
-  from = "/scripts/*"
-  to = "/404.html"
-  status = 404
-  force = true
-
-# These cannot move -- npm requires them at the root, and GitHub wants README.md
-# there -- so they are named individually. They are the exception the directory
-# rule above exists to keep small.
-[[redirects]]
-  from = "/package.json"
-  to = "/404.html"
-  status = 404
-  force = true
-
-[[redirects]]
-  from = "/package-lock.json"
-  to = "/404.html"
-  status = 404
-  force = true
-
-[[redirects]]
-  from = "/README.md"
-  to = "/404.html"
-  status = 404
-  force = true
-
-# Underscore-prefixed files are internal by convention here (_readme_for_zip.txt).
-# Netlify already withholds _headers and _redirects itself; this covers the rest.
-[[redirects]]
-  from = "/_*"
   to = "/404.html"
   status = 404
   force = true
