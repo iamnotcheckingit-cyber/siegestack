@@ -22,7 +22,14 @@ export function getStore(opts) {
       m.set(k, v);
     },
     async get(k) { return m.get(k); },
-    async list() { return { blobs: [...m.keys()].map((key) => ({ key })) }; },
+    // The prefix filter is load-bearing for notify-sweep, which distinguishes
+    // submissions from their "sent" markers and its watermark purely by prefix.
+    // A stub that ignored it would make the sweep look correct while hiding a
+    // bug that only shows up against the real store.
+    async list({ prefix } = {}) {
+      const keys = [...m.keys()].filter((k) => !prefix || k.startsWith(prefix));
+      return { blobs: keys.map((key) => ({ key })) };
+    },
     async delete(k) { m.delete(k); },
   };
 }

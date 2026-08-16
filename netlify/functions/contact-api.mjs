@@ -21,13 +21,10 @@
  * provider configured at all, submissions are still captured and still
  * retrievable — the form degrades to "we have it, you just were not paged".
  *
- * DELIBERATE COPY
- * ---------------
- * The notification block below (from "Best-effort notification" to the end) is
- * duplicated in netlify/functions/submit-expertise.mjs, deliberately, the same
- * way jesse-api and nicole-api are copies rather than a shared module. A FIX
- * HERE MUST BE APPLIED THERE. Both files carry this notice. The env vars are
- * shared, so the two are configured together and fail together.
+ * The notification itself is in ../lib/notify.mjs, shared with
+ * submit-expertise.mjs and notify-sweep.mjs. A notification that loses the race
+ * against the 8s budget is retried by the sweep, which is why this function
+ * writes a "sent" marker on success -- see ../lib/pending.mjs.
  *
  * CONFIGURATION (Netlify env vars — scope them to Functions, not just Builds)
  *   SMTP_HOST         optional, and the preferred route when set. ImprovMX
@@ -85,34 +82,10 @@
 
 import { getStore } from '@netlify/blobs';
 import crypto from 'node:crypto';
-import nodemailer from 'nodemailer';
+import { notify } from '../lib/notify.mjs';
+import { markNotified } from '../lib/pending.mjs';
 
 export const config = { path: ['/api/contact'] };
-
-/**
- * The notification gets a hard budget well under the function's own ceiling.
- *
- * Netlify synchronous functions are killed at 10s by default and nothing here
- * raises that. SMTP is a multi-round-trip handshake and can sit there; if it
- * outlives the function, the request dies AFTER the submission was already
- * stored, and the page tells the visitor it failed when it did not. Lying to a
- * sender about a message we are holding is the worst outcome available.
- *
- * A timeout at or above the platform ceiling can never fire, which is precisely
- * how this went wrong on another site.
- *
- * Started at 6s, raised to 8s once measured: ImprovMX intermittently takes
- * longer than six seconds to complete a handshake on a cold connection, so the
- * tighter budget was dropping perfectly good notifications. Eight still leaves
- * roughly 1.5s of headroom after the durable write, and a timeout here costs a
- * missed page, never a lost submission -- the write has already happened.
- */
-const NOTIFY_BUDGET_MS = 8000;
-
-const withBudget = (promise, ms, label) => Promise.race([
-  promise,
-  new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms).unref?.()),
-]);
 
 const MAX = { name: 120, email: 200, company: 160, message: 5000 };
 const store = () => getStore({ name: 'siegestack-contact', consistency: 'strong' });
@@ -133,11 +106,6 @@ function key() {
   last = Math.max(Date.now(), last + 1);
   return `msg/${String(last).padStart(16, '0')}-${crypto.randomBytes(4).toString('hex')}`;
 }
-
-// Pulls the bare address out of either "Name <a@b.c>" or "a@b.c".
-const domainOf = (a) => String(a || '').split('@')[1] || '';
-
-const addr = (v) => (String(v || '').match(/<([^>]+)>/)?.[1] || String(v || '')).trim().toLowerCase();
 
 const clean = (v, max) => String(v ?? '').trim().slice(0, max);
 
@@ -179,20 +147,13 @@ export default async (req) => {
   }
 
   // ---- 2. Best-effort notification. Never allowed to fail the request. ----
-  let notified = false;
-  // Coarse reason code returned alongside `notified`. It names which branch was
-  // taken and nothing else -- no hostnames, no addresses, no credentials -- so
-  // a misconfiguration is diagnosable from the outside instead of requiring
-  // dashboard access. "notified:false" on its own says something is wrong but
-  // not what, which is the same unhelpful shape as a form that fails silently.
-  let reason = null;
-  let smtpSaid = null;
-  const from = process.env.CONTACT_FROM;
-  // No default. The obvious one -- the same alias CONTACT_FROM sends as -- is a
-  // loop through a forwarding provider and is exactly what produced a 550 here.
-  // An unset CONTACT_TO is a missing setting and should say so, not quietly
-  // construct a destination that cannot work.
-  const to = process.env.CONTACT_TO;
+  //
+  // The send lives in ../lib/notify.mjs, shared with submit-expertise and
+  // notify-sweep. `reason` is a coarse code naming which branch was taken and
+  // nothing else -- no hostnames, no addresses, no credentials -- so a
+  // misconfiguration is diagnosable from outside instead of needing dashboard
+  // access. "notified:false" alone says something is wrong but not what, which
+  // is the same unhelpful shape as a form that fails silently.
   const subject = `Enquiry from ${submission.name || submission.email}`;
   const text = [
     `Name:    ${submission.name || '(not given)'}`,
@@ -203,97 +164,17 @@ export default async (req) => {
     submission.message,
   ].join('\n');
 
-  // SMTP is preferred when configured: it is the mail vendor already paid for
-  // and already covered by this domain's SPF and DKIM, so the notification can
-  // legitimately come from the domain rather than a third party's sending
-  // address. Resend stays as the alternative.
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const apiKey = process.env.RESEND_API_KEY;
+  const { notified, reason, smtpSaid } = await notify({
+    subject,
+    text,
+    replyTo: submission.email,
+    event: 'CONTACT_NOTIFY',
+  });
 
-  if ((smtpHost || apiKey) && !to) {
-    reason = 'no_to';
-    console.error(JSON.stringify({
-      event: 'CONTACT_NOTIFY_MISCONFIGURED',
-      detail: 'A mail provider is configured but CONTACT_TO is not set. It must be the mailbox that receives the notification -- on the SMTP route, an address NOT on the same domain CONTACT_FROM sends from, because a forwarder rejects being asked to feed itself. The submission was stored regardless.',
-    }));
-  } else if ((smtpHost || apiKey) && !from) {
-    // Misconfiguration, not a runtime failure. Say exactly what is wrong and
-    // how to fix it, because the alternative is a rejection that reads as
-    // "email is broken" and costs an afternoon.
-    reason = 'no_from';
-    console.error(JSON.stringify({
-      event: 'CONTACT_NOTIFY_MISCONFIGURED',
-      detail: 'A mail provider is configured but CONTACT_FROM is not. Set it to an address the provider will accept, e.g. "SiegeStack <info@siegestack.com>" for ImprovMX SMTP. The submission was stored regardless.',
-    }));
-  } else if (smtpHost && smtpUser && smtpPass && addr(to) && domainOf(addr(to)) === domainOf(addr(from))) {
-    // Refusing this is correct behaviour, not just diagnosis. ImprovMX is a
-    // FORWARDER: mail sent to the alias is relayed onward, so asking it to send
-    // FROM the alias TO the same alias asks it to feed its own forwarder. It
-    // rejects with 550, and it is right to. CONTACT_TO must be the mailbox the
-    // alias forwards to, not the alias.
-    reason = 'to_equals_from';
-    console.error(JSON.stringify({
-      event: 'CONTACT_NOTIFY_LOOP',
-      detail: 'CONTACT_TO is on the same domain as CONTACT_FROM. Through a forwarding provider that is a loop and is rejected. Set CONTACT_TO to the real destination mailbox. The submission was stored regardless.',
-    }));
-  } else if (smtpHost && smtpUser && smtpPass) {
-    let transport;
-    try {
-      const port = Number(process.env.SMTP_PORT || 587);
-      transport = nodemailer.createTransport({
-        host: smtpHost,
-        port,
-        secure: port === 465,               // 465 is implicit TLS; 587 upgrades via STARTTLS
-        auth: { user: smtpUser, pass: smtpPass },
-        // Every socket stage gets its own bound. Without these nodemailer will
-        // happily wait longer than the function is allowed to live.
-        connectionTimeout: NOTIFY_BUDGET_MS,
-        greetingTimeout: NOTIFY_BUDGET_MS,
-        socketTimeout: NOTIFY_BUDGET_MS,
-      });
-      await withBudget(
-        transport.sendMail({ from, to, replyTo: submission.email, subject, text }),
-        NOTIFY_BUDGET_MS,
-        'smtp',
-      );
-      notified = true;
-    } catch (err) {
-      // Surface nodemailer's own error code and the server's response code.
-      // EAUTH means the credentials were rejected; ESOCKET/ECONNECTION means the
-      // port never opened; ETIMEDOUT means it opened and then sat there. Codes
-      // only -- the message can echo the host and the envelope back at us.
-      reason = 'smtp_' + String(err?.code || 'unknown').toLowerCase() + (err?.responseCode ? '_' + err.responseCode : '');
-      // The server's own words are the only thing that distinguishes one 550
-      // from another. Addresses are stripped before it leaves the building.
-      // \s, not s. Written as [^s<>@] this excluded the LETTER s rather than
-      // whitespace, and since real addresses are full of s the redaction
-      // matched nothing at all -- scott@siegestack.com went out verbatim in a
-      // response anyone can request. Caught by the submit-expertise suite.
-      smtpSaid = String(err?.response || err?.message || '').replace(/[^\s<>@]+@[^\s<>@]+/g, '[address]').slice(0, 160);
-      console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', code: err?.code || null, responseCode: err?.responseCode || null, detail: String(err?.message || err).slice(0, 300) }));
-    } finally {
-      // Leaving the pool open holds the Lambda alive past the response.
-      try { transport?.close(); } catch { /* nothing useful to do */ }
-    }
-  } else if (apiKey) {
-    try {
-      const res = await withBudget(fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ from, to: [to], reply_to: submission.email, subject, text }),
-      }), NOTIFY_BUDGET_MS, 'resend');
-      notified = res.ok;
-      if (!res.ok) { reason = 'http_' + res.status; console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_HTTP', status: res.status })); }
-    } catch (err) {
-      reason = 'resend_failed';
-      console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_ERROR', detail: String(err?.message || err).slice(0, 200) }));
-    }
-  } else {
-    reason = 'no_provider';
-    console.log(JSON.stringify({ event: 'CONTACT_NOTIFY_SKIPPED', reason: 'no SMTP_HOST and no RESEND_API_KEY visible to the function runtime' }));
-  }
+  // The marker is what tells notify-sweep this one is done. Without it the
+  // sweep sends a duplicate an hour later; without the sweep, a send that loses
+  // the race against the 8s budget is never retried at all.
+  if (notified) await markNotified(store(), id, 'CONTACT');
 
   // Stored is what success means here. `notified` is reported for observability,
   // and the page does not change its message based on it — the sender's

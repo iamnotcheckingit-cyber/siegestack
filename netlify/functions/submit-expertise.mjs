@@ -16,14 +16,10 @@
  *   2. THEN attempt a notification, best-effort.
  *   3. Report success on the strength of step 1 alone.
  *
- * DELIBERATE COPY
- * ---------------
- * The notification block below is a copy of the one in contact-api.mjs, not a
- * shared import. That is the same call already made for jesse-api/nicole-api in
- * this repo, and it carries the same obligation: A FIX TO ONE MUST BE APPLIED
- * TO THE OTHER. The alternative -- extracting a module -- meant editing the
- * contact path on the same deploy that first makes this one exist, and that
- * path had just been verified working end to end. Both files carry this notice.
+ * The notification itself is in ../lib/notify.mjs, shared with contact-api.mjs
+ * and notify-sweep.mjs. It was briefly a deliberate copy of the contact
+ * function's block; the third caller ended that argument, and a redaction bug
+ * that had to be fixed twice in one day made the case.
  *
  * Env vars are shared with contact-api.mjs and documented in MAIL.md:
  * SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS, CONTACT_FROM, CONTACT_TO.
@@ -32,19 +28,10 @@
 
 import { getStore } from '@netlify/blobs';
 import crypto from 'node:crypto';
-import nodemailer from 'nodemailer';
+import { notify } from '../lib/notify.mjs';
+import { markNotified } from '../lib/pending.mjs';
 
 export const config = { path: ['/api/expertise'] };
-
-// Kept identical to contact-api.mjs on purpose. 8s is the measured ceiling:
-// ImprovMX handshakes have been observed at 8.6s against Netlify's 10s function
-// limit, so this must not go higher. See MAIL.md, "Option A".
-const NOTIFY_BUDGET_MS = 8000;
-
-const withBudget = (promise, ms, label) => Promise.race([
-  promise,
-  new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms).unref?.()),
-]);
 
 // The identity fields on the form. Everything else posted is a skill rating.
 const MAX = { consultantName: 120, email: 200, phone: 40, bestTimeToCall: 40, timeZone: 20, erpExperience: 200, languagesSpoken: 200 };
@@ -80,8 +67,6 @@ function key() {
   return `matrix/${String(last).padStart(16, '0')}-${crypto.randomBytes(4).toString('hex')}`;
 }
 
-const domainOf = (a) => String(a || '').split('@')[1] || '';
-const addr = (v) => (String(v || '').match(/<([^>]+)>/)?.[1] || String(v || '')).trim().toLowerCase();
 const clean = (v, max) => String(v ?? '').trim().slice(0, max);
 
 // Turns the flat form field name back into something readable. The client
@@ -172,11 +157,7 @@ export default async (req) => {
   }
 
   // ---- 2. Best-effort notification. Never allowed to fail the request. ----
-  let notified = false;
-  let reason = null;
-  let smtpSaid = null;
-  const from = process.env.CONTACT_FROM;
-  const to = process.env.CONTACT_TO;   // No default. See contact-api.mjs and MAIL.md.
+
 
   const rated = Object.entries(skills).filter(([, n]) => n > 0);
   const strongest = rated
@@ -208,83 +189,16 @@ export default async (req) => {
     rated.filter(([, n]) => n >= 3).length > 25 ? '  ...and more; see the stored record.' : '',
   ].filter(Boolean).join('\n');
 
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const apiKey = process.env.RESEND_API_KEY;
+  const { notified, reason, smtpSaid } = await notify({
+    subject,
+    text,
+    replyTo: email,
+    event: 'EXPERTISE_NOTIFY',
+  });
 
-  if ((smtpHost || apiKey) && !to) {
-    reason = 'no_to';
-    console.error(JSON.stringify({
-      event: 'EXPERTISE_NOTIFY_MISCONFIGURED',
-      detail: 'A mail provider is configured but CONTACT_TO is not set. The submission was stored regardless.',
-    }));
-  } else if ((smtpHost || apiKey) && !from) {
-    reason = 'no_from';
-    console.error(JSON.stringify({
-      event: 'EXPERTISE_NOTIFY_MISCONFIGURED',
-      detail: 'A mail provider is configured but CONTACT_FROM is not. The submission was stored regardless.',
-    }));
-  } else if (smtpHost && smtpUser && smtpPass && addr(to) && domainOf(addr(to)) === domainOf(addr(from))) {
-    // Same forwarder loop as contact-api.mjs -- ImprovMX rejects being asked to
-    // feed its own forwarder with a 550, and refusing here is more useful than
-    // letting it fail at the provider.
-    reason = 'to_equals_from';
-    console.error(JSON.stringify({
-      event: 'EXPERTISE_NOTIFY_LOOP',
-      detail: 'CONTACT_TO is on the same domain as CONTACT_FROM. The submission was stored regardless.',
-    }));
-  } else if (smtpHost && smtpUser && smtpPass) {
-    let transport;
-    try {
-      const port = Number(process.env.SMTP_PORT || 587);
-      transport = nodemailer.createTransport({
-        host: smtpHost,
-        port,
-        secure: port === 465,
-        auth: { user: smtpUser, pass: smtpPass },
-        connectionTimeout: NOTIFY_BUDGET_MS,
-        greetingTimeout: NOTIFY_BUDGET_MS,
-        socketTimeout: NOTIFY_BUDGET_MS,
-      });
-      // replyTo, so answering the notification answers the consultant. from
-      // stays the authenticated alias -- sending as the consultant's own domain
-      // would fail SPF and is what CONTACT_FROM exists to prevent.
-      await withBudget(transport.sendMail({ from, to, replyTo: email, subject, text }), NOTIFY_BUDGET_MS, 'smtp');
-      notified = true;
-    } catch (err) {
-      // The outer race rejects with a plain Error carrying no .code, so a
-      // timeout surfaces as smtp_unknown rather than smtp_etimedout. That is
-      // expected and documented in MAIL.md; it is latency, not a credential.
-      reason = 'smtp_' + String(err?.code || 'unknown').toLowerCase() + (err?.responseCode ? '_' + err.responseCode : '');
-      // \s, not s -- see the matching note in contact-api.mjs. The character
-      // class has to exclude whitespace; excluding the letter s makes the
-      // redaction match nothing, because addresses are full of s.
-      smtpSaid = String(err?.response || err?.message || '').replace(/[^\s<>@]+@[^\s<>@]+/g, '[address]').slice(0, 160);
-      console.error(JSON.stringify({ event: 'EXPERTISE_NOTIFY_SMTP_FAILED', code: err?.code || null, responseCode: err?.responseCode || null, detail: String(err?.message || err).slice(0, 300) }));
-    } finally {
-      try { transport?.close(); } catch { /* nothing useful to do */ }
-    }
-  } else if (apiKey) {
-    try {
-      const res = await withBudget(fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ from, to: [to], reply_to: email, subject, text }),
-      }), NOTIFY_BUDGET_MS, 'resend');
-      notified = res.ok;
-      if (!res.ok) { reason = 'http_' + res.status; console.error(JSON.stringify({ event: 'EXPERTISE_NOTIFY_HTTP', status: res.status })); }
-    } catch (err) {
-      reason = 'resend_failed';
-      console.error(JSON.stringify({ event: 'EXPERTISE_NOTIFY_ERROR', detail: String(err?.message || err).slice(0, 200) }));
-    }
-  } else {
-    reason = 'no_provider';
-    console.log(JSON.stringify({ event: 'EXPERTISE_NOTIFY_SKIPPED', reason: 'no SMTP_HOST and no RESEND_API_KEY visible to the function runtime' }));
-  }
+  // Tells notify-sweep this one is done; see contact-api.mjs.
+  if (notified) await markNotified(store(), id, 'EXPERTISE');
 
-  // Stored is what success means. The client only reads response.ok, and the
-  // consultant is told it worked because it did.
   console.log(JSON.stringify({ event: 'EXPERTISE_RECEIVED', id, name: consultantName, rated: rated.length, notified, reason }));
   return json({ ok: true, notified, ...(reason ? { reason } : {}), ...(smtpSaid ? { smtpSaid } : {}) });
 };
