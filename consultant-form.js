@@ -258,7 +258,11 @@ document.getElementById('expertiseForm').addEventListener('submit', async (e) =>
     const data = Object.fromEntries(formData.entries());
     
     try {
-        const response = await fetch('/.netlify/functions/submit-expertise', {
+        // /api/expertise, not /.netlify/functions/submit-expertise. The old
+        // path 404'd for as long as this page has existed -- the function it
+        // named was never written -- so every submission showed the error
+        // message and nothing was kept. See netlify/functions/submit-expertise.mjs.
+        const response = await fetch('/api/expertise', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
