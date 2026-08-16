@@ -45,6 +45,19 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# These two rules live here and NOT in _headers -- see the note at the top of
+# that file for why adding a /*.js rule there would endanger the service workers.
+#
+# A YEAR IS A LONG TIME AND THERE IS NO ETAG ESCAPE FROM IT. Anything these rules
+# match must be requested with a version token, or a returning visitor keeps the
+# copy they already have until 2027. That is not hypothetical: /consultant-form.js
+# was fixed on 2026-08-16 and the fix would have reached first-time visitors only,
+# so consultant-expertise.html now asks for it as ?v=YYYY-MM-DD.
+#
+# /*.css currently matches nothing -- the site has no external stylesheet, every
+# page carries its own <style>. The rule is kept because that could change, and
+# whoever adds the first stylesheet needs to know it will be frozen for a year
+# and needs the same ?v= treatment on the day they add it.
 [[headers]]
   for = "/*.css"
   [headers.values]

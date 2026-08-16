@@ -1,3 +1,20 @@
+# WHAT THIS FILE MIRRORS, AND WHAT IT DELIBERATELY DOES NOT
+#
+# The /secret, /jesse and /nicole blocks below are duplicated from netlify.toml
+# on purpose: they agree so that whichever file wins a conflict, those pages are
+# still noindex and still uncached. Those blocks say so individually.
+#
+# ASSET CACHING IS NOT MIRRORED. netlify.toml carries /*.js and /*.css rules
+# that this file has no equivalent for, and that asymmetry is intentional --
+# do not "fix" it by adding /*.js here. A /*.js rule in this file would put
+# jesse-sw.js and nicole-sw.js in scope, and a service worker cached for a year
+# cannot be replaced by deploying: the browser keeps running the old one. They
+# are saved today by their own more-specific rules, and there is no reason to
+# add a broad rule that they then have to be saved from.
+#
+# Verified live 2026-08-16: consultant-form.js is immutable, jesse-sw.js and
+# nicole-sw.js are no-cache,must-revalidate. The split behaves as intended.
+
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
