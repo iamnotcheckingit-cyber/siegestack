@@ -71,6 +71,14 @@ SMTP_PASS    = the SMTP password from the ImprovMX console
 CONTACT_FROM = SiegeStack <that same alias>
 ```
 
+**`CONTACT_TO` must NOT be the alias itself.** ImprovMX is a forwarder: mail
+sent to the alias is relayed onward. Asking it to send *from* the alias *to*
+the same alias asks it to feed its own forwarder, and it rejects that with
+`550`. Set `CONTACT_TO` to the mailbox the alias actually forwards to.
+
+This cost a deploy cycle to find. The function now refuses the send outright
+when the two resolve to the same address, and reports `reason: to_equals_from`
+rather than letting the provider reject it.
 `CONTACT_TO` is optional and defaults to `info@siegestack.com`. Port 465 also
 works and is selected automatically as implicit TLS; 587 upgrades via STARTTLS.
 
@@ -150,6 +158,30 @@ rather than resend.dev. Not needed at all if you use Option A.
 
 3. **Redeploy.** Changing variable scope does not retroactively fix a deploy
    that was already built.
+
+## Diagnosing it from outside
+
+The endpoint returns a coarse `reason` alongside `notified`, so a
+misconfiguration is one `curl` away rather than a dashboard session:
+
+| `reason` | Meaning |
+|---|---|
+| *(absent, `notified:true`)* | Sent. |
+| `no_provider` | Neither `SMTP_HOST` nor `RESEND_API_KEY` is visible to the function. Usually a Builds-only variable scope, or no rebuild since setting them. |
+| `no_from` | A provider is configured but `CONTACT_FROM` is not. |
+| `to_equals_from` | `CONTACT_TO` is the same address as `CONTACT_FROM`. See above. |
+| `smtp_eauth_535` | Credentials rejected. Wrong SMTP password. |
+| `smtp_esocket*` / `smtp_econnection*` | The port never opened. Wrong host or port. |
+| `smtp_etimedout*` | Opened, then sat there. Gave up at the 6s budget. |
+| `smtp_emessage_550` | The provider refused the envelope — most often the loop above. |
+
+```
+curl -s -X POST https://siegestack.com/api/contact \
+  -H "content-type: application/json" \
+  -d '{"email":"you@example.com","message":"test"}'
+```
+
+It stores a real submission each time, so delete the test entries afterwards.
 
 ## What happens with outbound unwired
 
