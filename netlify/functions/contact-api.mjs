@@ -25,8 +25,28 @@
  *   RESEND_API_KEY    optional. Without it, nothing is emailed and the
  *                     submission is stored anyway. That is a deliberate
  *                     degradation, not a bug.
- *   CONTACT_TO        optional, defaults to info@siegestack.com.
- *   CONTACT_FROM      optional. Must be a domain the mail provider has verified.
+ *   CONTACT_TO        optional, defaults to info@siegestack.com. This is an
+ *                     INBOUND address and ImprovMX forwards it, so it needs no
+ *                     verification anywhere.
+ *   CONTACT_FROM      REQUIRED once RESEND_API_KEY is set. There is deliberately
+ *                     no default, and that is worth explaining.
+ *
+ *                     The obvious default -- info@siegestack.com -- is wrong
+ *                     here. ImprovMX owns the MX record on the root domain, so
+ *                     an outbound provider has to be verified on a SUBDOMAIN
+ *                     (send.siegestack.com) or its bounce MX collides with
+ *                     ImprovMX and breaks inbound forwarding. A provider then
+ *                     rejects any from-address outside the domain it verified.
+ *                     Defaulting to the root address would therefore produce a
+ *                     403 that looks like a mystery, on the one code path whose
+ *                     entire purpose is not failing quietly.
+ *
+ *                     So: set it explicitly, to something like
+ *                     "SiegeStack <hello@send.siegestack.com>", matching
+ *                     whatever domain the provider actually verified.
+ *
+ * Scope all of these to Functions in Netlify. "Builds" is the default and a
+ * build seeing a value says nothing about whether process.env here does.
  */
 
 import { getStore } from '@netlify/blobs';
@@ -96,13 +116,23 @@ export default async (req) => {
   // ---- 2. Best-effort notification. Never allowed to fail the request. ----
   let notified = false;
   const apiKey = process.env.RESEND_API_KEY;
-  if (apiKey) {
+  const from = process.env.CONTACT_FROM;
+
+  if (apiKey && !from) {
+    // Misconfiguration, not a runtime failure. Say exactly what is wrong and
+    // exactly how to fix it, because the alternative is a 403 from the provider
+    // that reads as "email is broken" and costs an afternoon.
+    console.error(JSON.stringify({
+      event: 'CONTACT_NOTIFY_MISCONFIGURED',
+      detail: 'RESEND_API_KEY is set but CONTACT_FROM is not. Set CONTACT_FROM to an address on the domain verified with the provider, e.g. "SiegeStack <hello@send.siegestack.com>". The submission was stored regardless.',
+    }));
+  } else if (apiKey) {
     try {
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
         body: JSON.stringify({
-          from: process.env.CONTACT_FROM || 'SiegeStack <info@siegestack.com>',
+          from,
           to: [process.env.CONTACT_TO || 'info@siegestack.com'],
           reply_to: submission.email,
           subject: `Enquiry from ${submission.name || submission.email}`,
