@@ -85,6 +85,21 @@
   status = 301
   force = true
 
+# The P21 page was promoted to /prophet-21. These 301s carry its equity; they
+# must stay ahead of any catch-all. The original 200-rewrite was removed rather
+# than left in place -- it matched first and resolved to a file that no longer
+# exists, which 404d the best page on the site.
+[[redirects]]
+  from = "/epicor-p21-kinetic-reporting"
+  to = "/prophet-21"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/epicor-p21-kinetic-reporting.html"
+  to = "/prophet-21"
+  status = 301
+  force = true
 [[redirects]]
   from = "/prophet-21"
   to = "/prophet-21.html"
@@ -246,10 +261,6 @@
   to = "/erp-report-slow-month-to-date.html"
   status = 200
 
-[[redirects]]
-  from = "/epicor-p21-kinetic-reporting"
-  to = "/epicor-p21-kinetic-reporting.html"
-  status = 200
 
 [[redirects]]
   from = "/sql-server-erp-performance"
@@ -287,11 +298,6 @@
   status = 301
   force = true
 
-[[redirects]]
-  from = "/epicor-p21-kinetic-reporting.html"
-  to = "/epicor-p21-kinetic-reporting"
-  status = 301
-  force = true
 
 [[redirects]]
   from = "/sql-server-erp-performance.html"
