@@ -63,8 +63,10 @@
             margin-bottom: 5px;
             color: #555;
         }
-        input[type="text"], 
+        input[type="text"],
         input[type="number"],
+        input[type="email"],
+        input[type="tel"],
         select {
             width: 100%;
             padding: 10px;
@@ -158,6 +160,52 @@
             <div class="field-group">
                 <label for="consultantName">Name *</label>
                 <input type="text" id="consultantName" name="consultantName" required>
+            </div>
+
+            <!--
+              Email is required, and was missing entirely until 2026-08-16. The
+              form's whole purpose is matching people to engagements, and
+              without a reply address a completed matrix is unusable -- there
+              was no way to contact the person who filled it in.
+            -->
+            <div class="field-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+
+            <div class="field-group">
+                <label for="phone">Phone (optional)</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Only if you would rather be called than emailed">
+            </div>
+
+            <div class="field-group">
+                <label for="bestTimeToCall">Best time to call (optional)</label>
+                <select id="bestTimeToCall" name="bestTimeToCall">
+                    <option value="">No preference</option>
+                    <option value="Morning (8-11)">Morning (8–11)</option>
+                    <option value="Midday (11-2)">Midday (11–2)</option>
+                    <option value="Afternoon (2-5)">Afternoon (2–5)</option>
+                    <option value="Evening (after 5)">Evening (after 5)</option>
+                </select>
+            </div>
+
+            <!--
+              A call window is ambiguous without this, and consultants on this
+              form are remote by definition. Optional, so it costs nothing when
+              no phone number was given.
+            -->
+            <div class="field-group">
+                <label for="timeZone">Your time zone (optional)</label>
+                <select id="timeZone" name="timeZone">
+                    <option value="">Not given</option>
+                    <option value="ET">Eastern</option>
+                    <option value="CT">Central</option>
+                    <option value="MT">Mountain</option>
+                    <option value="PT">Pacific</option>
+                    <option value="AKT">Alaska</option>
+                    <option value="HT">Hawaii</option>
+                    <option value="Other">Somewhere else</option>
+                </select>
             </div>
 
             <div class="field-group">

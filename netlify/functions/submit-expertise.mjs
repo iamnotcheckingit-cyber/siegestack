@@ -47,7 +47,13 @@ const withBudget = (promise, ms, label) => Promise.race([
 ]);
 
 // The identity fields on the form. Everything else posted is a skill rating.
-const MAX = { consultantName: 120, erpExperience: 200, languagesSpoken: 200 };
+const MAX = { consultantName: 120, email: 200, phone: 40, bestTimeToCall: 40, timeZone: 20, erpExperience: 200, languagesSpoken: 200 };
+
+// Deliberately permissive, matching contact-api.mjs. Rejecting a valid address
+// costs a consultant who just filled in two hundred dropdowns their whole
+// submission, which is far worse than accepting an odd-looking one a human can
+// read. The browser's type="email" is the first pass; this is the backstop.
+const looksLikeEmail = (v) => /^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(v);
 
 // The form generates roughly 200 skill selects today and will grow as the
 // categories do. The cap is a sanity bound against a crafted payload, not a
@@ -97,9 +103,20 @@ export default async (req) => {
   if (entries.length > MAX_FIELDS) return json({ ok: false, error: 'too_many_fields' }, 400);
 
   const consultantName = clean(body.consultantName, MAX.consultantName);
-  // The only field the form marks required. Everything else is genuinely
-  // optional -- a partly-filled matrix from someone real is worth keeping.
   if (!consultantName) return json({ ok: false, error: 'name_required' }, 400);
+
+  // Required since 2026-08-16. Before that the form collected no address at
+  // all, so a completed matrix arrived with no way to answer it.
+  const email = clean(body.email, MAX.email);
+  if (!email) return json({ ok: false, error: 'email_required' }, 400);
+  if (!looksLikeEmail(email)) return json({ ok: false, error: 'email_invalid' }, 400);
+
+  // Optional, and stored as given. No normalising: international formats,
+  // extensions and "text me first" notes are all things a person might type,
+  // and mangling one is worse than storing it verbatim for a human to read.
+  const phone = clean(body.phone, MAX.phone);
+  const bestTimeToCall = clean(body.bestTimeToCall, MAX.bestTimeToCall);
+  const timeZone = clean(body.timeZone, MAX.timeZone);
 
   // yearsInDistribution is <input type="number">, but a number input still
   // posts a string and still posts "" when left blank. Store a number or null
@@ -107,7 +124,13 @@ export default async (req) => {
   const yearsRaw = clean(body.yearsInDistribution, 10);
   const years = yearsRaw === '' || !Number.isFinite(Number(yearsRaw)) ? null : Number(yearsRaw);
 
-  const identity = new Set(['consultantName', 'erpExperience', 'languagesSpoken', 'yearsInDistribution']);
+  // Anything not named here is treated as a skill rating, so a new form field
+  // MUST be added to this set. A phone number that happened to parse as 0-4
+  // would otherwise be filed as a skill.
+  const identity = new Set([
+    'consultantName', 'email', 'phone', 'bestTimeToCall', 'timeZone',
+    'erpExperience', 'languagesSpoken', 'yearsInDistribution',
+  ]);
 
   // Skills arrive as { Field_Name: "0".."4" }. Anything outside that range is
   // dropped rather than rejected: a single unexpected value must not cost the
@@ -123,6 +146,10 @@ export default async (req) => {
 
   const submission = {
     consultantName,
+    email,
+    phone,
+    bestTimeToCall,
+    timeZone,
     erpExperience: clean(body.erpExperience, MAX.erpExperience),
     languagesSpoken: clean(body.languagesSpoken, MAX.languagesSpoken),
     yearsInDistribution: years,
@@ -158,9 +185,17 @@ export default async (req) => {
     .slice(0, 25)
     .map(([k, n]) => `  ${RATINGS[n]}: ${label(k)}`);
 
+  // Only shown when a number was actually given -- a call window with no phone
+  // number is noise, and so is a time zone with no window.
+  const reachBy = [phone, bestTimeToCall && `best ${bestTimeToCall}`, timeZone]
+    .filter(Boolean)
+    .join(', ');
+
   const subject = `Expertise matrix from ${consultantName}`;
   const text = [
     `Name:       ${consultantName}`,
+    `Email:      ${email}`,
+    phone ? `Phone:      ${reachBy}` : 'Phone:      (not given)',
     `ERP exp:    ${submission.erpExperience || '(not given)'}`,
     `Languages:  ${submission.languagesSpoken || '(not given)'}`,
     `Years:      ${years === null ? '(not given)' : years}`,
@@ -171,10 +206,6 @@ export default async (req) => {
     strongest.length ? 'Proficient or Expert:' : 'Nothing rated Proficient or Expert.',
     ...strongest,
     rated.filter(([, n]) => n >= 3).length > 25 ? '  ...and more; see the stored record.' : '',
-    '',
-    // Said plainly because it is the first thing you will want and the form does
-    // not ask for it.
-    'This form collects no email address, so there is no way to reply from here.',
   ].filter(Boolean).join('\n');
 
   const smtpHost = process.env.SMTP_HOST;
@@ -216,7 +247,10 @@ export default async (req) => {
         greetingTimeout: NOTIFY_BUDGET_MS,
         socketTimeout: NOTIFY_BUDGET_MS,
       });
-      await withBudget(transport.sendMail({ from, to, subject, text }), NOTIFY_BUDGET_MS, 'smtp');
+      // replyTo, so answering the notification answers the consultant. from
+      // stays the authenticated alias -- sending as the consultant's own domain
+      // would fail SPF and is what CONTACT_FROM exists to prevent.
+      await withBudget(transport.sendMail({ from, to, replyTo: email, subject, text }), NOTIFY_BUDGET_MS, 'smtp');
       notified = true;
     } catch (err) {
       // The outer race rejects with a plain Error carrying no .code, so a
@@ -236,7 +270,7 @@ export default async (req) => {
       const res = await withBudget(fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ from, to: [to], subject, text }),
+        body: JSON.stringify({ from, to: [to], reply_to: email, subject, text }),
       }), NOTIFY_BUDGET_MS, 'resend');
       notified = res.ok;
       if (!res.ok) { reason = 'http_' + res.status; console.error(JSON.stringify({ event: 'EXPERTISE_NOTIFY_HTTP', status: res.status })); }
