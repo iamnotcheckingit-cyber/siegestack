@@ -21,7 +21,7 @@
  * function's block; the third caller ended that argument, and a redaction bug
  * that had to be fixed twice in one day made the case.
  *
- * Env vars are shared with contact-api.mjs and documented in MAIL.md:
+ * Env vars are shared with contact-api.mjs and documented in docs/MAIL.md:
  * SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS, CONTACT_FROM, CONTACT_TO.
  * Nothing new needs setting for this function to work.
  */

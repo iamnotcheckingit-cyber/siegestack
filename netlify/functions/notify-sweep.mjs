@@ -27,7 +27,7 @@
  * guard it, and it cannot report `notified` in the response the form returns,
  * which is what makes the whole thing diagnosable with one curl. For a
  * consultancy contact form, an hour is cheap and that complexity is not. If
- * immediacy ever matters more, MAIL.md has the trade written up.
+ * immediacy ever matters more, docs/MAIL.md has the trade written up.
  *
  * Scheduled functions get 30 seconds, not 10 -- but that is still a real
  * ceiling, and each send can take 8 of it. See BUDGET below.

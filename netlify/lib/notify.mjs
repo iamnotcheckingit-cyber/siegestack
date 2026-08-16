@@ -11,7 +11,7 @@
  * genuinely identical for every caller, and the bug that made the case was a
  * redaction typo that had to be fixed twice on the same day.
  *
- * CONFIGURATION -- see MAIL.md. Scope every one of these to Functions in
+ * CONFIGURATION -- see docs/MAIL.md. Scope every one of these to Functions in
  * Netlify, not just Builds:
  *
  *   SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS   preferred route (ImprovMX)
