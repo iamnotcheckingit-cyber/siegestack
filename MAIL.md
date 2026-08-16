@@ -6,15 +6,42 @@ Two separate jobs, easy to conflate, and conflating them breaks the working one.
 |---|---|---|
 | Who | ImprovMX | ImprovMX SMTP (same vendor) |
 | Used by | the `mailto:` links across the site | the `/contact` form notification |
-| Status | **working** | **code ready, env vars not set** |
+| Status | **working** | **wired — see below** |
 
 ImprovMX forwards mail *to* you. Forwarding alone does not send mail *for* you
 — but the paid tier adds SMTP, which does, and that is now the recommended
 route because it needs no second vendor and no new DNS.
 
+## Where this stands
+
+Outbound was wired on 2026-08-15 over the course of one long evening. What is
+established, and what is not:
+
+- **The SMTP variables are set in Netlify, scoped to Functions, and the site has
+  been rebuilt since.** `SMTP_PASS` was corrected once during that evening; a
+  rebuild is what carries a changed value into `process.env` inside a function.
+- **The zone was rebuilt** to clear a duplicate `MX` set and a group of records
+  pointing at a `send.siegestack.com` that does not exist. `DNS-SNAPSHOT.md`
+  holds the before-state and the rules that rebuild followed.
+- **The send budget was raised from 6s to 8s** because real ImprovMX handshakes
+  were intermittently exceeding six seconds and losing notifications that would
+  otherwise have gone out.
+- **The SMTP send itself is known to work.** During the 2026-08-15 budget
+  testing, several live submissions were accepted by ImprovMX in under a second
+  — that is what identified the 6s budget as too tight rather than the
+  credentials as wrong. So authentication, the envelope and the loop guard are
+  all past.
+- **What is *not* recorded anywhere is whether the mail then arrived in the
+  destination mailbox.** Acceptance by the provider and delivery to a human are
+  different claims, and only the first one has evidence behind it. The `curl`
+  under "Diagnosing it from outside" re-tests acceptance in one call
+  (`notified:true` with no `reason`); confirming the second means going and
+  looking in the mailbox. Until someone has, leave DMARC where it is.
+
 ## What is provisioned today
 
-Verified against two independent resolvers on 2026-08-15:
+Verified against two independent resolvers on 2026-08-15 and re-verified after
+the zone rebuild on 2026-08-16:
 
 | Record | Value |
 |---|---|
@@ -22,7 +49,12 @@ Verified against two independent resolvers on 2026-08-15:
 | `TXT` (SPF) | `v=spf1 include:spf.improvmx.com ~all` |
 | `CNAME` | `dkimprovmx1._domainkey` → `dkimprovmx1.improvmx.com` |
 | `CNAME` | `dkimprovmx2._domainkey` → `dkimprovmx2.improvmx.com` |
-| `TXT` | `_dmarc` → `v=DMARC1; p=none` |
+| `TXT` | `_dmarc` → `v=DMARC1; p=none;` |
+
+One `MX` pair only, and `send.siegestack.com` is `NXDOMAIN` — both of which are
+the point, per rules 2 and 3 in `DNS-SNAPSHOT.md`. Check both whenever mail
+behaviour goes strange again: the original failure was two `MX` sets coexisting,
+which reads as intermittent rather than broken.
 
 `info@siegestack.com` and `scott@siegestack.com` both deliver.
 
@@ -53,7 +85,7 @@ mail and its SPF and DKIM already cover the domain, so the notification can come
 account, and **no new DNS**, which means no way to disturb the MX records that
 make the forwarding work.
 
-Set five variables in Netlify, **scoped to Functions**, then redeploy.
+Set six variables in Netlify, **scoped to Functions**, then redeploy.
 
 **Do not paste the real values into this file or any other file in the repo.**
 Netlify's secrets scanner fails the build when an env var's value appears in
@@ -69,18 +101,31 @@ SMTP_PORT    = 587
 SMTP_USER    = <the full alias, as shown in the console>
 SMTP_PASS    = the SMTP password from the ImprovMX console
 CONTACT_FROM = SiegeStack <that same alias>
+CONTACT_TO   = <the mailbox that alias forwards to — NOT on siegestack.com>
 ```
 
-**`CONTACT_TO` must NOT be the alias itself.** ImprovMX is a forwarder: mail
-sent to the alias is relayed onward. Asking it to send *from* the alias *to*
-the same alias asks it to feed its own forwarder, and it rejects that with
-`550`. Set `CONTACT_TO` to the mailbox the alias actually forwards to.
+**`CONTACT_TO` is required and has no default.** An earlier version of this file
+said it was optional and fell back to `info@siegestack.com`. That default is
+what produced the `550`, so the function no longer has one: with a provider
+configured and `CONTACT_TO` unset it declines to send and reports
+`reason: no_to` rather than quietly constructing a destination that cannot work.
 
-This cost a deploy cycle to find. The function now refuses the send outright
-when the two resolve to the same address, and reports `reason: to_equals_from`
-rather than letting the provider reject it.
-`CONTACT_TO` is optional and defaults to `info@siegestack.com`. Port 465 also
-works and is selected automatically as implicit TLS; 587 upgrades via STARTTLS.
+The reason the obvious default is wrong: ImprovMX is a forwarder. Mail sent to
+the alias is relayed onward, so asking it to send *from* the alias *to* an
+address it forwards asks it to feed its own forwarder, and it rejects that.
+
+**The guard is the whole domain, not just the one address.** Setting
+`CONTACT_TO` to `scott@siegestack.com` while sending from `info@siegestack.com`
+is the same loop and is refused the same way — the function compares the domain
+of each and reports `reason: to_equals_from` (the code name is narrower than the
+check). `CONTACT_TO` has to be a mailbox somewhere else entirely, which is the
+address the alias forwards to anyway.
+
+That guard applies to the SMTP path only. Under Option B or C the destination
+never passes back through ImprovMX, so a `siegestack.com` address is fine there.
+
+Port 465 also works and is selected automatically as implicit TLS; 587 upgrades
+via STARTTLS.
 
 SMTP takes precedence over Resend when both are configured.
 
@@ -91,12 +136,23 @@ the request dies *after* the submission was stored, and the page tells the
 sender it failed when it did not — the worst outcome available, because it
 invites them to give up on a message you are holding.
 
-So the notification gets a hard 6-second budget, enforced both by nodemailer's
-own connection/greeting/socket timeouts and by an outer race, and the transport
-is closed in a `finally`. A timeout set at or above the platform ceiling can
-never fire; that is exactly how this went wrong on the other site. Tested by
-making the transport hang for 60 seconds: it gave up at 6.6s, the request
-returned 200, and the submission was stored.
+So the notification gets a hard **8-second** budget, enforced both by
+nodemailer's own connection/greeting/socket timeouts and by an outer race, and
+the transport is closed in a `finally`. A timeout set at or above the platform
+ceiling can never fire; that is exactly how this went wrong on the other site.
+
+The mechanism was tested at the original 6s setting by making the transport hang
+for 60 seconds: it gave up at 6.6s, the request returned 200, and the submission
+was stored — so the outer race costs about 0.6s beyond the budget it enforces,
+and 8s lands near 8.6s worst case, inside the 10s ceiling.
+
+**It is 8s rather than 6s because 6s was measurably too tight.** ImprovMX
+intermittently takes longer than six seconds to complete a handshake on a cold
+connection, and the tighter budget was dropping notifications that would have
+been delivered. Raising it trades headroom for reliability in the safe
+direction: a timeout here costs a missed page, never a lost submission, because
+the durable write has already happened by the time any of this runs. Do not
+raise it further without re-checking that ceiling.
 
 ### Option B — Resend with no DNS at all
 
@@ -138,13 +194,14 @@ rather than resend.dev. Not needed at all if you use Option A.
    Add these to the **subdomain**. Do not touch the root records in the table
    above.
 
-2. **Set two Netlify environment variables, scoped to Functions** (not just
+2. **Set three Netlify environment variables, scoped to Functions** (not just
    Builds — the build seeing a value tells you nothing about `process.env`
    inside a function, and that trap has cost an evening before):
 
    ```
    RESEND_API_KEY = re_...
    CONTACT_FROM   = SiegeStack <hello@send.siegestack.com>
+   CONTACT_TO     = info@siegestack.com
    ```
 
    `CONTACT_FROM` has **no default on purpose**. The obvious one —
@@ -153,8 +210,11 @@ rather than resend.dev. Not needed at all if you use Option A.
    function refuses to attempt the send and logs
    `CONTACT_NOTIFY_MISCONFIGURED` naming the fix.
 
-   `CONTACT_TO` is optional and defaults to `info@siegestack.com`. That one is
-   inbound, ImprovMX forwards it, and it needs no verification.
+   `CONTACT_TO` is **required and has no default either**, for the reason given
+   under Option A. `info@siegestack.com` is the right value *here* though: it is
+   an inbound address, ImprovMX forwards it, it needs no verification, and the
+   same-domain loop guard does not apply on this path because the mail leaves
+   through Resend rather than back through the forwarder.
 
 3. **Redeploy.** Changing variable scope does not retroactively fix a deploy
    that was already built.
@@ -168,12 +228,23 @@ misconfiguration is one `curl` away rather than a dashboard session:
 |---|---|
 | *(absent, `notified:true`)* | Sent. |
 | `no_provider` | Neither `SMTP_HOST` nor `RESEND_API_KEY` is visible to the function. Usually a Builds-only variable scope, or no rebuild since setting them. |
+| `no_to` | A provider is configured but `CONTACT_TO` is not. It has no default — see Option A. |
 | `no_from` | A provider is configured but `CONTACT_FROM` is not. |
-| `to_equals_from` | `CONTACT_TO` is the same address as `CONTACT_FROM`. See above. |
+| `to_equals_from` | `CONTACT_TO` is on the same *domain* as `CONTACT_FROM`. SMTP path only. See above. |
 | `smtp_eauth_535` | Credentials rejected. Wrong SMTP password. |
 | `smtp_esocket*` / `smtp_econnection*` | The port never opened. Wrong host or port. |
-| `smtp_etimedout*` | Opened, then sat there. Gave up at the 6s budget. |
+| `smtp_etimedout*` | Opened, then sat there. Gave up at the 8s budget. |
 | `smtp_emessage_550` | The provider refused the envelope — most often the loop above. |
+| `http_<status>` | Resend path only. Resend answered with that status. |
+| `resend_failed` | Resend path only. The request threw or outran the budget. |
+
+The codes are checked in that order, so `no_to` masks `no_from` when both are
+unset — fix them together rather than one per deploy.
+
+SMTP failures also return **`smtpSaid`**: up to 160 characters of the mail
+server's own response, with anything that looks like an address stripped out.
+It is the only thing that distinguishes one `550` from another, and it is worth
+reading before theorising.
 
 ```
 curl -s -X POST https://siegestack.com/api/contact \
@@ -198,6 +269,12 @@ function logs are the interim inbox.
 ## Worth doing later
 
 `_dmarc` is `p=none`, which is monitor-only: it publishes a policy and asks
-receivers to do nothing about failures. That is the correct setting while you
-are still adding senders. Once outbound is verified and stable, tighten it to
-`p=quarantine` — until then the domain is not actually protected from spoofing.
+receivers to do nothing about failures. **It was `p=quarantine` before the
+2026-08-15 zone rebuild and was deliberately relaxed** — quarantine tells
+receivers to hold anything failing alignment, which is the wrong instruction
+while DKIM is being re-established (`DNS-SNAPSHOT.md`, rule 4). So this is a
+knowing, temporary setting, not an oversight.
+
+Tighten it back to `p=quarantine` once a notification has been confirmed
+delivered and DKIM has been passing for a while — until then the domain is not
+actually protected from spoofing, and that is the accepted trade.

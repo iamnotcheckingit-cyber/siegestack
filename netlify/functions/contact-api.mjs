@@ -37,29 +37,39 @@
  *                     configured. With neither set, nothing is emailed and the
  *                     submission is stored anyway. That is a deliberate
  *                     degradation, not a bug.
- *   CONTACT_TO        REQUIRED once a provider is set, and it has NO default.
- *                     It is the mailbox that receives the notification.
+ *   CONTACT_TO        REQUIRED once EITHER provider is set, and it has NO
+ *                     default. It is the mailbox that receives the
+ *                     notification.
  *
- *                     It must NOT be the same alias CONTACT_FROM sends as. A
- *                     forwarder relays mail addressed to the alias onward, so
- *                     alias-to-alias asks it to feed its own forwarder and is
- *                     rejected with 550. Use the real destination mailbox.
- *   CONTACT_FROM      REQUIRED once RESEND_API_KEY is set. There is deliberately
- *                     no default, and that is worth explaining.
+ *                     On the SMTP route it must not be an address on the
+ *                     sending domain at all -- not just the alias itself. A
+ *                     forwarder relays mail addressed to its domain onward, so
+ *                     sending there asks it to feed its own forwarder and is
+ *                     rejected with 550. The check below is therefore
+ *                     domain-to-domain; `to_equals_from` names it more narrowly
+ *                     than it behaves. Use a mailbox somewhere else entirely,
+ *                     which is where the alias forwards anyway.
+ *   CONTACT_FROM      REQUIRED once EITHER provider is set -- SMTP_HOST or
+ *                     RESEND_API_KEY. There is deliberately no default, and
+ *                     that is worth explaining, because the right value differs
+ *                     by route and the wrong one fails in a confusing way.
  *
- *                     The obvious default -- info@siegestack.com -- is wrong
- *                     here. ImprovMX owns the MX record on the root domain, so
- *                     an outbound provider has to be verified on a SUBDOMAIN
+ *                     On the SMTP route it SHOULD be info@siegestack.com: that
+ *                     is the alias ImprovMX authenticates, and this domain's
+ *                     SPF and DKIM already cover it. This is what ships today.
+ *
+ *                     On the Resend route that same address is wrong. ImprovMX
+ *                     owns the MX record on the root domain, so a third-party
+ *                     sender has to be verified on a SUBDOMAIN
  *                     (send.siegestack.com) or its bounce MX collides with
- *                     ImprovMX and breaks inbound forwarding. A provider then
- *                     rejects any from-address outside the domain it verified.
- *                     Defaulting to the root address would therefore produce a
- *                     403 that looks like a mystery, on the one code path whose
+ *                     ImprovMX and breaks inbound forwarding -- and the
+ *                     provider then rejects any from-address outside the domain
+ *                     it verified. A root-domain default would produce a 403
+ *                     that looks like a mystery, on the one code path whose
  *                     entire purpose is not failing quietly.
  *
- *                     So: set it explicitly, to something like
- *                     "SiegeStack <hello@send.siegestack.com>", matching
- *                     whatever domain the provider actually verified.
+ *                     No default can be right for both, so there is none. Set
+ *                     it explicitly to match the route in use.
  *
  * Scope all of these to Functions in Netlify. "Builds" is the default and a
  * build seeing a value says nothing about whether process.env here does.
@@ -198,7 +208,7 @@ export default async (req) => {
     reason = 'no_to';
     console.error(JSON.stringify({
       event: 'CONTACT_NOTIFY_MISCONFIGURED',
-      detail: 'A mail provider is configured but CONTACT_TO is not set. It must be the mailbox that receives the notification -- through a forwarder, NOT the same alias CONTACT_FROM sends as. The submission was stored regardless.',
+      detail: 'A mail provider is configured but CONTACT_TO is not set. It must be the mailbox that receives the notification -- on the SMTP route, an address NOT on the same domain CONTACT_FROM sends from, because a forwarder rejects being asked to feed itself. The submission was stored regardless.',
     }));
   } else if ((smtpHost || apiKey) && !from) {
     // Misconfiguration, not a runtime failure. Say exactly what is wrong and
