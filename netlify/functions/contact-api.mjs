@@ -206,8 +206,12 @@ export default async (req) => {
       );
       notified = true;
     } catch (err) {
-      reason = 'smtp_failed';
-      console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', detail: String(err?.message || err).slice(0, 200) }));
+      // Surface nodemailer's own error code and the server's response code.
+      // EAUTH means the credentials were rejected; ESOCKET/ECONNECTION means the
+      // port never opened; ETIMEDOUT means it opened and then sat there. Codes
+      // only -- the message can echo the host and the envelope back at us.
+      reason = 'smtp_' + String(err?.code || 'unknown').toLowerCase() + (err?.responseCode ? '_' + err.responseCode : '');
+      console.error(JSON.stringify({ event: 'CONTACT_NOTIFY_SMTP_FAILED', code: err?.code || null, responseCode: err?.responseCode || null, detail: String(err?.message || err).slice(0, 300) }));
     } finally {
       // Leaving the pool open holds the Lambda alive past the response.
       try { transport?.close(); } catch { /* nothing useful to do */ }
