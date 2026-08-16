@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>The config was mine and the fix on paper was still wrong | SiegeStack</title>
+    <meta name="description" content="A delivery and configuration audit run against this site. What reading the config concluded, what probing the live system showed, and why the remedy written from the config would have caused the fault it was meant to prevent.">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/delivery-config-audit">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://siegestack.com/delivery-config-audit">
+    <meta property="og:title" content="The config was mine and the fix on paper was still wrong | SiegeStack">
+    <meta property="og:description" content="A delivery and configuration audit run against this site. What reading the config concluded, what probing the live system showed, and why the remedy written from the config would have caused the fault it was meant to prevent.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/delivery-config-audit">
+    <meta name="twitter:title" content="The config was mine and the fix on paper was still wrong | SiegeStack">
+    <meta name="twitter:description" content="A delivery and configuration audit run against this site. What reading the config concluded, what probing the live system showed, and why the remedy written from the config would have caused the fault it was meant to prevent.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Insights", "item": "https://siegestack.com/insights"},
+            {"@type": "ListItem", "position": 3, "name": "The config was mine and the fix on paper was still wrong", "item": "https://siegestack.com/delivery-config-audit"}
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "The config was mine and the fix on paper was still wrong",
+        "description": "A delivery and configuration audit run against this site. What reading the config concluded, what probing the live system showed, and why the remedy written from the config would have caused the fault it was meant to prevent.",
+        "url": "https://siegestack.com/delivery-config-audit",
+        "datePublished": "2026-08-16",
+        "inLanguage": "en-US",
+        "author": {"@type": "Person", "name": "Scott Allen Willis"},
+        "publisher": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com/"},
+        "mainEntityOfPage": {"@type": "WebPage", "@id": "https://siegestack.com/delivery-config-audit"}
+    }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy-dark: #0a192f;
+            --navy: #112240;
+            --blue-accent: #64ffda;
+            --slate: #8892b0;
+            --light-slate: #a8b2d1;
+            --lightest-slate: #ccd6f6;
+            --white: #e6f1ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--navy-dark);
+            color: var(--lightest-slate);
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-links a {
+            color: var(--light-slate);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 2rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue-accent);
+        }
+
+        .hero {
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+            background: var(--navy);
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: var(--slate);
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        h2 {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--light-slate);
+        }
+
+        ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: var(--light-slate);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            color: var(--blue-accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .last-updated {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(100, 255, 218, 0.1);
+            color: var(--slate);
+            font-style: italic;
+        }
+
+        footer {
+            background: var(--navy-dark);
+            border-top: 1px solid rgba(100, 255, 218, 0.1);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .content {
+                padding: 3rem 1.5rem;
+            }
+        }
+    
+        /* Site footer — shared across pages. Uses only the four custom properties
+           every page defines (--navy-dark, --slate, --blue-accent, --white), so it
+           renders identically everywhere without a shared stylesheet. */
+        .site-footer { background: var(--navy-dark); border-top: 1px solid rgba(100,255,218,0.1); padding: 3rem 2rem 2rem; }
+        .foot-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .foot-grid h3 { color: var(--white); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem; font-weight: 600; }
+        .foot-grid a { display: block; color: var(--slate); text-decoration: none; font-size: .9rem; margin-bottom: .5rem; }
+        .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
+        .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
+        .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+
+      /* Nav CTA and mobile menu — added with the canonical nav block. Values
+         copied from index.html so the chrome is identical across the site. */
+      .btn { display: inline-block; padding: .75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: all .2s; cursor: pointer; border: none; font-size: .9rem; }
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright, #57cbff); transform: translateY(-2px); }
+      .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+      .mobile-menu-btn { display: none; background: none; border: none; color: var(--light-slate); font-size: 1.5rem; cursor: pointer; }
+      @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } }
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/prophet-21">Prophet 21</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
+            <a href="/about">About</a>
+            <a href="/#faq">FAQ</a>
+            <a href="/contact" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    </nav>
+
+    <div class="hero">
+        <h1>The config was mine and the fix on paper was still wrong</h1>
+        <p>A delivery and configuration audit, run against this site.</p>
+    </div>
+
+    <div class="content">
+<div class="om-track">
+
+                <p class="om-lead">A delivery and configuration audit asks a narrow question: does the running system behave the way its configuration says it does? The interesting answer is usually no, and the reason this class of fault survives is that nothing reports it. There is no error, no failed build and no alert. The config is readable and looks correct. The site returns 200.</p>
+
+                <p>The worked example below is this site, audited on 16 August 2026. It is used here instead of a client engagement for one reason: <strong>the finding is that the auditor was wrong</strong>, and that is not something worth demonstrating with somebody else's system. The config was mine, I had written it, and reading it still produced a remedy that would have caused the fault it was meant to prevent.</p>
+
+                <h2>What reading the config concluded</h2>
+
+                <p>This site sets HTTP headers in two places: <code>netlify.toml</code> and a <code>_headers</code> file. The <code>_headers</code> file states three times, in comments, that it deliberately mirrors <code>netlify.toml</code> &mdash; the two agree so that whichever one wins a conflict, the private pages stay uncached and unindexed.</p>
+
+                <p>They had drifted. <code>netlify.toml</code> carried rules caching every <code>.js</code> and <code>.css</code> file for a year; <code>_headers</code> had no equivalent. So the audit wrote the obvious remediation item: <em>add the missing rules to</em> <code>_headers</code> <em>so the two files agree again.</em> It was filed with a severity, a file list, and a note about why it mattered.</p>
+
+                <p>Every part of that reasoning is defensible from the source. It is also wrong.</p>
+
+                <h2>What probing the live system showed</h2>
+
+                <p>Three requests, against production rather than the repository:</p>
+
+                <div class="om-table-wrap">
+                <table class="om-table">
+                    <thead><tr><th>Asset</th><th>Live <code>Cache-Control</code></th></tr></thead>
+                    <tbody>
+                        <tr><td>A page script</td><td><code>public, max-age=31536000, immutable</code></td></tr>
+                        <tr><td>Service worker (thread one)</td><td><code>no-cache, must-revalidate</code></td></tr>
+                        <tr><td>Service worker (thread two)</td><td><code>no-cache, must-revalidate</code></td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <p>The service workers were already correct. Their own more specific rules were winning over the broad one, exactly as intended. <strong>There was no defect.</strong> The two files had diverged and the divergence was harmless, which is a state a config diff cannot distinguish from the other kind.</p>
+
+                <h2>Why the written remedy was the dangerous part</h2>
+
+                <p>Adding a blanket <code>.js</code> rule to the second file would have brought both service workers into scope of a year-long immutable cache.</p>
+
+                <p>A service worker cached for a year cannot be fixed by deploying. The browser keeps running the copy it already has, so the next deploy does not replace it, and neither does the one after that. The bug would have outlived every subsequent fix, on the two pages where it is least visible, and the symptom &mdash; a page that works for new visitors and is stale for returning ones &mdash; is the kind that gets attributed to the user's browser.</p>
+
+                <p>So the audit item, written from a correct reading of the configuration, would have manufactured an outage-class fault in a system that was working. The only thing that separated those two outcomes was making three requests.</p>
+
+                <h2>What the finding actually was</h2>
+
+                <p>Something real was underneath it, and it was smaller and duller than the item claimed: <strong>nothing in either file recorded why the asymmetry existed.</strong> The mirroring comments were scoped to the private-page blocks, and asset caching was never mirrored on purpose &mdash; but that had never been written down, so the next person to read the two files would reach the same conclusion and might act on it.</p>
+
+                <p>The fix was documentation, in both files, naming the service-worker hazard so the tempting change is refused by whoever considers it next. No rule moved. Every changed line begins with a comment marker.</p>
+
+                <h2>The general shape</h2>
+
+                <p>This is not an argument that configuration review is useless. It found the asymmetry; nothing else would have. It is an argument about ordering:</p>
+
+                <ul>
+                    <li><strong>Config review finds candidates. It cannot grade them.</strong> &ldquo;These two files disagree&rdquo; is a fact about the files. Whether that disagreement reaches production is a fact about the running system, and the two are not related by inspection.</li>
+                    <li><strong>A remediation item is a proposed change, and proposed changes need testing too.</strong> An audit that ships a backlog without probing has shipped untested changes with a delay fuse. They are more dangerous than ordinary untested changes, because they arrive with the authority of a review attached.</li>
+                    <li><strong>The failure is invisible from inside the audit.</strong> Nothing in reading the config told me the item was wrong. It read as one of the clearer findings in the set.</li>
+                </ul>
+
+                <p>The same pass found three faults the live system did confirm: a form posting to an endpoint that had never existed and returned 404 on every submission, a published figure that a generated file was faithfully reproducing from a stale source, and a script cached for a year with no version token, so a fix would have reached first-time visitors only. Those were real. The one that was written most confidently was the one that was wrong.</p>
+
+                <h2>What a live probe cannot tell you</h2>
+
+                <p>Stated plainly, because an audit method that only lists its strengths is the thing this page is arguing against:</p>
+
+                <ul>
+                    <li>It sees the current deploy, not intent. A header that is correct today because of a rule someone added by accident still reads as correct.</li>
+                    <li>It cannot see what a crawler or a cache holds. What Google fetched last week is answerable only from that provider's own tooling.</li>
+                    <li>It cannot prove a negative about paths it did not request. Coverage is a list you have to build deliberately.</li>
+                    <li>Probing a production system is itself an action. Anything that writes &mdash; a form submission, a test enquiry &mdash; leaves records that have to be cleaned up, and that has to be planned before the first request rather than after.</li>
+                </ul>
+
+                <h2>How this gets run</h2>
+
+                <p>Config first, to build the candidate list and know what the system claims. Then requests against the running system for every claim that can be checked with one. Then the two are compared, and only findings that survive both become items. Anything that cannot be settled from outside is written down as unverified with the specific check that would settle it, rather than being graded on likelihood.</p>
+
+                <p>The full report from this pass is published, including the corrections trail and the section recording that the remedy above was wrong. Most of its verdicts are refutations, which is the ordinary outcome of checking claims rather than collecting them.</p>
+
+                <p style="margin-top:1.4rem"><a href="/audit">Read the full audit report &rarr;</a></p>
+
+            </div>
+        <h2>Related</h2>
+        <p><a href="/audit">The full audit report</a> &middot; <a href="/services/security-access-audit">Security &amp; access audit</a> &middot; <a href="/case-studies">Case studies</a></p>
+        <p><a href="/contact">Recognise any of these?</a></p>
+    </div>
+
+    <footer class="site-footer">
+        <div class="foot-grid">
+            <div>
+                <h3>Solutions</h3>
+                <a href="/services/erp-integration">ERP integration</a>
+                <a href="/services/etl-data-pipelines">ETL &amp; pipelines</a>
+                <a href="/services/bi-dashboards">BI dashboards</a>
+                <a href="/services/automated-reporting">Automated reporting</a>
+                <a href="/services/performance-tuning">Performance tuning</a>
+                <a href="/services/security-access-audit">Security &amp; access audit</a>
+            </div>
+            <div>
+                <h3>Platforms &amp; Work</h3>
+                <a href="/prophet-21">Prophet 21 &amp; Kinetic</a>
+                <a href="/sql-server-erp-performance">SQL Server performance</a>
+                <a href="/industries/distribution">For distributors</a>
+                <a href="/case-studies">Case studies</a>
+                <a href="/insights">Insights</a>
+            </div>
+            <div>
+                <h3>Company</h3>
+                <a href="/about">About</a>
+                <a href="/#process">Process</a>
+                <a href="/#faq">FAQ</a>
+                <a href="/contact">Contact</a>
+                <a href="/privacy-policy">Privacy policy</a>
+            </div>
+        </div>
+        <div class="foot-bottom">
+            <p>&copy; 2026 SiegeStack. All rights reserved.</p>
+            <p><a href="mailto:info@siegestack.com">info@siegestack.com</a> &middot; Remote, working with distribution and manufacturing operations &middot; <a href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">GitHub</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Same handler as index.html. Without it the button renders on a phone
+        // and does nothing, which is how it shipped on several pages before.
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function () {
+            const links = document.querySelector('.nav-links');
+            if (links.style.display === 'flex') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'flex';
+                links.style.flexDirection = 'column';
+                links.style.position = 'absolute';
+                links.style.top = '100%';
+                links.style.left = '0';
+                links.style.right = '0';
+                links.style.background = 'rgba(10, 25, 47, 0.98)';
+                links.style.padding = '1rem';
+                links.style.gap = '1rem';
+            }
+        });
+    </script>
+</body>
+</html>
