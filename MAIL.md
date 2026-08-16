@@ -5,8 +5,8 @@ Two separate jobs, easy to conflate, and conflating them breaks the working one.
 | | Inbound (receiving) | Outbound (sending) |
 |---|---|---|
 | Who | ImprovMX | ImprovMX SMTP (same vendor) |
-| Used by | the `mailto:` links across the site | the `/contact` form notification |
-| Status | **working** | **wired — see below** |
+| Used by | the `mailto:` links across the site | the `/contact` and `/api/expertise` form notifications |
+| Status | **working** | **working** — delivery confirmed 2026-08-16 |
 
 ImprovMX forwards mail *to* you. Forwarding alone does not send mail *for* you
 — but the paid tier adds SMTP, which does, and that is now the recommended
@@ -33,12 +33,12 @@ established, and what is not:
   problem.** The third of those three exceeded the 8s budget. See the budget
   discussion under Option A — the number cannot go higher, so either the misses
   are accepted or the notification moves off the request path.
-- **What is *not* recorded anywhere is whether the mail then arrived in the
-  destination mailbox.** Acceptance by the provider and delivery to a human are
-  different claims, and only the first one has evidence behind it. The `curl`
-  under "Diagnosing it from outside" re-tests acceptance in one call
-  (`notified:true` with no `reason`); confirming the second means going and
-  looking in the mailbox. Until someone has, leave DMARC where it is.
+- **Delivery is confirmed.** The 2026-08-16 test notifications arrived in the
+  destination mailbox. Acceptance by the provider and delivery to a human are
+  different claims and both now have evidence behind them, so the chain is good
+  end to end: SPF, DKIM, the envelope, the forwarder and the mailbox.
+  `notified:true` in a response can from here be read as "it got there",
+  which was not a safe reading before.
 
 ## What is provisioned today
 
@@ -309,6 +309,21 @@ receivers to hold anything failing alignment, which is the wrong instruction
 while DKIM is being re-established (`DNS-SNAPSHOT.md`, rule 4). So this is a
 knowing, temporary setting, not an oversight.
 
-Tighten it back to `p=quarantine` once a notification has been confirmed
-delivered and DKIM has been passing for a while — until then the domain is not
-actually protected from spoofing, and that is the accepted trade.
+**The first condition is now met: delivery was confirmed 2026-08-16.** What is
+left is the "for a while" part. The zone was rebuilt on 2026-08-15, so DKIM has
+one day of history behind it, and `p=quarantine` instructs receivers to hold
+anything failing alignment — including mail from a sender nobody remembered was
+there. Give it a week of ordinary traffic first, then set:
+
+```
+_dmarc  TXT  v=DMARC1; p=quarantine
+```
+
+Netlify DNS cannot edit a record in place — it has to be deleted and recreated,
+which is a moment where the zone has no DMARC record at all. That is harmless
+for a minute and is not worth avoiding, but do it deliberately rather than
+discovering it halfway through.
+
+Consider adding `rua=mailto:` first and reading a week of aggregate reports.
+That turns "I think everything is aligned" into a list of every sender using
+this domain, which is the actual question `p=quarantine` is betting on.
