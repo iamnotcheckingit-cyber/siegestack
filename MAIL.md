@@ -39,9 +39,41 @@ Use `send.siegestack.com`. The root keeps ImprovMX; the subdomain gets the
 sender. DKIM selectors do not collide either way (`resend._domainkey` vs
 `dkimprovmx1/2._domainkey`), so DKIM is not the risk here — the MX is.
 
-## Wiring outbound (Resend)
+## Wiring outbound — the short way first
 
-The function already speaks Resend. Two steps and it starts notifying.
+**ImprovMX being set up does not contribute to this.** It is inbound. Outbound
+is a separate provider. (ImprovMX's paid tier does include SMTP sending, which
+would avoid a second vendor entirely — but a Netlify Function cannot speak raw
+SMTP without adding a library, so it is not the cheap option here.)
+
+### Option A — no DNS at all (start here)
+
+Resend lets you send from its own `onboarding@resend.dev` address **to the email
+you signed up with**, without verifying any domain. For a notification that only
+ever goes to you, that is the entire requirement.
+
+1. Create a Resend account using the address you want notifications at.
+2. Copy an API key.
+3. Set three variables in Netlify, **scoped to Functions**, and redeploy:
+
+   ```
+   RESEND_API_KEY = re_...
+   CONTACT_FROM   = SiegeStack <onboarding@resend.dev>
+   CONTACT_TO     = the address you signed up with
+   ```
+
+That is it. **No DNS records, so no possibility of disturbing the ImprovMX MX
+records** and no chance of breaking the forwarding that already works.
+
+The limits: it can only deliver to your own account address, and the From line
+says `resend.dev`. Neither matters for a message from your own server to you.
+Worth confirming the current free-tier terms in the dashboard rather than
+trusting this file — providers change these.
+
+### Option B — your own domain on the From line
+
+Only needed if notifications must come *from* siegestack.com, or go to someone
+other than you.
 
 1. **Verify `send.siegestack.com` in Resend.** It will give you three records to
    add — copy the values from its dashboard, they are account and region
