@@ -78,7 +78,7 @@ Read the case study →](https://siegestack.com/working-with-claude-blog)
 
 
 
-~27%
+[~27%](https://siegestack.com/working-with-claude-blog#perf-gain)
 
 
 performance gain
@@ -87,7 +87,7 @@ performance gain
 
 
 
-300+
+[300+](https://siegestack.com/working-with-claude-blog#perf-gain)
 
 
 views audited
@@ -96,7 +96,7 @@ views audited
 
 
 
-B → A+
+[B → A+](https://siegestack.com/working-with-claude-blog#security-grade)
 
 
 security grade, one site
@@ -105,7 +105,7 @@ security grade, one site
 
 
 
-99%+
+[99%+](https://siegestack.com/working-with-claude-blog#macros)
 
 
 automation match rate
@@ -127,7 +127,7 @@ automation match rate
 
 ### What We Build
 
-Solutions that solve real problems and deliver measurable results. Worked examples with real numbers are in the [case study](https://siegestack.com/working-with-claude-blog). Larger multi-site engagements are described under [operations modernization](https://siegestack.com/operations-modernization). Running Epicor? Start with [P21 & Kinetic reporting](https://siegestack.com/epicor-p21-kinetic-reporting) or [SQL Server performance](https://siegestack.com/sql-server-erp-performance).
+Solutions that solve real problems and deliver measurable results. Worked examples with real numbers are in the [case study](https://siegestack.com/working-with-claude-blog). Larger multi-site engagements are described under [operations modernization](https://siegestack.com/operations-modernization). Running Epicor? Start with [P21 & Kinetic reporting](https://siegestack.com/prophet-21) or [SQL Server performance](https://siegestack.com/sql-server-erp-performance).
 
 
 
@@ -575,162 +575,33 @@ Everything below is anonymised. No client or employer is named, no client data a
 
 Case 01
 
+### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console)
 
+Two audiences, two trust levels. Cost-bearing reports are refused to floor displays at the report-definition layer, not the render layer.
 
-### A KPI console for people who were reading the operation from memory
-
-
-**The situation.** An operations team ran receiving, picking and purchasing on a SQL Server–backed ERP. Operational questions — is receiving keeping up, are we paying what the purchase order said, who picked what yesterday — were answered by whoever had been there longest. The data existed. Nothing assembled it.
-
-
-
-**What was built.** A reporting console with two audiences and two very different trust levels. Supervisors get the full set in a browser. The floor gets a subset on wall-mounted displays, driven by scoped display tokens.
-
-
-
-That split turned out to be the design constraint that mattered. Several reports carry cost and margin. A screen on an operations floor is visible to everyone who walks past it, including visitors and contractors. So report definitions carry a flag: anything with dollars in it is backend-only, the server refuses to attach it to a display token, and it is never listed in the publicly enumerable set. The restriction lives in the report definition rather than in the page that renders it, because the page is the thing most likely to be rewritten later by someone who does not know the rule.
-
-
-
-**The receiving metrics.** Volume was the easy part. The ones that changed conversations:
-
-
-
-
-
-| Metric | What it measures, and the modelling decision behind it |
-
-
-| Purchase price variance | Receipt cost minus purchase-order line cost. Positive means the business paid above what the PO said. This is the number that gets attention, because it is the gap between what purchasing agreed and what accounts payable will actually be billed. |
-
-| On-time percentage | Receipt date against the due date, preferring promise date, then required, then original. Lines with *no* due date are excluded from the ratio rather than silently counted as on time — an undated line is missing data, not a success, and rolling it into the numerator flatters the number in exactly the cases nobody is watching. |
-
-| In-full percentage | Only open receipts carry an in-full flag; the posted-history table has no equivalent. History rows are therefore excluded from the ratio via an explicit marker instead of scoring zero, so a full month does not read worse than a single day purely because most of it has been posted. |
-
-| Lines per PO | Receiving effort per order. A cheap proxy for whether purchasing is consolidating or drip-feeding the dock. |
-
-
-
-
-
-
-
-Two of those four rows are decisions about what *not* to count. That ratio is normal. Most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence, and a dashboard that gets it wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks.
-
-
-
-**Open versus posted.** The same period can span unposted receipts and posted history, which live in separate tables with different columns. Today reads from open receipts only. Week and month union both. Getting this wrong is the classic ERP reporting bug: numbers that look right on a daily view and quietly drift on anything longer.
-
-
-
-**Picker productivity.** A parallel set covers lines picked, quantity, active hours and first and last pick per picker. The awkward part was not the aggregation, it was identity: pickers appear as initials on the transaction, and the mapping to a human runs through a chain of fallbacks — a description field, a Windows login, the local part of an email address, and finally an explicit *unmapped* bucket. Unmapped is displayed rather than hidden. An unattributed pick is a data-quality finding, and hiding it turns a fixable mapping gap into a permanently wrong leaderboard.
-
-
-
-Worth measuring if you run this
-
-
-
-
-- PPV dollars surfaced in the first full month, against what was being caught manually before.
-
-- Time from “how did receiving do last week” to an answer, before and after.
-
-- Share of picks landing in the unmapped bucket, tracked down over time as the mapping is cleaned.
-
-
+[Read the full case study →](https://siegestack.com/case-studies/kpi-console)
 
 
 
 
 Case 02
 
+### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
 
+Fast on Today, dead on Month-to-date. The most consistently misdiagnosed complaint in ERP reporting.
 
-### The report that worked on Today and timed out on Month
-
-
-**The symptom.** The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as “the dashboard is slow.”
-
-
-
-**What it actually was.** The week and month views filter invoice-history on a pick-date column. That column was not indexed. The indexes that existed on the table covered the order number, a history id and line, the lot, and a rowguid — every access path except the one the date filter needed. So the date range forced a full scan of the entire invoice-history table. Today was fast because it read a different, far smaller table; the period views were slow because they touched history, and the shape of the query meant touching history meant reading all of it.
-
-
-
-This is the most common performance root cause in ERP reporting and the one most often misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. It is not a volume problem. It is an access-path problem that volume makes visible.
-
-
-
-**Why the fix needed more care than the diagnosis.** The tables shipped with the ERP; they were not locally created. Adding an index to a vendor schema is a supportability decision before it is a technical one, so the work went to the platform owner before anything was applied. Beyond that:
-
-
-
-
-
-- Index creation takes a schema-modification lock on SQL Server Standard Edition. It blocks live users for the duration of the build, so it belongs in a maintenance window, not in the afternoon it was diagnosed.
-
-- An idle query window holding an open transaction will block the build and create a lock chain that looks, to everyone else, like the database has frozen. Close the tabs first. This sounds trivial until it happens.
-
-- Size and current index state get captured before anything changes, so the change can be evaluated and reversed.
-
-
-
-**The transferable part.** Written up in full as [why an ERP report is fast on today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date). In short: when a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index — it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.
-
-
-
-Worth measuring if you run this
-
-
-
-
-- Report runtime before and after, at each period setting. Capture it before you apply the index; you cannot go back for it.
-
-- Logical reads for the query, which is the honest measure and does not move with server load.
-
-- Index build duration, so the next maintenance window can be planned rather than guessed.
-
-
+[Read the full case study →](https://siegestack.com/case-studies/month-to-date-timeout)
 
 
 
 
 Case 03
 
+### [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
 
+A program per label became one configuration-driven service. New labels stopped being deployments.
 
-### One label service instead of a label program per label
-
-
-**The situation.** Labels were being produced from several unrelated places — contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.
-
-
-
-**What was built.** A single label service with the sources defined as data rather than as code. Configuration tables in the ERP database describe each label source: the query that produces the rows, the fields it exposes, and the template it maps into. A .NET API serves those sources, an admin panel maintains them, and the user-facing side becomes one interface that changes behaviour by configuration.
-
-
-
-Output is native printer command language for industrial label printers, rather than a rendered image. For a floor printer this matters — it prints faster, positions predictably at the label edges, and does not degrade when the printer is asked to scale.
-
-
-
-**The design decision worth stealing.** Adding a label type should be a configuration change, not a deployment. Once the source is a row in a table — a query, a field list, a template — the fifth label type costs a fraction of the first, and the layouts stay consistent because they share one rendering path. Most label sprawl is not a printing problem. It is the absence of a place to define a label source.
-
-
-
-Worth measuring if you run this
-
-
-
-
-- Elapsed time to add a new label type, before and after.
-
-- Reprints caused by layout or alignment faults, per week.
-
-- Number of distinct programs that can talk to a printer — the number you are trying to drive to one.
-
-
+[Read the full case study →](https://siegestack.com/case-studies/label-service)
 
 
 
@@ -1165,7 +1036,7 @@ That is the platform owner's call, not ours, which is exactly why the conversati
 
 - [Why your ERP report is fast on Today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date) — this method applied end to end to one real report, including the confirmation steps.
 
-- [Epicor P21 & Kinetic reporting and integration](https://siegestack.com/epicor-p21-kinetic-reporting) — the platform-specific side. Start there if the question is *which rows count* rather than *why is this slow*.
+- [Epicor P21 & Kinetic reporting and integration](https://siegestack.com/prophet-21) — the platform-specific side. Start there if the question is *which rows count* rather than *why is this slow*.
 
 - [Case studies](https://siegestack.com/case-studies) — including the report that worked on Today and timed out on Month.
 
@@ -1186,7 +1057,7 @@ Bring the report and the period setting where it falls over. Confirming whether 
 
 
 # Epicor Prophet 21 and Kinetic reporting and integration
-https://siegestack.com/epicor-p21-kinetic-reporting
+https://siegestack.com/prophet-21
 
 ## Epicor P21 & Kinetic Reporting and Integration
 
@@ -4518,7 +4389,7 @@ Epicor · Prophet 21 & Kinetic
 
 
 
-#### [Epicor P21 & Kinetic Reporting and Integration](https://siegestack.com/epicor-p21-kinetic-reporting)
+#### [Epicor P21 & Kinetic Reporting and Integration](https://siegestack.com/prophet-21)
 
 The platform-specific side: the four data-model traps that make P21 reports quietly wrong — open versus posted living in different tables, undated lines counted as successes, flags that exist on only one side, and identity that resolves through a fallback chain — plus what changes when the schema belongs to the vendor. Read this one if the question is *which rows count*.
 
@@ -4565,7 +4436,7 @@ Reporting · Metrics design
 
 
 
-#### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies)
+#### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console)
 
 Receiving and picker productivity metrics, including purchase price variance and on-time and in-full rates. Most of the work was deciding which rows count as evidence and which are absence of evidence — and keeping cost figures off screens that face a public floor.
 
@@ -4578,7 +4449,7 @@ Performance · Root cause
 
 
 
-#### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies)
+#### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
 
 Reported as “the dashboard is slow.” It was one unindexed date column on a table that shipped with the ERP. The diagnosis took minutes; applying the fix safely took the planning.
 
@@ -4591,7 +4462,7 @@ Automation · Architecture
 
 
 
-#### [One label service instead of a label program per label](https://siegestack.com/case-studies)
+#### [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
 
 Several unrelated paths to a printer, each grown separately, layouts drifting apart. Replaced with one service where label sources are rows in a configuration table rather than new programs.
 
@@ -4623,6 +4494,418 @@ The first conversation is short and costs nothing.
 ---
 
 
+# Service: ERP integration
+https://siegestack.com/services/erp-integration
+
+## ERP Integration
+
+Getting data in and out without a nightly file.
+
+Most ERP integration problems are not about the API. They are about what happens on the third failure at 2am, whether anyone finds out, and whether a partial load left the system in a state somebody has to unpick by hand.
+
+### What this covers
+
+- **Order, item and pricing flows** between an ERP and the systems either side of it — CRM, e-commerce, warehouse, finance.
+
+- **Bulk maintenance** that goes out through an export and comes back through an import. Reshaping one export into several differently-formatted files by hand works, takes a long time, and fails in the worst possible way: halfway through a load, leaving a partial mess behind.
+
+- **Loading tooling that refuses to half-finish.** Validate everything, then commit, so a mistyped identifier is a rejected row rather than a partial state.
+
+- **Retries, circuit breakers and monitoring** as part of the build rather than as a later addition.
+
+### The constraint that shapes all of it
+
+The schema usually belongs to the vendor. That makes supportability a question you answer before a technical one, and it is why the integration sits alongside the ERP rather than inside it wherever that is possible.
+
+### See it in detail
+
+[The integration showcase](https://siegestack.com/etl-showcase) has production-shaped code for these patterns across Salesforce, HubSpot, Zoho, Epicor P21 and Kinetic, Infor and Dynamics NAV. [Prophet 21 and Kinetic](https://siegestack.com/prophet-21) covers the platform-specific traps.
+
+[Talk about an integration](https://siegestack.com/contact)
+
+---
+
+
+# Service: ETL and data pipelines
+https://siegestack.com/services/etl-data-pipelines
+
+## ETL & Data Pipelines
+
+Scheduled, logged, monitored — instead of a person and a spreadsheet.
+
+The pipeline that needs building is rarely the interesting part. The part that matters is what happens when a source is late, a format changes, or a row does not match — and whether anyone learns about it before a report is wrong.
+
+### What this covers
+
+- **Replacing manual exports** and the copy-paste between systems that follows them.
+
+- **Retiring fragile macros** — the ones that run on one machine, in the right order, when somebody remembers. Replaced with something scheduled, logged and monitored.
+
+- **Consolidating into one place** so a question does not require opening five systems.
+
+- **Identity resolution that shows its misses.** Where a transaction carries initials or a short code rather than a person, the mapping runs through a chain of fallbacks, and every chain has rows that reach the end unmatched. Those are displayed, not hidden — an unattributed row is a data-quality finding, and hiding it turns a fixable gap into a permanently wrong number.
+
+### See it in detail
+
+[The integration showcase](https://siegestack.com/etl-showcase) covers the patterns with real code. [The label service](https://siegestack.com/case-studies/label-service) is one example of the shape: a program per label became one configuration-driven service.
+
+[Talk about a pipeline](https://siegestack.com/contact)
+
+---
+
+
+# Service: BI dashboards
+https://siegestack.com/services/bi-dashboards
+
+## BI Dashboards
+
+Numbers the floor and the office can both act on.
+
+A dashboard is not hard to build. Deciding *which rows count as evidence* is the work, and it is where most operational reporting quietly goes wrong.
+
+### What this covers
+
+- **Operational measures** — receiving throughput, picker productivity, purchase price variance, on-time and in-full.
+
+- **Audience separation done properly.** Cost-bearing reports refused to floor displays at the report-definition layer, not the render layer, so a number that should not face a public floor cannot reach one by accident.
+
+- **Absence of evidence made visible** rather than averaged away. Undated lines are not on-time successes, and unmapped rows are shown as unmapped.
+
+- **Refresh that is honest about its age**, so nobody acts on a figure they think is live.
+
+### See it in detail
+
+[The KPI console case study](https://siegestack.com/case-studies/kpi-console) is this service in full: two audiences, two trust levels, and the identity chain that had to show its misses.
+
+[Talk about a dashboard](https://siegestack.com/contact)
+
+---
+
+
+# Service: automated reporting
+https://siegestack.com/services/automated-reporting
+
+## Automated Reporting
+
+Daily summaries, weekly KPIs, monthly board packs — generated and delivered.
+
+Reports assembled by hand each period are a standing tax and a standing risk: they cost the same every month and they stop entirely when one person is away.
+
+### What this covers
+
+- **Scheduled generation and delivery** of daily summaries, weekly KPIs and period packs.
+
+- **Monitoring on the schedule itself**, because a report that silently did not run looks exactly like a quiet week.
+
+- **Reconciliation built in**, so a period pack that does not tie out says so rather than being discovered later.
+
+- **Documentation that outlives the author**, which is the difference between an automated report and one person's script.
+
+### A warning worth stating
+
+Automating a report nobody trusts produces a distrusted report on a schedule. Where the measures themselves are in question, the [definition work](https://siegestack.com/services/bi-dashboards) comes first.
+
+### See it in detail
+
+[Operations modernization](https://siegestack.com/operations-modernization) covers where reporting sits in a larger programme.
+
+[Talk about reporting](https://siegestack.com/contact)
+
+---
+
+
+# Service: performance tuning
+https://siegestack.com/services/performance-tuning
+
+## Performance Tuning
+
+Slow reports are usually an access-path problem that volume made visible.
+
+A report that is fast on a single day and dead on a month range is the most common and most consistently misdiagnosed complaint in ERP reporting. It looks like data volume. It usually is not.
+
+### What this covers
+
+- **Diagnosis against a captured baseline**, because without one any claimed improvement is an opinion.
+
+- **Logical reads as the measure**, not runtime. Runtime moves with server load and cache state; pages touched does not.
+
+- **Predicate rewrites first.** Where an expression around an indexed column prevents a seek, moving the arithmetic to the constant restores the index with no schema change at all.
+
+- **Index design, and the supportability conversation** that comes before applying one to a schema you do not own.
+
+### See it in detail
+
+[SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance) is the full method. [The month-to-date timeout](https://siegestack.com/case-studies/month-to-date-timeout) is one worked instance of it.
+
+[Talk about a slow report](https://siegestack.com/contact)
+
+---
+
+
+# Service: security and access audit
+https://siegestack.com/services/security-access-audit
+
+## Security & Access Audit
+
+Most exposures are not break-ins.
+
+Most exposures are not break-ins. They are a key left in a page, a table whose access control was never switched on, or a policy that matches nothing while looking like it works.
+
+### What this covers
+
+- **Access control audit.** What an anonymous browser can actually retrieve — established by retrieving it, not by reading the configuration.
+
+- **Application hardening.** Security headers that permit exactly what they were added to prevent are the norm. The work is removing what forces the loophole open rather than documenting why it has to stay.
+
+- **Reliability review.** A form that emails and reports success only if the email worked will silently destroy enquiries the day a credential expires. The durable write goes in front of the notification.
+
+- **Delivery and configuration audit.** Redirect rules that never run. A sitemap every tool calls fine and no parser accepts. Assets cached for a year against markup that changed yesterday. These pass every check, return no error, and stay broken for months.
+
+- **Measurement audit.** Whether pages are tagged twice, whether one property is fed by several sites, whether staging traffic is counted as real.
+
+- **Refactor verification.** For a large mechanical change, "the diff looks equivalent" is not evidence. Old and new are measured side by side and what actually renders is compared.
+
+### How it is done
+
+By probing the live system rather than reading the config, because the whole category is faults that configuration review cannot see. Findings come with the reproduction, not just the claim.
+
+### See it in detail
+
+This work is written up at length, including the errors found in the author's own sites, in [the long-form write-up](https://siegestack.com/working-with-claude-blog).
+
+[Talk about an audit](https://siegestack.com/contact)
+
+---
+
+
+# For distributors
+https://siegestack.com/industries/distribution
+
+## For Distributors
+
+One industry page, because this is where the experience actually is.
+
+This is the only industry page on this site. There is no manufacturing page, no e-commerce page and no retail page, because a page that cannot be filled with first-hand specifics is worth less than no page at all.
+
+### What distributors actually arrive with
+
+- **A report that is fast on Today and times out on Month.** Usually an access path problem that volume made visible. [Performance tuning](https://siegestack.com/services/performance-tuning).
+
+- **Numbers nobody trusts.** Open and posted records living in separate tables, so any window longer than a day under-reports. Undated lines counted as on-time successes. [The P21 data-model traps](https://siegestack.com/prophet-21).
+
+- **Two systems of record** that were supposed to be consolidated years ago, making every network-level answer wrong in a way nobody can see. [Operations modernization](https://siegestack.com/operations-modernization).
+
+- **A nightly file** holding two systems together. [ERP integration](https://siegestack.com/services/erp-integration).
+
+- **A process that runs because one person remembers the order of the steps.** [ETL and pipelines](https://siegestack.com/services/etl-data-pipelines).
+
+### Why distribution specifically
+
+The work is on distribution ERPs and the operations around them: receiving, picking, purchasing, transfers between sites, and the reporting all of it feeds. That means the data-model traps are familiar rather than discovered on your time, and the questions asked in the first conversation are the ones that turn out to matter.
+
+Deep hands-on experience is Epicor Prophet 21. Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/prophet-21) rather than implying equal depth in both.
+
+### Proof
+
+[Three anonymised engagements](https://siegestack.com/case-studies) · [integration patterns with real code](https://siegestack.com/etl-showcase) · [the write-ups](https://siegestack.com/insights)
+
+[Start a conversation](https://siegestack.com/contact)
+
+---
+
+
+# Case study: KPI console
+https://siegestack.com/case-studies/kpi-console
+
+## A KPI console for people who were reading the operation from memory
+
+One engagement, described without the specifics.
+
+
+
+
+
+**The situation.** An operations team ran receiving, picking and purchasing on a SQL Server–backed ERP. Operational questions — is receiving keeping up, are we paying what the purchase order said, who picked what yesterday — were answered by whoever had been there longest. The data existed. Nothing assembled it.
+
+
+
+**What was built.** A reporting console with two audiences and two very different trust levels. Supervisors get the full set in a browser. The floor gets a subset on wall-mounted displays, driven by scoped display tokens.
+
+
+
+That split turned out to be the design constraint that mattered. Several reports carry cost and margin. A screen on an operations floor is visible to everyone who walks past it, including visitors and contractors. So report definitions carry a flag: anything with dollars in it is backend-only, the server refuses to attach it to a display token, and it is never listed in the publicly enumerable set. The restriction lives in the report definition rather than in the page that renders it, because the page is the thing most likely to be rewritten later by someone who does not know the rule.
+
+
+
+**The receiving metrics.** Volume was the easy part. The ones that changed conversations:
+
+
+
+
+
+| Metric | What it measures, and the modelling decision behind it |
+
+
+| Purchase price variance | Receipt cost minus purchase-order line cost. Positive means the business paid above what the PO said. This is the number that gets attention, because it is the gap between what purchasing agreed and what accounts payable will actually be billed. |
+
+| On-time percentage | Receipt date against the due date, preferring promise date, then required, then original. Lines with *no* due date are excluded from the ratio rather than silently counted as on time — an undated line is missing data, not a success, and rolling it into the numerator flatters the number in exactly the cases nobody is watching. |
+
+| In-full percentage | Only open receipts carry an in-full flag; the posted-history table has no equivalent. History rows are therefore excluded from the ratio via an explicit marker instead of scoring zero, so a full month does not read worse than a single day purely because most of it has been posted. |
+
+| Lines per PO | Receiving effort per order. A cheap proxy for whether purchasing is consolidating or drip-feeding the dock. |
+
+
+
+
+
+
+
+Two of those four rows are decisions about what *not* to count. That ratio is normal. Most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence, and a dashboard that gets it wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks.
+
+
+
+**Open versus posted.** The same period can span unposted receipts and posted history, which live in separate tables with different columns. Today reads from open receipts only. Week and month union both. Getting this wrong is the classic ERP reporting bug: numbers that look right on a daily view and quietly drift on anything longer.
+
+
+
+**Picker productivity.** A parallel set covers lines picked, quantity, active hours and first and last pick per picker. The awkward part was not the aggregation, it was identity: pickers appear as initials on the transaction, and the mapping to a human runs through a chain of fallbacks — a description field, a Windows login, the local part of an email address, and finally an explicit *unmapped* bucket. Unmapped is displayed rather than hidden. An unattributed pick is a data-quality finding, and hiding it turns a fixable mapping gap into a permanently wrong leaderboard.
+
+
+
+Worth measuring if you run this
+
+
+
+
+- PPV dollars surfaced in the first full month, against what was being caught manually before.
+
+- Time from “how did receiving do last week” to an answer, before and after.
+
+- Share of picks landing in the unmapped bucket, tracked down over time as the mapping is cleaned.
+
+
+
+### Related
+
+[The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout) · [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
+
+[All case studies](https://siegestack.com/case-studies) · [Recognise any of these?](https://siegestack.com/contact)
+
+---
+
+
+# Case study: month-to-date timeout
+https://siegestack.com/case-studies/month-to-date-timeout
+
+## The report that worked on Today and timed out on Month
+
+One engagement, described without the specifics.
+
+
+
+
+
+**The symptom.** The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as “the dashboard is slow.”
+
+
+
+**What it actually was.** The week and month views filter invoice-history on a pick-date column. That column was not indexed. The indexes that existed on the table covered the order number, a history id and line, the lot, and a rowguid — every access path except the one the date filter needed. So the date range forced a full scan of the entire invoice-history table. Today was fast because it read a different, far smaller table; the period views were slow because they touched history, and the shape of the query meant touching history meant reading all of it.
+
+
+
+This is the most common performance root cause in ERP reporting and the one most often misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. It is not a volume problem. It is an access-path problem that volume makes visible.
+
+
+
+**Why the fix needed more care than the diagnosis.** The tables shipped with the ERP; they were not locally created. Adding an index to a vendor schema is a supportability decision before it is a technical one, so the work went to the platform owner before anything was applied. Beyond that:
+
+
+
+
+
+- Index creation takes a schema-modification lock on SQL Server Standard Edition. It blocks live users for the duration of the build, so it belongs in a maintenance window, not in the afternoon it was diagnosed.
+
+- An idle query window holding an open transaction will block the build and create a lock chain that looks, to everyone else, like the database has frozen. Close the tabs first. This sounds trivial until it happens.
+
+- Size and current index state get captured before anything changes, so the change can be evaluated and reversed.
+
+
+
+**The transferable part.** Written up in full as [why an ERP report is fast on today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date). In short: when a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index — it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.
+
+
+
+Worth measuring if you run this
+
+
+
+
+- Report runtime before and after, at each period setting. Capture it before you apply the index; you cannot go back for it.
+
+- Logical reads for the query, which is the honest measure and does not move with server load.
+
+- Index build duration, so the next maintenance window can be planned rather than guessed.
+
+
+
+### Related
+
+[A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console) · [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
+
+[All case studies](https://siegestack.com/case-studies) · [Recognise any of these?](https://siegestack.com/contact)
+
+---
+
+
+# Case study: label service
+https://siegestack.com/case-studies/label-service
+
+## One label service instead of a label program per label
+
+One engagement, described without the specifics.
+
+
+
+
+
+**The situation.** Labels were being produced from several unrelated places — contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.
+
+
+
+**What was built.** A single label service with the sources defined as data rather than as code. Configuration tables in the ERP database describe each label source: the query that produces the rows, the fields it exposes, and the template it maps into. A .NET API serves those sources, an admin panel maintains them, and the user-facing side becomes one interface that changes behaviour by configuration.
+
+
+
+Output is native printer command language for industrial label printers, rather than a rendered image. For a floor printer this matters — it prints faster, positions predictably at the label edges, and does not degrade when the printer is asked to scale.
+
+
+
+**The design decision worth stealing.** Adding a label type should be a configuration change, not a deployment. Once the source is a row in a table — a query, a field list, a template — the fifth label type costs a fraction of the first, and the layouts stay consistent because they share one rendering path. Most label sprawl is not a printing problem. It is the absence of a place to define a label source.
+
+
+
+Worth measuring if you run this
+
+
+
+
+- Elapsed time to add a new label type, before and after.
+
+- Reprints caused by layout or alignment faults, per week.
+
+- Number of distinct programs that can talk to a printer — the number you are trying to drive to one.
+
+
+
+### Related
+
+[A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console) · [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
+
+[All case studies](https://siegestack.com/case-studies) · [Recognise any of these?](https://siegestack.com/contact)
+
+---
+
+
 # About SiegeStack
 https://siegestack.com/about
 
@@ -4640,7 +4923,7 @@ The work is enterprise distribution software: ERPs backed by SQL Server, the rep
 
 What that has covered:
 
-- **ERP reporting and integration.** Deep hands-on work in Epicor Prophet 21. Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/epicor-p21-kinetic-reporting) rather than implying equal depth in both.
+- **ERP reporting and integration.** Deep hands-on work in Epicor Prophet 21. Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/prophet-21) rather than implying equal depth in both.
 
 - **Performance work** on SQL Server–backed reporting, where the usual finding is an access-path problem that volume merely made visible.
 

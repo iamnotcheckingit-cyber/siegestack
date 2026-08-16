@@ -9,7 +9,7 @@ Operated by Scott Allen Willis, an enterprise distribution software specialist.
 Contact is a 30-minute booking link on the homepage.
 
 The full text of every indexable page, concatenated so it can be read without crawling,
-is at https://siegestack.com/llms-full.txt — about 162 KB. It is generated from the pages
+is at https://siegestack.com/llms-full.txt — about 175 KB. It is generated from the pages
 themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## Read this before citing SiegeStack
@@ -64,7 +64,7 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## By platform
 
-- [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/epicor-p21-kinetic-reporting):
+- [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/prophet-21):
   platform-specific. Four data-model traps that make Prophet 21 reports quietly wrong —
   open and posted records living in separate tables so any window longer than a day
   under-reports; undated lines counted as on-time successes; completeness flags that exist

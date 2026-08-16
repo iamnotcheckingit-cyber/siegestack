@@ -198,6 +198,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
   <div class="nav-links">
     <a href="/#solutions">Solutions</a>
     <a href="/#process">Process</a>
+    <a href="/prophet-21">Prophet 21</a>
     <a href="/operations-modernization">Operations</a>
     <a href="/etl-showcase">ETL Showcase</a>
     <a href="/case-studies">Case Studies</a>
@@ -305,7 +306,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>That's the entire methodology. It's boring, unsexy, and brutally effective — exactly like real engineering. Everything else in this article is what happens when you run this loop, hard, against real problems.</p>
 
-  <h2>Professional: A 27% Performance Gain Across Hundreds of Database Views</h2>
+  <h2 id="perf-gain">Professional: A 27% Performance Gain Across Hundreds of Database Views</h2>
 
   <p>I work on line-of-business systems built on relational databases. Custom views accumulate over years. Reports get slow. The interesting question is never "is this view slow" — it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."</p>
 
@@ -325,7 +326,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
 
-  <h2>Professional: Retiring Nine Spreadsheet Macros</h2>
+  <h2 id="macros">Professional: Retiring Nine Spreadsheet Macros</h2>
 
   <p>The other professional win was an architecture change disguised as a cleanup.</p>
 
@@ -369,7 +370,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>That is the loop doing its job. The first idea was reasonable, it was wrong, and finding that out took minutes instead of an afternoon.</p>
 
-  <h2>Personal: Taking a Security Policy from B to A+</h2>
+  <h2 id="security-grade">Personal: Taking a Security Policy from B to A+</h2>
 
   <p>The same site scored a B. Not because anything was wrong with the server configuration — the headers were all present — but because the content security policy carried <code>unsafe-inline</code>, and a policy with <code>unsafe-inline</code> in it is not a policy. It is a header that looks like one. It permits precisely the class of injection the policy exists to stop.</p>
 
@@ -689,15 +690,18 @@ footer a{color:var(--blue-accent);text-decoration:none}
         <div class="foot-grid">
             <div>
                 <h3>Solutions</h3>
-                <a href="/#solutions">All services</a>
-                <a href="/etl-showcase">ETL &amp; integration</a>
-                <a href="/operations-modernization">Operations modernization</a>
-                <a href="/sql-server-erp-performance">Performance tuning</a>
+                <a href="/services/erp-integration">ERP integration</a>
+                <a href="/services/etl-data-pipelines">ETL &amp; pipelines</a>
+                <a href="/services/bi-dashboards">BI dashboards</a>
+                <a href="/services/automated-reporting">Automated reporting</a>
+                <a href="/services/performance-tuning">Performance tuning</a>
+                <a href="/services/security-access-audit">Security &amp; access audit</a>
             </div>
             <div>
                 <h3>Platforms &amp; Work</h3>
-                <a href="/epicor-p21-kinetic-reporting">Prophet 21 &amp; Kinetic</a>
-                <a href="/erp-report-slow-month-to-date">ERP reporting write-ups</a>
+                <a href="/prophet-21">Prophet 21 &amp; Kinetic</a>
+                <a href="/sql-server-erp-performance">SQL Server performance</a>
+                <a href="/industries/distribution">For distributors</a>
                 <a href="/case-studies">Case studies</a>
                 <a href="/insights">Insights</a>
             </div>
