@@ -26,11 +26,13 @@ established, and what is not:
 - **The send budget was raised from 6s to 8s** because real ImprovMX handshakes
   were intermittently exceeding six seconds and losing notifications that would
   otherwise have gone out.
-- **The SMTP send itself is known to work.** During the 2026-08-15 budget
-  testing, several live submissions were accepted by ImprovMX in under a second
-  — that is what identified the 6s budget as too tight rather than the
-  credentials as wrong. So authentication, the envelope and the loop guard are
-  all past.
+- **The SMTP send itself works.** Re-tested live on 2026-08-16: two of three
+  submissions returned `notified:true`, so authentication, the envelope and the
+  loop guard are all past and the credentials are good.
+- **It is unreliable, and that is a latency problem rather than a mail
+  problem.** The third of those three exceeded the 8s budget. See the budget
+  discussion under Option A — the number cannot go higher, so either the misses
+  are accepted or the notification moves off the request path.
 - **What is *not* recorded anywhere is whether the mail then arrived in the
   destination mailbox.** Acceptance by the provider and delivery to a human are
   different claims, and only the first one has evidence behind it. The `curl`
@@ -149,10 +151,21 @@ and 8s lands near 8.6s worst case, inside the 10s ceiling.
 **It is 8s rather than 6s because 6s was measurably too tight.** ImprovMX
 intermittently takes longer than six seconds to complete a handshake on a cold
 connection, and the tighter budget was dropping notifications that would have
-been delivered. Raising it trades headroom for reliability in the safe
-direction: a timeout here costs a missed page, never a lost submission, because
-the durable write has already happened by the time any of this runs. Do not
-raise it further without re-checking that ceiling.
+been delivered. A timeout here costs a missed page, never a lost submission,
+because the durable write has already happened by the time any of this runs.
+
+**8s is still too tight, and raising it again is not the fix.** Three live
+submissions on 2026-08-16 took 2.5s, 7.4s and 8.6s — the last one exceeded the
+budget and reported `smtp_unknown`. ImprovMX's handshake latency is simply that
+variable. But 8.6s against a 10s platform ceiling leaves under 1.4s, and going
+over the ceiling is the catastrophic case this whole file exists to avoid: the
+request dies *after* the submission was stored and the page tells the sender it
+failed. **Do not raise `NOTIFY_BUDGET_MS` past 8s.**
+
+The real options are to accept a missed page on roughly a third of submissions —
+which loses nothing, only immediacy — or to move the notification off the
+request path entirely, into a background function or a queue, where a slow
+handshake costs nobody anything. That is unbuilt.
 
 ### Option B — Resend with no DNS at all
 
@@ -233,7 +246,8 @@ misconfiguration is one `curl` away rather than a dashboard session:
 | `to_equals_from` | `CONTACT_TO` is on the same *domain* as `CONTACT_FROM`. SMTP path only. See above. |
 | `smtp_eauth_535` | Credentials rejected. Wrong SMTP password. |
 | `smtp_esocket*` / `smtp_econnection*` | The port never opened. Wrong host or port. |
-| `smtp_etimedout*` | Opened, then sat there. Gave up at the 8s budget. |
+| `smtp_etimedout*` | Opened, then sat there. Nodemailer's own socket timeout fired. |
+| `smtp_unknown` with `smtpSaid: "smtp exceeded 8000ms"` | The **outer race** gave up at the 8s budget. This is the common timeout in practice, not `smtp_etimedout` — the race rejects with a plain `Error` carrying no `code`, so the reason falls through to `unknown`. Nothing is wrong with the credentials. |
 | `smtp_emessage_550` | The provider refused the envelope — most often the loop above. |
 | `http_<status>` | Resend path only. Resend answered with that status. |
 | `resend_failed` | Resend path only. The request threw or outran the budget. |
