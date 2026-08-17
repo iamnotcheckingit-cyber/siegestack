@@ -852,8 +852,68 @@
             <p>Grab 30 minutes on my calendar. Tell me what's driving you crazy. I'll tell you if we can help—and if we can't, I'll point you in the right direction. No pitch, no pressure.</p>
 
             <!-- Calendly inline widget begin -->
+            <!--
+              THE SCRIPT TAG IS DELIBERATELY NOT HERE. Do not "restore" it.
+
+              This widget sits ~6880px down an ~8066px page, so almost nobody
+              scrolls to it, but widget.js used to load on every homepage visit
+              and build the iframe anyway. Measured 2026-08-16: the iframe
+              started at 545ms and took 2876ms, which pushed the load event to
+              3431ms. Everything else on this page is finished at 339ms -- there
+              are no images and no web fonts, so that 2.9s WAS the homepage's
+              load time as far as any monitoring tool was concerned.
+
+              loading="lazy" is not an option and adding it to the div does
+              nothing: widget.js injects the iframe itself from data-url, so the
+              only way to defer the iframe is to defer the script. That is what
+              the loader below does. data-url stays on the div -- widget.js
+              scans for .calendly-inline-widget[data-url] when it loads, and
+              finding this element already in the DOM is what makes it work.
+
+              The inline height is load-bearing for a second reason now: it
+              reserves the 700px before the iframe exists, so deferring costs no
+              layout shift.
+            -->
             <div class="calendly-inline-widget" data-url="https://calendly.com/siegestack-info/30min" style="min-width:320px;height:700px;"></div>
-            <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+            <script>
+            (function () {
+                var widget = document.querySelector('.calendly-inline-widget');
+                if (!widget) return;
+
+                var started = false;
+                function loadCalendly() {
+                    if (started) return;
+                    started = true;
+                    var s = document.createElement('script');
+                    s.src = 'https://assets.calendly.com/assets/external/widget.js';
+                    s.async = true;
+                    document.body.appendChild(s);
+                }
+
+                // The hero CTA jumps straight here from above the fold. Starting
+                // the fetch on click rather than on arrival means the ~2.9s of
+                // Calendly overlaps the scroll instead of following it.
+                var jumps = document.querySelectorAll('a[href="#schedule"]');
+                for (var i = 0; i < jumps.length; i++) {
+                    jumps[i].addEventListener('click', loadCalendly);
+                }
+
+                // Old browsers with no IntersectionObserver get the original
+                // behaviour -- load it now -- rather than a box that never fills.
+                if (!('IntersectionObserver' in window)) {
+                    loadCalendly();
+                    return;
+                }
+
+                // 600px of runway so a scrolling visitor finds it already built.
+                var io = new IntersectionObserver(function (entries) {
+                    if (!entries[0].isIntersecting) return;
+                    io.disconnect();
+                    loadCalendly();
+                }, { rootMargin: '600px 0px' });
+                io.observe(widget);
+            })();
+            </script>
             <!-- Calendly inline widget end -->
         </div>
     </section>
