@@ -288,8 +288,54 @@
         <h2>Book a call</h2>
         <p>Thirty minutes. Tell me what is broken. If I cannot help I will say so and point you somewhere better &mdash; there is nothing to sell you on the other side of that answer.</p>
         <div class="sched">
+            <!--
+              Deferred the same way index.html is, and for consistency rather
+              than for a measured win on this page. On a desktop viewport this
+              widget is at or near the fold, so the observer fires immediately
+              and the timing is the same as loading the script outright. It pays
+              on short and mobile viewports, where the widget starts below the
+              fold and a visitor who came here to use the form instead never
+              fetches it.
+              THE SCRIPT TAG IS DELIBERATELY ABSENT -- see the longer note in
+              index.html for why deferring the script is the only way to defer
+              the iframe, and why data-url has to stay on the div.
+              Unlike index.html there is no in-page link that jumps here, so
+              there is no click trigger to attach; the observer is the only
+              path in. The height:700px on .calendly-inline-widget in the
+              stylesheet above reserves the space, so this costs no layout
+              shift -- do not drop it thinking the iframe sizes itself.
+            -->
             <div class="calendly-inline-widget" data-url="https://calendly.com/siegestack-info/30min"></div>
-            <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+            <script>
+            (function () {
+                var widget = document.querySelector('.calendly-inline-widget');
+                if (!widget) return;
+
+                var started = false;
+                function loadCalendly() {
+                    if (started) return;
+                    started = true;
+                    var s = document.createElement('script');
+                    s.src = 'https://assets.calendly.com/assets/external/widget.js';
+                    s.async = true;
+                    document.body.appendChild(s);
+                }
+
+                // No IntersectionObserver means load it now, so the failure
+                // direction is the old behaviour and not a box that never fills.
+                if (!('IntersectionObserver' in window)) {
+                    loadCalendly();
+                    return;
+                }
+
+                var io = new IntersectionObserver(function (entries) {
+                    if (!entries[0].isIntersecting) return;
+                    io.disconnect();
+                    loadCalendly();
+                }, { rootMargin: '600px 0px' });
+                io.observe(widget);
+            })();
+            </script>
         </div>
 
         <h2 style="margin-top:3rem">Or send it in writing</h2>
