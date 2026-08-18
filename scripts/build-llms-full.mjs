@@ -37,6 +37,7 @@ const PAGES = [
   ['erp-report-slow-month-to-date.html', '/erp-report-slow-month-to-date', 'Why your ERP report is fast on Today and times out on month-to-date'],
   ['sql-server-erp-performance.html', '/sql-server-erp-performance', 'SQL Server performance for ERP reporting'],
   ['prophet-21.html', '/prophet-21', 'Epicor Prophet 21 and Kinetic reporting and integration'],
+  ['prophet-21-upgrade-reporting.html', '/prophet-21-upgrade-reporting', 'What a Prophet 21 upgrade does to your reporting'],
   ['operations-modernization.html', '/operations-modernization', 'Operations modernization'],
   ['etl-showcase.html', '/etl-showcase', 'CRM and ERP integration showcase'],
   ['working-with-claude-blog.html', '/working-with-claude-blog', 'How to use Claude AI effectively'],

@@ -214,6 +214,18 @@
       .om-track h3 { margin-top: 0; }
       .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
                 color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+
+      /* Booking block. This page is the highest-intent entry point on the site --
+         "Prophet 21" is not a browsing search -- and until now its only booking
+         route was /#schedule, which sent a qualified visitor to the homepage and
+         made them find the widget 6880px down it. The widget lives here instead.
+         The 700px height is reserved before the iframe exists so the deferred
+         load costs no layout shift; see the comment on the loader below. */
+      .p21-schedule { background: var(--navy); border-radius: 12px; padding: 2.5rem 2rem;
+                      margin-top: 3rem; text-align: center; scroll-margin-top: 90px; }
+      .p21-schedule h2 { margin-top: 0; color: var(--white); }
+      .p21-schedule > p { color: var(--light-slate); max-width: 640px; margin: 0 auto 2rem; }
+      .calendly-inline-widget { border-radius: 8px; overflow: hidden; }
     
         /* Site footer — shared across pages. Uses only the four custom properties
            every page defines (--navy-dark, --slate, --blue-accent, --white), so it
@@ -378,6 +390,7 @@
 
             <h2>Related</h2>
             <ul>
+                <li><a href="/prophet-21-upgrade-reporting">What a P21 upgrade does to your reporting</a> &mdash; the three different projects people call an upgrade, what each one breaks, and the baseline to capture before the window opens.</li>
                 <li><a href="/sql-server-erp-performance">SQL Server performance for ERP reporting</a> &mdash; the diagnostic method, independent of which ERP sits on top. Start there if the question is <em>why is this slow</em> rather than <em>which rows count</em>.</li>
                 <li><a href="/erp-report-slow-month-to-date">Why your ERP report is fast on Today and times out on month-to-date</a> &mdash; the single worked example, start to finish.</li>
                 <li><a href="/case-studies">Case studies</a> &mdash; the KPI console, the month-to-date timeout, and the label service, all anonymised.</li>
@@ -388,8 +401,75 @@
             <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
                 <h3 style="margin-top:0">Running P21 or Kinetic and not trusting a number?</h3>
                 <p>Bring the report and the question it is supposed to answer. The first conversation is thirty minutes and costs nothing, and frequently ends with a diagnosis rather than a proposal.</p>
-                <p><a href="/#schedule">Book a call</a> &middot; <a href="/case-studies">See the case studies</a></p>
+                <p><a href="#schedule">Book a call</a> &middot; <a href="/case-studies">See the case studies</a> &middot; <a href="/contact">Send it in writing</a></p>
             </div>
+
+            <section class="p21-schedule" id="schedule">
+                <h2>Thirty minutes, on the report you don't trust</h2>
+                <p>Pick a time. Bring the report, the number that looks wrong, and what it is supposed to mean. If the answer is one of the four traps above, you will have it inside the call. If it is something else, you will at least leave knowing which layer it is in.</p>
+
+                <!-- Calendly inline widget begin -->
+                <!--
+                  THE SCRIPT TAG IS DELIBERATELY NOT HERE, for the same reason it
+                  is not on index.html. widget.js injects the iframe itself from
+                  data-url, so loading="lazy" on the div does nothing and the only
+                  way to defer the iframe is to defer the script. Measured on the
+                  homepage 2026-08-16: the iframe took 2876ms and dragged the load
+                  event to 3431ms on a page that was otherwise finished at 339ms.
+
+                  This page is 30KB with no images and no web fonts. Adding an
+                  eager Calendly here would have made it the slowest page on the
+                  site, which is a poor trade for the page search sends the most
+                  qualified traffic to.
+
+                  data-url stays on the div: widget.js scans for
+                  .calendly-inline-widget[data-url] when it loads, and finding
+                  this element already in the DOM is what makes it work.
+                -->
+                <div class="calendly-inline-widget" data-url="https://calendly.com/siegestack-info/30min" style="min-width:320px;height:700px;"></div>
+                <script>
+                (function () {
+                    var widget = document.querySelector('.calendly-inline-widget');
+                    if (!widget) return;
+
+                    var started = false;
+                    function loadCalendly() {
+                        if (started) return;
+                        started = true;
+                        var s = document.createElement('script');
+                        s.src = 'https://assets.calendly.com/assets/external/widget.js';
+                        s.async = true;
+                        document.body.appendChild(s);
+                    }
+
+                    // The in-page "Book a call" link sits just above this and the
+                    // page uses scroll-behavior: smooth, so starting the fetch on
+                    // click lets Calendly load during the scroll rather than after
+                    // it. Kept in sync with the anchor -- if the href changes, this
+                    // selector must change with it.
+                    var jumps = document.querySelectorAll('a[href="#schedule"]');
+                    for (var i = 0; i < jumps.length; i++) {
+                        jumps[i].addEventListener('click', loadCalendly);
+                    }
+
+                    // Old browsers with no IntersectionObserver get the original
+                    // behaviour -- load it now -- rather than a box that never fills.
+                    if (!('IntersectionObserver' in window)) {
+                        loadCalendly();
+                        return;
+                    }
+
+                    // 600px of runway so a scrolling visitor finds it already built.
+                    var io = new IntersectionObserver(function (entries) {
+                        if (!entries[0].isIntersecting) return;
+                        io.disconnect();
+                        loadCalendly();
+                    }, { rootMargin: '600px 0px' });
+                    io.observe(widget);
+                })();
+                </script>
+                <!-- Calendly inline widget end -->
+            </section>
 
         </div>
     </main>

@@ -163,6 +163,21 @@
   to = "/prophet-21"
   status = 301
   force = true
+
+# The upgrade page. `from` values are exact matches, not globs -- "/prophet-21"
+# above does NOT shadow "/prophet-21-upgrade-reporting" -- but these are kept
+# adjacent so the pair is read together, and so nobody later adds a splat to the
+# prophet-21 rule without seeing what sits behind it.
+[[redirects]]
+  from = "/prophet-21-upgrade-reporting"
+  to = "/prophet-21-upgrade-reporting.html"
+  status = 200
+
+[[redirects]]
+  from = "/prophet-21-upgrade-reporting.html"
+  to = "/prophet-21-upgrade-reporting"
+  status = 301
+  force = true
 [[redirects]]
   from = "/services/erp-integration"
   to = "/services/erp-integration.html"

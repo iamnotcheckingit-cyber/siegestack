@@ -52,7 +52,8 @@ const ALLOW_EXACT = new Set([
   // Pages in the sitemap
   "/about", "/contact", "/case-studies", "/insights", "/prophet-21",
   "/operations-modernization", "/etl-showcase", "/erp-report-slow-month-to-date",
-  "/sql-server-erp-performance", "/working-with-claude", "/working-with-claude-blog",
+  "/sql-server-erp-performance", "/prophet-21-upgrade-reporting",
+  "/working-with-claude", "/working-with-claude-blog",
   "/delivery-config-audit", "/privacy-policy",
   // Reachable on purpose, deliberately not in the sitemap
   "/audit",                    // the audit report, linked from /delivery-config-audit
