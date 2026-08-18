@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <title>What a Prophet 21 Upgrade Does to Your Reporting | SiegeStack</title>
+    <meta name="description" content="Three different things get called a P21 upgrade, and they break different things. What happens to custom reports, indexes and integrations on Epicor Prophet 21, and the baseline to capture before the window.">
+    <meta name="author" content="SiegeStack">
+    <link rel="canonical" href="https://siegestack.com/prophet-21-upgrade-reporting">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://siegestack.com/prophet-21-upgrade-reporting">
+    <meta property="og:title" content="What a Prophet 21 Upgrade Does to Your Reporting">
+    <meta property="og:description" content="A version upgrade, the desktop-to-web move, and replacing P21 with Kinetic are three different projects. What each one does to reporting built on a vendor schema.">
+    <meta property="og:image" content="https://siegestack.com/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta property="og:site_name" content="SiegeStack">
+    <meta property="og:locale" content="en_US">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://siegestack.com/prophet-21-upgrade-reporting">
+    <meta name="twitter:title" content="What a Prophet 21 Upgrade Does to Your Reporting">
+    <meta name="twitter:description" content="Three different things get called a P21 upgrade. They break different things, and none of them break the ERP — they break what you built on top of it.">
+    <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
+    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
+    <meta name="twitter:site" content="@SiegeStack">
+    <meta name="twitter:creator" content="@SiegeStack">
+    <meta name="theme-color" content="#0a192f">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "What a Prophet 21 upgrade does to your reporting",
+        "description": "Three different projects get called a Prophet 21 upgrade — a version upgrade, the desktop-to-web transition, and replacing P21 with Epicor Kinetic. Each one breaks something different in the reporting and integration layer built on top of a vendor-owned schema.",
+        "author": {"@type": "Person", "name": "Scott Allen Willis"},
+        "publisher": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com"},
+        "mainEntityOfPage": {"@type": "WebPage", "@id": "https://siegestack.com/prophet-21-upgrade-reporting"},
+        "about": [
+            {"@type": "SoftwareApplication", "name": "Epicor Prophet 21", "applicationCategory": "BusinessApplication"},
+            {"@type": "SoftwareApplication", "name": "Epicor Kinetic", "applicationCategory": "BusinessApplication"}
+        ],
+        "isPartOf": {"@type": "WebSite", "name": "SiegeStack", "url": "https://siegestack.com"}
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Epicor P21 & Kinetic Reporting", "item": "https://siegestack.com/prophet-21"},
+            {"@type": "ListItem", "position": 3, "name": "What a P21 upgrade does to your reporting", "item": "https://siegestack.com/prophet-21-upgrade-reporting"}
+        ]
+    }
+    </script>
+
+    <!-- FAQPage mirrors the visible FAQ section below verbatim. Edit both together. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type":"Question","name":"Do you run the upgrade itself?","acceptedAnswer":{"@type":"Answer","text":"No. The upgrade is the platform owner's project, run with Epicor or a reseller. This is the reporting and integration layer around it — the inventory of what depends on the schema, the baseline captured before the window, and the repairs afterwards. Those are separate jobs and it is better for you if they are separate people."}},
+            {"@type":"Question","name":"Is moving from Prophet 21 to Kinetic an upgrade?","acceptedAnswer":{"@type":"Answer","text":"No. They are separate products with separate code bases and separate roadmaps, aimed at different industries — Prophet 21 at wholesale distribution, Kinetic at discrete and mixed-mode manufacturing. Moving between them is a re-implementation, and none of your reporting comes across. Anyone describing it as an upgrade is either being loose with the word or has not looked at the schema."}},
+            {"@type":"Question","name":"Will our custom indexes survive?","acceptedAnswer":{"@type":"Answer","text":"Assume not, and plan to re-apply them. An index added to a vendor table is not part of the vendor's shipped schema, so nothing in the upgrade is obliged to preserve it. The failure is quiet: the report still returns, it just reads the whole history table again. Keep the index definitions in source control with the reason each one exists, not only in the database."}},
+            {"@type":"Question","name":"When should the baseline be captured?","acceptedAnswer":{"@type":"Answer","text":"Before the upgrade window opens, on the current production system. Runtime and logical reads for the reports that matter cannot be recovered afterwards — once the window closes, the old state is gone and every performance argument becomes a memory of how it used to feel."}},
+            {"@type":"Question","name":"We are several versions behind. Is that a reporting problem or a support problem?","acceptedAnswer":{"@type":"Answer","text":"Both, and the support problem is the one with a date on it. Being unsupported does not make a report wrong today; it makes the eventual upgrade larger, because the schema changes accumulate and arrive together. The reporting work is the same either way — inventory what depends on the schema, baseline it, and expect the gap between your version and the current one to be roughly the size of the repair."}}
+        ]
+    }
+    </script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --navy-dark: #0a192f;
+        --navy: #112240;
+        --blue-accent: #64ffda;
+        --blue-bright: #57cbff;
+        --slate: #8892b0;
+        --light-slate: #a8b2d1;
+        --lightest-slate: #ccd6f6;
+        --white: #e6f1ff;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--navy-dark);
+        color: var(--lightest-slate);
+        line-height: 1.6;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+        letter-spacing: -1px;
+      }
+
+      .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+      .nav-links a {
+        color: var(--light-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover { color: var(--blue-accent); }
+
+      .nav-links a.btn-primary,
+      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
+      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--light-slate);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: var(--white);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--slate);
+        font-size: 1.15rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+      p { margin-bottom: 1rem; }
+      ul { margin: 0 0 1rem 1.25rem; }
+      li { margin-bottom: 0.5rem; }
+      a { color: var(--blue-accent); }
+
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+      }
+
+      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
+      .om-lead { font-size: 1.15rem; line-height: 1.75; }
+      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
+                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
+      .om-table-wrap { overflow-x: auto; }
+      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
+                                   text-align: left; vertical-align: top; }
+      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
+      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
+                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
+      .om-track h3 { margin-top: 0; }
+      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
+                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
+    
+        /* Site footer — shared across pages. Uses only the four custom properties
+           every page defines (--navy-dark, --slate, --blue-accent, --white), so it
+           renders identically everywhere without a shared stylesheet. */
+        .site-footer { background: var(--navy-dark); border-top: 1px solid rgba(100,255,218,0.1); padding: 3rem 2rem 2rem; }
+        .foot-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .foot-grid h3 { color: var(--white); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem; font-weight: 600; }
+        .foot-grid a { display: block; color: var(--slate); text-decoration: none; font-size: .9rem; margin-bottom: .5rem; }
+        .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
+        .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
+        .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">SiegeStack</a>
+        <div class="nav-links">
+            <a href="/#solutions">Solutions</a>
+            <a href="/#process">Process</a>
+            <a href="/operations-modernization">Operations</a>
+            <a href="/etl-showcase">ETL Showcase</a>
+            <a href="/case-studies">Case Studies</a>
+            <a href="/insights">Insights</a>
+            <a href="/about">About</a>
+            <a href="/#faq">FAQ</a>
+            <a href="/contact" class="btn btn-primary">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    </nav>
+
+    <main>
+        <section class="hero" style="padding: 6rem 2rem 2rem; text-align: center;">
+            <h1>What a Prophet 21 upgrade does to your reporting</h1>
+            <p class="subtitle">The upgrade rarely breaks the ERP. It breaks what you built on top of it &mdash; and it does so quietly, because a report that reads the wrong rows still returns a number.</p>
+        </section>
+
+        <div class="om-wrap">
+
+            <p class="om-lead">Three different projects get called &ldquo;the P21 upgrade&rdquo;, and they are not the same size, do not carry the same risk, and do not break the same things. Before anyone estimates the reporting work, it is worth being precise about which one is actually happening &mdash; the answer changes whether the reporting layer needs a repair, a rebuild, or nothing at all.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>Scope, stated up front.</strong> This page is about the reporting and integration layer <em>around</em> Prophet 21, not about running the upgrade. The upgrade itself is the platform owner&rsquo;s project, run with Epicor or a reseller, and it should stay that way. What follows is the part that usually has no owner: the custom reports, dashboards, indexes, extracts and integrations that were built against a schema somebody else is about to change.</p>
+            </div>
+
+            <h2>Three things called an upgrade</h2>
+
+            <div class="om-track">
+                <span class="om-num">One</span>
+                <h3>A version upgrade &mdash; same product, newer release</h3>
+                <p>The ordinary case. The schema is still the vendor&rsquo;s and still recognisably itself, but tables gain columns, views get redefined, and objects that were never documented in the first place move without announcement. Nothing here is dramatic on its own. The damage is cumulative and it lands entirely on things that read the database directly.</p>
+                <p>The reporting risk is proportional to how far behind you are, because every skipped release&rsquo;s schema changes arrive in the same window. A shop two releases behind is doing a repair. A shop that has not upgraded since the desktop client was current is doing an archaeology project first.</p>
+            </div>
+
+            <div class="om-track">
+                <span class="om-num">Two</span>
+                <h3>The desktop-to-web transition &mdash; same product, different client</h3>
+                <p>This one is largely historical now and is still the reason a lot of P21 reporting is in the state it is in. Epicor stopped adding features to the Prophet 21 desktop application at the Spring 2021 release, moved new development to the web application, and ended desktop fixes on 30 November 2022. Dates and versions are in the <a href="#sources">sources</a> below; re-check them against Epicor before planning around them.</p>
+                <p>What that did to reporting was not subtle: anything whose delivery mechanism was the desktop client &mdash; a report launched from a menu, a print job wired to a workstation, a tool that assumed a Windows session &mdash; needed a new home, whether or not the query underneath it was still correct. A good deal of it never got one. It got a person running it manually instead, and that person is now the documentation.</p>
+                <p>If you are still on a desktop-era version in 2026, the reporting question is downstream of a support question, and the support question has the date on it.</p>
+            </div>
+
+            <div class="om-track">
+                <span class="om-num">Three</span>
+                <h3>Replacing Prophet 21 with Epicor Kinetic &mdash; a different product</h3>
+                <p>Not an upgrade. Prophet 21 and Kinetic are separate products with separate code bases and separate roadmaps, built for different industries &mdash; Prophet 21 for wholesale distribution, Kinetic for discrete and mixed-mode manufacturing. Moving between them is a re-implementation.</p>
+                <p>For the reporting layer that means the honest estimate is <em>none of it comes across</em>. Not the queries, not the indexes, not the extracts, not the mappings. The business logic survives &mdash; what a metric is supposed to mean, which rows should count, which exceptions are real &mdash; and that is worth writing down properly before the old system goes away, because it is the only asset that transfers.</p>
+                <p>When a proposal calls this an upgrade, that is worth a direct question. The word is doing a lot of work.</p>
+            </div>
+
+            <h2>What actually breaks</h2>
+
+            <p>In every one of the three cases the ERP comes back up and the standard screens work. The failures are in the layer nobody in the upgrade project owns, and they share a characteristic that makes them expensive: <strong>they do not raise errors.</strong></p>
+
+            <div class="om-table-wrap">
+            <table class="om-table">
+                <thead>
+                    <tr><th>What it is</th><th>How it fails</th><th>How you find out</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Queries reading vendor tables directly</td>
+                        <td>A column changes meaning, or a row that used to be excluded starts arriving. The query still runs.</td>
+                        <td>Somebody notices the number moved and cannot explain why &mdash; typically a month later, at close.</td>
+                    </tr>
+                    <tr>
+                        <td>Custom indexes on vendor tables</td>
+                        <td>Dropped or not carried forward. Nothing is obliged to preserve an object the vendor did not ship.</td>
+                        <td>The long-range report starts timing out again. Same query, same plan shape as before it was ever fixed.</td>
+                    </tr>
+                    <tr>
+                        <td>Reports bound to the old client</td>
+                        <td>The delivery mechanism disappears while the query stays valid.</td>
+                        <td>Immediately, and this is the good case &mdash; a visible break gets fixed.</td>
+                    </tr>
+                    <tr>
+                        <td>Integrations bound to table shape</td>
+                        <td>An added column or a changed nullability breaks a load, or worse, does not break it and writes something subtly wrong.</td>
+                        <td>The load that fails is found the same day. The one that succeeds incorrectly is found by reconciliation, if there is one.</td>
+                    </tr>
+                    <tr>
+                        <td>Anything reading an undocumented view</td>
+                        <td>Redefined upstream. The view still exists and still returns rows.</td>
+                        <td>Usually never, directly. It surfaces as two reports disagreeing.</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <p>This is the same failure mode described in <a href="/prophet-21">the four traps in P21 reporting</a>, arriving by a different route. There, the wrong rows were counted because the data model was misread. Here, the model was read correctly and then changed underneath. The symptom is identical &mdash; a plausible number, moving in a believable direction, built on rows that should not be in it &mdash; and so is the reason it survives so long: nothing in the system objects.</p>
+
+            <h2>The inventory, and the baseline you cannot go back for</h2>
+
+            <p>Two artefacts are worth producing before the upgrade window opens, and both become impossible to produce properly afterwards.</p>
+
+            <p><strong>The dependency inventory</strong> is the list of everything outside the ERP that reads the ERP: reports, dashboards, scheduled extracts, integrations, spreadsheets with live connections, and the workstation scripts that were never called integrations because one person wrote them. For each one, what it reads and who notices when it is wrong. Most of this list does not exist anywhere when the question is first asked, and assembling it is frequently the most useful part of the exercise regardless of the upgrade &mdash; it is the first time anyone has written down what the business actually depends on.</p>
+
+            <p><strong>The performance baseline</strong> is runtime and logical reads for the reports that matter, captured on the current production system. Logical reads rather than wall-clock time, for the reasons set out in <a href="/sql-server-erp-performance">the SQL Server method page</a>: runtime moves with cache state and load, reads do not. This is the measurement that cannot be recovered. Once the window closes the old state is gone, and every later argument about whether the upgrade made reporting slower becomes a disagreement about how it used to feel.</p>
+
+            <div class="om-callout">
+                <p style="margin:0"><strong>Index definitions belong in source control, not only in the database.</strong> An index applied to a vendor table during a tuning engagement is invisible to the upgrade and to whoever runs it. If the only record of it is the database it was applied to, the upgrade is the event that silently removes a fix somebody paid for &mdash; and the report that starts timing out afterwards looks like a new problem. Keep the definition, the date, and the reason it exists.</p>
+            </div>
+
+            <h2>Worth measuring if you run this</h2>
+
+            <p>No percentages are published on this page, for the same reason they are absent from the rest of this site: a figure is only worth quoting if somebody captured the before state, and in upgrade work almost nobody did. These are the measurements that make the reporting side of an upgrade assessable rather than anecdotal.</p>
+
+            <ul>
+                <li>Report runtime <em>and</em> logical reads for the reports that matter, captured before the window and again after &mdash; the same reports, the same parameters, both times.</li>
+                <li>Count of items in the dependency inventory, and how many of them nobody could name an owner for.</li>
+                <li>Custom indexes present before the upgrade, versus present after.</li>
+                <li>Number of reports that returned a different figure after the upgrade for the same period, and how many of those differences were correct.</li>
+                <li>Elapsed time from the window closing to the last piece of reporting being confirmed working, rather than assumed working.</li>
+            </ul>
+
+            <h2>What this is not</h2>
+
+            <p>This is not upgrade delivery, migration planning, or ERP selection. It does not include running the upgrade, sizing the environment, or negotiating with the vendor. Full re-implementation is a different kind of engagement and there are firms that specialise in it &mdash; that boundary is stated on <a href="/prophet-21">the P21 page</a> as well, and it has not moved.</p>
+
+            <p>What it is: the inventory, the baseline, and the repair of the reporting and integration layer either side of somebody else&rsquo;s window.</p>
+
+            <h2>Frequently asked questions</h2>
+
+            <div class="om-track">
+                <h3>Do you run the upgrade itself?</h3>
+                <p>No. The upgrade is the platform owner&rsquo;s project, run with Epicor or a reseller. This is the reporting and integration layer around it &mdash; the inventory of what depends on the schema, the baseline captured before the window, and the repairs afterwards. Those are separate jobs and it is better for you if they are separate people.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Is moving from Prophet 21 to Kinetic an upgrade?</h3>
+                <p>No. They are separate products with separate code bases and separate roadmaps, aimed at different industries &mdash; Prophet 21 at wholesale distribution, Kinetic at discrete and mixed-mode manufacturing. Moving between them is a re-implementation, and none of your reporting comes across. Anyone describing it as an upgrade is either being loose with the word or has not looked at the schema.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>Will our custom indexes survive?</h3>
+                <p>Assume not, and plan to re-apply them. An index added to a vendor table is not part of the vendor&rsquo;s shipped schema, so nothing in the upgrade is obliged to preserve it. The failure is quiet: the report still returns, it just reads the whole history table again. Keep the index definitions in source control with the reason each one exists, not only in the database.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>When should the baseline be captured?</h3>
+                <p>Before the upgrade window opens, on the current production system. Runtime and logical reads for the reports that matter cannot be recovered afterwards &mdash; once the window closes, the old state is gone and every performance argument becomes a memory of how it used to feel.</p>
+            </div>
+
+            <div class="om-track">
+                <h3>We are several versions behind. Is that a reporting problem or a support problem?</h3>
+                <p>Both, and the support problem is the one with a date on it. Being unsupported does not make a report wrong today; it makes the eventual upgrade larger, because the schema changes accumulate and arrive together. The reporting work is the same either way &mdash; inventory what depends on the schema, baseline it, and expect the gap between your version and the current one to be roughly the size of the repair.</p>
+            </div>
+
+            <h2 id="sources">Sources, and how dated these are</h2>
+
+            <p>The vendor-specific claims on this page are dated by nature and are stated here with their source so you can re-check rather than trust the page &mdash; the same convention used on the Claude articles on this site, and for the same reason: product timelines move, and a page quoted back as current two years later is worse than no page.</p>
+
+            <ul>
+                <li><strong>Desktop feature freeze and end of fixes.</strong> The Spring 2021 release (Prophet 21 2021.1) is described as the final desktop version to receive new features, with new development moving to the web application, and no further desktop fixes after 30 November 2022 &mdash; <a href="https://echopath.com/p21-new-features-only-web-app/" target="_blank" rel="noopener">Echopath, December 2020</a>. That is a third-party summary of an Epicor announcement, not Epicor&rsquo;s own page; treat the dates as a starting point and confirm them with your account team.</li>
+                <li><strong>Prophet 21 and Kinetic as separate products.</strong> Separate code bases and roadmaps, aimed at distribution and at discrete/mixed-mode manufacturing respectively &mdash; <a href="https://www.erpresearch.com/compare/epicor-kinetic-vs-epicor-prophet-21" target="_blank" rel="noopener">ERP Research product comparison</a>, and Epicor&rsquo;s own product pages for each.</li>
+                <li><strong>Everything else here</strong> &mdash; what breaks, what to inventory, what to measure &mdash; is method rather than vendor fact, and does not go stale on a release schedule.</li>
+            </ul>
+
+            <p style="color:var(--slate); font-size:0.95rem">Vendor claims on this page last checked 18 August 2026.</p>
+
+            <h2>Related</h2>
+            <ul>
+                <li><a href="/prophet-21">Epicor P21 and Kinetic reporting and integration</a> &mdash; the main platform page, and the four data-model traps that make P21 reports quietly wrong. Start there if the question is <em>which rows count</em>.</li>
+                <li><a href="/sql-server-erp-performance">SQL Server performance for ERP reporting</a> &mdash; why logical reads are the honest baseline measure, and what applying an index to a vendor schema actually costs.</li>
+                <li><a href="/erp-report-slow-month-to-date">Why your ERP report is fast on Today and times out on month-to-date</a> &mdash; the worked example of the index that an upgrade is most likely to remove.</li>
+                <li><a href="/operations-modernization">Operations modernization</a> &mdash; including ERP carve-out and cutover, which is the re-implementation shape rather than the upgrade one.</li>
+                <li><a href="/case-studies">Case studies</a> &mdash; anonymised, with the measurement discipline this page argues for.</li>
+            </ul>
+
+            <div style="background: rgba(136,146,176,0.1); padding: 2rem; border-radius: 12px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-top:0">Upgrade window on the calendar?</h3>
+                <p>The inventory and the baseline are worth doing before it opens, and they are cheap compared with reconstructing them afterwards. Thirty minutes to work out which of the three projects you are actually doing, and what it puts at risk.</p>
+                <p><a href="/prophet-21#schedule">Book a call</a> &middot; <a href="/contact">Send it in writing</a> &middot; <a href="/prophet-21">Back to the P21 page</a></p>
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- Simple mobile menu toggle. Same handler as index.html -- this button
+         was present on this page but wired up on no page except index.html and
+         etl-showcase.html, so on a phone it rendered and did nothing. -->
+        <footer class="site-footer">
+        <div class="foot-grid">
+            <div>
+                <h3>Solutions</h3>
+                <a href="/services/erp-integration">ERP integration</a>
+                <a href="/services/etl-data-pipelines">ETL &amp; pipelines</a>
+                <a href="/services/bi-dashboards">BI dashboards</a>
+                <a href="/services/automated-reporting">Automated reporting</a>
+                <a href="/services/performance-tuning">Performance tuning</a>
+                <a href="/services/security-access-audit">Security &amp; access audit</a>
+            </div>
+            <div>
+                <h3>Platforms &amp; Work</h3>
+                <a href="/prophet-21">Prophet 21 &amp; Kinetic</a>
+                <a href="/sql-server-erp-performance">SQL Server performance</a>
+                <a href="/industries/distribution">For distributors</a>
+                <a href="/case-studies">Case studies</a>
+                <a href="/insights">Insights</a>
+            </div>
+            <div>
+                <h3>Company</h3>
+                <a href="/about">About</a>
+                <a href="/#process">Process</a>
+                <a href="/#faq">FAQ</a>
+                <a href="/contact">Contact</a>
+                <a href="/privacy-policy">Privacy policy</a>
+            </div>
+        </div>
+        <div class="foot-bottom">
+            <p>&copy; 2026 SiegeStack. All rights reserved.</p>
+            <p><a href="mailto:info@siegestack.com">info@siegestack.com</a> &middot; Remote, working with distribution and manufacturing operations &middot; <a href="https://github.com/iamnotcheckingit-cyber/siegestack" target="_blank" rel="noopener">GitHub</a></p>
+        </div>
+    </footer>
+
+<script>
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const links = document.querySelector('.nav-links');
+            if (links.style.display === 'flex') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'flex';
+                links.style.flexDirection = 'column';
+                links.style.position = 'absolute';
+                links.style.top = '100%';
+                links.style.left = '0';
+                links.style.right = '0';
+                links.style.background = 'rgba(10, 25, 47, 0.98)';
+                links.style.padding = '1rem';
+                links.style.gap = '1rem';
+            }
+        });
+    </script>
+</body>
+</html>

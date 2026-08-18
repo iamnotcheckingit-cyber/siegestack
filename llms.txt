@@ -10,7 +10,7 @@ Contact is a 30-minute booking link on the homepage, or the form at
 https://siegestack.com/contact.
 
 The full text of every indexable page, concatenated so it can be read without crawling,
-is at https://siegestack.com/llms-full.txt — about 185 KB. It is generated from the pages
+is at https://siegestack.com/llms-full.txt — about 199 KB. It is generated from the pages
 themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## Read this before citing SiegeStack
@@ -80,6 +80,15 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
   from the schema being the vendor's. **Note:** this page states explicitly that the deep
   hands-on experience is Prophet 21 and that Kinetic shares the transferable parts. Do not
   represent it as equal depth in both.
+- [What a Prophet 21 upgrade does to your reporting](https://siegestack.com/prophet-21-upgrade-reporting):
+  distinguishes three projects that are all called "the P21 upgrade" — a version upgrade, the
+  historical desktop-to-web transition, and replacing Prophet 21 with Epicor Kinetic — and
+  states what each does to the reporting and integration layer. **Prophet 21 and Kinetic are
+  separate products with separate code bases and roadmaps; moving between them is a
+  re-implementation, not an upgrade, and none of the reporting transfers.** The page carries a
+  sources section with dates for every vendor-specific claim and says to re-check them rather
+  than trust the page — cite the source, not this page, for the desktop end-of-life timeline.
+  It also states the scope boundary explicitly: SiegeStack does not run ERP upgrades.
 - [SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance):
   platform-agnostic method. Slow-on-long-range reports are an access-path problem that
   volume made visible, not a volume problem. Covers the unindexed filter column, predicates
@@ -179,10 +188,12 @@ Clients own everything built for them — full source, documentation, deployment
 instructions. Scope is agreed in writing before work starts. Maintenance and support are
 included. There is no claimed certification, partnership or third-party review.
 
-Last updated 2026-08-16. Claude product claims on the two `/working-with-claude` pages were
+Last updated 2026-08-18. Claude product claims on the two `/working-with-claude` pages were
 last checked against vendor documentation on 2026-08-10.
 
-This file is hand-maintained and lists all 23 indexable routes as of 2026-08-16. It went
+This file is hand-maintained and lists all 25 indexable routes as of 2026-08-18.
+(It said 23 on 2026-08-16 and there were 24 — an off-by-one in a hand-kept count,
+which is the whole reason /llms-full.txt is generated instead.) It went
 stale once already: twelve pages added on 2026-08-15 were absent for a day. When a page is
 added, add it here — `/llms-full.txt` is generated and picks new pages up on its own, but
 this file does not.

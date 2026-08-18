@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-16.
+Generated 2026-08-18.
 
 ---
 
@@ -1063,111 +1063,51 @@ https://siegestack.com/prophet-21
 
 Reporting, integration and tooling for distributors already running the ERP. The hard part is rarely the query — it is knowing which rows count.
 
-
-
-
-
-
-
 Prophet 21 and Kinetic hold everything the business runs on and answer operational questions reluctantly. The data is there. Assembling it correctly is a different job from querying it, and most reporting that goes wrong on these platforms goes wrong quietly — a number that looks plausible, moves in the right direction, and is built on rows that should never have been counted.
-
-
-
 
 **Where the depth actually is.** The hands-on work behind this page is on **Prophet 21**. Kinetic shares the parts that transfer — SQL Server underneath, a vendor-owned schema, the same access-path failure modes in reporting — and differs at the application layer. That distinction is stated here rather than smoothed over, because a consultancy that claims equal depth in every product on its own keyword list is telling you something about its writing, not its experience.
 
-
-
-
-
-
 ### Four traps in P21 reporting that produce confidently wrong numbers
-
 
 These are not exotic. They are the ordinary shape of the schema, and each one has a default behaviour that flatters the metric in exactly the cases nobody is checking.
 
-
-
-
 Trap 01
-
-
 
 #### Open and posted live in different tables
 
 The same reporting period can span unposted transactions and posted history, and those sit in separate tables with different columns. A daily view that reads only the open side is correct. Extend it to a week or a month without unioning history and the number is not wrong by a little — it silently omits everything that has been posted, which on a full month is most of it.
 
-
 This is the classic ERP reporting bug on this platform: it looks right on the view people check most often, and drifts on every longer window. It is also the reason a report can be fast on Today and unusable on month-to-date, which is [a separate problem with the same trigger](https://siegestack.com/erp-report-slow-month-to-date).
 
-
-
-
-
-
 Trap 02
-
-
 
 #### Undated lines counted as successes
 
 On-time percentage compares a receipt or ship date against a due date, and due date itself is a fallback chain — promise, then required, then original. The decision that matters is what to do with a line that has *no* due date at all.
 
-
 Rolling those into the numerator treats missing data as a success. It flatters the metric precisely where the data is worst, which is where you most need the metric to be honest. Excluding them from the ratio and reporting the exclusion count separately is the version that survives being questioned by the person whose department it measures.
 
-
-
-
-
-
 Trap 03
-
-
 
 #### Flags that only exist on one side
 
 Some completeness flags exist on open records and have no equivalent in posted history. Score the history rows zero and a full month reads worse than a single day, purely because most of the month has been posted. The fix is to exclude them from the ratio with an explicit marker rather than let them default to failure — and to say so on the report, because a ratio with a hidden denominator rule is a ratio nobody should act on.
 
-
-
-
-
-
 Trap 04
-
-
 
 #### Identity is a fallback chain, and the fallbacks fail silently
 
 Transactions frequently carry initials or a short code rather than a person. Mapping that to a human runs through a chain — a description field, a network login, the local part of an email address — and every chain has rows that reach the end unmatched.
 
-
 Hiding them produces a leaderboard that is permanently and invisibly wrong. Displaying an explicit *unmapped* bucket turns the same rows into a data-quality finding somebody can close. An unattributed transaction is information; a silently dropped one is a bug you will never be told about.
-
-
-
-
-
 
 **The pattern across all four:** most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence. A dashboard that gets that wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks. Worked through properly in [the KPI console case study](https://siegestack.com/case-studies).
 
-
-
-
-
-
 ### What changes when the schema belongs to the vendor
-
 
 Nearly every constraint that makes this work different from ordinary application development comes from one fact: the tables shipped with the ERP and you did not create them.
 
-
-
-
-
 | Constraint | What it means in practice |
-
 
 | Indexes are a supportability decision first | Adding one to a vendor table is a conversation with the platform owner before it is a technical exercise. It is frequently approved. It should never be applied because it was obviously correct. |
 
@@ -1179,76 +1119,37 @@ Nearly every constraint that makes this work different from ordinary application
 
 | Customisation belongs outside the schema where possible | Reporting layers, configuration tables and services alongside the ERP survive upgrades. Changes inside vendor objects are a liability you carry forever. |
 
-
-
-
-
-
-
-
 ### Beyond reporting
 
-
-
 Integration
-
-
 
 #### Getting data in and out without a nightly file
 
 Connecting the ERP to a CRM, a storefront or a warehouse system is mostly a question of what happens on the bad day — the API that times out, the format that changed, the record that arrives twice. Retries, circuit breakers, idempotent writes and monitoring are the parts that decide whether an integration is an asset or a recurring incident. The patterns, with production-shaped code, are on the [integration showcase](https://siegestack.com/etl-showcase).
 
-
 The design rule that matters most: replace file drops with a service consumers can ask. A file is stale the moment it is sent, forks into several slightly different versions, and nobody can tell which is current.
 
-
-
-
-
-
 Bulk maintenance
-
-
 
 #### Loading tooling that refuses to half-finish
 
 Bulk maintenance in P21 — pricing, contracts, and anything else that goes out through an export and comes back through an import — usually means reshaping one export into several differently-formatted files by hand. It works, it takes a long time, and it fails in the worst possible way: halfway through a load, leaving a partial mess behind.
 
-
 Purpose-built tooling for this runs in the browser with no backend and nothing leaving the machine. It detects which file is which, stamps the batch identifier down every row, normalises date formats, drops the header the exporter adds, and writes out correctly named files.
-
 
 **The validation design is the part worth stealing.** Failures split into two tiers: conditions that guarantee a broken load are *errors* and stop you; conditions that are merely suspicious are *warnings* and let you proceed. An orphaned child record is an error. A mismatch between related lines is a warning. Collapsing those two into one category is what teaches people to ignore validation entirely.
 
-
-
-
-
-
 Mapping
-
-
 
 #### Understanding what you inherited
 
 Custom views accumulate over years, each joining tables that join other tables, and no map exists. Before any performance work is safe, the map has to exist — parse every view definition, extract the join relationships, cross-reference them against declared key constraints, and write the result somewhere queryable rather than somewhere pretty.
 
-
 The part that decides whether the map is trustworthy is the failure list. Any definition the parser cannot confidently interpret gets written down for a human decision instead of being skipped. **A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.**
-
-
-
-
-
 
 ### Worth measuring if you run this
 
-
 No percentages are published on this page. Any figure worth quoting needs a before state somebody actually captured, and in most operational work nobody did, because instrumenting the before state was nobody's job. These are the measurements that make an engagement here assessable:
-
-
-
-
 
 - Report runtime at each period setting, and logical reads for the query — captured *before* anything is applied, because you cannot go back for it.
 
@@ -1260,66 +1161,31 @@ No percentages are published on this page. Any figure worth quoting needs a befo
 
 - Failed or partially completed bulk loads per month.
 
-
-
-
 ### Frequently asked questions
-
-
-
 
 #### Will you add indexes to our P21 database?
 
 Only with the platform owner's agreement, and in a maintenance window. The tables ship with the ERP, so adding an index is a supportability decision before it is a technical one. It also takes a schema-modification lock, which blocks live users for the duration of the build.
 
-
-
-
-
-
-
 #### Do you need production access?
 
 Read access to a restore or a replica is enough to diagnose almost everything. Nothing is applied to production without an agreed window, a captured baseline and a way back.
-
-
-
-
-
-
 
 #### Can you work on Kinetic as well as Prophet 21?
 
 Yes. The reporting and access-path work transfers directly because both sit on SQL Server and both are vendor-owned schemas. The application-layer specifics differ, and the deepest hands-on experience here is on Prophet 21 — that is stated plainly rather than smoothed over.
 
-
-
-
-
-
-
 #### Do we own what you build?
 
 Yes, entirely. Full source, documentation and deployment instructions. You can hand it to another team tomorrow.
-
-
-
-
-
-
 
 #### Do you upgrade or re-implement the ERP itself?
 
 No. This is reporting, integration and tooling around a system you already run. Full re-implementation is a different kind of engagement and there are firms that specialise in it.
 
-
-
-
-
-
 ### Related
 
-
+- [What a P21 upgrade does to your reporting](https://siegestack.com/prophet-21-upgrade-reporting) — the three different projects people call an upgrade, what each one breaks, and the baseline to capture before the window opens.
 
 - [SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance) — the diagnostic method, independent of which ERP sits on top. Start there if the question is *why is this slow* rather than *which rows count*.
 
@@ -1331,16 +1197,174 @@ No. This is reporting, integration and tooling around a system you already run. 
 
 - [Operations modernization](https://siegestack.com/operations-modernization) — the larger engagement: consolidate onto one system of record, then optimize.
 
-
-
-
-
 #### Running P21 or Kinetic and not trusting a number?
 
 Bring the report and the question it is supposed to answer. The first conversation is thirty minutes and costs nothing, and frequently ends with a diagnosis rather than a proposal.
 
+Book a call · [See the case studies](https://siegestack.com/case-studies) · [Send it in writing](https://siegestack.com/contact)
 
-[Book a call](https://siegestack.com/#schedule) · [See the case studies](https://siegestack.com/case-studies)
+### Thirty minutes, on the report you don't trust
+
+Pick a time. Bring the report, the number that looks wrong, and what it is supposed to mean. If the answer is one of the four traps above, you will have it inside the call. If it is something else, you will at least leave knowing which layer it is in.
+
+---
+
+
+# What a Prophet 21 upgrade does to your reporting
+https://siegestack.com/prophet-21-upgrade-reporting
+
+## What a Prophet 21 upgrade does to your reporting
+
+The upgrade rarely breaks the ERP. It breaks what you built on top of it — and it does so quietly, because a report that reads the wrong rows still returns a number.
+
+Three different projects get called “the P21 upgrade”, and they are not the same size, do not carry the same risk, and do not break the same things. Before anyone estimates the reporting work, it is worth being precise about which one is actually happening — the answer changes whether the reporting layer needs a repair, a rebuild, or nothing at all.
+
+**Scope, stated up front.** This page is about the reporting and integration layer *around* Prophet 21, not about running the upgrade. The upgrade itself is the platform owner’s project, run with Epicor or a reseller, and it should stay that way. What follows is the part that usually has no owner: the custom reports, dashboards, indexes, extracts and integrations that were built against a schema somebody else is about to change.
+
+### Three things called an upgrade
+
+One
+
+#### A version upgrade — same product, newer release
+
+The ordinary case. The schema is still the vendor’s and still recognisably itself, but tables gain columns, views get redefined, and objects that were never documented in the first place move without announcement. Nothing here is dramatic on its own. The damage is cumulative and it lands entirely on things that read the database directly.
+
+The reporting risk is proportional to how far behind you are, because every skipped release’s schema changes arrive in the same window. A shop two releases behind is doing a repair. A shop that has not upgraded since the desktop client was current is doing an archaeology project first.
+
+Two
+
+#### The desktop-to-web transition — same product, different client
+
+This one is largely historical now and is still the reason a lot of P21 reporting is in the state it is in. Epicor stopped adding features to the Prophet 21 desktop application at the Spring 2021 release, moved new development to the web application, and ended desktop fixes on 30 November 2022. Dates and versions are in the sources below; re-check them against Epicor before planning around them.
+
+What that did to reporting was not subtle: anything whose delivery mechanism was the desktop client — a report launched from a menu, a print job wired to a workstation, a tool that assumed a Windows session — needed a new home, whether or not the query underneath it was still correct. A good deal of it never got one. It got a person running it manually instead, and that person is now the documentation.
+
+If you are still on a desktop-era version in 2026, the reporting question is downstream of a support question, and the support question has the date on it.
+
+Three
+
+#### Replacing Prophet 21 with Epicor Kinetic — a different product
+
+Not an upgrade. Prophet 21 and Kinetic are separate products with separate code bases and separate roadmaps, built for different industries — Prophet 21 for wholesale distribution, Kinetic for discrete and mixed-mode manufacturing. Moving between them is a re-implementation.
+
+For the reporting layer that means the honest estimate is *none of it comes across*. Not the queries, not the indexes, not the extracts, not the mappings. The business logic survives — what a metric is supposed to mean, which rows should count, which exceptions are real — and that is worth writing down properly before the old system goes away, because it is the only asset that transfers.
+
+When a proposal calls this an upgrade, that is worth a direct question. The word is doing a lot of work.
+
+### What actually breaks
+
+In every one of the three cases the ERP comes back up and the standard screens work. The failures are in the layer nobody in the upgrade project owns, and they share a characteristic that makes them expensive: **they do not raise errors.**
+
+| What it is | How it fails | How you find out |
+
+| Queries reading vendor tables directly
+| A column changes meaning, or a row that used to be excluded starts arriving. The query still runs.
+| Somebody notices the number moved and cannot explain why — typically a month later, at close.
+|
+
+| Custom indexes on vendor tables
+| Dropped or not carried forward. Nothing is obliged to preserve an object the vendor did not ship.
+| The long-range report starts timing out again. Same query, same plan shape as before it was ever fixed.
+|
+
+| Reports bound to the old client
+| The delivery mechanism disappears while the query stays valid.
+| Immediately, and this is the good case — a visible break gets fixed.
+|
+
+| Integrations bound to table shape
+| An added column or a changed nullability breaks a load, or worse, does not break it and writes something subtly wrong.
+| The load that fails is found the same day. The one that succeeds incorrectly is found by reconciliation, if there is one.
+|
+
+| Anything reading an undocumented view
+| Redefined upstream. The view still exists and still returns rows.
+| Usually never, directly. It surfaces as two reports disagreeing.
+|
+
+This is the same failure mode described in [the four traps in P21 reporting](https://siegestack.com/prophet-21), arriving by a different route. There, the wrong rows were counted because the data model was misread. Here, the model was read correctly and then changed underneath. The symptom is identical — a plausible number, moving in a believable direction, built on rows that should not be in it — and so is the reason it survives so long: nothing in the system objects.
+
+### The inventory, and the baseline you cannot go back for
+
+Two artefacts are worth producing before the upgrade window opens, and both become impossible to produce properly afterwards.
+
+**The dependency inventory** is the list of everything outside the ERP that reads the ERP: reports, dashboards, scheduled extracts, integrations, spreadsheets with live connections, and the workstation scripts that were never called integrations because one person wrote them. For each one, what it reads and who notices when it is wrong. Most of this list does not exist anywhere when the question is first asked, and assembling it is frequently the most useful part of the exercise regardless of the upgrade — it is the first time anyone has written down what the business actually depends on.
+
+**The performance baseline** is runtime and logical reads for the reports that matter, captured on the current production system. Logical reads rather than wall-clock time, for the reasons set out in [the SQL Server method page](https://siegestack.com/sql-server-erp-performance): runtime moves with cache state and load, reads do not. This is the measurement that cannot be recovered. Once the window closes the old state is gone, and every later argument about whether the upgrade made reporting slower becomes a disagreement about how it used to feel.
+
+**Index definitions belong in source control, not only in the database.** An index applied to a vendor table during a tuning engagement is invisible to the upgrade and to whoever runs it. If the only record of it is the database it was applied to, the upgrade is the event that silently removes a fix somebody paid for — and the report that starts timing out afterwards looks like a new problem. Keep the definition, the date, and the reason it exists.
+
+### Worth measuring if you run this
+
+No percentages are published on this page, for the same reason they are absent from the rest of this site: a figure is only worth quoting if somebody captured the before state, and in upgrade work almost nobody did. These are the measurements that make the reporting side of an upgrade assessable rather than anecdotal.
+
+- Report runtime *and* logical reads for the reports that matter, captured before the window and again after — the same reports, the same parameters, both times.
+
+- Count of items in the dependency inventory, and how many of them nobody could name an owner for.
+
+- Custom indexes present before the upgrade, versus present after.
+
+- Number of reports that returned a different figure after the upgrade for the same period, and how many of those differences were correct.
+
+- Elapsed time from the window closing to the last piece of reporting being confirmed working, rather than assumed working.
+
+### What this is not
+
+This is not upgrade delivery, migration planning, or ERP selection. It does not include running the upgrade, sizing the environment, or negotiating with the vendor. Full re-implementation is a different kind of engagement and there are firms that specialise in it — that boundary is stated on [the P21 page](https://siegestack.com/prophet-21) as well, and it has not moved.
+
+What it is: the inventory, the baseline, and the repair of the reporting and integration layer either side of somebody else’s window.
+
+### Frequently asked questions
+
+#### Do you run the upgrade itself?
+
+No. The upgrade is the platform owner’s project, run with Epicor or a reseller. This is the reporting and integration layer around it — the inventory of what depends on the schema, the baseline captured before the window, and the repairs afterwards. Those are separate jobs and it is better for you if they are separate people.
+
+#### Is moving from Prophet 21 to Kinetic an upgrade?
+
+No. They are separate products with separate code bases and separate roadmaps, aimed at different industries — Prophet 21 at wholesale distribution, Kinetic at discrete and mixed-mode manufacturing. Moving between them is a re-implementation, and none of your reporting comes across. Anyone describing it as an upgrade is either being loose with the word or has not looked at the schema.
+
+#### Will our custom indexes survive?
+
+Assume not, and plan to re-apply them. An index added to a vendor table is not part of the vendor’s shipped schema, so nothing in the upgrade is obliged to preserve it. The failure is quiet: the report still returns, it just reads the whole history table again. Keep the index definitions in source control with the reason each one exists, not only in the database.
+
+#### When should the baseline be captured?
+
+Before the upgrade window opens, on the current production system. Runtime and logical reads for the reports that matter cannot be recovered afterwards — once the window closes, the old state is gone and every performance argument becomes a memory of how it used to feel.
+
+#### We are several versions behind. Is that a reporting problem or a support problem?
+
+Both, and the support problem is the one with a date on it. Being unsupported does not make a report wrong today; it makes the eventual upgrade larger, because the schema changes accumulate and arrive together. The reporting work is the same either way — inventory what depends on the schema, baseline it, and expect the gap between your version and the current one to be roughly the size of the repair.
+
+### Sources, and how dated these are
+
+The vendor-specific claims on this page are dated by nature and are stated here with their source so you can re-check rather than trust the page — the same convention used on the Claude articles on this site, and for the same reason: product timelines move, and a page quoted back as current two years later is worse than no page.
+
+- **Desktop feature freeze and end of fixes.** The Spring 2021 release (Prophet 21 2021.1) is described as the final desktop version to receive new features, with new development moving to the web application, and no further desktop fixes after 30 November 2022 — [Echopath, December 2020](https://echopath.com/p21-new-features-only-web-app/). That is a third-party summary of an Epicor announcement, not Epicor’s own page; treat the dates as a starting point and confirm them with your account team.
+
+- **Prophet 21 and Kinetic as separate products.** Separate code bases and roadmaps, aimed at distribution and at discrete/mixed-mode manufacturing respectively — [ERP Research product comparison](https://www.erpresearch.com/compare/epicor-kinetic-vs-epicor-prophet-21), and Epicor’s own product pages for each.
+
+- **Everything else here** — what breaks, what to inventory, what to measure — is method rather than vendor fact, and does not go stale on a release schedule.
+
+Vendor claims on this page last checked 18 August 2026.
+
+### Related
+
+- [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/prophet-21) — the main platform page, and the four data-model traps that make P21 reports quietly wrong. Start there if the question is *which rows count*.
+
+- [SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance) — why logical reads are the honest baseline measure, and what applying an index to a vendor schema actually costs.
+
+- [Why your ERP report is fast on Today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date) — the worked example of the index that an upgrade is most likely to remove.
+
+- [Operations modernization](https://siegestack.com/operations-modernization) — including ERP carve-out and cutover, which is the re-implementation shape rather than the upgrade one.
+
+- [Case studies](https://siegestack.com/case-studies) — anonymised, with the measurement discipline this page argues for.
+
+#### Upgrade window on the calendar?
+
+The inventory and the baseline are worth doing before it opens, and they are cheap compared with reconstructing them afterwards. Thirty minutes to work out which of the three projects you are actually doing, and what it puts at risk.
+
+[Book a call](https://siegestack.com/prophet-21#schedule) · [Send it in writing](https://siegestack.com/contact) · [Back to the P21 page](https://siegestack.com/prophet-21)
 
 ---
 
@@ -4370,137 +4394,71 @@ https://siegestack.com/insights
 
 Technical write-ups and anonymised problem breakdowns, from work that shipped.
 
-
-
-
-
-
-
 Everything here is written from problems that actually occurred, and everything here is anonymised. No client or employer is named, no client data appears, and identifying details are removed rather than disguised. What is kept is the part that transfers to anyone running the same class of system.
-
-
-
 
 ### Where to start by platform
 
-
-
 Epicor · Prophet 21 & Kinetic
-
-
 
 #### [Epicor P21 & Kinetic Reporting and Integration](https://siegestack.com/prophet-21)
 
 The platform-specific side: the four data-model traps that make P21 reports quietly wrong — open versus posted living in different tables, undated lines counted as successes, flags that exist on only one side, and identity that resolves through a fallback chain — plus what changes when the schema belongs to the vendor. Read this one if the question is *which rows count*.
 
+Epicor · upgrades
 
+#### [What a Prophet 21 Upgrade Does to Your Reporting](https://siegestack.com/prophet-21-upgrade-reporting)
 
-
-
+Three different projects get called “the P21 upgrade” — a version upgrade, the desktop-to-web transition, and replacing Prophet 21 with Epicor Kinetic, which is a different product and not an upgrade at all. What each one breaks in the layer built on top of the schema, why none of it raises an error, and the two things worth capturing before the window opens because they cannot be recovered afterwards.
 
 SQL Server · performance method
-
-
 
 #### [SQL Server Performance for ERP Reporting](https://siegestack.com/sql-server-erp-performance)
 
 The diagnostic method, independent of which ERP sits on top: the two patterns behind most slow reports, why logical reads beat runtime as a measure, and why applying the fix needs more care than finding it. Read this one if the question is *why is this slow*.
 
-
-
-
-
-
 ### Technical articles
 
-
-
 SQL Server · ERP reporting
-
-
 
 #### [Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date](https://siegestack.com/erp-report-slow-month-to-date)
 
 The most common performance complaint in ERP reporting and the most consistently misdiagnosed. Short and long date ranges frequently read different tables, and if the history table has no index on the column you filter, the database reads all of it. Covers how to confirm it in about ten minutes, how to design the index, and what to check before adding one to a vendor schema.
 
-
-
-
-
-
 Delivery · Configuration audit
-
-
 
 #### [The config was mine and the fix on paper was still wrong](https://siegestack.com/delivery-config-audit)
 
 A delivery and configuration audit run against this site, written up for the finding that the auditor was wrong rather than for the ones that held. Reading the config produced a defensible remediation item; three requests against the running system showed there was no defect, and that the item would have caused an outage-class fault. What config review can and cannot establish, and what a live probe still cannot tell you.
 
-
-
-
-
-
 ### Case studies
 
-
-
 Reporting · Metrics design
-
-
 
 #### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console)
 
 Receiving and picker productivity metrics, including purchase price variance and on-time and in-full rates. Most of the work was deciding which rows count as evidence and which are absence of evidence — and keeping cost figures off screens that face a public floor.
 
-
-
-
-
-
 Performance · Root cause
-
-
 
 #### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
 
 Reported as “the dashboard is slow.” It was one unindexed date column on a table that shipped with the ERP. The diagnosis took minutes; applying the fix safely took the planning.
 
-
-
-
-
-
 Automation · Architecture
-
-
 
 #### [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
 
 Several unrelated paths to a printer, each grown separately, layouts drifting apart. Replaced with one service where label sources are rows in a configuration table rather than new programs.
 
-
-
-
-
-
 ### What tends to get written up here
-
 
 Operational software problems where the request describes the symptom accurately and the cause not at all. “The dashboard is slow” that turns out to be an access path. “We need another label program” that turns out to be a missing abstraction. “We need a report” that turns out to be a disagreement about which rows count.
 
-
-
 If you are running into one of these, the [case studies](https://siegestack.com/case-studies) show the shape of the work and [operations modernization](https://siegestack.com/operations-modernization) covers the larger engagement they sit inside.
-
-
-
-
 
 #### Recognise one of these?
 
 The first conversation is short and costs nothing.
-
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
 
