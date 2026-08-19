@@ -44,6 +44,7 @@ const PAGES = [
   ['working-with-claude.html', '/working-with-claude', 'Working with Claude — the slide deck'],
   ['insights.html', '/insights', 'Insights'],
   ['delivery-config-audit.html', '/delivery-config-audit', 'Delivery and configuration audit — when reading the config produces the wrong fix'],
+  ['label-tool.html', '/label-tool', 'Label designer — a free browser tool'],
   ['services/erp-integration.html', '/services/erp-integration', 'Service: ERP integration'],
   ['services/etl-data-pipelines.html', '/services/etl-data-pipelines', 'Service: ETL and data pipelines'],
   ['services/bi-dashboards.html', '/services/bi-dashboards', 'Service: BI dashboards'],

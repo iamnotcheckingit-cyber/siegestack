@@ -4579,6 +4579,77 @@ The full report from this pass is published, including the corrections trail and
 ---
 
 
+# Label designer — a free browser tool
+https://siegestack.com/label-tool
+
+## Label Designer
+
+Drop in a CSV, TSV, tab-delimited or Excel export, arrange the fields on a label, and print the run. Code 128 barcodes and QR codes are generated on the page, so there is nothing to install and no account to make.
+
+Your file is read in the browser. It is never uploaded.
+
+How this works — four steps
+
+##### The basic flow
+
+- **Choose a file.** Click *Choose file…* and pick a `.csv`, `.tsv`, `.txt` or Excel `.xlsx` export. Comma, tab, semicolon and pipe delimiters are detected from the file itself.
+
+- **Build the label.** Every column becomes a draggable field on the left. Dragging one onto the label drops *two* separate pieces — a **caption** (the column name, as editable text) and the **value** — so each can be positioned, sized and styled on its own. Click a piece to edit it; drag its corner handle to resize.
+
+- **Format each value.** Identifier-shaped columns (part, bin, item, serial numbers, SKUs) arrive as a *Code 128* barcode automatically; obvious quantities and prices stay as plain text. Any value can be switched between *Text*, *Code 128* and *QR code* in the Element panel.
+
+- **Print.** *Print labels* opens a searchable list — tick the rows to print and set a copy count per row — then hands the labels to your browser's own print dialog. **Choose your label printer there.** Picking *Save as PDF* or an office printer instead puts each label alone on a full sheet, which is the usual cause of “my 3×2 came out as a whole page”.
+
+##### About column headers
+
+The first row = header toggle controls how columns are named:
+
+- **Header row on (recommended).** Leave it ticked when the top row holds column names. Fields then carry meaningful names — `part_no`, `reorder_qty`, `bin_id` — which makes them easy to find while you design.
+
+- **No header? Still works.** Untick it and the columns come through as `Column 1`, `Column 2`, … They drag and print exactly the same.
+
+- **Headers are never required**, because the caption that drops in is only editable text — retype it to whatever you want regardless of the source column name. Headers make fields easier to *identify* while building; they never limit what prints.
+
+##### What this version does not do
+
+There is no database connection, no login and no template library: nothing is stored on a server and nothing is kept in this browser between visits. Close the tab and the layout is gone. That is deliberate — it is the whole reason the page can promise your data never leaves it. [The label service case study](https://siegestack.com/case-studies/label-service) describes what the full version of this looks like when it is wired into an ERP, and [we build those](https://siegestack.com/contact).
+
+Data file (CSV · TSV · XLSX)
+
+Choose file…
+
+first row = header
+
+Width (in)
+
+Height (in)
+
+Auto-arrange
+Print labels
+
+Clear all
+
+no data
+
+### Fields
+
+### Label layout
+
+«
+‹ Back
+
+Next ›
+»
+
+Drag a field from the left onto the label. Click an element to edit it. To highlight several, Ctrl-click (⌘-click) each one *or* drag a box across them from an empty part of the label — then drag any one of them and the whole set moves together, keeping its spacing. Drag the corner handle to resize. Delete, or the panel button, removes the highlighted elements. Ctrl+Z undoes.
+
+### Element
+
+Select an element to edit its properties.
+
+---
+
+
 # Service: ERP integration
 https://siegestack.com/services/erp-integration
 
@@ -4949,30 +5020,15 @@ https://siegestack.com/case-studies/label-service
 
 One engagement, described without the specifics.
 
-
-
-
-
 **The situation.** Labels were being produced from several unrelated places — contract bins, order lines, invoice lines, purchase-order lines. Each had grown its own path to a printer. Adding a label type meant writing another program, and the layouts drifted apart because nothing held them to a shared definition.
-
-
 
 **What was built.** A single label service with the sources defined as data rather than as code. Configuration tables in the ERP database describe each label source: the query that produces the rows, the fields it exposes, and the template it maps into. A .NET API serves those sources, an admin panel maintains them, and the user-facing side becomes one interface that changes behaviour by configuration.
 
-
-
 Output is native printer command language for industrial label printers, rather than a rendered image. For a floor printer this matters — it prints faster, positions predictably at the label edges, and does not degrade when the printer is asked to scale.
-
-
 
 **The design decision worth stealing.** Adding a label type should be a configuration change, not a deployment. Once the source is a row in a table — a query, a field list, a template — the fifth label type costs a fraction of the first, and the layouts stay consistent because they share one rendering path. Most label sprawl is not a printing problem. It is the absence of a place to define a label source.
 
-
-
 Worth measuring if you run this
-
-
-
 
 - Elapsed time to add a new label type, before and after.
 
@@ -4980,7 +5036,9 @@ Worth measuring if you run this
 
 - Number of distinct programs that can talk to a printer — the number you are trying to drive to one.
 
+### Try the idea in a browser
 
+The [label designer](https://siegestack.com/label-tool) is a stripped-down version of the user-facing half: drop in a spreadsheet export, place the fields, print the run. It has no database behind it and saves nothing, so it is the design without the configuration layer that makes the real thing worth building — but the layout, barcode and merge behaviour are the same.
 
 ### Related
 

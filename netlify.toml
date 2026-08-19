@@ -310,6 +310,20 @@
   status = 301
   force = true
 
+# The label designer. One self-contained file -- SheetJS, the Code 128 and QR
+# encoders, the CSS and the whole application are inline, so it obeys the
+# no-external-asset rule the rest of the site follows and needs no ?v= token.
+[[redirects]]
+  from = "/label-tool"
+  to = "/label-tool.html"
+  status = 200
+
+[[redirects]]
+  from = "/label-tool.html"
+  to = "/label-tool"
+  status = 301
+  force = true
+
 # The audit report is published deliberately -- it is linked from
 # /delivery-config-audit, which is the point of it being reachable. It is served
 # here under a stable path so the dated filename can change without breaking the
