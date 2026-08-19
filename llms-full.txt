@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-18.
+Generated 2026-08-19.
 
 ---
 
@@ -115,6 +115,34 @@ automation match rate
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+FREE TOOL · NO SIGN-UP
+
+
+
+### Print barcode labels from a spreadsheet
+
+Drop in a CSV, TSV, tab-delimited or Excel export, arrange the columns on a label, and print the run. Code 128 barcodes and QR codes are generated in the page.
+
+
+Your file is read in the browser and never uploaded. No account, no server, nothing kept after you close the tab.
+
+
+
+
+
+[Open the label designer](https://siegestack.com/label-tool)
+[What the full version does](https://siegestack.com/case-studies/label-service)
 
 
 
