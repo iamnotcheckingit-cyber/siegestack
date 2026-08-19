@@ -54,7 +54,7 @@ const ALLOW_EXACT = new Set([
   "/operations-modernization", "/etl-showcase", "/erp-report-slow-month-to-date",
   "/sql-server-erp-performance", "/prophet-21-upgrade-reporting",
   "/working-with-claude", "/working-with-claude-blog",
-  "/delivery-config-audit", "/privacy-policy",
+  "/delivery-config-audit", "/privacy-policy", "/label-tool",
   // Reachable on purpose, deliberately not in the sitemap
   "/audit",                    // the audit report, linked from /delivery-config-audit
   "/consultant-expertise",     // noindex intake form
