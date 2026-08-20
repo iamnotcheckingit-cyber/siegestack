@@ -67,7 +67,7 @@ const MUST_ALLOW = [
   // Assets and PWA surface.
   '/favicon.svg', '/favicon.ico', '/favicon.png', '/favicon-sw.svg',
   '/og-card.jpg', '/og-image.png', '/og-working-with-claude-card.jpg',
-  '/consultant-form.js', '/jesse-sw.js', '/nicole-sw.js',
+  '/consultant-form.js', '/jesse-sw.js', '/nicole-sw.js', '/label-tool-xlsx.js',
   '/jesse-manifest.json', '/nicole-manifest.json',
   '/private-icon-192.png', '/private-icon-maskable-512.png', '/private-badge-96.png',
   '/apple-touch-icon.png',

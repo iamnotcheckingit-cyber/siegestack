@@ -65,6 +65,7 @@ const ALLOW_EXACT = new Set([
   "/robots.txt", "/sitemap.xml", "/llms.txt", "/llms-full.txt",
   // Named scripts and manifests. Everything else with these extensions is denied.
   "/consultant-form.js", "/jesse-sw.js", "/nicole-sw.js",
+  "/label-tool-xlsx.js",       // SheetJS, fetched on demand by /label-tool
   "/jesse-manifest.json", "/nicole-manifest.json",
 ]);
 
