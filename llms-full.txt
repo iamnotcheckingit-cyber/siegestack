@@ -29,6 +29,19 @@ Tired of spreadsheets, manual exports, and "the data doesn't match" conversation
 Let's Talk
 Why We're Different
 
+Free · no sign-up
+
+### Barcode label maker
+
+Set a label size, drop in a spreadsheet, print the run. Your file is read in the browser and never uploaded.
+
+HEX CAP SCREW 1/4-20 x 1 ZINC
+
+10045512BIN A-12-03
+
+[Open the label maker](https://siegestack.com/label-tool)
+[What size is my label? →](https://siegestack.com/label-tool#sizes)
+
 ✓ Custom Solutions
 
 ✓ Fast Turnaround
@@ -36,17 +49,6 @@ Why We're Different
 ✓ Ongoing Support
 
 ✓ Clear Pricing
-
-FREE TOOL · NO SIGN-UP
-
-### Free barcode label maker — print labels from Excel or CSV
-
-Set your label size — 4&Prime;×6&Prime; shipping, 3&Prime;×2&Prime; bin, 2&Prime;×1&Prime; barcode, or anything you type — merge a spreadsheet, and print the run. Code 128 barcodes and QR codes are generated in the page.
-
-Your file is read in the browser and never uploaded. No account, no server, nothing kept after you close the tab.
-
-[Open the label maker](https://siegestack.com/label-tool)
-[What size is my label?](https://siegestack.com/label-tool#sizes)
 
 ### Proof, Not Promises
 
