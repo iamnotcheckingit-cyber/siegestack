@@ -254,3 +254,31 @@ if (drift > 8) {
   process.exit(1);
 }
 console.log(`  stated-size check: clean (${stated[1]} KB stated, ${actualKb} KB actual)`);
+
+/**
+ * Route-count check: llms.txt states how many routes it lists, by hand.
+ *
+ * Unlike the size figure above, this number has no "about" in front of it and
+ * no tolerance to hide behind -- it is either right or it is a false statement
+ * inside the file it describes. It has been wrong twice in four days: it said
+ * 23 when there were 24 (caught 2026-08-18) and 25 when there were 26 (caught
+ * 2026-08-20, one commit after /label-tool was added to every other list
+ * correctly). Both times the page itself was listed properly and only the
+ * count was stale, which is exactly why reading the file does not catch it and
+ * why grepping for the new page's name says everything is fine.
+ *
+ * PAGES is the authority rather than sitemap.xml, deliberately:
+ * publish-gate.test.mjs already cross-checks the gate against the sitemap, so
+ * anchoring this to PAGES means the three lists must agree with each other
+ * rather than all agreeing with one.
+ */
+const statedRoutes = /lists all (\d+) indexable routes/.exec(fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8'));
+if (!statedRoutes) {
+  console.error('\n  FATAL: llms.txt no longer states a route count -- this check is stale.');
+  process.exit(1);
+}
+if (Number(statedRoutes[1]) !== PAGES.length) {
+  console.error(`\n  FATAL: llms.txt says it lists ${statedRoutes[1]} indexable routes; there are ${PAGES.length}.\n  Update the figure in llms.txt -- and confirm the new page is actually listed there, not merely counted.`);
+  process.exit(1);
+}
+console.log(`  route-count check: clean (${PAGES.length} routes)`);
