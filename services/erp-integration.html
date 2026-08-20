@@ -224,6 +224,16 @@
       .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: var(--navy-dark); }
       .mobile-menu-btn { display: none; background: none; border: none; color: var(--light-slate); font-size: 1.5rem; cursor: pointer; }
       @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } }
+
+        /* Hand the nav over to the menu button while the row still fits. With
+           ten links plus the CTA the desktop row needs ~1280px; below that it
+           overlapped the logo, and below ~1024 it ran off the right edge. That
+           was already true at a narrower width before the label-maker link was
+           added — this fixes the existing gap rather than only the new one. */
+        @media (max-width: 1280px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+        }
 </style>
 </head>
 <body>
@@ -240,6 +250,7 @@
             <a href="/insights">Insights</a>
             <a href="/about">About</a>
             <a href="/#faq">FAQ</a>
+            <a href="/label-tool">Free Label Maker</a>
             <a href="/contact" class="btn btn-primary">Get Started</a>
         </div>
         <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
@@ -270,6 +281,7 @@
         <div class="foot-grid">
             <div>
                 <h3>Solutions</h3>
+                <a href="/label-tool">Free label maker</a>
                 <a href="/#solutions">All services</a>
                 <a href="/etl-showcase">ETL &amp; integration</a>
                 <a href="/operations-modernization">Operations modernization</a>
