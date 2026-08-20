@@ -4371,6 +4371,7 @@ Label size
 4&Prime; × 3&Prime;
 4&Prime; × 2&Prime; — carton
 4&Prime; × 1&Prime;
+3&Prime; × 6&Prime; — rack / location
 3&Prime; × 2&Prime; — bin / product
 3&Prime; × 1&Prime;
 2.25&Prime; × 1.25&Prime; — barcode
@@ -4424,6 +4425,8 @@ Select an element to edit its properties.
 | 4 × 2 | 102 × 51 mm | Carton labels, larger product labels |
 
 | 4 × 1 | 102 × 25 mm | Shelf edge, long narrow part labels |
+
+| 3 × 6 | 76 × 152 mm | Rack and location labels, narrower shipping labels |
 
 | 3 × 2 | 76 × 51 mm | Bin labels, product labels, VMI tags |
 
