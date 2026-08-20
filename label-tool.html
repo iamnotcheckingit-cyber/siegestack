@@ -16,14 +16,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <title>Free Label Designer | SiegeStack</title>
-    <meta name="description" content="Design a barcode or QR label in the browser and print a run from a CSV, TSV, tab-delimited or Excel export. The file is read locally and never leaves the page.">
+    <title>Free Barcode Label Maker — Print from Excel or CSV | SiegeStack</title>
+    <meta name="description" content="Free barcode label maker. Set your label size — 4x6, 4x2, 3x2, 2.25x1.25, 2x1 and more — merge a CSV, Excel or tab-delimited file, and print Code 128 or QR labels. No sign-up; your file never leaves the browser.">
     <meta name="author" content="SiegeStack">
     <link rel="canonical" href="https://siegestack.com/label-tool">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://siegestack.com/label-tool">
-    <meta property="og:title" content="Free Label Designer | SiegeStack">
-    <meta property="og:description" content="Design a barcode or QR label in the browser and print a run from a CSV, TSV, tab-delimited or Excel export. The file is read locally and never leaves the page.">
+    <meta property="og:title" content="Free Barcode Label Maker — Print from Excel or CSV | SiegeStack">
+    <meta property="og:description" content="Free barcode label maker. Set your label size — 4x6, 4x2, 3x2, 2.25x1.25, 2x1 and more — merge a CSV, Excel or tab-delimited file, and print Code 128 or QR labels. No sign-up; your file never leaves the browser.">
     <meta property="og:image" content="https://siegestack.com/og-card.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -32,8 +32,8 @@
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://siegestack.com/label-tool">
-    <meta name="twitter:title" content="Free Label Designer | SiegeStack">
-    <meta name="twitter:description" content="Design a barcode or QR label in the browser and print a run from a spreadsheet export. The file never leaves the page.">
+    <meta name="twitter:title" content="Free Barcode Label Maker — Print from Excel or CSV | SiegeStack">
+    <meta name="twitter:description" content="Set the label size, merge a spreadsheet, print Code 128 or QR labels. Free, no sign-up, and your file never leaves the browser.">
     <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
     <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
     <meta name="twitter:site" content="@SiegeStack">
@@ -44,21 +44,45 @@
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "SiegeStack Label Designer",
-        "description": "Browser-based label designer. Reads a CSV, TSV, tab-delimited or Excel export locally, generates Code 128 and QR codes, and prints a merged run through the browser's own print dialog.",
+        "name": "Free Barcode Label Maker",
+        "alternateName": "SiegeStack Label Designer",
+        "description": "Browser-based barcode label maker. Set the label size, read a CSV, TSV, tab-delimited or Excel export locally, generate Code 128 and QR codes, and print a merged run through the browser's own print dialog.",
         "url": "https://siegestack.com/label-tool",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any modern browser",
+        "browserRequirements": "Requires JavaScript. No plugin or install.",
+        "isAccessibleForFree": true,
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
         "featureList": [
+            "Label size presets for common stock — 4x6, 4x3, 4x2, 3x2, 2.25x1.25, 2x1, 1.5x1 inches",
+            "Any custom label size in inches",
             "CSV, TSV, tab-delimited and Excel input",
             "Code 128 barcode generation",
             "QR code generation",
             "Drag-and-drop label layout",
             "Merged printing with per-row copy counts",
-            "Runs entirely in the browser"
+            "Portrait or landscape output",
+            "Runs entirely in the browser — no upload, no account"
         ],
         "provider": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com/"}
+    }
+    </script>
+
+    <!-- Mirrors the visible #faq section on this page verbatim. If a question or
+         answer changes down the page, change it here too — schema must describe
+         what a visitor can actually see. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type":"Question","name":"What size should I set for my labels?","acceptedAnswer":{"@type":"Answer","text":"Measure the label itself, not the backing paper, and enter that in inches. If you bought the stock, the size is on the box — 4x6 for shipping, 4x2 and 3x2 for bins and cartons, 2.25x1.25 and 2x1 for small barcodes. Width is the horizontal edge as the label comes off the roll."}},
+            {"@type":"Question","name":"Why did my 3x2 label print on a whole sheet of paper?","acceptedAnswer":{"@type":"Answer","text":"Because of the destination chosen in the print dialog, not the design. This tool sets the page size to your label size, but a printer set to Letter puts that small page in the corner of a full sheet. Choose the label printer in the print dialog. Save as PDF does the same thing for the same reason."}},
+            {"@type":"Question","name":"Can I print Avery sheet labels, 30 to a page?","acceptedAnswer":{"@type":"Answer","text":"No. This tool prints one label per page, sized to the label, which is how roll and thermal label printers work. It does not lay out a grid of labels on a sheet, so Avery-style sheet stock is not supported."}},
+            {"@type":"Question","name":"Which label printers does it work with?","acceptedAnswer":{"@type":"Answer","text":"Any printer your computer can already print to, including Zebra, Rollo, Brother and DYMO, because it prints through the browser's own print dialog rather than talking to the printer directly. There is nothing to install. It does not send ZPL or EPL, so printer-specific features are not available."}},
+            {"@type":"Question","name":"Is it really free, and is my data uploaded?","acceptedAnswer":{"@type":"Answer","text":"It is free and there is no sign-up. Your file is read in the browser and never uploaded — there is no server behind this page to upload it to. Nothing is kept after you close the tab, which also means the layout is not saved for next time."}},
+            {"@type":"Question","name":"What file formats can I merge?","acceptedAnswer":{"@type":"Answer","text":"CSV, TSV, tab-delimited or plain .txt, and Excel .xlsx and .xls. Comma, tab, semicolon and pipe delimiters are detected from the file itself. You can also print a label with no data file at all."}}
+        ]
     }
     </script>
 
@@ -68,7 +92,7 @@
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
-            {"@type": "ListItem", "position": 2, "name": "Label Designer", "item": "https://siegestack.com/label-tool"}
+            {"@type": "ListItem", "position": 2, "name": "Free Barcode Label Maker", "item": "https://siegestack.com/label-tool"}
         ]
     }
     </script>
@@ -156,6 +180,13 @@
             max-width: 760px;
             margin: 0 auto;
         }
+
+        .hero .hero-sizes {
+            margin-top: .9rem;
+            font-size: .9rem;
+            color: var(--light-slate);
+        }
+        .hero .hero-sizes strong { color: var(--white); font-weight: 600; white-space: nowrap }
 
         .hero .privacy {
             display: inline-block;
@@ -348,6 +379,36 @@
         .modal-sum { font-size: 12px; color: var(--slate) }
         .modal-empty { padding: 18px; text-align: center; color: var(--slate); font-size: 13px }
 
+        /* Reference content below the tool. Prose column, not the app's grid. */
+        .refdoc { max-width: 820px; margin: 3rem auto 0; padding: 0 2rem 1rem }
+        .refdoc section { margin-bottom: 3rem }
+        .refdoc h2 {
+            color: var(--white); font-size: 1.5rem; margin-bottom: 1rem;
+            padding-bottom: .5rem; border-bottom: 1px solid rgba(100,255,218,.2);
+        }
+        .refdoc h3 { color: var(--white); font-size: 1.05rem; margin: 1.8rem 0 .6rem }
+        .refdoc p { color: var(--light-slate); margin-bottom: 1rem; font-size: .95rem }
+        .refdoc strong { color: var(--white) }
+        .refdoc ol, .refdoc ul { color: var(--light-slate); margin: 0 0 1rem; padding-left: 1.4rem; font-size: .95rem }
+        .refdoc li { margin-bottom: .6rem }
+        .refdoc code { background: var(--navy); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: .85em }
+        .refdoc .note-block {
+            background: var(--navy); border: 1px solid rgba(100,255,218,.18);
+            border-left: 3px solid var(--blue-accent); border-radius: 6px;
+            padding: 1rem 1.1rem; margin-bottom: 1rem;
+        }
+        /* The table is the widest thing on the page and the first to overflow a
+           phone. It scrolls in its own box; the page never scrolls sideways. */
+        .table-wrap { overflow-x: auto; margin-bottom: 1rem; border: 1px solid var(--line); border-radius: 6px }
+        .refdoc table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: .9rem }
+        .refdoc th, .refdoc td { text-align: left; padding: .6rem .9rem; border-bottom: 1px solid var(--line) }
+        .refdoc th { color: var(--white); background: rgba(100,255,218,.07); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em }
+        .refdoc td { color: var(--light-slate) }
+        .refdoc tbody tr:last-child td { border-bottom: none }
+        .refdoc td:first-child { color: var(--white); font-weight: 600; white-space: nowrap }
+        .faq dt { color: var(--white); font-weight: 600; margin-top: 1.3rem; font-size: .98rem }
+        .faq dd { color: var(--light-slate); margin: .4rem 0 0; font-size: .95rem }
+
         .site-footer { background: var(--navy-dark); border-top: 1px solid rgba(100,255,218,0.1); padding: 3rem 2rem 2rem; margin-top: 2rem }
         .foot-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
         .foot-grid h3 { color: var(--white); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem; font-weight: 600; }
@@ -409,22 +470,24 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     </nav>
 
     <div class="hero">
-        <h1>Label Designer</h1>
-        <p>Drop in a CSV, TSV, tab-delimited or Excel export, arrange the fields on a label, and print the run. Code&nbsp;128 barcodes and QR codes are generated on the page, so there is nothing to install and no account to make.</p>
+        <h1>Free Barcode Label Maker</h1>
+        <p>Set your label size, drop in a CSV, TSV, tab-delimited or Excel export, arrange the columns on the label, and print the run. Code&nbsp;128 barcodes and QR codes are generated on the page, so there is nothing to install and no account to make.</p>
+        <p class="hero-sizes">Common stock is one click: <strong>4&Prime;&times;6&Prime;</strong> shipping &middot; <strong>4&Prime;&times;2&Prime;</strong> &middot; <strong>3&Prime;&times;2&Prime;</strong> bin &middot; <strong>2.25&Prime;&times;1.25&Prime;</strong> &middot; <strong>2&Prime;&times;1&Prime;</strong> barcode &mdash; or type any size in inches. <a href="#sizes">How to work out your label size &rarr;</a></p>
         <span class="privacy">Your file is read in the browser. It is never uploaded.</span>
     </div>
 
     <div id="fault" role="alert"></div>
 
     <details class="howto">
-        <summary>How this works — four steps</summary>
+        <summary>How this works — five steps</summary>
         <div class="howto-body">
             <h4>The basic flow</h4>
             <ol>
+                <li><strong>Set the label size first.</strong> Pick your stock from the <em>Label size</em> list, or type any width and height in inches. Do this before laying anything out &mdash; the elements are positioned as a proportion of the label, so changing the size later reflows the design. Not sure what size you have? <a href="#sizes">Work it out here</a>.</li>
                 <li><strong>Choose a file.</strong> Click <em>Choose file&hellip;</em> and pick a <code>.csv</code>, <code>.tsv</code>, <code>.txt</code> or Excel <code>.xlsx</code> export. Comma, tab, semicolon and pipe delimiters are detected from the file itself.</li>
                 <li><strong>Build the label.</strong> Every column becomes a draggable field on the left. Dragging one onto the label drops <em>two</em> separate pieces &mdash; a <strong>caption</strong> (the column name, as editable text) and the <strong>value</strong> &mdash; so each can be positioned, sized and styled on its own. Click a piece to edit it; drag its corner handle to resize.</li>
                 <li><strong>Format each value.</strong> Identifier-shaped columns (part, bin, item, serial numbers, SKUs) arrive as a <em>Code&nbsp;128</em> barcode automatically; obvious quantities and prices stay as plain text. Any value can be switched between <em>Text</em>, <em>Code&nbsp;128</em> and <em>QR code</em> in the Element panel.</li>
-                <li><strong>Print.</strong> <em>Print labels</em> opens a searchable list &mdash; tick the rows to print and set a copy count per row &mdash; then hands the labels to your browser's own print dialog. <strong>Choose your label printer there.</strong> Picking <em>Save as PDF</em> or an office printer instead puts each label alone on a full sheet, which is the usual cause of &ldquo;my 3&times;2 came out as a whole page&rdquo;.</li>
+                <li><strong>Print.</strong> <em>Print labels</em> opens a searchable list &mdash; tick the rows to print and set a copy count per row &mdash; then hands the labels to your browser's own print dialog. <strong>Choose your label printer there.</strong> Picking <em>Save as PDF</em> or an office printer instead puts each label alone on a full sheet, which is the usual cause of &ldquo;my 3&times;2 came out as a whole page&rdquo; &mdash; <a href="#printing">the full print settings are here</a>.</li>
             </ol>
 
             <h4>About column headers</h4>
@@ -451,6 +514,24 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         </div>
 
         <div class="tgroup">
+            <div class="fld">
+                <label>Label size</label>
+                <select id="sizePreset" class="lg" title="Common label stock. Pick one, or type a size in the boxes beside it.">
+                    <option value="">&mdash; common sizes &mdash;</option>
+                    <option value="4x6">4&Prime; &times; 6&Prime; &mdash; shipping</option>
+                    <option value="4x3">4&Prime; &times; 3&Prime;</option>
+                    <option value="4x2">4&Prime; &times; 2&Prime; &mdash; carton</option>
+                    <option value="4x1">4&Prime; &times; 1&Prime;</option>
+                    <option value="3x2" selected>3&Prime; &times; 2&Prime; &mdash; bin / product</option>
+                    <option value="3x1">3&Prime; &times; 1&Prime;</option>
+                    <option value="2.25x1.25">2.25&Prime; &times; 1.25&Prime; &mdash; barcode</option>
+                    <option value="2.25x0.75">2.25&Prime; &times; 0.75&Prime;</option>
+                    <option value="2x1">2&Prime; &times; 1&Prime; &mdash; small barcode</option>
+                    <option value="1.5x1">1.5&Prime; &times; 1&Prime;</option>
+                    <option value="1.25x1">1.25&Prime; &times; 1&Prime;</option>
+                    <option value="3.5x1.125">3.5&Prime; &times; 1.125&Prime; &mdash; address</option>
+                </select>
+            </div>
             <div class="fld">
                 <label>Width (in)</label>
                 <input id="labelW" class="sm" type="number" step="0.05" min="0.5" value="3">
@@ -506,6 +587,94 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
             <h2>Element</h2>
             <div class="body" id="props"><div class="empty">Select an element to edit its properties.</div></div>
         </div>
+    </div>
+
+    <!-- Reference content, below the tool rather than above it: somebody who
+         arrived knowing what they want should reach the file picker without
+         scrolling past an article, and somebody who arrived searching "what
+         size is my label" should find a real answer on the same page. -->
+    <div class="refdoc">
+        <section id="sizes">
+            <h2>What size should I set for my labels?</h2>
+            <p><strong>Measure the label, not the backing paper.</strong> On a roll, the liner is usually wider than the label itself, and setting the liner width prints everything slightly off. If you bought the stock, the size is printed on the box &mdash; use that.</p>
+            <p><strong>Width is the edge that runs across the label as it comes off the roll</strong>, height is the edge that runs along the roll. Getting these the wrong way round is the single most common reason a label prints rotated or cropped. If the result comes out sideways, swap the two numbers rather than reaching for the landscape tick-box.</p>
+
+            <h3>Common label sizes</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Size (inches)</th><th>Also written</th><th>Typically used for</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>4 &times; 6</td><td>102 &times; 152 mm</td><td>Shipping labels &mdash; the standard thermal shipping size</td></tr>
+                        <tr><td>4 &times; 3</td><td>102 &times; 76 mm</td><td>Carton and pallet labels</td></tr>
+                        <tr><td>4 &times; 2</td><td>102 &times; 51 mm</td><td>Carton labels, larger product labels</td></tr>
+                        <tr><td>4 &times; 1</td><td>102 &times; 25 mm</td><td>Shelf edge, long narrow part labels</td></tr>
+                        <tr><td>3 &times; 2</td><td>76 &times; 51 mm</td><td>Bin labels, product labels, VMI tags</td></tr>
+                        <tr><td>3 &times; 1</td><td>76 &times; 25 mm</td><td>Shelf and rack labels</td></tr>
+                        <tr><td>2.25 &times; 1.25</td><td>57 &times; 32 mm</td><td>Barcode and inventory labels</td></tr>
+                        <tr><td>2.25 &times; 0.75</td><td>57 &times; 19 mm</td><td>Small barcode, jewellery and cable labels</td></tr>
+                        <tr><td>2 &times; 1</td><td>51 &times; 25 mm</td><td>Small parts, bin fronts, asset tags</td></tr>
+                        <tr><td>1.5 &times; 1</td><td>38 &times; 25 mm</td><td>Small parts and component bins</td></tr>
+                        <tr><td>3.5 &times; 1.125</td><td>89 &times; 29 mm</td><td>Address labels</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="note-block">These are in the <strong>Label size</strong> picker in the toolbar. Anything not on the list goes straight into the width and height boxes &mdash; any size in inches works, and the picker drops back to its placeholder so it never shows a size you are not actually using. Working in millimetres? Divide by 25.4.</p>
+
+            <h3>How much fits on one</h3>
+            <p>A barcode needs width far more than it needs height. A Code&nbsp;128 barcode encoding a long part number on a 2&Prime;-wide label will be printed with very narrow bars, and narrow bars are what scanners fail on &mdash; particularly at 203&nbsp;dpi, which most thermal label printers are. If a barcode is not scanning reliably, the fixes in order are: make the barcode box wider, shorten what is encoded, then move to a wider label. Text shrinks to fit its box automatically here, so text is the thing that gives, not the barcode.</p>
+        </section>
+
+        <section id="printing">
+            <h2>Printing at the right size</h2>
+            <p>This tool sets the printed page size to your label size and hands the job to your browser's own print dialog. <strong>That dialog is the printer picker</strong> &mdash; no web page can list the printers attached to your computer, so this is not a limitation that can be designed around.</p>
+            <ol>
+                <li><strong>Choose your label printer</strong> in the dialog that opens. Choose it before checking anything else; the paper size follows the destination.</li>
+                <li><strong>Set margins to none</strong> and, if there is a scaling option, set it to 100% or "Actual size". Anything labelled "Fit to page" or "Shrink to fit" will resize your label and is the reason a design that looks right on screen prints small.</li>
+                <li><strong>Turn off headers and footers.</strong> Browsers add a URL and a date to printed pages by default, and on a 2-inch label there is no room for them.</li>
+                <li><strong>Check the preview</strong> shows one label filling the page, not a small label in the corner of a big sheet.</li>
+            </ol>
+            <p class="note-block"><strong>&ldquo;My 3&times;2 label printed on a whole sheet of paper.&rdquo;</strong> That is the destination, not the design. A printer set to Letter or A4 takes the small page and puts it in the corner of a full sheet. Pick the label printer in the print dialog and it uses the label stock instead. <em>Save as PDF</em> does exactly the same thing for exactly the same reason &mdash; it is a useful way to check the layout, but not a way to check the size.</p>
+            <p>The <strong>Landscape (rotate 90&deg;)</strong> tick-box in the print dialog rotates the label on the page. It is for printers that feed the stock the other way round; it is not the fix for a width and height entered in the wrong order.</p>
+        </section>
+
+        <section id="printers">
+            <h2>Which printers and formats work</h2>
+            <p><strong>Printers:</strong> any printer your computer can already print to. Zebra, Rollo, Brother, DYMO, or a plain office printer &mdash; the job goes through the browser, so if the printer appears in the print dialog it will work. There is nothing to install and no driver to configure beyond what the printer already needed.</p>
+            <p><strong>What it does not do:</strong> it does not send ZPL, EPL or any printer-specific command language, so printer-native features &mdash; cutter control, darkness settings, stored formats &mdash; are not reachable from here. It also prints <strong>one label per page</strong>, sized to the label, which is how roll and thermal printers work. <strong>Sheet stock laid out as a grid, such as Avery 30-per-page address labels, is not supported</strong> &mdash; there is no multi-up sheet layout in this version.</p>
+            <p><strong>Files:</strong> CSV, TSV, tab-delimited and plain <code>.txt</code>, plus Excel <code>.xlsx</code> and <code>.xls</code>. Comma, tab, semicolon and pipe delimiters are detected from the file. You can also print a label with no file at all &mdash; static text and an image is a real label, and forcing someone to invent a spreadsheet to print one would be pointless friction.</p>
+            <p><strong>Codes:</strong> Code&nbsp;128 (1-D) and QR (2-D), both generated on this page as vector graphics, so they stay sharp at whatever size the label is printed.</p>
+        </section>
+
+        <section id="faq">
+            <h2>Questions</h2>
+            <dl class="faq">
+                <dt>What size should I set for my labels?</dt>
+                <dd>Measure the label itself, not the backing paper, and enter that in inches. If you bought the stock, the size is on the box &mdash; 4x6 for shipping, 4x2 and 3x2 for bins and cartons, 2.25x1.25 and 2x1 for small barcodes. Width is the horizontal edge as the label comes off the roll.</dd>
+
+                <dt>Why did my 3x2 label print on a whole sheet of paper?</dt>
+                <dd>Because of the destination chosen in the print dialog, not the design. This tool sets the page size to your label size, but a printer set to Letter puts that small page in the corner of a full sheet. Choose the label printer in the print dialog. Save as PDF does the same thing for the same reason.</dd>
+
+                <dt>Can I print Avery sheet labels, 30 to a page?</dt>
+                <dd>No. This tool prints one label per page, sized to the label, which is how roll and thermal label printers work. It does not lay out a grid of labels on a sheet, so Avery-style sheet stock is not supported.</dd>
+
+                <dt>Which label printers does it work with?</dt>
+                <dd>Any printer your computer can already print to, including Zebra, Rollo, Brother and DYMO, because it prints through the browser's own print dialog rather than talking to the printer directly. There is nothing to install. It does not send ZPL or EPL, so printer-specific features are not available.</dd>
+
+                <dt>Is it really free, and is my data uploaded?</dt>
+                <dd>It is free and there is no sign-up. Your file is read in the browser and never uploaded &mdash; there is no server behind this page to upload it to. Nothing is kept after you close the tab, which also means the layout is not saved for next time.</dd>
+
+                <dt>What file formats can I merge?</dt>
+                <dd>CSV, TSV, tab-delimited or plain .txt, and Excel .xlsx and .xls. Comma, tab, semicolon and pipe delimiters are detected from the file itself. You can also print a label with no data file at all.</dd>
+            </dl>
+        </section>
+
+        <section id="bigger">
+            <h2>When a browser tool stops being enough</h2>
+            <p>This page is deliberately small. It has no database, no saved templates and no users, which is exactly why it can promise your file never leaves the browser &mdash; but it also means every run starts from a spreadsheet somebody exported by hand.</p>
+            <p>The version this was cut down from does the other half: label sources defined as configuration rather than code, queries that pull the rows straight out of the ERP, and templates that live somewhere the whole team prints from. <a href="/case-studies/label-service">The label service case study</a> describes what that changes, and <a href="/contact">we build them</a>.</p>
+        </section>
     </div>
 
     <footer class="site-footer">
@@ -1977,6 +2146,42 @@ document.getElementById("fileInput").addEventListener("change",e=>{
 });
 document.getElementById("hasHeader").addEventListener("change",()=>{ if(lastFile) handleFile(lastFile); });
 ["labelW","labelH"].forEach(id=>document.getElementById(id).addEventListener("input",renderAll));
+
+/* Label-size presets. The width and height boxes stay the source of truth —
+   the picker only writes into them, and typing a size the list does not have
+   drops the picker back to its placeholder rather than leaving it displaying a
+   size that is no longer set. A picker that lies about the current size is
+   worse than no picker: this is the one number that has to match the stock in
+   the printer. */
+(function bindSizePreset(){
+  const sel=document.getElementById("sizePreset");
+  const wEl=document.getElementById("labelW"), hEl=document.getElementById("labelH");
+  if(!sel||!wEl||!hEl) return;
+  const key=()=>`${parseFloat(wEl.value)||0}x${parseFloat(hEl.value)||0}`;
+  const syncFromBoxes=()=>{
+    const k=key();
+    sel.value=[...sel.options].some(o=>o.value===k) ? k : "";
+  };
+  sel.addEventListener("change",()=>{
+    if(!sel.value) return;                       // the placeholder is not a size
+    const [w,h]=sel.value.split("x");
+    historySettle();                             // the size change is its own undo step
+    wEl.value=w; hEl.value=h;
+    renderAll();
+    flash(`Label size set to ${w}" × ${h}".`);
+  });
+  [wEl,hEl].forEach(n=>n.addEventListener("input",syncFromBoxes));
+
+  /* The size is also written by Clear all and by undo/redo, neither of which
+     goes through an input event — so the picker has to re-read the boxes after
+     anything that repaints. Wrapping is how it stays correct without those
+     functions needing to know the picker exists. */
+  const _renderAll=renderAll, _applyHistory=applyHistory;
+  renderAll=function(){ _renderAll.apply(null,arguments); syncFromBoxes(); };
+  applyHistory=function(){ _applyHistory.apply(null,arguments); syncFromBoxes(); };
+
+  syncFromBoxes();
+})();
 
 // Delete / Backspace removes the highlighted elements (but not while typing in a field)
 window.addEventListener("keydown",e=>{

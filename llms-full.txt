@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-19.
+Generated 2026-08-20.
 
 ---
 
@@ -51,6 +51,34 @@ Why We're Different
 
 
 ✓ Clear Pricing
+
+
+
+
+
+
+
+
+
+
+
+FREE TOOL · NO SIGN-UP
+
+
+
+### Free barcode label maker — print labels from Excel or CSV
+
+Set your label size — 4&Prime;×6&Prime; shipping, 3&Prime;×2&Prime; bin, 2&Prime;×1&Prime; barcode, or anything you type — merge a spreadsheet, and print the run. Code 128 barcodes and QR codes are generated in the page.
+
+
+Your file is read in the browser and never uploaded. No account, no server, nothing kept after you close the tab.
+
+
+
+
+
+[Open the label maker](https://siegestack.com/label-tool)
+[What size is my label?](https://siegestack.com/label-tool#sizes)
 
 
 
@@ -115,34 +143,6 @@ automation match rate
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-FREE TOOL · NO SIGN-UP
-
-
-
-### Print barcode labels from a spreadsheet
-
-Drop in a CSV, TSV, tab-delimited or Excel export, arrange the columns on a label, and print the run. Code 128 barcodes and QR codes are generated in the page.
-
-
-Your file is read in the browser and never uploaded. No account, no server, nothing kept after you close the tab.
-
-
-
-
-
-[Open the label designer](https://siegestack.com/label-tool)
-[What the full version does](https://siegestack.com/case-studies/label-service)
 
 
 
@@ -4610,15 +4610,19 @@ The full report from this pass is published, including the corrections trail and
 # Label designer — a free browser tool
 https://siegestack.com/label-tool
 
-## Label Designer
+## Free Barcode Label Maker
 
-Drop in a CSV, TSV, tab-delimited or Excel export, arrange the fields on a label, and print the run. Code 128 barcodes and QR codes are generated on the page, so there is nothing to install and no account to make.
+Set your label size, drop in a CSV, TSV, tab-delimited or Excel export, arrange the columns on the label, and print the run. Code 128 barcodes and QR codes are generated on the page, so there is nothing to install and no account to make.
+
+Common stock is one click: **4&Prime;×6&Prime;** shipping · **4&Prime;×2&Prime;** · **3&Prime;×2&Prime;** bin · **2.25&Prime;×1.25&Prime;** · **2&Prime;×1&Prime;** barcode — or type any size in inches. How to work out your label size →
 
 Your file is read in the browser. It is never uploaded.
 
-How this works — four steps
+How this works — five steps
 
 ##### The basic flow
+
+- **Set the label size first.** Pick your stock from the *Label size* list, or type any width and height in inches. Do this before laying anything out — the elements are positioned as a proportion of the label, so changing the size later reflows the design. Not sure what size you have? Work it out here.
 
 - **Choose a file.** Click *Choose file…* and pick a `.csv`, `.tsv`, `.txt` or Excel `.xlsx` export. Comma, tab, semicolon and pipe delimiters are detected from the file itself.
 
@@ -4626,7 +4630,7 @@ How this works — four steps
 
 - **Format each value.** Identifier-shaped columns (part, bin, item, serial numbers, SKUs) arrive as a *Code 128* barcode automatically; obvious quantities and prices stay as plain text. Any value can be switched between *Text*, *Code 128* and *QR code* in the Element panel.
 
-- **Print.** *Print labels* opens a searchable list — tick the rows to print and set a copy count per row — then hands the labels to your browser's own print dialog. **Choose your label printer there.** Picking *Save as PDF* or an office printer instead puts each label alone on a full sheet, which is the usual cause of “my 3×2 came out as a whole page”.
+- **Print.** *Print labels* opens a searchable list — tick the rows to print and set a copy count per row — then hands the labels to your browser's own print dialog. **Choose your label printer there.** Picking *Save as PDF* or an office printer instead puts each label alone on a full sheet, which is the usual cause of “my 3×2 came out as a whole page” — the full print settings are here.
 
 ##### About column headers
 
@@ -4647,6 +4651,22 @@ Data file (CSV · TSV · XLSX)
 Choose file…
 
 first row = header
+
+Label size
+
+— common sizes —
+4&Prime; × 6&Prime; — shipping
+4&Prime; × 3&Prime;
+4&Prime; × 2&Prime; — carton
+4&Prime; × 1&Prime;
+3&Prime; × 2&Prime; — bin / product
+3&Prime; × 1&Prime;
+2.25&Prime; × 1.25&Prime; — barcode
+2.25&Prime; × 0.75&Prime;
+2&Prime; × 1&Prime; — small barcode
+1.5&Prime; × 1&Prime;
+1.25&Prime; × 1&Prime;
+3.5&Prime; × 1.125&Prime; — address
 
 Width (in)
 
@@ -4674,6 +4694,96 @@ Drag a field from the left onto the label. Click an element to edit it. To highl
 ### Element
 
 Select an element to edit its properties.
+
+### What size should I set for my labels?
+
+**Measure the label, not the backing paper.** On a roll, the liner is usually wider than the label itself, and setting the liner width prints everything slightly off. If you bought the stock, the size is printed on the box — use that.
+
+**Width is the edge that runs across the label as it comes off the roll**, height is the edge that runs along the roll. Getting these the wrong way round is the single most common reason a label prints rotated or cropped. If the result comes out sideways, swap the two numbers rather than reaching for the landscape tick-box.
+
+#### Common label sizes
+
+| Size (inches) | Also written | Typically used for |
+
+| 4 × 6 | 102 × 152 mm | Shipping labels — the standard thermal shipping size |
+
+| 4 × 3 | 102 × 76 mm | Carton and pallet labels |
+
+| 4 × 2 | 102 × 51 mm | Carton labels, larger product labels |
+
+| 4 × 1 | 102 × 25 mm | Shelf edge, long narrow part labels |
+
+| 3 × 2 | 76 × 51 mm | Bin labels, product labels, VMI tags |
+
+| 3 × 1 | 76 × 25 mm | Shelf and rack labels |
+
+| 2.25 × 1.25 | 57 × 32 mm | Barcode and inventory labels |
+
+| 2.25 × 0.75 | 57 × 19 mm | Small barcode, jewellery and cable labels |
+
+| 2 × 1 | 51 × 25 mm | Small parts, bin fronts, asset tags |
+
+| 1.5 × 1 | 38 × 25 mm | Small parts and component bins |
+
+| 3.5 × 1.125 | 89 × 29 mm | Address labels |
+
+These are in the **Label size** picker in the toolbar. Anything not on the list goes straight into the width and height boxes — any size in inches works, and the picker drops back to its placeholder so it never shows a size you are not actually using. Working in millimetres? Divide by 25.4.
+
+#### How much fits on one
+
+A barcode needs width far more than it needs height. A Code 128 barcode encoding a long part number on a 2&Prime;-wide label will be printed with very narrow bars, and narrow bars are what scanners fail on — particularly at 203 dpi, which most thermal label printers are. If a barcode is not scanning reliably, the fixes in order are: make the barcode box wider, shorten what is encoded, then move to a wider label. Text shrinks to fit its box automatically here, so text is the thing that gives, not the barcode.
+
+### Printing at the right size
+
+This tool sets the printed page size to your label size and hands the job to your browser's own print dialog. **That dialog is the printer picker** — no web page can list the printers attached to your computer, so this is not a limitation that can be designed around.
+
+- **Choose your label printer** in the dialog that opens. Choose it before checking anything else; the paper size follows the destination.
+
+- **Set margins to none** and, if there is a scaling option, set it to 100% or "Actual size". Anything labelled "Fit to page" or "Shrink to fit" will resize your label and is the reason a design that looks right on screen prints small.
+
+- **Turn off headers and footers.** Browsers add a URL and a date to printed pages by default, and on a 2-inch label there is no room for them.
+
+- **Check the preview** shows one label filling the page, not a small label in the corner of a big sheet.
+
+**“My 3×2 label printed on a whole sheet of paper.”** That is the destination, not the design. A printer set to Letter or A4 takes the small page and puts it in the corner of a full sheet. Pick the label printer in the print dialog and it uses the label stock instead. *Save as PDF* does exactly the same thing for exactly the same reason — it is a useful way to check the layout, but not a way to check the size.
+
+The **Landscape (rotate 90°)** tick-box in the print dialog rotates the label on the page. It is for printers that feed the stock the other way round; it is not the fix for a width and height entered in the wrong order.
+
+### Which printers and formats work
+
+**Printers:** any printer your computer can already print to. Zebra, Rollo, Brother, DYMO, or a plain office printer — the job goes through the browser, so if the printer appears in the print dialog it will work. There is nothing to install and no driver to configure beyond what the printer already needed.
+
+**What it does not do:** it does not send ZPL, EPL or any printer-specific command language, so printer-native features — cutter control, darkness settings, stored formats — are not reachable from here. It also prints **one label per page**, sized to the label, which is how roll and thermal printers work. **Sheet stock laid out as a grid, such as Avery 30-per-page address labels, is not supported** — there is no multi-up sheet layout in this version.
+
+**Files:** CSV, TSV, tab-delimited and plain `.txt`, plus Excel `.xlsx` and `.xls`. Comma, tab, semicolon and pipe delimiters are detected from the file. You can also print a label with no file at all — static text and an image is a real label, and forcing someone to invent a spreadsheet to print one would be pointless friction.
+
+**Codes:** Code 128 (1-D) and QR (2-D), both generated on this page as vector graphics, so they stay sharp at whatever size the label is printed.
+
+### Questions
+
+What size should I set for my labels?
+Measure the label itself, not the backing paper, and enter that in inches. If you bought the stock, the size is on the box — 4x6 for shipping, 4x2 and 3x2 for bins and cartons, 2.25x1.25 and 2x1 for small barcodes. Width is the horizontal edge as the label comes off the roll.
+
+Why did my 3x2 label print on a whole sheet of paper?
+Because of the destination chosen in the print dialog, not the design. This tool sets the page size to your label size, but a printer set to Letter puts that small page in the corner of a full sheet. Choose the label printer in the print dialog. Save as PDF does the same thing for the same reason.
+
+Can I print Avery sheet labels, 30 to a page?
+No. This tool prints one label per page, sized to the label, which is how roll and thermal label printers work. It does not lay out a grid of labels on a sheet, so Avery-style sheet stock is not supported.
+
+Which label printers does it work with?
+Any printer your computer can already print to, including Zebra, Rollo, Brother and DYMO, because it prints through the browser's own print dialog rather than talking to the printer directly. There is nothing to install. It does not send ZPL or EPL, so printer-specific features are not available.
+
+Is it really free, and is my data uploaded?
+It is free and there is no sign-up. Your file is read in the browser and never uploaded — there is no server behind this page to upload it to. Nothing is kept after you close the tab, which also means the layout is not saved for next time.
+
+What file formats can I merge?
+CSV, TSV, tab-delimited or plain .txt, and Excel .xlsx and .xls. Comma, tab, semicolon and pipe delimiters are detected from the file itself. You can also print a label with no data file at all.
+
+### When a browser tool stops being enough
+
+This page is deliberately small. It has no database, no saved templates and no users, which is exactly why it can promise your file never leaves the browser — but it also means every run starts from a spreadsheet somebody exported by hand.
+
+The version this was cut down from does the other half: label sources defined as configuration rather than code, queries that pull the rows straight out of the ERP, and templates that live somewhere the whole team prints from. [The label service case study](https://siegestack.com/case-studies/label-service) describes what that changes, and [we build them](https://siegestack.com/contact).
 
 ---
 
