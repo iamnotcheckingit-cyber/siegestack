@@ -199,12 +199,16 @@ Clients own everything built for them — full source, documentation, deployment
 instructions. Scope is agreed in writing before work starts. Maintenance and support are
 included. There is no claimed certification, partnership or third-party review.
 
-Last updated 2026-08-18. Claude product claims on the two `/working-with-claude` pages were
+Last updated 2026-08-20. Claude product claims on the two `/working-with-claude` pages were
 last checked against vendor documentation on 2026-08-10.
 
-This file is hand-maintained and lists all 25 indexable routes as of 2026-08-18.
-(It said 23 on 2026-08-16 and there were 24 — an off-by-one in a hand-kept count,
-which is the whole reason /llms-full.txt is generated instead.) It went
-stale once already: twelve pages added on 2026-08-15 were absent for a day. When a page is
-added, add it here — `/llms-full.txt` is generated and picks new pages up on its own, but
-this file does not.
+This file is hand-maintained and lists all 26 indexable routes as of 2026-08-20.
+That count is now enforced by `scripts/build-llms-full.mjs`, which refuses to run if the
+number here disagrees with the pages it generates from — because it had been wrong twice in
+four days: 23 when there were 24, then 25 when there were 26. Both times the new page was
+listed here correctly and only the count was stale, so reading the file did not catch it and
+neither did searching it for the page's name.
+
+The file also went stale outright once: twelve pages added on 2026-08-15 were absent for a
+day. When a page is added, add it here — `/llms-full.txt` is generated and picks new pages
+up on its own, but this file does not.
