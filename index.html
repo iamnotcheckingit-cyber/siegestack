@@ -905,13 +905,29 @@
                 if (!widget) return;
 
                 var started = false;
+                // Injecting the script is held until the load event has fired. An async
+                // script added to the document BEFORE load still delays load until it
+                // finishes, so any early trigger -- a click straight after paint, or a
+                // viewport tall enough for the observer to fire on first paint, which is
+                // what a full-page synthetic monitor produces -- put Calendly's ~2.9s back
+                // into this page's load time. Measured locally 2026-08-20 with the trigger
+                // forced at first paint: load 2210/717/1190ms before this guard, 68/232/102ms
+                // after it, with the widget still building in both. The deferral now holds
+                // regardless of what fires it.
+                //
+                // This costs the visitor nothing worth having: load on these pages is
+                // ~100-400ms, so a widget wanted immediately starts that much later.
+                function inject() {
+                        var s = document.createElement('script');
+                        s.src = 'https://assets.calendly.com/assets/external/widget.js';
+                        s.async = true;
+                        document.body.appendChild(s);
+                }
                 function loadCalendly() {
-                    if (started) return;
-                    started = true;
-                    var s = document.createElement('script');
-                    s.src = 'https://assets.calendly.com/assets/external/widget.js';
-                    s.async = true;
-                    document.body.appendChild(s);
+                        if (started) return;
+                        started = true;
+                        if (document.readyState === 'complete') { inject(); return; }
+                        addEventListener('load', inject, { once: true });
                 }
 
                 // The hero CTA jumps straight here from above the fold. Starting
