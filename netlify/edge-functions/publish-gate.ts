@@ -67,6 +67,10 @@ const ALLOW_EXACT = new Set([
   "/consultant-form.js", "/jesse-sw.js", "/nicole-sw.js",
   "/label-tool-xlsx.js",       // SheetJS, fetched on demand by /label-tool
   "/jesse-manifest.json", "/nicole-manifest.json",
+  // IndexNow key file. Bing fetches this exact path to verify submissions;
+  // .txt is denied by default, so without this line the key 404s and every
+  // IndexNow submission comes back 403 "key not found".
+  "/0374ea43379b487e8fa886bf520fbdcc.txt",
 ]);
 
 // Directory prefixes. The three page directories, plus the function surfaces,
