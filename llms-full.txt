@@ -1705,7 +1705,7 @@ The critical insight: most people stop at step 2. They get a draft and try to us
 
 This is the single most important step and the one people skip. You must know exactly what "done" looks like in production reality. Not "a good query." Not "a legal-looking brief." **Done** means: copy-paste into the live environment with zero errors, or filed with zero procedural defects, or a function that logs real probes and blocks nothing legitimate.
 
-Write the definition in plain English first: *"After this loop, I will have a single script that replaces the legacy ones, runs in under two seconds on a 10k-row dataset, and requires zero user training."* A model is a world-class pattern-matcher. If the target pattern is fuzzy, the output is fuzzy. Clarity here is the entire game.
+Write the definition in plain English first: *"After this loop, I will have a single script that replaces the legacy ones, runs in under two seconds on a 10k-row dataset, and requires zero user training."* A model is a pattern-matcher, and a good one. If the target pattern is fuzzy, the output is fuzzy. Clarity here is the entire game.
 
 #### 2. Claude drafts
 
