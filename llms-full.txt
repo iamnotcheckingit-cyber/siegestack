@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-20.
+Generated 2026-08-21.
 
 ---
 
@@ -87,13 +87,13 @@ Solutions that solve real problems and deliver measurable results. Worked exampl
 
 Automate data flows between your tools. No more copy-pasting between spreadsheets and systems.
 
-[→ ETL Pipelines](https://siegestack.com/etl-showcase)
+[→ ETL Showcase](https://siegestack.com/etl-showcase)
 
 #### See Your Numbers, Real-Time
 
 Custom dashboards that actually answer your questions. Know what's happening without digging through reports.
 
-[→ BI Dashboards](https://siegestack.com/case-studies)
+[→ BI Dashboards](https://siegestack.com/services/bi-dashboards)
 
 #### Connect Everything
 
@@ -117,13 +117,13 @@ Consolidate data from everywhere into a single warehouse. Stop hunting through 5
 
 Daily summaries, weekly KPIs, monthly board reports—generated and delivered automatically. No more manual Excel work.
 
-[→ Automated Reporting](https://siegestack.com/operations-modernization)
+[→ Automated Reporting](https://siegestack.com/services/automated-reporting)
 
 #### Make the Slow Things Fast
 
 Reports that time out and queries that crawl usually have a cause, not a mystery. We find which ones are actually slow, fix the reason, and measure the difference.
 
-[→ Performance Tuning](https://siegestack.com/sql-server-erp-performance)
+[→ Performance Tuning](https://siegestack.com/services/performance-tuning)
 
 #### Understand What You Inherited
 
@@ -803,51 +803,111 @@ https://siegestack.com/prophet-21
 
 Reporting, integration and tooling for distributors already running the ERP. The hard part is rarely the query — it is knowing which rows count.
 
+
+
+
+
+
+
 Prophet 21 and Kinetic hold everything the business runs on and answer operational questions reluctantly. The data is there. Assembling it correctly is a different job from querying it, and most reporting that goes wrong on these platforms goes wrong quietly — a number that looks plausible, moves in the right direction, and is built on rows that should never have been counted.
+
+
+
 
 **Where the depth actually is.** The hands-on work behind this page is on **Prophet 21**. Kinetic shares the parts that transfer — SQL Server underneath, a vendor-owned schema, the same access-path failure modes in reporting — and differs at the application layer. That distinction is stated here rather than smoothed over, because a consultancy that claims equal depth in every product on its own keyword list is telling you something about its writing, not its experience.
 
+
+
+
+
+
 ### Four traps in P21 reporting that produce confidently wrong numbers
+
 
 These are not exotic. They are the ordinary shape of the schema, and each one has a default behaviour that flatters the metric in exactly the cases nobody is checking.
 
+
+
+
 Trap 01
+
+
 
 #### Open and posted live in different tables
 
 The same reporting period can span unposted transactions and posted history, and those sit in separate tables with different columns. A daily view that reads only the open side is correct. Extend it to a week or a month without unioning history and the number is not wrong by a little — it silently omits everything that has been posted, which on a full month is most of it.
 
+
 This is the classic ERP reporting bug on this platform: it looks right on the view people check most often, and drifts on every longer window. It is also the reason a report can be fast on Today and unusable on month-to-date, which is [a separate problem with the same trigger](https://siegestack.com/erp-report-slow-month-to-date).
 
+
+
+
+
+
 Trap 02
+
+
 
 #### Undated lines counted as successes
 
 On-time percentage compares a receipt or ship date against a due date, and due date itself is a fallback chain — promise, then required, then original. The decision that matters is what to do with a line that has *no* due date at all.
 
+
 Rolling those into the numerator treats missing data as a success. It flatters the metric precisely where the data is worst, which is where you most need the metric to be honest. Excluding them from the ratio and reporting the exclusion count separately is the version that survives being questioned by the person whose department it measures.
 
+
+
+
+
+
 Trap 03
+
+
 
 #### Flags that only exist on one side
 
 Some completeness flags exist on open records and have no equivalent in posted history. Score the history rows zero and a full month reads worse than a single day, purely because most of the month has been posted. The fix is to exclude them from the ratio with an explicit marker rather than let them default to failure — and to say so on the report, because a ratio with a hidden denominator rule is a ratio nobody should act on.
 
+
+
+
+
+
 Trap 04
+
+
 
 #### Identity is a fallback chain, and the fallbacks fail silently
 
 Transactions frequently carry initials or a short code rather than a person. Mapping that to a human runs through a chain — a description field, a network login, the local part of an email address — and every chain has rows that reach the end unmatched.
 
+
 Hiding them produces a leaderboard that is permanently and invisibly wrong. Displaying an explicit *unmapped* bucket turns the same rows into a data-quality finding somebody can close. An unattributed transaction is information; a silently dropped one is a bug you will never be told about.
+
+
+
+
+
 
 **The pattern across all four:** most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence. A dashboard that gets that wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks. Worked through properly in [the KPI console case study](https://siegestack.com/case-studies).
 
+
+
+
+
+
 ### What changes when the schema belongs to the vendor
+
 
 Nearly every constraint that makes this work different from ordinary application development comes from one fact: the tables shipped with the ERP and you did not create them.
 
+
+
+
+
 | Constraint | What it means in practice |
+
 
 | Indexes are a supportability decision first | Adding one to a vendor table is a conversation with the platform owner before it is a technical exercise. It is frequently approved. It should never be applied because it was obviously correct. |
 
@@ -859,37 +919,76 @@ Nearly every constraint that makes this work different from ordinary application
 
 | Customisation belongs outside the schema where possible | Reporting layers, configuration tables and services alongside the ERP survive upgrades. Changes inside vendor objects are a liability you carry forever. |
 
+
+
+
+
+
+
+
 ### Beyond reporting
 
+
+
 Integration
+
+
 
 #### Getting data in and out without a nightly file
 
 Connecting the ERP to a CRM, a storefront or a warehouse system is mostly a question of what happens on the bad day — the API that times out, the format that changed, the record that arrives twice. Retries, circuit breakers, idempotent writes and monitoring are the parts that decide whether an integration is an asset or a recurring incident. The patterns, with production-shaped code, are on the [integration showcase](https://siegestack.com/etl-showcase).
 
+
 The design rule that matters most: replace file drops with a service consumers can ask. A file is stale the moment it is sent, forks into several slightly different versions, and nobody can tell which is current.
 
+
+
+
+
+
 Bulk maintenance
+
+
 
 #### Loading tooling that refuses to half-finish
 
 Bulk maintenance in P21 — pricing, contracts, and anything else that goes out through an export and comes back through an import — usually means reshaping one export into several differently-formatted files by hand. It works, it takes a long time, and it fails in the worst possible way: halfway through a load, leaving a partial mess behind.
 
+
 Purpose-built tooling for this runs in the browser with no backend and nothing leaving the machine. It detects which file is which, stamps the batch identifier down every row, normalises date formats, drops the header the exporter adds, and writes out correctly named files.
+
 
 **The validation design is the part worth stealing.** Failures split into two tiers: conditions that guarantee a broken load are *errors* and stop you; conditions that are merely suspicious are *warnings* and let you proceed. An orphaned child record is an error. A mismatch between related lines is a warning. Collapsing those two into one category is what teaches people to ignore validation entirely.
 
+
+
+
+
+
 Mapping
+
+
 
 #### Understanding what you inherited
 
 Custom views accumulate over years, each joining tables that join other tables, and no map exists. Before any performance work is safe, the map has to exist — parse every view definition, extract the join relationships, cross-reference them against declared key constraints, and write the result somewhere queryable rather than somewhere pretty.
 
+
 The part that decides whether the map is trustworthy is the failure list. Any definition the parser cannot confidently interpret gets written down for a human decision instead of being skipped. **A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.**
+
+
+
+
+
 
 ### Worth measuring if you run this
 
+
 No percentages are published on this page. Any figure worth quoting needs a before state somebody actually captured, and in most operational work nobody did, because instrumenting the before state was nobody's job. These are the measurements that make an engagement here assessable:
+
+
+
+
 
 - Report runtime at each period setting, and logical reads for the query — captured *before* anything is applied, because you cannot go back for it.
 
@@ -901,29 +1000,66 @@ No percentages are published on this page. Any figure worth quoting needs a befo
 
 - Failed or partially completed bulk loads per month.
 
+
+
+
 ### Frequently asked questions
+
+
+
 
 #### Will you add indexes to our P21 database?
 
 Only with the platform owner's agreement, and in a maintenance window. The tables ship with the ERP, so adding an index is a supportability decision before it is a technical one. It also takes a schema-modification lock, which blocks live users for the duration of the build.
 
+
+
+
+
+
+
 #### Do you need production access?
 
 Read access to a restore or a replica is enough to diagnose almost everything. Nothing is applied to production without an agreed window, a captured baseline and a way back.
+
+
+
+
+
+
 
 #### Can you work on Kinetic as well as Prophet 21?
 
 Yes. The reporting and access-path work transfers directly because both sit on SQL Server and both are vendor-owned schemas. The application-layer specifics differ, and the deepest hands-on experience here is on Prophet 21 — that is stated plainly rather than smoothed over.
 
+
+
+
+
+
+
 #### Do we own what you build?
 
 Yes, entirely. Full source, documentation and deployment instructions. You can hand it to another team tomorrow.
+
+
+
+
+
+
 
 #### Do you upgrade or re-implement the ERP itself?
 
 No. This is reporting, integration and tooling around a system you already run. Full re-implementation is a different kind of engagement and there are firms that specialise in it.
 
+
+
+
+
+
 ### Related
+
+
 
 - [What a P21 upgrade does to your reporting](https://siegestack.com/prophet-21-upgrade-reporting) — the three different projects people call an upgrade, what each one breaks, and the baseline to capture before the window opens.
 
@@ -937,11 +1073,22 @@ No. This is reporting, integration and tooling around a system you already run. 
 
 - [Operations modernization](https://siegestack.com/operations-modernization) — the larger engagement: consolidate onto one system of record, then optimize.
 
+
+
+
+
 #### Running P21 or Kinetic and not trusting a number?
 
 Bring the report and the question it is supposed to answer. The first conversation is thirty minutes and costs nothing, and frequently ends with a diagnosis rather than a proposal.
 
+
 Book a call · [See the case studies](https://siegestack.com/case-studies) · [Send it in writing](https://siegestack.com/contact)
+
+
+
+
+
+
 
 ### Thirty minutes, on the report you don't trust
 
@@ -957,11 +1104,27 @@ https://siegestack.com/prophet-21-upgrade-reporting
 
 The upgrade rarely breaks the ERP. It breaks what you built on top of it — and it does so quietly, because a report that reads the wrong rows still returns a number.
 
+
+
+
+
+
+
 Three different projects get called “the P21 upgrade”, and they are not the same size, do not carry the same risk, and do not break the same things. Before anyone estimates the reporting work, it is worth being precise about which one is actually happening — the answer changes whether the reporting layer needs a repair, a rebuild, or nothing at all.
+
+
+
 
 **Scope, stated up front.** This page is about the reporting and integration layer *around* Prophet 21, not about running the upgrade. The upgrade itself is the platform owner’s project, run with Epicor or a reseller, and it should stay that way. What follows is the part that usually has no owner: the custom reports, dashboards, indexes, extracts and integrations that were built against a schema somebody else is about to change.
 
+
+
+
+
+
 ### Three things called an upgrade
+
+
 
 One
 
@@ -969,7 +1132,13 @@ One
 
 The ordinary case. The schema is still the vendor’s and still recognisably itself, but tables gain columns, views get redefined, and objects that were never documented in the first place move without announcement. Nothing here is dramatic on its own. The damage is cumulative and it lands entirely on things that read the database directly.
 
+
 The reporting risk is proportional to how far behind you are, because every skipped release’s schema changes arrive in the same window. A shop two releases behind is doing a repair. A shop that has not upgraded since the desktop client was current is doing an archaeology project first.
+
+
+
+
+
 
 Two
 
@@ -977,9 +1146,16 @@ Two
 
 This one is largely historical now and is still the reason a lot of P21 reporting is in the state it is in. Epicor stopped adding features to the Prophet 21 desktop application at the Spring 2021 release, moved new development to the web application, and ended desktop fixes on 30 November 2022. Dates and versions are in the sources below; re-check them against Epicor before planning around them.
 
+
 What that did to reporting was not subtle: anything whose delivery mechanism was the desktop client — a report launched from a menu, a print job wired to a workstation, a tool that assumed a Windows session — needed a new home, whether or not the query underneath it was still correct. A good deal of it never got one. It got a person running it manually instead, and that person is now the documentation.
 
+
 If you are still on a desktop-era version in 2026, the reporting question is downstream of a support question, and the support question has the date on it.
+
+
+
+
+
 
 Three
 
@@ -987,56 +1163,103 @@ Three
 
 Not an upgrade. Prophet 21 and Kinetic are separate products with separate code bases and separate roadmaps, built for different industries — Prophet 21 for wholesale distribution, Kinetic for discrete and mixed-mode manufacturing. Moving between them is a re-implementation.
 
+
 For the reporting layer that means the honest estimate is *none of it comes across*. Not the queries, not the indexes, not the extracts, not the mappings. The business logic survives — what a metric is supposed to mean, which rows should count, which exceptions are real — and that is worth writing down properly before the old system goes away, because it is the only asset that transfers.
+
 
 When a proposal calls this an upgrade, that is worth a direct question. The word is doing a lot of work.
 
+
+
+
+
+
 ### What actually breaks
+
 
 In every one of the three cases the ERP comes back up and the standard screens work. The failures are in the layer nobody in the upgrade project owns, and they share a characteristic that makes them expensive: **they do not raise errors.**
 
+
+
+
+
+
 | What it is | How it fails | How you find out |
+
+
+
 
 | Queries reading vendor tables directly
 | A column changes meaning, or a row that used to be excluded starts arriving. The query still runs.
 | Somebody notices the number moved and cannot explain why — typically a month later, at close.
 |
 
+
 | Custom indexes on vendor tables
 | Dropped or not carried forward. Nothing is obliged to preserve an object the vendor did not ship.
 | The long-range report starts timing out again. Same query, same plan shape as before it was ever fixed.
 |
+
 
 | Reports bound to the old client
 | The delivery mechanism disappears while the query stays valid.
 | Immediately, and this is the good case — a visible break gets fixed.
 |
 
+
 | Integrations bound to table shape
 | An added column or a changed nullability breaks a load, or worse, does not break it and writes something subtly wrong.
 | The load that fails is found the same day. The one that succeeds incorrectly is found by reconciliation, if there is one.
 |
+
 
 | Anything reading an undocumented view
 | Redefined upstream. The view still exists and still returns rows.
 | Usually never, directly. It surfaces as two reports disagreeing.
 |
 
+
+
+
+
+
+
 This is the same failure mode described in [the four traps in P21 reporting](https://siegestack.com/prophet-21), arriving by a different route. There, the wrong rows were counted because the data model was misread. Here, the model was read correctly and then changed underneath. The symptom is identical — a plausible number, moving in a believable direction, built on rows that should not be in it — and so is the reason it survives so long: nothing in the system objects.
+
+
+
 
 ### The inventory, and the baseline you cannot go back for
 
+
 Two artefacts are worth producing before the upgrade window opens, and both become impossible to produce properly afterwards.
+
+
 
 **The dependency inventory** is the list of everything outside the ERP that reads the ERP: reports, dashboards, scheduled extracts, integrations, spreadsheets with live connections, and the workstation scripts that were never called integrations because one person wrote them. For each one, what it reads and who notices when it is wrong. Most of this list does not exist anywhere when the question is first asked, and assembling it is frequently the most useful part of the exercise regardless of the upgrade — it is the first time anyone has written down what the business actually depends on.
 
+
+
 **The performance baseline** is runtime and logical reads for the reports that matter, captured on the current production system. Logical reads rather than wall-clock time, for the reasons set out in [the SQL Server method page](https://siegestack.com/sql-server-erp-performance): runtime moves with cache state and load, reads do not. This is the measurement that cannot be recovered. Once the window closes the old state is gone, and every later argument about whether the upgrade made reporting slower becomes a disagreement about how it used to feel.
+
+
+
 
 **Index definitions belong in source control, not only in the database.** An index applied to a vendor table during a tuning engagement is invisible to the upgrade and to whoever runs it. If the only record of it is the database it was applied to, the upgrade is the event that silently removes a fix somebody paid for — and the report that starts timing out afterwards looks like a new problem. Keep the definition, the date, and the reason it exists.
 
+
+
+
+
+
 ### Worth measuring if you run this
 
+
 No percentages are published on this page, for the same reason they are absent from the rest of this site: a figure is only worth quoting if somebody captured the before state, and in upgrade work almost nobody did. These are the measurements that make the reporting side of an upgrade assessable rather than anecdotal.
+
+
+
+
 
 - Report runtime *and* logical reads for the reports that matter, captured before the window and again after — the same reports, the same parameters, both times.
 
@@ -1048,37 +1271,83 @@ No percentages are published on this page, for the same reason they are absent f
 
 - Elapsed time from the window closing to the last piece of reporting being confirmed working, rather than assumed working.
 
+
+
+
 ### What this is not
+
 
 This is not upgrade delivery, migration planning, or ERP selection. It does not include running the upgrade, sizing the environment, or negotiating with the vendor. Full re-implementation is a different kind of engagement and there are firms that specialise in it — that boundary is stated on [the P21 page](https://siegestack.com/prophet-21) as well, and it has not moved.
 
+
+
 What it is: the inventory, the baseline, and the repair of the reporting and integration layer either side of somebody else’s window.
 
+
+
+
 ### Frequently asked questions
+
+
+
 
 #### Do you run the upgrade itself?
 
 No. The upgrade is the platform owner’s project, run with Epicor or a reseller. This is the reporting and integration layer around it — the inventory of what depends on the schema, the baseline captured before the window, and the repairs afterwards. Those are separate jobs and it is better for you if they are separate people.
 
+
+
+
+
+
+
 #### Is moving from Prophet 21 to Kinetic an upgrade?
 
 No. They are separate products with separate code bases and separate roadmaps, aimed at different industries — Prophet 21 at wholesale distribution, Kinetic at discrete and mixed-mode manufacturing. Moving between them is a re-implementation, and none of your reporting comes across. Anyone describing it as an upgrade is either being loose with the word or has not looked at the schema.
+
+
+
+
+
+
 
 #### Will our custom indexes survive?
 
 Assume not, and plan to re-apply them. An index added to a vendor table is not part of the vendor’s shipped schema, so nothing in the upgrade is obliged to preserve it. The failure is quiet: the report still returns, it just reads the whole history table again. Keep the index definitions in source control with the reason each one exists, not only in the database.
 
+
+
+
+
+
+
 #### When should the baseline be captured?
 
 Before the upgrade window opens, on the current production system. Runtime and logical reads for the reports that matter cannot be recovered afterwards — once the window closes, the old state is gone and every performance argument becomes a memory of how it used to feel.
+
+
+
+
+
+
 
 #### We are several versions behind. Is that a reporting problem or a support problem?
 
 Both, and the support problem is the one with a date on it. Being unsupported does not make a report wrong today; it makes the eventual upgrade larger, because the schema changes accumulate and arrive together. The reporting work is the same either way — inventory what depends on the schema, baseline it, and expect the gap between your version and the current one to be roughly the size of the repair.
 
+
+
+
+
+
 ### Sources, and how dated these are
 
+
 The vendor-specific claims on this page are dated by nature and are stated here with their source so you can re-check rather than trust the page — the same convention used on the Claude articles on this site, and for the same reason: product timelines move, and a page quoted back as current two years later is worse than no page.
+
+
+
+
 
 - **Desktop feature freeze and end of fixes.** The Spring 2021 release (Prophet 21 2021.1) is described as the final desktop version to receive new features, with new development moving to the web application, and no further desktop fixes after 30 November 2022 — [Echopath, December 2020](https://echopath.com/p21-new-features-only-web-app/). That is a third-party summary of an Epicor announcement, not Epicor’s own page; treat the dates as a starting point and confirm them with your account team.
 
@@ -1086,9 +1355,16 @@ The vendor-specific claims on this page are dated by nature and are stated here 
 
 - **Everything else here** — what breaks, what to inventory, what to measure — is method rather than vendor fact, and does not go stale on a release schedule.
 
+
+
 Vendor claims on this page last checked 18 August 2026.
 
+
+
+
 ### Related
+
+
 
 - [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/prophet-21) — the main platform page, and the four data-model traps that make P21 reports quietly wrong. Start there if the question is *which rows count*.
 
@@ -1100,9 +1376,14 @@ Vendor claims on this page last checked 18 August 2026.
 
 - [Case studies](https://siegestack.com/case-studies) — anonymised, with the measurement discipline this page argues for.
 
+
+
+
+
 #### Upgrade window on the calendar?
 
 The inventory and the baseline are worth doing before it opens, and they are cheap compared with reconstructing them afterwards. Thirty minutes to work out which of the three projects you are actually doing, and what it puts at risk.
+
 
 [Book a call](https://siegestack.com/prophet-21#schedule) · [Send it in writing](https://siegestack.com/contact) · [Back to the P21 page](https://siegestack.com/prophet-21)
 
@@ -3618,378 +3899,173 @@ https://siegestack.com/working-with-claude
 
 A working method for shipping production software with AI — the loop, six pieces of real work, and the limitations nobody advertises.
 
-
 Scott Allen Willis · Enterprise Distribution Software Specialist
 
-
-
-
-
-
-
-
-
 ### What We'll Cover
-
 
 1
 
 The method — and the one step most people skip
 
-
 2
 
 Six pieces of shipped work, and what each one cost to get wrong
-
 
 3
 
 Choosing a model tier, because the largest is rarely the right one
 
-
 4
 
 What I got wrong, and the limitations nobody advertises
 
-
-
-
 Ten minutes · the detail is in the [long-form version](https://siegestack.com/working-with-claude-blog), and the rest is a conversation
-
-
-
-
-
-
 
 ### How I Actually Work with Claude
 
 These aren't tips from a blog post. They're patterns I learned by shipping real things and failing first.
 
-
 1**Know what "done" looks like before you start** — I decide the exact output format before writing a single prompt. Vague asks get vague results.
-
 
 2**Give it real data, not descriptions of data** — I paste actual queries, actual error messages, actual court documents. Summaries lose the details that matter.
 
-
 3**Be surgically specific when something's wrong** — "Row 47 returns NULL on the join" gets fixed in one round. "It's broken" gets five rounds of guessing.
-
 
 4**Re-establish context every session anyway** — *Correction, August 2026: Claude does remember now.* On paid plans it searches past chats and generates a memory summary automatically, scoped separately per Project. I still paste the context file, because **curated memory beats extracted memory** for hard constraints — I choose what survives instead of finding out afterwards what it kept.
 
-
 5**Nothing ships until it's copy-paste ready** — No placeholder text, no "insert X here." If I can't deploy it or file it immediately, it's not done.
-
-
-
-
-
-
 
 ### The Loop
 
 Define done → draft → **test against reality** → precise feedback → ship or repeat. Most people stop after the draft, which is why most people conclude the tool does not work.
 
-
-
-
-
 #### 1 · Define done
 
 Before a word is typed. "Copy-pastes into the live environment with zero errors" is a target. "Good" is not. A fuzzy definition produces a fuzzy output and there is no prompt that recovers it.
-
-
-
-
-
 
 #### 2 · Draft on real artifacts
 
 Actual code, actual logs, actual data — never a summary of them. State the hard constraints up front, then leave the first pass alone.
 
-
-
-
-
-
 #### 3 · Test against reality
 
 **This is the step that gets skipped, and it is the whole value.** Run it in dev. Deploy it and send traffic at it. The model lives in word-space; production does not.
-
-
-
-
-
 
 #### 4 · Feedback precise enough to converge
 
 "Make it better" wanders. "Line 47 throws on the temp buffer because the alias only exists in the older code path" converges. Reproducible beats vague.
 
-
-
-
-
-
 #### 5 · Ship or repeat
 
 Two outcomes, no third. Ship means it passed production with no caveats. Repeat means back to step 3 with new failure data. Never "one more prompt".
-
-
-
-
-
 
 #### Keep it tight
 
 A context file carried into every session, a library of what shipped and the feedback that got it there, and a hard 15–20 minute cap per loop. If it is not converging, step 1 was wrong — go back, do not prompt harder.
 
-
-
-
-
-
 The loop is model-agnostic. The leverage is in the discipline, not the vendor — and the human stays the domain expert throughout.
 
-
-
-
-
-
-
 ### Auditing 300+ Database Views
-
-
-
 
 #### The Process, Not the Tech
 
 I fed Claude real production queries one at a time — not theoretical examples. It identified performance patterns I'd been living with for years. Things that looked correct but were silently slow.
 
-
 We worked in batches: 7 scripts first, then 62 more. The second batch revealed a critical lesson — Claude generated placeholder syntax in several scripts. My "nothing ships until it's ready" rule caught every one before production.
-
 
 **The AI accelerated the work. My standards were the quality gate.**
 
-
-
-
-
 ~27%
-
 
 performance improvement
 
-
 measured after deployment
 
-
-
-
-
-
-
-
-
-
-
 ### Replacing What Nobody Understood
-
-
-
 
 #### 9 Macros → 1 Automation
 
 The warehouse ran on 9 fragile Excel macros that nobody fully understood. Instead of documenting them, I described the end-to-end workflow to Claude — scan, look up, validate, ship — and we rebuilt it from the intent, not the legacy code.
 
-
 Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over.
-
-
-
-
-
 
 #### Migration: Conversation as Strategy
 
 Multiple locations needed to move between enterprise distribution platforms. Instead of hiring a consultant, I walked Claude through the data domains one by one and we built a phased migration plan together.
 
-
 The mapping strategy came out of conversation. The domain knowledge came from me. The structure came from the collaboration.
 
-
-
-
-
-
-
-
-
-
-
 ### Closing a Data Exposure
-
-
-
 
 #### The Hole
 
 A members table held real personal data — names, emails, phone numbers, cities. The page read and wrote it directly from the browser using a key printed in the page source, scoped by an email address the database had no way to verify.
 
-
 From an unauthenticated browser, that table returned 200 and every row. It now returns 401.
-
-
-
-
-
 
 #### The Fix
 
 All four operations moved server-side behind a function that takes the caller's identity from a **verified ID token** — signature checked against the provider's public keys — and ignores whatever the request body claims. The browser key and client-side database SDK are gone from the page. Row-level security enabled and forced, public grants revoked, and 36 assertions covering forged, expired, unsigned and tampered tokens.
 
-
-
-
-
-
 **Two traps worth carrying to any project.** The table already had four dormant access policies, inert only because row-level security was switched off — enabling it would have *activated* them. Revoking the grants is what saved it, because privilege denial is evaluated before policies are. And do not write a policy matching a token claim when your identity provider is not the database's own: the claim is null, the policy matches nothing, and it looks exactly like working access control.
-
-
-
-
-
-
 
 ### The Bugs Nothing Reports
 
 Three production faults that returned no error, logged nothing, and read correctly in every file involved.
 
-
-
-
-
 #### Six months of 404
 
 Two redirect config files, one silently outranking the other. A rule in the losing file never runs and nothing says so. One endpoint 404'd for **six months**; another for two days. Both files were individually correct.
-
-
-
-
-
 
 #### Two hyphens
 
 A -- inside an XML comment is illegal and makes the entire sitemap not well-formed. Search Console reported "couldn't fetch", zero pages indexed — while the URL returned 200, the right content type, the right length, and fetched fine as the crawler. **Nothing in the response reveals it. Only parsing does.**
 
-
-
-
-
-
 #### A year-old stylesheet
 
 Assets served immutable for a year with no fingerprinting. Ship markup that needs a new class without bumping the version token and returning visitors get unstyled pages for up to a year — and it looks perfect to you, because your first visit fetched both fresh.
 
-
-
-
-
-
 **The common thread:** every one of these passes review, passes config validation, and produces no error anywhere. The only thing that finds them is probing the live URL and parsing what actually comes back. **Config that reads correctly is not evidence.**
 
-
-
-
-
-
-
 ### Never Put a Credential on the Critical Path
-
-
-
 
 #### What Happened
 
 Two public forms sent an email and returned success only if the send worked. When the mail credential died, every submission returned an error and **was destroyed** — the handler logged only the domain of the address, never the address itself, so there was nothing to recover from. Two real people who wrote in over two days were lost that way.
 
-
 The forms now record the submission first and notify second. **Read it, write it down, then try to send it.**
-
-
-
-
-
 
 #### The Part That Only Failed in Production
 
 The mail handshake was measured at 28.7s, 2.3s, 21.5s, 22.4s and 1.5s. The timeout was 7 seconds, so roughly half of all sends aborted — in production only, while identical code worked locally every time.
 
-
 I initially wrote the slow handshakes off as an artifact of my home connection. That assumption cost more time than the bug.
-
-
-
-
-
 
 **Generalise it:** anything that can fail independently of the user's intent belongs after the durable write, not before it. A form whose success depends on a third-party credential is a form that quietly deletes messages the day that credential expires.
 
-
-
-
-
-
-
 ### Proving a Refactor Changed Nothing
-
-
-
 
 #### Don't Reason About It. Measure It.
 
 For a mechanical change across many files, "I read the diff and it looks equivalent" is not a claim you can support. So: check out the pre-change tree, serve both versions on two local ports, and for every rendered element read about twenty computed properties, concatenate and hash them. Compare the hashes. Compare the geometry too.
 
-
 Then investigate every mismatch before shipping.
-
-
-
-
-
 
 #### What It Caught
 
 **Two real bugs that produced no console error and looked fine in the diff.**
 
-
 Three pages had a style block *inside* an inline SVG. Swapping it for a stylesheet link in place does nothing — SVG has no such mechanism — and the diagrams would have shipped unstyled.
-
 
 Converting 1,316 inline styles to classes silently lost six declarations to higher-specificity rules.
 
-
-
-
-
-
 **Instrument the instrument.** Always measure one file the change never touched. If the control reports differences too, your checker is broken, not the site — that is exactly how a run of false positives got caught before it buried the one real error.
-
-
-
-
-
-
 
 ### Route Across Tiers, Not Just Vendors
 
 The previous slide routes work across four companies. The cheaper, higher-leverage version of the same idea routes it across tiers inside one of them — and for two years I did not do it. Every task got the biggest model, which is the same mistake as running every report on the production server.
 
-
-
 | Model | What Anthropic says it is for | What I actually send it |
-
 
 | Haiku 4.5 | The fastest model with near-frontier intelligence | The 62-script batch. Mechanical, high-volume, verifiable by diff |
 
@@ -3999,122 +4075,63 @@ The previous slide routes work across four companies. The cheaper, higher-levera
 
 | Fable 5 | Next-generation intelligence for long-running agents | Long autonomous runs I check on rather than watch |
 
-
-
-
 **The routing rule is the delegation rule.** Give the expensive model the ambiguous, high-consequence work and the cheap model the well-specified, easily-checked work — which is exactly how you would staff it if the models were people. Switch with /model in Claude Code or the model picker in the app. Prices, context windows and tier descriptions are on the models page in the sources at the end.
 
-
-
-
-
-
-
 ### What I Got Wrong (Honest Version)
-
-
-
 
 #### Over-Engineering
 
 Not every problem needs a pipeline or a multi-step workflow. Sometimes a clean prompt in a fresh session is faster and better than an elaborate system. I built complexity that didn't earn its keep.
 
-
-
-
-
-
 #### Trusting Without Checking
 
 Claude's Batch 2 placeholder bug taught me this permanently. The output *looked* right. It was structured correctly. But several scripts had syntax that would have broken in production. You lose nuance and edge-case details if you don't verify.
-
-
-
-
-
 
 #### Forgetting the Tradeoffs
 
 AI gives you speed, but speed costs something. You lose experiential texture. You lose the thinking-through-it process that sometimes *is* the point. I had to learn when to use Claude and when to just sit with the problem myself.
 
-
-
-
-
-
 #### Building More Than Was Asked
 
 I added impersonator-blocking to a firewall that only needed to let verified crawlers through. The pattern it matched also appears in a real consumer browser's user agent, so **every reader using that browser got a 403 on every page.**
 
-
 An outside tool then reported the site as hostile to crawlers. It was not a policy. It was my unrequested feature. Verification now grants passage only — it never denies.
 
-
-
-
-
-
 **The rule I follow now:** If the problem is well-defined and the output format is clear — delegate to AI. If the problem is ambiguous and I need to *think* — I do that myself first, then bring Claude the result.
-
-
-
-
-
-
 
 ### The Honest Limitations
 
 Everything in this deck is real. So is everything below. Anyone selling you Claude as a magic co-founder is lying.
 
-
 Compaction loses things*Sharpened, August 2026:* "the context window fills up and Claude summarizes" is real but it is not one uniform behaviour. In Claude Code it is auto-compaction, plus /compact on demand. On the API it is an opt-in beta you switch on, with a trigger threshold you set. On claude.ai it happens automatically **only when code execution is enabled**. Whichever surface you are on, the summary drops nuance and edge cases — it is not lossless. Know which one you are relying on before you rely on it.
-
 
 Confidently wrongClaude produces answers that sound right and aren't — often enough that verification has to be a step, not a habit. I am not going to give you a percentage, because I have not measured one and neither has anyone quoting you a figure. Citations get fabricated. Working code gets rewritten unnecessarily.
 
-
 Plausibility is not a signalFour substantive errors sat live on a reference site for months. One was repeated across four pages, and the worst of them was inside the structured data — the exact text search engines and assistants quote back. **None were caught by re-reading or by asking whether the draft was right.** All four came from opening the primary source and comparing.
-
 
 Instructions get ignoredEspecially in long sessions. "Don't change X" gets violated. Re-state critical constraints in every meaningful turn.
 
-
 Memory is real — and it is still not your system of record*Corrected, August 2026. The old version of this row said "default chat has no memory between sessions," and that is now wrong.* On paid plans Claude searches past chats and generates a memory summary automatically, per Project, with citations back to the chats it drew from. What is still true is the part the old wording was actually about: memory you did not curate is a summary of what you happened to say, not a specification of what must hold. Incognito chats write nothing. Free accounts have no memory at all. **Design for what you control.**
 
-
 **The honest framing:** Claude is a smart but unreliable junior — not a co-founder. The leverage comes from how you wrap it, not from the model alone. And tell it, explicitly, that *saying "I don't know" is an acceptable answer*. Models default to producing something; a model that has been given permission to return a gap will return a gap instead of inventing a bridge, and a gap is a thing you can go and fill.
-
-
-
-
-
-
-
 
 ### Questions?
 
 "The best AI results come from people who know their domain and refuse to accept anything less than production-ready."
 
-
 Scott Allen Willis · [info@siegestack.com](mailto:info@siegestack.com)
 
-
-
 [Read the long-form post](https://siegestack.com/working-with-claude-blog)
-· 
+·
 [SiegeStack home](https://siegestack.com/)
-· 
+·
 [Case studies](https://siegestack.com/case-studies)
-· 
+·
 [ETL showcase](https://siegestack.com/etl-showcase)
-· 
+·
 [Operations modernization](https://siegestack.com/operations-modernization)
 
-
-
 [⟡ github.com/iamnotcheckingit-cyber/siegestack](https://github.com/iamnotcheckingit-cyber/siegestack)
-
-
 
 **Sources.** A deck that tells you to open the primary source owes you the primary sources. Every product claim here was checked against
 [chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context),
@@ -4134,71 +4151,150 @@ https://siegestack.com/insights
 
 Technical write-ups and anonymised problem breakdowns, from work that shipped.
 
+
+
+
+
+
+
 Everything here is written from problems that actually occurred, and everything here is anonymised. No client or employer is named, no client data appears, and identifying details are removed rather than disguised. What is kept is the part that transfers to anyone running the same class of system.
+
+
+
 
 ### Where to start by platform
 
+
+
 Epicor · Prophet 21 & Kinetic
+
+
 
 #### [Epicor P21 & Kinetic Reporting and Integration](https://siegestack.com/prophet-21)
 
 The platform-specific side: the four data-model traps that make P21 reports quietly wrong — open versus posted living in different tables, undated lines counted as successes, flags that exist on only one side, and identity that resolves through a fallback chain — plus what changes when the schema belongs to the vendor. Read this one if the question is *which rows count*.
 
+
+
+
+
+
 Epicor · upgrades
+
+
 
 #### [What a Prophet 21 Upgrade Does to Your Reporting](https://siegestack.com/prophet-21-upgrade-reporting)
 
 Three different projects get called “the P21 upgrade” — a version upgrade, the desktop-to-web transition, and replacing Prophet 21 with Epicor Kinetic, which is a different product and not an upgrade at all. What each one breaks in the layer built on top of the schema, why none of it raises an error, and the two things worth capturing before the window opens because they cannot be recovered afterwards.
 
+
+
+
+
+
 SQL Server · performance method
+
+
 
 #### [SQL Server Performance for ERP Reporting](https://siegestack.com/sql-server-erp-performance)
 
 The diagnostic method, independent of which ERP sits on top: the two patterns behind most slow reports, why logical reads beat runtime as a measure, and why applying the fix needs more care than finding it. Read this one if the question is *why is this slow*.
 
+
+
+
+
+
 ### Technical articles
 
+
+
 SQL Server · ERP reporting
+
+
 
 #### [Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date](https://siegestack.com/erp-report-slow-month-to-date)
 
 The most common performance complaint in ERP reporting and the most consistently misdiagnosed. Short and long date ranges frequently read different tables, and if the history table has no index on the column you filter, the database reads all of it. Covers how to confirm it in about ten minutes, how to design the index, and what to check before adding one to a vendor schema.
 
+
+
+
+
+
 Delivery · Configuration audit
+
+
 
 #### [The config was mine and the fix on paper was still wrong](https://siegestack.com/delivery-config-audit)
 
 A delivery and configuration audit run against this site, written up for the finding that the auditor was wrong rather than for the ones that held. Reading the config produced a defensible remediation item; three requests against the running system showed there was no defect, and that the item would have caused an outage-class fault. What config review can and cannot establish, and what a live probe still cannot tell you.
 
+
+
+
+
+
 ### Case studies
 
+
+
 Reporting · Metrics design
+
+
 
 #### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console)
 
 Receiving and picker productivity metrics, including purchase price variance and on-time and in-full rates. Most of the work was deciding which rows count as evidence and which are absence of evidence — and keeping cost figures off screens that face a public floor.
 
+
+
+
+
+
 Performance · Root cause
+
+
 
 #### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
 
 Reported as “the dashboard is slow.” It was one unindexed date column on a table that shipped with the ERP. The diagnosis took minutes; applying the fix safely took the planning.
 
+
+
+
+
+
 Automation · Architecture
+
+
 
 #### [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
 
 Several unrelated paths to a printer, each grown separately, layouts drifting apart. Replaced with one service where label sources are rows in a configuration table rather than new programs.
 
+
+
+
+
+
 ### What tends to get written up here
+
 
 Operational software problems where the request describes the symptom accurately and the cause not at all. “The dashboard is slow” that turns out to be an access path. “We need another label program” that turns out to be a missing abstraction. “We need a report” that turns out to be a disagreement about which rows count.
 
+
+
 If you are running into one of these, the [case studies](https://siegestack.com/case-studies) show the shape of the work and [operations modernization](https://siegestack.com/operations-modernization) covers the larger engagement they sit inside.
+
+
+
+
 
 #### Recognise one of these?
 
 The first conversation is short and costs nothing.
+
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
 
@@ -4332,7 +4428,7 @@ Your file is read in the browser. It is never uploaded.
 
 How this works — five steps
 
-##### The basic flow
+### The basic flow
 
 - **Set the label size first.** Pick your stock from the *Label size* list, or type any width and height in inches. Do this before laying anything out — the elements are positioned as a proportion of the label, so changing the size later reflows the design. Not sure what size you have? Work it out here.
 
@@ -4344,7 +4440,7 @@ How this works — five steps
 
 - **Print.** *Print labels* opens a searchable list — tick the rows to print and set a copy count per row — then hands the labels to your browser's own print dialog. **Choose your label printer there.** Picking *Save as PDF* or an office printer instead puts each label alone on a full sheet, which is the usual cause of “my 3×2 came out as a whole page” — the full print settings are here.
 
-##### About column headers
+### About column headers
 
 The first row = header toggle controls how columns are named:
 
@@ -4354,7 +4450,7 @@ The first row = header toggle controls how columns are named:
 
 - **Headers are never required**, because the caption that drops in is only editable text — retype it to whatever you want regardless of the source column name. Headers make fields easier to *identify* while building; they never limit what prints.
 
-##### What this version does not do
+### What this version does not do
 
 There is no database connection, no login and no template library: nothing is stored on a server and nothing is kept in this browser between visits. Close the tab and the layout is gone. That is deliberate — it is the whole reason the page can promise your data never leaves it. [The label service case study](https://siegestack.com/case-studies/label-service) describes what the full version of this looks like when it is wired into an ERP, and [we build those](https://siegestack.com/contact).
 
