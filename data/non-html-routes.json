@@ -1,0 +1,18 @@
+{
+  "_readme": [
+    "SS-401. Publishable routes that are reachable and correct but are not HTML pages, so",
+    "they will never appear in data/pages.json and an internal link to one is not a broken",
+    "link.",
+    "",
+    "Each entry needs servedFrom, so the claim that the route resolves can be checked",
+    "against a file that exists rather than taken on trust."
+  ],
+  "routes": [
+    {
+      "route": "/audit",
+      "servedFrom": "docs/audit-2026-08-16.md",
+      "reason": "The delivery and configuration audit report, rewritten 200 from netlify.toml and linked from /delivery-config-audit. Served under a stable path so the dated filename can change without breaking the link. Carries noindex by header.",
+      "addedOn": "2026-08-20"
+    }
+  ]
+}

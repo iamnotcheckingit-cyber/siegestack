@@ -1,0 +1,153 @@
+{
+  "_readme": [
+    "SS-306. og:title / og:description are allowed to differ from the page title and",
+    "description ONLY where the divergence is declared here. Undeclared divergence is an",
+    "error, because drift and deliberate social copy look identical in a diff.",
+    "",
+    "Seeded 2026-08-20 with the 9 title and 11 description divergences that already",
+    "existed, all marked TODO(pappy). The build is green while they are reviewed. Replace",
+    "each reason with why the social copy differs, or align the two and delete the entry."
+  ],
+  "overrides": [
+    {
+      "route": "/about",
+      "field": "og:title",
+      "pageValue": "About SiegeStack | Scott Allen Willis",
+      "ogValue": "About SiegeStack — Scott Allen Willis",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/case-studies",
+      "field": "og:description",
+      "pageValue": "Three anonymised problems: a receiving and purchasing KPI console, a month-to-date report that timed out on a missing index, and a multi-source label service.",
+      "ogValue": "Three anonymised problems: a KPI console, an index-tuning root cause, and a multi-source label service.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/erp-report-slow-month-to-date",
+      "field": "og:title",
+      "pageValue": "Why Your ERP Report Times Out on Month-to-Date | SiegeStack",
+      "ogValue": "Why Your ERP Report Times Out on Month-to-Date",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/erp-report-slow-month-to-date",
+      "field": "og:description",
+      "pageValue": "A report that is instant for today and times out for month-to-date is rarely a volume problem. How to diagnose the missing index and apply it safely.",
+      "ogValue": "Fast on today, dead on month-to-date. It is an access-path problem, not a volume problem — and the fix is usually one index.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/etl-showcase",
+      "field": "og:title",
+      "pageValue": "CRM & ERP Integration & ETL Pipelines | SiegeStack",
+      "ogValue": "CRM & ERP Integration Experts | SiegeStack",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/etl-showcase",
+      "field": "og:description",
+      "pageValue": "Custom integrations for Salesforce, HubSpot, Zoho, Epicor P21, Kinetic, Infor and Dynamics NAV. We connect your CRM, ERP and e-commerce with real reliability.",
+      "ogValue": "Custom integrations for Salesforce, HubSpot, Epicor P21, Kinetic, Infor, and more. We connect your business systems with bulletproof reliability.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/",
+      "field": "og:description",
+      "pageValue": "SiegeStack builds custom integrations, dashboards and apps — and audits the ones you already have. ETL pipelines, BI, security and access-control review.",
+      "ogValue": "We build the custom integrations, dashboards, and apps that make your business run smoother.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/operations-modernization",
+      "field": "og:title",
+      "pageValue": "Operations Modernization: Consolidate, Then Optimize",
+      "ogValue": "Operations Modernization | Consolidate, Then Optimize",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/operations-modernization",
+      "field": "og:description",
+      "pageValue": "Running two systems of record? Consolidate onto one, then optimize slotting, order consolidation, purchasing and network replenishment on top of it.",
+      "ogValue": "Two systems of record make every network-level answer wrong in ways nobody can see. Consolidate first, then optimize. A staged engagement model.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/privacy-policy",
+      "field": "og:description",
+      "pageValue": "What SiegeStack collects when you book a consultation or send an email, what we do with it, and which third-party services touch it. Plain English.",
+      "ogValue": "How SiegeStack collects, uses and protects your information, including automatic data and third-party services.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/prophet-21-upgrade-reporting",
+      "field": "og:title",
+      "pageValue": "What a Prophet 21 Upgrade Does to Your Reporting | SiegeStack",
+      "ogValue": "What a Prophet 21 Upgrade Does to Your Reporting",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/prophet-21-upgrade-reporting",
+      "field": "og:description",
+      "pageValue": "Three different things get called a P21 upgrade, and they break different things. What happens to custom reports, indexes and integrations on Epicor Prophet 21, and the baseline to capture before the window.",
+      "ogValue": "A version upgrade, the desktop-to-web move, and replacing P21 with Kinetic are three different projects. What each one does to reporting built on a vendor schema.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/prophet-21",
+      "field": "og:title",
+      "pageValue": "Epicor P21 & Kinetic Reporting and Integration | SiegeStack",
+      "ogValue": "Epicor P21 & Kinetic Reporting and Integration",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/prophet-21",
+      "field": "og:description",
+      "pageValue": "Reporting and integration on Epicor Prophet 21 and Kinetic: the data-model traps that make P21 reports quietly wrong, and what a vendor schema changes.",
+      "ogValue": "The P21 data-model traps that make reports quietly wrong — open versus posted, undated lines, unmapped identity — and what changes when the schema is the vendor",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/sql-server-erp-performance",
+      "field": "og:title",
+      "pageValue": "SQL Server Performance for ERP Reporting | SiegeStack",
+      "ogValue": "SQL Server Performance for ERP Reporting",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/sql-server-erp-performance",
+      "field": "og:description",
+      "pageValue": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method, the two common patterns, and fixing a vendor schema safely.",
+      "ogValue": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method and how to apply the fix to a vendor schema safely.",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/working-with-claude-blog",
+      "field": "og:title",
+      "pageValue": "How to Use Claude AI Effectively | SiegeStack",
+      "ogValue": "How to Use Claude AI Effectively: A Real Workflow That Ships Production Work",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/working-with-claude-blog",
+      "field": "og:description",
+      "pageValue": "How to use Claude AI effectively, from someone who ships real work with it daily. The workflow, the iteration loop, the mistakes, and a template you can steal.",
+      "ogValue": "Stop treating Claude like a chatbot. Here",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/working-with-claude",
+      "field": "og:title",
+      "pageValue": "Working with Claude: A 14-Slide Case Study | SiegeStack",
+      "ogValue": "Working with Claude: A 14-Slide Case Study on Shipping Production Work",
+      "reason": "TODO(pappy): confirm intentional"
+    },
+    {
+      "route": "/working-with-claude",
+      "field": "og:description",
+      "pageValue": "A 14-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.",
+      "ogValue": "Stop treating Claude like a chatbot. A 14-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.",
+      "reason": "TODO(pappy): confirm intentional"
+    }
+  ]
+}
