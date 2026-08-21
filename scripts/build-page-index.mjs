@@ -337,6 +337,33 @@ for (const file of htmlFiles) {
   const wordCount = textContent.split(/\s+/).filter(Boolean).length;
   const sm = sitemap.get(route) ?? null;
 
+  // Corrections and standing disclosures. Read from attributes, never from the
+  // word "correction" in the prose: that word appears as a QR error-correction
+  // level on /label-tool and as a data-rights bullet on /privacy-policy, and it
+  // is absent from the retraction of the "roughly 20% of the time" figure,
+  // which never uses it. Right text, wrong instrument.
+  //
+  // Keyed on the slug, not the element. One correction can appear in more than
+  // one place -- the cross-session-memory retraction has its own section and an
+  // FAQ answer on the same page -- and a reader counting corrections counts the
+  // thing corrected, not how many times it is mentioned.
+  const corrections = [];
+  for (const m of clean.matchAll(/data-correction="([a-z0-9-]+)"[^>]*?data-corrected="(\d{4}-\d{2}-\d{2})"/g)) {
+    corrections.push({ slug: m[1], corrected: m[2] });
+  }
+  const correctionSlugs = [...new Set(corrections.map((c) => c.slug))].sort();
+  // Earliest date wins per slug: the correction was made once, even if a later
+  // commit added a second mention of it.
+  const correctionDates = Object.fromEntries(
+    correctionSlugs.map((s) => [s, corrections.filter((c) => c.slug === s).map((c) => c.corrected).sort()[0]]),
+  );
+  // A standing disclosure is NOT an ageing correction. Nothing was corrected:
+  // the thing being disclosed is still on the page and the marker is what makes
+  // it honest. Kept in a separate field so no rule can ever treat one as the
+  // other and collapse it on a timer.
+  const disclosures = [...new Set([...clean.matchAll(/data-disclosure="([a-z0-9-]+)"/g)].map((m) => m[1]))].sort();
+  const statedCount = /data-correction-count="(\d+)"/.exec(clean);
+
   pages.push({
     route,
     sourceFile: file,
@@ -362,6 +389,11 @@ for (const file of htmlFiles) {
     externalLinksOut: [...external].sort(),
     inboundInternalLinks: 0, // filled below
     images,
+    corrections: correctionSlugs,
+    correctionElementCount: corrections.length,
+    correctionDates,
+    disclosures,
+    statedCorrectionCount: statedCount ? Number(statedCount[1]) : null,
     textContent,
     wordCount,
     inSitemap: sitemap.has(route),

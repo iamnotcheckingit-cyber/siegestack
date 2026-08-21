@@ -526,6 +526,108 @@ for (const p of INDEXABLE) {
   }
 }
 
+// ===========================================================================
+// SS-6xx (continued) — the corrections practice
+//
+// The site's editorial posture is that a published claim which turns out to be
+// wrong is corrected in public rather than quietly edited. Until 89458a4 that
+// rested entirely on remembering, and nothing in this file referenced it.
+//
+// None of these rules can detect a correction that SHOULD have been written and
+// was not -- that needs a judgement about whether a fact changed. They check the
+// three things that are decidable from the tree.
+// ===========================================================================
+{
+  // SS-604 (error) -- corrections are append-only.
+  //
+  // The page states the principle itself: "deleting a correction along with its
+  // subject is how a record stops being a record." A correction that can quietly
+  // disappear is not a record, it is a note. Compares the slugs present at HEAD
+  // against the slugs present in the previous commit of the same file.
+  //
+  // IT CHECKS THE COMMIT, NOT THE WORKING TREE. Deleting a marker in an
+  // uncommitted edit does NOT trip this rule: the model describes the working
+  // tree while the comparison is against HEAD~1, so the pair is off by one.
+  // That is not a hole -- SS-002 already errors on any dirty HTML tree, so the
+  // validator never gets here with uncommitted markup, and CI validates a real
+  // commit. It is written down because proving this rule by breaking the
+  // working tree produces a silent pass and looks exactly like a rule that does
+  // not work. Prove it on a throwaway branch with a real commit instead.
+  const prevOf = (file) => {
+    try {
+      return execFileSync('git', ['show', `HEAD~1:${file.replace(/\\/g, '/')}`], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 }).toString();
+    } catch { return null; } // new file, or no parent commit -- nothing to compare
+  };
+  let compared = 0;
+  for (const p of PAGES) {
+    const before = prevOf(p.sourceFile);
+    if (before === null) continue;
+    compared++;
+    const had = new Set([...before.matchAll(/data-correction="([a-z0-9-]+)"/g)].map((m) => m[1]));
+    for (const slug of had) {
+      if (!p.corrections.includes(slug)) {
+        error('SS-604', p.route, 'A published correction was removed. Corrections are append-only -- collapse or move one, but do not delete it.', slug);
+      }
+    }
+    // Same guarantee for standing disclosures, and a stronger one: a disclosure
+    // is what makes invented or illustrative content honest. Losing one silently
+    // re-creates the defect it was written to close.
+    const hadDisc = new Set([...before.matchAll(/data-disclosure="([a-z0-9-]+)"/g)].map((m) => m[1]));
+    for (const slug of hadDisc) {
+      if (!p.disclosures.includes(slug)) {
+        error('SS-604', p.route, 'A standing disclosure was removed. It is what makes the content it labels honest; removing it re-opens the defect.', slug);
+      }
+    }
+  }
+  if (compared === 0) skip('SS-604', 'No parent commit to compare against, so nothing could be checked. Reported as SKIPPED rather than passed.');
+
+  // SS-605 (error) -- a stated correction count must match the markers.
+  //
+  // /working-with-claude-blog's intro enumerates its corrections in prose. That
+  // sentence is a derived value and it went stale the first time a correction was
+  // added: it said four when there were five, and grepping for the new heading
+  // would have reported everything fine. Self-declaring via
+  // data-correction-count, so the rule needs no list of which pages state one.
+  //
+  // Counted on DISTINCT SLUGS, not elements. One correction may be surfaced in
+  // more than one place -- cross-session-memory has a section and an FAQ answer
+  // on the same page -- and a reader counts the corrections, not the mentions.
+  for (const p of PAGES) {
+    if (p.statedCorrectionCount == null) continue;
+    if (p.statedCorrectionCount !== p.corrections.length) {
+      error('SS-605', p.route, 'The page states a correction count that disagrees with the corrections actually marked on it.',
+        `stated=${p.statedCorrectionCount} distinct=${p.corrections.length} (${p.correctionElementCount} elements) ${JSON.stringify(p.corrections)}`);
+    }
+  }
+
+  // SS-606 (WARNING, deliberately) -- a registered claim vanished from a route.
+  //
+  // If a claim tracked in claims-registry.json disappears from a page, that is
+  // usually a retraction and should carry a correction. Warning rather than
+  // error, for two reasons that are both real on this site:
+  //
+  //   1. A claim can vanish because the whole section went. The article keeps
+  //      the litigation correction "even though the section it belonged to has
+  //      been removed" -- as an error this rule would demand a marker on a page
+  //      with nothing left to correct.
+  //   2. The house convention is to QUOTE the retracted figure inside the
+  //      retraction, which keeps the token on the page and means a correctly
+  //      written correction never trips this at all. It fires on the silent
+  //      deletions, which is the right polarity, but it is a weak signal and
+  //      an error would train people to route around it.
+  //
+  // It caught one of the three corrections shipped on 2026-08-21. That is the
+  // honest measure of its reach.
+  for (const p of PAGES) {
+    const registered = CLAIMS.filter((c) => c.route === p.route);
+    for (const c of registered) {
+      if (!p.textContent.includes(c.claim) && p.corrections.length === 0) {
+        warn('SS-606', p.route, 'A claim in claims-registry.json is no longer on the page and the page carries no correction. If it was retracted, say so; if the entry is dead, delete it.', c.claim);
+      }
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Output
 // ---------------------------------------------------------------------------
