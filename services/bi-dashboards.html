@@ -213,8 +213,8 @@
         .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
         .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
         .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
-        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
-        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: underline; text-underline-offset: .15em; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { color: var(--white); }
 
       /* Nav CTA and mobile menu — added with the canonical nav block. Values
          copied from index.html so the chrome is identical across the site. */
@@ -255,6 +255,7 @@
         </div>
         <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
     </nav>
+    <main>
 
     <div class="hero">
         <h1>BI Dashboards</h1>
@@ -274,6 +275,7 @@
         <p><a href="/case-studies/kpi-console">The KPI console case study</a> is this service in full: two audiences, two trust levels, and the identity chain that had to show its misses.</p>
         <p><a href="/contact">Talk about a dashboard</a></p>
     </div>
+    </main>
 
     <footer class="site-footer">
         <div class="foot-grid">

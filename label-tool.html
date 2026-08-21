@@ -416,8 +416,8 @@
         .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
         .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
         .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
-        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
-        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: underline; text-underline-offset: .15em; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { color: var(--white); }
     
         /* Hand the nav over to the menu button while the row still fits. With
            ten links plus the CTA the desktop row needs ~1280px; below that it
@@ -464,6 +464,7 @@
         </div>
         <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
     </nav>
+    <main>
 
     <div class="hero">
         <h1>Free Barcode Label Maker</h1>
@@ -674,6 +675,7 @@
             <p>The version this was cut down from does the other half: label sources defined as configuration rather than code, queries that pull the rows straight out of the ERP, and templates that live somewhere the whole team prints from. <a href="/case-studies/label-service">The label service case study</a> describes what that changes, and <a href="/contact">we build them</a>.</p>
         </section>
     </div>
+    </main>
 
     <footer class="site-footer">
         <div class="foot-grid">

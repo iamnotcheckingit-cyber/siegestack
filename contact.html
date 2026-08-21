@@ -226,8 +226,8 @@
         .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
         .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
         .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
-        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
-        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: underline; text-underline-offset: .15em; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { color: var(--white); }
 
       /* Nav CTA and mobile menu — added with the canonical nav block. Values
          copied from index.html so the chrome is identical across the site. */
@@ -289,6 +289,7 @@
         </div>
         <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
     </nav>
+    <main>
 
     <div class="hero">
         <h1>Contact</h1>
@@ -394,6 +395,7 @@
         <p>The submission is <strong>written to storage first and the notification is attempted second</strong>. That order is the whole point: a form that emails and reports success only if the email worked will silently destroy enquiries the day a credential expires, which is <a href="/#solutions">one of the failures this site exists to fix</a>. Here a delivery problem is an alert, not a deletion &mdash; your message is already saved before anything tries to reach me.</p>
         <p>Prefer email? <a href="mailto:info@siegestack.com">info@siegestack.com</a>. What is collected and why is in the <a href="/privacy-policy">privacy policy</a>.</p>
     </div>
+    </main>
 
     <footer class="site-footer">
         <div class="foot-grid">
