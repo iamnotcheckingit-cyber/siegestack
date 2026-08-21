@@ -491,7 +491,30 @@ const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b
   const registered = new Map();
   for (const c of CLAIMS) registered.set(`${c.route}|${c.claim}`, c);
 
+  /**
+   * B6. A page whose extracted text is empty has NOT lost its claims -- it has
+   * not been read. The two are indistinguishable to everything downstream, and
+   * conflating them made this rule give destructive advice: emptying one page's
+   * textContent turned six "registered but has no measurement basis" warnings
+   * into six "Registry entry no longer matches anything on the page; delete
+   * it." Following that instruction deletes six legitimate registry rows, and
+   * the finding total did not move, so the summary line looked unchanged.
+   *
+   * Silence fails to protect. Confident wrong advice does harm. This rule is
+   * the one that guards the site's central editorial promise, so it does not
+   * get to guess which of the two it is looking at.
+   */
+  const unreadable = (p) => !String(p.textContent ?? '').trim();
   for (const p of INDEXABLE) {
+    if (unreadable(p)) {
+      routeSkip('SS-601', p.route,
+        'Claims not checked: the page has no extracted text at all. That is an extraction failure, not a page with no claims -- do NOT read this as the claims having been removed, and do not delete registry entries for this route on the strength of it.',
+        p.sourceFile);
+    }
+  }
+
+  for (const p of INDEXABLE) {
+    if (unreadable(p)) continue;
     const counts = new Map();
     for (const m of p.textContent.matchAll(CLAIM_RE)) {
       counts.set(m[0], (counts.get(m[0]) ?? 0) + 1);
@@ -522,6 +545,9 @@ const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b
   for (const c of CLAIMS) {
     const p = byRoute.get(c.route);
     if (!p) { warn('SS-601', c.route, 'Claims registry names a route that does not exist.', c.claim); continue; }
+    // The route-skip above already said this page could not be read. Saying
+    // "delete it" here as well is the harm.
+    if (unreadable(p)) continue;
     if (!new RegExp(CLAIM_RE.source, 'gi').test(p.textContent) || !p.textContent.includes(c.claim.replace(/^~/, '~'))) {
       const still = [...p.textContent.matchAll(CLAIM_RE)].some((m) => m[0] === c.claim);
       if (!still) warn('SS-601', c.route, 'Registry entry no longer matches anything on the page; delete it.', c.claim);
