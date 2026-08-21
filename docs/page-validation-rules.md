@@ -112,9 +112,12 @@ A correction is dated and describes something that *changed*. A standing disclos
 are separate fields in the model so that no ageing or collapse rule can ever treat a
 disclosure as an old correction and strip it.
 
-**All four checks were proven to fail on a deliberately broken tree before being trusted**
-— SS-605 and SS-606 by editing the working copy, SS-604 (both halves) by committing the
-deletion on a throwaway branch.
+| **SS-607** | warning | all 32 | A correction inline for more than 90 days that is not marked `data-collapsed="true"` | The lifecycle policy: a correction stays where the claim was for 90 days — long enough that someone meeting the old wording in a cached result or a shared link lands on the correction beside it — then collapses to a dated one-line link into `/corrections`, with the full text moving there word for word. **It warns; it does not collapse.** Same argument as SS-203 — a validator that performs the edit it is checking is a laundering step, and collapsing is a judgement about wording. **It cannot reach a standing disclosure**: disclosures carry no date and live in a separate field, so no ageing rule can select one. If it could, the sweep would eventually strip "Example — not live data" off a panel of fabricated numbers and recreate that defect on a timer, unattended. |
+
+**Every one of these was proven to fail before being trusted.** SS-605 and SS-606 by editing
+the working copy; SS-604 (both halves) by committing the deletion on a throwaway branch;
+SS-607 by backdating a marker past the window, then confirming `data-collapsed="true"`
+silences it and that the disclosure on the same page is unreachable by age.
 
 ## SS-7xx — hygiene
 
