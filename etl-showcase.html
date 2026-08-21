@@ -1752,10 +1752,10 @@ function createServer(config = {}) {
             <div class="dashboard-container">
                 <div class="dashboard-header">
                     <span class="dashboard-title">Integration Health Dashboard</span>
-                    <span class="dashboard-sample">Example &mdash; not live data</span>
+                    <span class="dashboard-sample disclosure" data-disclosure="etl-dashboard-illustrative">Example &mdash; not live data</span>
                 </div>
 
-                <p class="dashboard-note">Every number and event below is <strong>made up to show the layout</strong>. Nothing here is measured, nothing is connected to a running system, and no client's figures appear on this page. It is here to show what you get to look at, not what anyone achieved.</p>
+                <p class="dashboard-note disclosure" data-disclosure="etl-dashboard-illustrative">Every number and event below is <strong>made up to show the layout</strong>. Nothing here is measured, nothing is connected to a running system, and no client's figures appear on this page. It is here to show what you get to look at, not what anyone achieved.</p>
 
                 <div class="metrics-grid">
                     <div class="metric-card healthy">
@@ -1802,7 +1802,7 @@ function createServer(config = {}) {
                 </div>
             </div>
 
-            <p class="dashboard-note" style="margin-top:1.25rem"><strong style="color:var(--white)">Corrected 21 August 2026.</strong> Until today this panel carried a pulsing &ldquo;Live&rdquo; indicator and week-on-week deltas &mdash; <span style="white-space:nowrap">&ldquo;+0.02% vs last week&rdquo;</span> and the rest &mdash; with nothing anywhere saying the figures were invented. It read as telemetry from a running system. The indicator and the deltas are gone and the panel is now marked for what it is. Stating this rather than quietly editing it is the same rule that keeps unmeasured percentages off the rest of this site.</p>
+            <p class="dashboard-note correction" data-correction="etl-dashboard-live-framing" data-corrected="2026-08-21" style="margin-top:1.25rem"><strong style="color:var(--white)">Corrected 21 August 2026.</strong> Until today this panel carried a pulsing &ldquo;Live&rdquo; indicator and week-on-week deltas &mdash; <span style="white-space:nowrap">&ldquo;+0.02% vs last week&rdquo;</span> and the rest &mdash; with nothing anywhere saying the figures were invented. It read as telemetry from a running system. The indicator and the deltas are gone and the panel is now marked for what it is. Stating this rather than quietly editing it is the same rule that keeps unmeasured percentages off the rest of this site.</p>
 
             <!-- Retry Logic Code Example -->
             <div class="code-container" style="margin-top: 2rem;">
