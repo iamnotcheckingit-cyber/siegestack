@@ -59,7 +59,18 @@ const MUST_ALLOW = [
   // Reachable on purpose, deliberately absent from the sitemap.
   '/audit', '/consultant-expertise', '/jesse', '/nicole', '/secret',
   '/epicor-p21-kinetic-reporting',            // must reach its 301
-  '/prophet-21.html',                          // must reach its 301
+  '/epicor-p21-kinetic-reporting.html',       // must reach its 301
+  '/404.html',
+  // Every .html source of a 301 must still reach it. These are not pages; a
+  // denial here does not hide anything, it deletes a redirect.
+  '/prophet-21.html', '/about.html', '/contact.html', '/case-studies.html',
+  '/insights.html', '/etl-showcase.html', '/operations-modernization.html',
+  '/erp-report-slow-month-to-date.html', '/sql-server-erp-performance.html',
+  '/prophet-21-upgrade-reporting.html', '/working-with-claude.html',
+  '/working-with-claude-blog.html', '/delivery-config-audit.html',
+  '/label-tool.html', '/secret.html', '/index.html',
+  '/services/erp-integration.html', '/case-studies/kpi-console.html',
+  '/industries/distribution.html',
   // Crawl and citation layer.
   '/robots.txt', '/sitemap.xml', '/llms.txt', '/llms-full.txt',
   // Search Console verification. A 404 here silently unverifies the domain.
@@ -86,6 +97,18 @@ const MUST_DENY = [
   '/private-files/ram-report.bat',
   // The class that started this: a new document dropped in the root.
   '/NOTES.md', '/TODO.md', '/secrets.txt', '/backup.sql', '/config.yaml',
+  // The .html hole, closed. Until ALLOW_HTML became authoritative, every one of
+  // these was served: `.html` was allowed by extension, so deny-by-default
+  // denied nothing for the one file type that renders as a page. A draft left
+  // in the publish directory was public and nothing in the config showed it.
+  '/draft.html', '/index-old.html', '/test.html', '/backup.html',
+  '/prophet-21-v2.html', '/services/draft.html', '/case-studies/wip.html',
+  '/industries/manufacturing.html',
+  // The prefix rules for the three page directories are gone with it, so a
+  // document under one of them is no longer waved through.
+  '/services/notes.md', '/case-studies/raw-numbers.csv',
+  // Generated build artefacts now land in the publish directory.
+  '/data/pages.json', '/reports/page-inventory.csv',
 ];
 
 let failures = 0;

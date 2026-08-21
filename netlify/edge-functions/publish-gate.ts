@@ -30,12 +30,17 @@
  *
  * THE ASYMMETRY IS DELIBERATE
  * ---------------------------
- * Media extensions are allowed anywhere; documents and code are not. Adding an
- * image should not require editing this file, because an image nobody
+ * Media extensions are allowed anywhere; documents, code and PAGES are not.
+ * Adding an image should not require editing this file, because an image nobody
  * allowlisted 404s in a way that is easy to miss and harmless to permit. Adding
- * a .md, .mjs, .json or .txt SHOULD require editing this file, because that is
- * the class that leaked. The failure modes are not symmetric, so the rules are
- * not either.
+ * a .md, .mjs, .json, .txt or .html SHOULD require editing this file, because
+ * those are the classes that leak. The failure modes are not symmetric, so the
+ * rules are not either.
+ *
+ * `.html` was on the wrong side of that line until 2026-08-20. It was allowed by
+ * extension, so every stray, orphaned or draft page in the publish directory was
+ * public, and the allow-list below — the thing anyone would read to check —
+ * played no part in the decision. ALLOW_HTML is now the only authority for it.
  *
  * IT FAILS OPEN. If anything in here throws, the request passes through. A gate
  * on `/*` that fails closed is a sitewide outage triggered by its own bug, and
@@ -44,26 +49,63 @@
  * strictly better than serving nothing at all.
  */
 
-// Extensionless routes and root files that must resolve. Pretty URLs, not the
-// .html files behind them: the edge runs on the path as requested, before the
-// rewrite engine turns /prophet-21 into /prophet-21.html.
-const ALLOW_EXACT = new Set([
+// EVERY PAGE THIS SITE SERVES, as its canonical route. This list is the SOLE
+// authority for HTML — there is no longer an extension fallback behind it, so a
+// page absent from here is not served, full stop.
+//
+// It used to be shorter, and `.html` was allowed by extension instead. That
+// meant deny-by-default denied nothing for the one file type that gets served
+// as a page: any stray, orphaned, draft or forgotten .html in the publish
+// directory was public, and no amount of reading this file would show it,
+// because the allow-list was not what decided. Replaying isAllowed() could not
+// surface the drift either — it answered "yes" for anything ending in .html.
+//
+// Kept in the same order as sitemap.xml so the two can be read side by side.
+// scripts/validate-pages.mjs (SS-101, SS-105) asserts this set equals the set
+// of .html files in the repository. Adding a page means adding it here.
+const ALLOW_HTML = new Set([
+  // The 26 routes in sitemap.xml
   "/",
-  // Pages in the sitemap
-  "/about", "/contact", "/case-studies", "/insights", "/prophet-21",
-  "/operations-modernization", "/etl-showcase", "/erp-report-slow-month-to-date",
-  "/sql-server-erp-performance", "/prophet-21-upgrade-reporting",
-  "/working-with-claude", "/working-with-claude-blog",
-  "/delivery-config-audit", "/privacy-policy", "/label-tool",
-  // Reachable on purpose, deliberately not in the sitemap
-  "/audit",                    // the audit report, linked from /delivery-config-audit
+  "/operations-modernization", "/etl-showcase", "/working-with-claude-blog",
+  "/working-with-claude", "/case-studies", "/erp-report-slow-month-to-date",
+  "/prophet-21", "/prophet-21-upgrade-reporting", "/delivery-config-audit",
+  "/sql-server-erp-performance", "/insights", "/about", "/contact",
+  "/services/erp-integration", "/services/etl-data-pipelines",
+  "/services/bi-dashboards", "/services/automated-reporting",
+  "/services/performance-tuning", "/services/security-access-audit",
+  "/case-studies/kpi-console", "/case-studies/month-to-date-timeout",
+  "/case-studies/label-service", "/industries/distribution",
+  "/label-tool", "/privacy-policy",
+  // Served on purpose, deliberately absent from the sitemap
   "/consultant-expertise",     // noindex intake form
   "/jesse", "/nicole",         // PIN-gated private threads
   "/secret",                   // browser-side encrypted messages
-  "/epicor-p21-kinetic-reporting",   // 301 to /prophet-21; must reach the redirect
+  // Served at their own .html path, having no pretty-URL rewrite
+  "/404.html",
+  "/googleeaab9608ff5e7c66.html",   // Search Console; a 404 here unverifies the domain
+]);
+
+// Paths that exist only to REACH a redirect, and serve nothing themselves.
+// Denying these would not hide a page, it would delete a 301: the edge runs on
+// the path as requested, before the rewrite engine, so a denied /about.html
+// never reaches the rule that would have sent it to /about. The equity-carrying
+// P21 redirects are the ones that matter here — see the note in netlify.toml
+// about d0aa04a, where a rule matching ahead of another 404'd the best page on
+// the site. Every `<route>.html` source is derived from ALLOW_HTML below rather
+// than listed, so the two cannot drift; only the odd ones out live here.
+const ALLOW_REDIRECT_SOURCE = new Set([
+  "/epicor-p21-kinetic-reporting",        // 301 to /prophet-21
+  "/epicor-p21-kinetic-reporting.html",   // 301 to /prophet-21
+  "/index.html",                          // pretty_urls sends it to /
+]);
+
+// Non-HTML files that must resolve. Everything else with these extensions is
+// denied, which is the point: adding a .js, .json or .txt is a decision.
+const ALLOW_EXACT = new Set([
+  "/audit",                    // the audit report, linked from /delivery-config-audit
   // Crawl and citation layer
   "/robots.txt", "/sitemap.xml", "/llms.txt", "/llms-full.txt",
-  // Named scripts and manifests. Everything else with these extensions is denied.
+  // Named scripts and manifests
   "/consultant-form.js", "/jesse-sw.js", "/nicole-sw.js",
   "/label-tool-xlsx.js",       // SheetJS, fetched on demand by /label-tool
   "/jesse-manifest.json", "/nicole-manifest.json",
@@ -73,23 +115,28 @@ const ALLOW_EXACT = new Set([
   "/0374ea43379b487e8fa886bf520fbdcc.txt",
 ]);
 
-// Directory prefixes. The three page directories, plus the function surfaces,
-// which must never be gated here — they carry their own auth and validation.
+// The function surfaces, which must never be gated here — they carry their own
+// auth and validation. The three page directories used to be listed too; they
+// are gone because ALLOW_HTML now names those pages individually, and a bare
+// "/services/" prefix would have allowed /services/notes.md straight past the
+// document rules.
 const ALLOW_PREFIX = [
-  "/services/",
-  "/case-studies/",
-  "/industries/",
   "/api/",
   "/.netlify/",
 ];
 
-// Media only. Adding an image must not require editing this file.
-const ALLOW_EXT = /\.(?:html|svg|png|jpe?g|webp|avif|gif|ico|woff2?)$/i;
+// Media only. Adding an image must not require editing this file; adding a page
+// must. `html` is deliberately NOT in this list — that was the hole.
+const ALLOW_EXT = /\.(?:svg|png|jpe?g|webp|avif|gif|ico|woff2?)$/i;
 
-// Denied even though they match an allowed pattern above. `.html` is broadly
-// allowed so that direct .html hits reach their 301 and the Search Console
-// verification file resolves — these are the paths that must not ride along.
-const DENY_PREFIX = ["/docs/", "/scripts/", "/netlify/", "/private-files"];
+// Denied even where something above would otherwise allow them. /data/ and
+// /reports/ are new: the build now generates data/pages.json and
+// reports/page-inventory.csv into the publish directory, and neither is site
+// content. They are already denied by having no rule that allows them; this is
+// belt and braces, and it documents the intent.
+const DENY_PREFIX = [
+  "/docs/", "/scripts/", "/netlify/", "/private-files", "/data/", "/reports/",
+];
 
 /**
  * Pure decision. Kept separate from execution so that "fail open" means what it
@@ -108,12 +155,29 @@ function isAllowed(rawPath: string): boolean {
     // Malformed percent-encoding. Judge the raw form rather than giving up.
   }
   const lower = path.toLowerCase();
+  const bare = path.replace(/\/$/, "");
 
   if (DENY_PREFIX.some((p) => lower.startsWith(p))) return false;
 
+  // HTML is decided by ALLOW_HTML and nothing else. This branch RETURNS, so a
+  // .html path can never fall through to the prefix or extension rules below —
+  // which is the whole of the fix. Do not add an `||` to the end of it.
+  if (lower.endsWith(".html")) {
+    return (
+      ALLOW_HTML.has(path) ||
+      ALLOW_REDIRECT_SOURCE.has(path) ||
+      // /about.html exists only to 301 to /about, so it is allowed exactly when
+      // /about is. Derived, not listed, so adding a page cannot forget it.
+      ALLOW_HTML.has(path.slice(0, -".html".length))
+    );
+  }
+
   return (
+    ALLOW_HTML.has(path) ||
+    ALLOW_HTML.has(bare) ||
     ALLOW_EXACT.has(path) ||
-    ALLOW_EXACT.has(path.replace(/\/$/, "")) ||
+    ALLOW_EXACT.has(bare) ||
+    ALLOW_REDIRECT_SOURCE.has(path) ||
     ALLOW_PREFIX.some((p) => path.startsWith(p)) ||
     ALLOW_EXT.test(path)
   );
