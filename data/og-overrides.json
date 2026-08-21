@@ -12,7 +12,7 @@
     {
       "route": "/about",
       "field": "og:title",
-      "pageValue": "About SiegeStack | Scott Allen Willis",
+      "pageValue": "About Scott Allen Willis | SiegeStack",
       "ogValue": "About SiegeStack — Scott Allen Willis",
       "reason": "TODO(pappy): confirm intentional"
     },
@@ -61,7 +61,7 @@
     {
       "route": "/operations-modernization",
       "field": "og:title",
-      "pageValue": "Operations Modernization: Consolidate, Then Optimize",
+      "pageValue": "Operations Modernization: Consolidate First | SiegeStack",
       "ogValue": "Operations Modernization | Consolidate, Then Optimize",
       "reason": "TODO(pappy): confirm intentional"
     },
@@ -82,14 +82,14 @@
     {
       "route": "/prophet-21-upgrade-reporting",
       "field": "og:title",
-      "pageValue": "What a Prophet 21 Upgrade Does to Your Reporting | SiegeStack",
+      "pageValue": "What a Prophet 21 Upgrade Does to Reporting | SiegeStack",
       "ogValue": "What a Prophet 21 Upgrade Does to Your Reporting",
       "reason": "TODO(pappy): confirm intentional"
     },
     {
       "route": "/prophet-21-upgrade-reporting",
       "field": "og:description",
-      "pageValue": "Three different things get called a P21 upgrade, and they break different things. What happens to custom reports, indexes and integrations on Epicor Prophet 21, and the baseline to capture before the window.",
+      "pageValue": "Three different things get called a P21 upgrade. What each does to custom reports, indexes and integrations on Epicor Prophet 21, and the baseline to capture.",
       "ogValue": "A version upgrade, the desktop-to-web move, and replacing P21 with Kinetic are three different projects. What each one does to reporting built on a vendor schema.",
       "reason": "TODO(pappy): confirm intentional"
     },
