@@ -78,6 +78,21 @@ const error = (id, route, message, observed) => report('error', id, route, messa
 const warn = (id, route, message, observed) => report('warning', id, route, message, observed);
 const skip = (id, why) => skipped.push({ id, why });
 
+/**
+ * One route could not be checked by one rule, while every other route still
+ * was. It is a warning AND a counted route-skip, deliberately both: the warning
+ * puts the route and the reason in the body where they can be read, and the
+ * count puts it in the summary line where it cannot be missed.
+ *
+ * A skipped route that produces no output is indistinguishable from a passing
+ * one. That is the whole reason this exists.
+ */
+const routeSkips = [];
+const routeSkip = (id, route, why, observed) => {
+  routeSkips.push({ id, route });
+  warn(id, route, why, observed);
+};
+
 // ---------------------------------------------------------------------------
 // SS-001 — the suppression file validates itself
 // ---------------------------------------------------------------------------
@@ -212,35 +227,75 @@ for (const p of PAGES) {
     }
   }
 
+  /**
+   * Three outcomes that used to be two, and the conflation is what made this
+   * rule stop protecting the site without saying so:
+   *
+   *   git-unavailable  execFileSync threw. Git really is broken or absent.
+   *   no-history       git ran fine and returned nothing. The file is new and
+   *                    has never been committed. `git log -- newfile` exits 0
+   *                    with empty output, so the old code destructured '' into
+   *                    an undefined date and returned the SAME sentinel as a
+   *                    thrown git -- which tripped `gitOk = false; break`.
+   *   all-excluded     every commit touching the file is in
+   *                    freshness-exclusions.json, so there is no content date
+   *                    to compare against.
+   *
+   * The old `null` for all-excluded was silently swallowed by `if (actual &&
+   * ...)`: a route in that state was never checked and never said so.
+   */
   const contentDate = (file) => {
     let log;
     try { log = execFileSync('git', ['log', '--format=%h %cs', '--', file], { cwd: ROOT }).toString().trim(); }
-    catch { return undefined; }
+    catch { return { state: 'git-unavailable' }; }
+    if (!log) return { state: 'no-history' };
     for (const line of log.split('\n')) {
       const [sha, date] = line.split(' ');
-      if (!excluded.has(sha.slice(0, 7))) return date;
+      if (!excluded.has(sha.slice(0, 7))) return { state: 'ok', date };
     }
-    return null; // every commit touching this file is excluded
+    return { state: 'all-excluded' };
   };
 
   const scoped = PAGES.filter((p) => p.inSitemap && !['verification', 'error-page'].includes(p.class));
   const today = new Date().toISOString().slice(0, 10);
 
-  let gitOk = true;
+  // SS-202 runs in its OWN loop and needs no git at all. It used to live inside
+  // the SS-201 loop, so the `break` on a git problem disabled the future-date
+  // check for every remaining route too -- a second rule silently switched off
+  // by an unrelated failure, which nothing anywhere reported.
   for (const p of scoped) {
-    const actual = contentDate(p.sourceFile);
-    if (actual === undefined) { gitOk = false; break; }
-
-    if (actual && p.sitemapLastmod !== actual) {
-      error('SS-201', p.route,
-        'sitemap lastmod disagrees with the newest content commit touching the source file.',
-        `lastmod=${p.sitemapLastmod} newest-content-commit=${actual} (${p.sourceFile})`);
-    }
     if (p.sitemapLastmod && p.sitemapLastmod > today) {
       error('SS-202', p.route, 'sitemap lastmod is in the future.', `lastmod=${p.sitemapLastmod} today=${today}`);
     }
   }
-  if (!gitOk) skip('SS-201', 'git history unavailable in this environment (shallow clone or no git); freshness not checked here, CI checks it');
+
+  let gitOk = true;
+  for (const p of scoped) {
+    const r = contentDate(p.sourceFile);
+
+    // Only a broken git stops the whole rule. Everything else is per-route.
+    if (r.state === 'git-unavailable') { gitOk = false; break; }
+
+    if (r.state === 'no-history') {
+      routeSkip('SS-201', p.route,
+        'Freshness not checked: the source file has no commit history yet, so there is no content date to compare against. Expected exactly once, on the commit that introduces the page. If this route is still skipping on a later run, the file is not being committed and the route has been unchecked since.',
+        p.sourceFile);
+      continue;
+    }
+    if (r.state === 'all-excluded') {
+      routeSkip('SS-201', p.route,
+        'Freshness not checked: every commit touching the source file is listed in data/freshness-exclusions.json, so the rule has nothing left to date the page by. Either the page genuinely has not changed since it was written, or an exclusion is too broad.',
+        p.sourceFile);
+      continue;
+    }
+
+    if (p.sitemapLastmod !== r.date) {
+      error('SS-201', p.route,
+        'sitemap lastmod disagrees with the newest content commit touching the source file.',
+        `lastmod=${p.sitemapLastmod} newest-content-commit=${r.date} (${p.sourceFile})`);
+    }
+  }
+  if (!gitOk) skip('SS-201', 'git itself is unavailable (shallow clone or no git). This is the ONLY condition that disables the whole rule; a single undatable file no longer does. CI checks it.');
 }
 
 // ===========================================================================
@@ -717,5 +772,10 @@ if (suppressed.length) {
   for (const s of suppressed) console.log(`  ${s.id}  ${s.route}`);
 }
 
-console.log(`\n${errors.length} error(s), ${warnings.length} warning(s), ${skipped.length} skipped, ${suppressed.length} suppressed`);
+if (routeSkips.length) {
+  const rules = [...new Set(routeSkips.map((r) => r.id))].sort().join(', ');
+  console.log(`\nROUTE SKIPS (${routeSkips.length})  ${rules} — one route each, listed above as warnings with the reason.`);
+  for (const r of routeSkips) console.log(`  ${r.id}  ${r.route}`);
+}
+console.log(`\n${errors.length} error(s), ${warnings.length} warning(s), ${routeSkips.length} route-skip(s), ${skipped.length} skipped, ${suppressed.length} suppressed`);
 process.exit(errors.length ? 1 : 0);
