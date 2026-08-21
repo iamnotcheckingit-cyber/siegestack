@@ -289,8 +289,8 @@
         .howto > summary::before { content: "\25BA"; font-size: 10px; color: var(--blue-accent); transition: transform .15s }
         .howto[open] > summary::before { transform: rotate(90deg) }
         .howto .howto-body { padding: 12px 16px 14px; font-size: 13px; line-height: 1.55; color: var(--light-slate) }
-        .howto .howto-body h4 { margin: 14px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--white) }
-        .howto .howto-body h4:first-child { margin-top: 0 }
+        .howto .howto-body h2 { margin: 14px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--white) }
+        .howto .howto-body h2:first-child { margin-top: 0 }
         .howto .howto-body ol, .howto .howto-body ul { margin: 4px 0 0; padding-left: 20px }
         .howto .howto-body li { margin: 4px 0 }
         .howto .howto-body code { background: var(--navy-dark); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 12px }
@@ -478,7 +478,7 @@
     <details class="howto">
         <summary>How this works — five steps</summary>
         <div class="howto-body">
-            <h4>The basic flow</h4>
+            <h2>The basic flow</h2>
             <ol>
                 <li><strong>Set the label size first.</strong> Pick your stock from the <em>Label size</em> list, or type any width and height in inches. Do this before laying anything out &mdash; the elements are positioned as a proportion of the label, so changing the size later reflows the design. Not sure what size you have? <a href="#sizes">Work it out here</a>.</li>
                 <li><strong>Choose a file.</strong> Click <em>Choose file&hellip;</em> and pick a <code>.csv</code>, <code>.tsv</code>, <code>.txt</code> or Excel <code>.xlsx</code> export. Comma, tab, semicolon and pipe delimiters are detected from the file itself.</li>
@@ -487,7 +487,7 @@
                 <li><strong>Print.</strong> <em>Print labels</em> opens a searchable list &mdash; tick the rows to print and set a copy count per row &mdash; then hands the labels to your browser's own print dialog. <strong>Choose your label printer there.</strong> Picking <em>Save as PDF</em> or an office printer instead puts each label alone on a full sheet, which is the usual cause of &ldquo;my 3&times;2 came out as a whole page&rdquo; &mdash; <a href="#printing">the full print settings are here</a>.</li>
             </ol>
 
-            <h4>About column headers</h4>
+            <h2>About column headers</h2>
             <p style="margin:4px 0 0">The <span class="pill">first row = header</span> toggle controls how columns are named:</p>
             <ul>
                 <li><strong>Header row on (recommended).</strong> Leave it ticked when the top row holds column names. Fields then carry meaningful names &mdash; <code>part_no</code>, <code>reorder_qty</code>, <code>bin_id</code> &mdash; which makes them easy to find while you design.</li>
@@ -495,7 +495,7 @@
                 <li><strong>Headers are never required</strong>, because the caption that drops in is only editable text &mdash; retype it to whatever you want regardless of the source column name. Headers make fields easier to <em>identify</em> while building; they never limit what prints.</li>
             </ul>
 
-            <h4>What this version does not do</h4>
+            <h2>What this version does not do</h2>
             <p style="margin:4px 0 0">There is no database connection, no login and no template library: nothing is stored on a server and nothing is kept in this browser between visits. Close the tab and the layout is gone. That is deliberate &mdash; it is the whole reason the page can promise your data never leaves it. <a href="/case-studies/label-service">The label service case study</a> describes what the full version of this looks like when it is wired into an ERP, and <a href="/contact">we build those</a>.</p>
         </div>
     </details>
