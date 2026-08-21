@@ -984,8 +984,8 @@
         .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
         .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
         .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
-        .foot-bottom a { color: var(--blue-accent); text-decoration: none; }
-        .foot-bottom a:hover, .foot-bottom a:focus-visible { text-decoration: underline; }
+        .foot-bottom a { color: var(--blue-accent); text-decoration: underline; text-underline-offset: .15em; }
+        .foot-bottom a:hover, .foot-bottom a:focus-visible { color: var(--white); }
 
         /* Hand the nav over to the menu button while the row still fits. With
            ten links plus the CTA the desktop row needs ~1280px; below that it
@@ -1018,6 +1018,7 @@
         </div>
         <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">&#9776;</button>
     </nav>
+    <main>
 
     <div class="showcase-container">
         <!-- Header -->
@@ -2064,6 +2065,7 @@ const salesforce = new ResilientApiClient({
             <p class="cta-note">Feel free to share this page with your technical team for review</p>
         </div>
     </div>
+    </main>
 
     <!-- Footer -->
     <footer class="site-footer">
