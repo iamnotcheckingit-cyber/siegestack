@@ -629,6 +629,42 @@ for (const p of INDEXABLE) {
   //
   // It caught one of the three corrections shipped on 2026-08-21. That is the
   // honest measure of its reach.
+  // SS-607 (warning) -- a correction is past its inline window.
+  //
+  // Policy: a correction is a dated note about something that CHANGED, and its
+  // subject is gone from the page. It stays where the claim was for 90 days --
+  // long enough that someone meeting the old wording in a cached result or a
+  // shared link lands on the correction beside it -- and then collapses to a
+  // dated one-line link into /corrections, with the full text moving there word
+  // for word. Collapsing moves text. It never shortens or deletes it.
+  //
+  // A STANDING DISCLOSURE IS NOT A CORRECTION AND IS NOT CHECKED HERE. Nothing
+  // about it was corrected; the thing it labels is still on the page and the
+  // marker is what makes it honest. It carries data-disclosure, this rule reads
+  // data-correction, and the two are separate fields in the model precisely so
+  // that no ageing rule can reach a disclosure. If this rule could, the 90-day
+  // sweep would eventually strip "Example -- not live data" off a panel of
+  // fabricated numbers and recreate that defect on a timer, unattended.
+  //
+  // IT WARNS, IT DOES NOT COLLAPSE. Same argument as SS-203: a validator that
+  // performs the edit it is checking is a laundering step. Collapsing is a
+  // judgement about wording and a human makes it; this rule only says when one
+  // is due. Mark the collapsed notice data-collapsed="true" once it links to
+  // /corrections#slug.
+  const INLINE_WINDOW_DAYS = 90;
+  {
+    const todayMs = Date.parse(new Date().toISOString().slice(0, 10));
+    for (const p of PAGES) {
+      for (const [slug, date] of Object.entries(p.correctionDates ?? {})) {
+        if (p.collapsedCorrections?.includes(slug)) continue;
+        const age = Math.floor((todayMs - Date.parse(date)) / 86400000);
+        if (age > INLINE_WINDOW_DAYS) {
+          warn('SS-607', p.route, `Correction has been inline for ${age} days, past the ${INLINE_WINDOW_DAYS}-day window. Collapse it to a dated one-line link into /corrections#${slug} and move the full text there.`, `${slug} corrected ${date}`);
+        }
+      }
+    }
+  }
+
   for (const p of PAGES) {
     const registered = CLAIMS.filter((c) => c.route === p.route);
     for (const c of registered) {

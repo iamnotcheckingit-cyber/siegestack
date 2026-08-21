@@ -362,6 +362,11 @@ for (const file of htmlFiles) {
   // it honest. Kept in a separate field so no rule can ever treat one as the
   // other and collapse it on a timer.
   const disclosures = [...new Set([...clean.matchAll(/data-disclosure="([a-z0-9-]+)"/g)].map((m) => m[1]))].sort();
+  // Already collapsed to a one-line link into /corrections. SS-607 stops
+  // nagging about these; the full text now lives on the record page.
+  const collapsedCorrections = [...new Set(
+    [...clean.matchAll(/data-correction="([a-z0-9-]+)"[^>]*?data-collapsed="true"/g)].map((m) => m[1]),
+  )].sort();
   const statedCount = /data-correction-count="(\d+)"/.exec(clean);
 
   pages.push({
@@ -393,6 +398,7 @@ for (const file of htmlFiles) {
     correctionElementCount: corrections.length,
     correctionDates,
     disclosures,
+    collapsedCorrections,
     statedCorrectionCount: statedCount ? Number(statedCount[1]) : null,
     textContent,
     wordCount,
