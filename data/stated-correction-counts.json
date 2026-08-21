@@ -1,0 +1,26 @@
+{
+  "_readme": [
+    "SS-605. Routes whose PROSE states how many corrections the page carries.",
+    "",
+    "This file exists because the rule used to be gated on the thing it was checking.",
+    "SS-605 read data-correction-count off the page and skipped any page that did not",
+    "have it -- so deleting the attribute deleted the check, silently, and the prose",
+    "claim went unverified. B7 in docs/validator-blind-spots.md.",
+    "",
+    "Declaring the route here instead means the expectation survives the attribute.",
+    "Remove data-correction-count from the page and SS-605 now errors, because this",
+    "file still says the page states a count. Same shape as data/og-overrides.json:",
+    "the declaration lives outside the page so the page cannot silence it.",
+    "",
+    "Add a route here when its copy states a correction count in words. Remove it only",
+    "when that sentence is gone from the page -- not when the attribute is."
+  ],
+  "routes": [
+    {
+      "route": "/working-with-claude-blog",
+      "statedIn": "The 'Updated August 2026' intro callout: 'Five are marked so far: ...'",
+      "reason": "The article enumerates its own corrections in prose. That sentence is a derived value and it was already wrong once -- it said four when a fifth was added on 2026-08-21.",
+      "addedOn": "2026-08-21"
+    }
+  ]
+}

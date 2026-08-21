@@ -52,6 +52,7 @@ const OG_OVERRIDES = rdJson('data/og-overrides.json').overrides ?? [];
 const NON_HTML = rdJson('data/non-html-routes.json').routes ?? [];
 const JSONLD_EXEMPT = rdJson('data/jsonld-exempt.json').routes ?? [];
 const CLAIMS = rdJson('data/claims-registry.json').claims ?? [];
+const STATED_COUNTS = rdJson('data/stated-correction-counts.json').routes ?? [];
 
 const DENYLIST_LOCAL = '.denylist.local.json';
 const DENYLIST = has(DENYLIST_LOCAL) ? (rdJson(DENYLIST_LOCAL).terms ?? []) : null;
@@ -684,11 +685,43 @@ for (const p of INDEXABLE) {
   // Counted on DISTINCT SLUGS, not elements. One correction may be surfaced in
   // more than one place -- cross-session-memory has a section and an FAQ answer
   // on the same page -- and a reader counts the corrections, not the mentions.
-  for (const p of PAGES) {
-    if (p.statedCorrectionCount == null) continue;
-    if (p.statedCorrectionCount !== p.corrections.length) {
-      error('SS-605', p.route, 'The page states a correction count that disagrees with the corrections actually marked on it.',
-        `stated=${p.statedCorrectionCount} distinct=${p.corrections.length} (${p.correctionElementCount} elements) ${JSON.stringify(p.corrections)}`);
+  //
+  // B7. This used to read `if (p.statedCorrectionCount == null) continue`, which
+  // gated the check on the attribute the check exists to verify: delete
+  // data-correction-count and the check went with it, silently, leaving the
+  // prose claim unverified. The expectation now lives in
+  // data/stated-correction-counts.json, outside the page, so the page cannot
+  // silence it -- the same shape as data/og-overrides.json.
+  {
+    const declaresCount = new Set(STATED_COUNTS.map((r) => r.route));
+    for (const r of STATED_COUNTS) {
+      if (!String(r.reason ?? '').trim()) {
+        findings.push({ severity: 'error', id: 'SS-605', route: 'data/stated-correction-counts.json',
+          message: 'Stated-count declaration has no reason.', observed: JSON.stringify({ route: r.route }) });
+      }
+      if (!byRoute.has(r.route)) {
+        findings.push({ severity: 'error', id: 'SS-605', route: 'data/stated-correction-counts.json',
+          message: 'Stated-count declaration names a route that does not exist.', observed: r.route });
+      }
+    }
+    for (const p of PAGES) {
+      const declared = declaresCount.has(p.route);
+      const carries = p.statedCorrectionCount != null;
+
+      if (declared && !carries) {
+        error('SS-605', p.route, 'This route is declared in data/stated-correction-counts.json as stating a correction count in its copy, but the page carries no data-correction-count attribute. Either the attribute was dropped -- in which case the prose claim is now unchecked -- or the sentence is gone and the declaration should be removed.', 'attribute missing');
+        continue;
+      }
+      if (!declared && carries) {
+        error('SS-605', p.route, 'Page carries data-correction-count but is not declared in data/stated-correction-counts.json. Declare it, so removing the attribute later cannot silently remove the check.', `stated=${p.statedCorrectionCount}`);
+        continue;
+      }
+      if (!carries) continue;
+
+      if (p.statedCorrectionCount !== p.corrections.length) {
+        error('SS-605', p.route, 'The page states a correction count that disagrees with the corrections actually marked on it.',
+          `stated=${p.statedCorrectionCount} distinct=${p.corrections.length} (${p.correctionElementCount} elements) ${JSON.stringify(p.corrections)}`);
+      }
     }
   }
 
