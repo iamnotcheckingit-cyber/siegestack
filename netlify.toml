@@ -1,5 +1,27 @@
+# THIS SITE NOW HAS A BUILD COMMAND, AND IT CAN FAIL THE DEPLOY.
+#
+# Until 2026-08-20 there was none: publish = "." served the repository and
+# nothing ever ran. That meant scripts/build-llms-full.mjs only ever ran when
+# somebody remembered to run it -- which is the exact failure its own header
+# documents -- and no invariant could block a deploy, only a merge.
+#
+# The command regenerates the two generated artefacts and then validates. It is
+# ordered deliberately:
+#   build:llms      regenerate /llms-full.txt from the pages
+#   validate:pages  rebuild data/pages.json from HEAD, then check every rule
+#   test            the existing form, sweep and publish-gate suites
+#
+# A non-zero exit anywhere in that chain fails the deploy. That is the point.
+# If it ever needs bypassing in an emergency, change this line in a commit --
+# do not add a `|| true`, which would leave a build command that looks like a
+# gate and is not one.
+#
+# data/pages.json and reports/page-inventory.csv are written into the publish
+# directory. They are not site content; /data/ and /reports/ are denied in
+# publish-gate.ts, and scripts/test/publish-gate.test.mjs asserts it.
 [build]
   publish = "."
+  command = "npm run netlify:build"
 
 # Netlify fails the build when an env var VALUE appears anywhere in the repo,
 # regardless of whether that value is sensitive. Several of these are public by
