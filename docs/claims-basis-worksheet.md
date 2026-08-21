@@ -1,0 +1,143 @@
+# Claims basis worksheet
+
+**Purpose.** `data/claims-registry.json` holds 25 entries. Every one of them currently reads
+`measurementBasis: "TODO(pappy)"` and `dateMeasured: "TODO(pappy)"`, which means the site's
+central editorial rule — *no percentage or performance claim without a measured baseline* — is
+declared but not evidenced anywhere in the repo. This file exists so all 25 can be settled in
+one sitting.
+
+**Nothing here is filled in for you, and nothing is guessed.** The "what would satisfy it"
+column says what evidence the entry needs, not what the answer is.
+
+**Three valid outcomes per row**, per the registry's own readme:
+
+1. Fill `measurementBasis` and `dateMeasured` — the claim is real and you can say how it was measured.
+2. Remove the claim from the page — you cannot reconstruct the basis.
+3. Mark `disposition: "not-a-claim"` — the token is prose, not an assertion. The registry
+   readme already names the `/case-studies` "82% faster" as this case: that page is *arguing
+   against* opening with a figure, not making one.
+
+**How to use it.** Work down the table. For each row either write the basis into
+`data/claims-registry.json`, delete the claim from the page, or add the `disposition` key.
+Then run `npm run validate:pages`.
+
+**Caveat on rows 5–8.** The four `/etl-showcase` figures belong to the mock "Integration Health
+Dashboard" and are the subject of W7. If that display is changed or removed, those rows go with
+it and never need a basis. Do not spend time on them before W7 is settled.
+
+---
+
+## Fill these three first
+
+Seven of the percentage rows are not seven measurements. They are **three**, each published in
+several places. Settle the measurement once and every row that inherits it is answered.
+
+### M1 — the database view audit
+
+Rows **9, 11, 16, 18, 20** and **N1**, and possibly **22** and **23** (see Q1).
+Published as: "300+ views audited · ~27% aggregate gain · 70 change sets · 99%+ match rate."
+Source section: `/working-with-claude-blog#perf-gain`.
+
+Needs, in one paragraph: what was measured (elapsed time, logical reads, CPU — which?), how the
+baseline was captured and with what tool, what population the ~27% is aggregated over, what
+counts as an audited view and how 300+ was counted, what "match" means in the 99%+ and against
+what comparison key, and the date.
+
+### M2 — the migration reconciliation
+
+Row **23**, and row **24** if "cut over" turns out to belong to it.
+Published as: "Tested against legacy output until we hit 99%+ match" (`/working-with-claude` deck).
+
+Needs: what was migrated, what legacy output it was reconciled against, the comparison key and
+tolerance, and the date. **Blocked by Q1** — this may not be a separate measurement at all.
+
+### M3 — the security grade
+
+Row **N2**.
+Published as: "B → A+ security grade, one site" (`/`) and the numeric scores 75 → 125
+(`/working-with-claude-blog#security-grade`).
+
+Needs: the scoring tool by name, and the dates of the before and after scans. Lower value than
+M1 and M2 — W6 removes this figure from the homepage row, so it survives only in the article.
+
+---
+
+## Q1 — OPEN QUESTION, blocks W5 and both 99%+ rows
+
+**Which engagement did the 99%+ figure come from?** The site currently gives it two
+incompatible provenances:
+
+| Where | How it is framed | Row |
+|---|---|---|
+| `/working-with-claude-blog#perf-gain` | A **view-audit match rate** — rewritten views checked against their originals | 16, 20 |
+| `/working-with-claude` (deck) | A **migration reconciliation** — new output tested against legacy output until 99%+ match | 23 |
+| `/` (stat row) | Labelled "automation match rate", anchored to `#macros`, which contains no match rate at all | 11 |
+
+These are three different descriptions of one number, and at most one is right. **W5 is held
+because of this**: re-pointing the homepage anchor would pick one provenance arbitrarily and
+publish it as settled.
+
+Answer this before touching M1's 99%+ component, row 23, or the homepage stat row. If the two
+are genuinely separate measurements that happen to share a figure, say so — then M1 and M2 stay
+separate and each needs its own basis.
+
+---
+
+## The 25 registered claims
+
+| # | Claim | × | Route | Where it appears | Source anchor | What would satisfy the basis |
+|---|---|---|---|---|---|---|
+| 1 | `40%` | 1 | `/case-studies` | "Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors." | — | Nothing. This is the page arguing against invented figures. Strong candidate for `not-a-claim`. |
+| 2 | `82%` | 1 | `/case-studies` | Same sentence as row 1 | — | Same as row 1. The registry readme already names this one. |
+| 3 | `faster` | 1 | `/case-studies` | Same sentence as row 1 | — | Same as row 1 — the token is inside the quoted example, not an assertion. |
+| 4 | `faster` | 1 | `/case-studies/label-service` | "For a floor printer this matters — it prints faster, positions predictably…" | — | Either a print-time comparison (native label commands vs rendered image, same printer, same label, N runs) with a date, or `not-a-claim` if this is qualitative. |
+| 5 | `0.02%` | 1 | `/etl-showcase` | Mock dashboard, "API Uptime 99.97% **+0.02% vs last week**" | — | **See W7 caveat.** As a live delta it has no basis and cannot acquire one; the figure is illustrative. |
+| 6 | `0.8%` | 1 | `/etl-showcase` | Mock dashboard, "Retry Rate 2.3% **+0.8% vs last week**" | — | Same as row 5. |
+| 7 | `2.3%` | 1 | `/etl-showcase` | Mock dashboard, "**Retry Rate 2.3%**" | — | Same as row 5. |
+| 8 | `99.97%` | 1 | `/etl-showcase` | Mock dashboard, "**API Uptime 99.97%**" | — | Same as row 5. |
+| 9 | `~27%` | 1 | `/` | Stat row, "~27% performance gain" | `/working-with-claude-blog#perf-gain` | What was measured (elapsed time? logical reads? CPU?), across how many views, against what baseline capture, with what tool, on what date. The article says "aggregate gain" — say aggregated over what population. |
+| 10 | `100%` | 1 | `/` | FAQ, "Do we own the code you write?" → "100%. Everything we build is yours." | — | Not a measurement — it is an ownership answer. Candidate for `not-a-claim`. |
+| 11 | `99%` | 1 | `/` | Stat row, "99%+ automation match rate" | `#macros`, which contains no match rate — **W5 is HELD, see Q1** | Blocked by **Q1**. The anchor is wrong and the label is wrong, but which provenance is correct is unknown, so the anchor cannot be re-pointed yet. Answer Q1, then M1. |
+| 12 | `100%` | 1 | `/label-tool` | Print settings, "set it to 100% or 'Actual size'" | — | A print-dialog instruction, not a claim. Candidate for `not-a-claim`. |
+| 13 | `cut` | 1 | `/label-tool` | "The version this was cut down from does the other half…" | — | "cut down from" is prose. Candidate for `not-a-claim`. |
+| 14 | `faster` | 1 | `/operations-modernization` | "People who have followed the work adopt the result faster than people handed a finished workbook on go-live day." | — | Either an adoption measure (what was counted, over what period, for which two groups) or `not-a-claim` if this is an observation rather than a measurement. Worth a deliberate decision — it reads as a claim. |
+| 15 | `100%` | 1 | `/privacy-policy` | "no method of transmission over the Internet is 100% secure" | — | Standard privacy boilerplate. Candidate for `not-a-claim`. |
+| 16 | `~27%` | 1 | `/working-with-claude-blog` | Summary line: "300+ views audited · ~27% aggregate gain · 70 change sets · 99%+ match rate" | `#perf-gain` | Same evidence as row 9 — this is the source instance the homepage links to. Fill this one first; row 9 inherits it. |
+| 17 | `20%` | 1 | `/working-with-claude-blog` | "An earlier version of this article put a number on that — 'roughly 20% of the time.' I have removed it, because I never measured it…" | `#corrections` | Nothing. This is the published correction *recording* an unmeasured figure. `not-a-claim` — and if the text is ever removed, the correction goes with it. |
+| 18 | `27%` | 2 | `/working-with-claude-blog` | Section heading "A 27% Performance Gain Across Hundreds of Database Views", plus one body instance | `#perf-gain` | Same as row 16. Note `×2` — SS-601 errors if a third instance appears. |
+| 19 | `95%` | 1 | `/working-with-claude-blog` | "Test against reality (this is where 95% of AI users fail)" | — | **This one needs a real decision.** It is a rhetorical figure about a population nobody has surveyed — the same class as the "confidently wrong ~20%" statistic already removed as a correction. Either a citation or removal; `not-a-claim` would be generous. |
+| 20 | `99%` | 2 | `/working-with-claude-blog` | Summary line (row 16), plus one body instance | `#perf-gain` | Same evidence as row 11 — this is the source instance. |
+| 21 | `faster` | 4 | `/working-with-claude-blog` | Four prose instances, e.g. "the faster the next kind converges" | — | Prose throughout. Candidate for `not-a-claim`. Note `×4` — a fifth instance turns the build red. |
+| 22 | `~27%` | 1 | `/working-with-claude` | Deck slide: "~27% performance improvement measured after deployment" | — (the deck has no section anchors) | Same evidence as row 16. The slide says "measured after deployment", which asserts a measurement more strongly than the article does — so this wording needs the basis or needs softening. |
+| 23 | `99%` | 1 | `/working-with-claude` | Deck slide: "Tested against legacy output until we hit 99%+ match." | — | Blocked by **Q1** — see M2. This frames the figure as a migration reconciliation, which is a different engagement from the view audit in row 16. One of the two framings is wrong. |
+| 24 | `cut` | 1 | `/working-with-claude` | "The team validated daily before we cut over." | — | "cut over" is prose. Candidate for `not-a-claim`. |
+| 25 | `faster` | 1 | `/working-with-claude` | "a clean prompt in a fresh session is faster and better than an elaborate system" | — | Prose. Candidate for `not-a-claim`. |
+
+---
+
+## NOT REGISTERED — two published figures SS-601 cannot see
+
+Both sit in the homepage stat row beside claims that *are* registered. Neither is caught by any
+rule today, so neither would turn the build red no matter what it said.
+
+| # | Claim | Route | Where it appears | Source anchor | Why SS-601 misses it | What would satisfy the basis |
+|---|---|---|---|---|---|---|
+| N1 | `300+` | `/` and `/working-with-claude-blog` | Stat row, "300+ views audited"; and the article summary line | `/working-with-claude-blog#perf-gain` | **NOT REGISTERED.** SS-601 tokenises digit-percent, digit-x, and the words faster/reduced/improved/cut. A bare count with a `+` matches none of them. | The population definition: what counts as an audited view, how the 300 was counted, and on what date. This is the denominator for rows 9, 11, 16 and 20 — without it none of those percentages have a scope. |
+| N2 | `B → A+` | `/` and `/working-with-claude-blog` | Stat row, "B → A+ security grade, one site"; and the article section | `/working-with-claude-blog#security-grade` | **NOT REGISTERED.** A letter grade contains no digit-percent, digit-x, or tracked verb. | The scoring tool and both report dates. The article states the numeric scores (75 → 125), so the tool is identifiable — name it, and record when each scan ran. **Also subject to W6**: this figure is labelled *Personal* in its source section and may be dropped from the homepage row entirely. |
+
+### If you want these two enforced
+
+SS-601's token set would need a bare-count pattern and a grade pattern. That is a change to
+`scripts/validate-pages.mjs`, not to this file, and it would light up unrelated numbers across
+the site — worth doing deliberately, not as a side effect of this worksheet.
+
+---
+
+## What this worksheet does not answer
+
+- **Whether any measurement basis exists in writing at all.** That is the open question. If the
+  answer for a given row is "no record survives", outcome 2 or 3 applies — reconstructing a
+  number from memory is exactly what the site's rule exists to prevent.
+- **Rows 9, 11, 16, 18, 20, 22 and 23 are probably three underlying measurements, not seven.**
+  The view audit (27% and 99%+ across 300+ views), a migration reconciliation (row 23), and the
+  security grade. Settle each measurement once and the rows that share it inherit the answer.
