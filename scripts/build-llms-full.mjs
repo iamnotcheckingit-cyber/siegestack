@@ -153,7 +153,17 @@ let pages = 0;
 for (const [file, url, title] of PAGES) {
   const full = path.join(ROOT, file);
   if (!fs.existsSync(full)) { console.error(`  MISSING: ${file}`); process.exitCode = 1; continue; }
-  const body = extract(fs.readFileSync(full, 'utf8'), file);
+  // Normalise to LF on the way in, not on the way out. The sources are read
+  // through whatever git checked out, so on a core.autocrlf=true clone every
+  // line arrives carrying a CR -- and the CR does not merely add bytes, it
+  // breaks the extractor: the blank-run collapse matches \n{3,}, which never
+  // matches \r\n\r\n\r\n, so blank lines survive on Windows that are removed
+  // on Linux. Stripping CR at the end would fix the byte count and leave the
+  // extra blank lines in place. That is why this file's contents used to
+  // depend on the machine that built it, and why CI compared a Linux-built
+  // file against a committed Windows-built one and reported a 1,915-line diff
+  // for a file nobody had edited.
+  const body = extract(fs.readFileSync(full, 'utf8').replace(/\r\n?/g, '\n'), file);
   parts.push(`\n\n# ${title}\nhttps://siegestack.com${url}\n\n${body}\n\n---\n`);
   pages++;
   console.log(`  ${url.padEnd(34)} ${String(body.length).padStart(7)} chars`);

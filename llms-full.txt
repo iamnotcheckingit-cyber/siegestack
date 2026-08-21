@@ -295,23 +295,9 @@ https://siegestack.com/case-studies
 
 Three problems, described without the specifics.
 
-
-
-
-
-
-
 Everything below is anonymised. No client or employer is named, no client data appears here, and the details that would identify an organisation — industry, size, location, systems by name, item numbers and dollar figures — have been removed rather than disguised. What is left is the part that transfers — the problem as it presented, what it actually turned out to be, and what was built. Where a number would matter, it is called out as something to measure rather than asserted.
 
-
-
-
 **Why there are no percentages on this page.** Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured the before state, and in most operational work nobody did, because the before state was nobody's job to instrument. Where a baseline was captured, it is named. Where it was not, saying so is more useful than a number nobody can reproduce.
-
-
-
-
-
 
 Case 01
 
@@ -321,9 +307,6 @@ Two audiences, two trust levels. Cost-bearing reports are refused to floor displ
 
 [Read the full case study →](https://siegestack.com/case-studies/kpi-console)
 
-
-
-
 Case 02
 
 ### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
@@ -331,9 +314,6 @@ Case 02
 Fast on Today, dead on Month-to-date. The most consistently misdiagnosed complaint in ERP reporting.
 
 [Read the full case study →](https://siegestack.com/case-studies/month-to-date-timeout)
-
-
-
 
 Case 03
 
@@ -343,24 +323,13 @@ A program per label became one configuration-driven service. New labels stopped 
 
 [Read the full case study →](https://siegestack.com/case-studies/label-service)
 
-
-
-
 ### The pattern across all three
-
 
 None of these started as the problem they turned out to be. “We need a dashboard” was really a question about which rows count as evidence. “The dashboard is slow” was one missing index on a vendor table. “We need another label program” was the absence of anywhere to define a label source.
 
-
-
 That is the common shape of operational software work: the request describes the symptom accurately and the cause not at all, and the useful first move is always to reproduce the symptom against the actual data before agreeing to build anything.
 
-
-
-
 ### Related
-
-
 
 - [All insights](https://siegestack.com/insights) — articles and case studies in one place.
 
@@ -372,14 +341,9 @@ That is the common shape of operational software work: the request describes the
 
 - [Why your ERP report times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date) — the technical write-up of Case 02.
 
-
-
-
-
 #### Recognise any of these?
 
 If a report is slow on longer date ranges, or a number nobody trusts is driving a decision, the first conversation is short and costs nothing.
-
 
 [Get in touch](https://siegestack.com/#schedule) · [See the engagement model](https://siegestack.com/operations-modernization)
 
@@ -393,60 +357,27 @@ https://siegestack.com/erp-report-slow-month-to-date
 
 It is almost never the amount of data. It is which column the date filter lands on, and whether anything indexes it.
 
-
-
-
-
-
-
 This is the most common performance complaint in ERP reporting and the most consistently misdiagnosed. The report returns instantly for today. Widen it to week‑to‑date or month‑to‑date and it hangs, then times out. Because the pain scales with the date range, it reads like a data‑volume problem, and the usual response is to rewrite the query or ask for a bigger server. Both are usually wrong.
-
-
-
 
 **The short version.** A short window and a long window frequently read *different tables*. Today often reads open, in‑flight records. Week and month have to reach into posted history. If the history table has no index on the date column you are filtering, the database has no way to skip rows — it reads the entire table to find the ones in your range. The fix is often a single index. The care is all in applying it.
 
-
-
-
-
-
 ### Why the two date ranges are not the same query
-
 
 Transactional ERPs almost always split their data in two: a live table for records still moving, and a history table for records that have posted. Receipts, invoices, picks and shipments all tend to follow this pattern under different names.
 
-
-
 A well‑built report follows that split. Today reads the open table only, because everything from today is still open. Week and month union the open table with history, because most of that period has already posted. Those are two genuinely different execution plans against two very differently sized tables, so treating the slow one as “the same report, just more data” misses what is actually happening.
-
-
 
 The live table is small — it holds only what has not yet posted, so it is naturally self‑trimming. The history table holds years. That is the one where indexing decides whether your report returns in a second or not at all.
 
-
-
-
 ### The specific failure: an unindexed date column
-
 
 Here is the shape it usually takes. A report filters invoice history on a pick‑date column. That table had four indexes on it — the order number, a history id plus line, the lot, and a rowguid. Every one of those is a perfectly sensible index for a transactional system to ship with. Not one of them helps a query whose `WHERE` clause filters on pick date.
 
-
-
 With no index on the filtered column, SQL Server cannot seek to the rows in your date range. It scans, reading every row in the history table and discarding the ones outside the window. Today was fast because it never touched that table. Month was slow because touching that table meant reading all of it.
-
-
 
 Notice what is *not* wrong here. The query is not badly written. The server is not undersized. The data volume is normal for the business. The only defect is that the access path the report needs does not exist.
 
-
-
-
 ### How to confirm it in about ten minutes
-
-
-
 
 - **Establish the split.** Run the report at each period setting and record the runtime. If today is sub‑second and week is minutes, you are looking at a threshold, not a gradient. A genuine volume problem degrades smoothly; an access‑path problem falls off a cliff.
 
@@ -456,24 +387,13 @@ Notice what is *not* wrong here. The query is not badly written. The server is n
 
 - **List what is currently indexed** on the table, and check whether the filtered column appears as the leading key of anything. Being present somewhere in an index is not the same as being seekable — a column buried as the third key of a composite index will not serve a range scan on its own.
 
-
-
 If those four point the same direction, the diagnosis is settled and you have a defensible before‑state to compare against.
-
-
-
 
 ### The part that needs more care than the diagnosis
 
-
 Finding it is the easy half. Applying it in a live ERP is where the risk sits, and this is the part most write‑ups skip.
 
-
-
-
-
 | Consideration | Why it matters before you run `CREATE INDEX` |
-
 
 | Whose schema is it | If the tables belong to your ERP vendor rather than to you, adding an index is a supportability decision before it is a technical one. Some vendors are relaxed about additive indexes; some treat any schema change as voiding support; some overwrite them on upgrade. Ask before you apply, and record the answer — the next upgrade may silently remove your index and the timeout will come back looking like a new bug. |
 
@@ -485,33 +405,15 @@ Finding it is the easy half. Applying it in a live ERP is where the risk sits, a
 
 | The reversal plan | Capture the table size, row count and existing index list before you change anything, so the change can be evaluated honestly and dropped cleanly if it does not help. |
 
-
-
-
-
-
-
-
 ### Designing the index
-
 
 Lead with the column you filter on. For a date‑range report, that means the date column is the first key — that is what makes the range seekable. Columns you group or join by follow. Columns you only return can go in an `INCLUDE` list rather than the key, which keeps the index narrower while still avoiding a lookup back to the base table for every row.
 
-
-
 Resist the urge to add one index per report. Three overlapping indexes on the same table, each serving one query, cost more in write overhead and buffer pool than one well‑ordered index serving all three. If you already have an index whose leading key is right and it is missing a column or two, extending it is usually better than adding a sibling.
-
-
-
 
 ### When it genuinely is volume
 
-
 Sometimes the scan is unavoidable and the answer is architectural rather than an index:
-
-
-
-
 
 - The report aggregates most rows in the table anyway, so there is nothing to skip. A pre‑aggregated snapshot, refreshed nightly, beats recomputing it per page load.
 
@@ -519,28 +421,15 @@ Sometimes the scan is unavoidable and the answer is architectural rather than an
 
 - Several dashboards recompute the same expensive figures independently. Materialise them once on a schedule and have every dashboard read the result.
 
-
-
 The tell is the shape of the degradation. A missing index produces a cliff — fine, fine, fine, dead. A true volume problem produces a slope. Diagnose which one you have before choosing a fix, because the architectural remedies cost weeks and the index costs an afternoon and a maintenance window.
-
-
-
 
 ### The general lesson
 
-
 “The dashboard is slow” is a symptom report, and it is an accurate one — the user is not wrong. But it describes the experience, not the cause, and the instinct it triggers (optimise the query, buy hardware) points away from the actual defect most of the time.
-
-
 
 Ask a narrower question instead: *what exactly does the date filter filter on, and does anything index it?* In ERP reporting that question resolves a surprising share of performance complaints, usually to one line of DDL and a conversation with whoever owns the schema.
 
-
-
-
 ### Related reading
-
-
 
 - [All insights](https://siegestack.com/insights) — articles and case studies in one place.
 
@@ -550,14 +439,9 @@ Ask a narrower question instead: *what exactly does the date filter filter on, a
 
 - [CRM & ERP integration](https://siegestack.com/etl-showcase) — the pipeline and integration work that feeds reporting like this.
 
-
-
-
-
 #### Got a report that dies on longer date ranges?
 
 Usually diagnosable from the execution plan and the index list in a single sitting. The first conversation costs nothing.
-
 
 [Get in touch](https://siegestack.com/#schedule) · [Read the case studies](https://siegestack.com/case-studies)
 
@@ -571,70 +455,33 @@ https://siegestack.com/sql-server-erp-performance
 
 Reports that crawl usually have a cause, not a mystery. The method below finds it, and the risk is almost never in the fix.
 
-
-
-
-
-
-
 A slow ERP report is reported as “the dashboard is slow,” which is an accurate description of the symptom and tells you nothing about the cause. The useful first move is never to optimise the query. It is to establish whether the database is reading the rows it needs or reading everything and discarding most of it — because those two situations look identical from the outside and have completely different fixes.
-
-
-
 
 **The single most useful reframe:** when a report is fast on a short date range and dies on a longer one, that is not evidence of a volume problem. It is evidence of an **access-path** problem that volume has made visible. The distinction matters because the volume interpretation leads to hardware, archiving and partitioning conversations, and the access-path interpretation frequently leads to one index.
 
-
-
-
-
-
 ### The two patterns behind most of it
 
-
-
 Pattern 01
-
-
 
 #### The filter column nobody indexed
 
 The report filters history on a date column. The indexes that exist on that table cover the order number, a history identifier and line, a lot number, a row identifier — every access path except the one the filter actually needs. So the date range forces a scan of the whole history table.
 
-
 The symptom scales with the date range, which is exactly why it gets misdiagnosed as data volume. It is also why the short-range version of the same report is often instant: it frequently reads a different, far smaller table altogether.
 
-
-
-
-
-
 Pattern 02
-
-
 
 #### Predicates that make an existing index unusable
 
 An index only helps if the optimiser can seek on it, and wrapping the indexed column in an expression prevents that. Date arithmetic applied around the column in a `WHERE` clause is the usual offender. Rewriting so the column sits bare on one side of the comparison and the arithmetic moves to the constant makes the same index usable again — with no schema change at all.
 
-
 The close relative: scalar functions in a `SELECT` list, which silently force row-by-row execution across the whole result. Inlining them is ugly and fast, and ugly-and-fast is the correct trade in a report nobody reads the source of.
-
 
 Both of these are worth trying first for a reason that has nothing to do with elegance: **they touch nothing the vendor owns.**
 
-
-
-
-
-
 ### The method
 
-
-
-
 | Step | What it establishes |
-
 
 | Reproduce the symptom against real data, at each period setting | That the complaint is real, specific and repeatable — and which setting is the boundary. A complaint you cannot reproduce is not yet a problem you can fix. |
 
@@ -648,28 +495,11 @@ Both of these are worth trying first for a reason that has nothing to do with el
 
 | Apply it in a window, and measure again | Same measurements, same conditions, compared against the baseline — and the build duration recorded so the next window can be planned rather than guessed. |
 
-
-
-
-
-
-
-
 **Measure logical reads, not seconds.** Runtime moves with server load, cache state and whoever else is on the system, so the same query can look twice as fast on a quiet afternoon and you will believe you fixed something. Logical reads count the pages actually touched and do not move with load. It is the honest number, and it is the one to put in front of anyone who has to approve the change.
-
-
-
-
-
 
 ### Why the fix needs more care than the diagnosis
 
-
 In ERP work the tables shipped with the product. That single fact drives everything about how a change gets applied:
-
-
-
-
 
 - **Adding an index to a vendor schema is a supportability decision before it is a technical one.** It is frequently approved. It should never be applied merely because it was obviously correct.
 
@@ -679,29 +509,15 @@ In ERP work the tables shipped with the product. That single fact drives everyth
 
 - **Write it down where the next upgrade will look.** Anything added to a vendor object can be removed by an upgrade, and a report that silently gets slow again a year later is a genuinely miserable thing to diagnose twice.
 
-
-
-
 ### When it genuinely is volume
-
 
 Sometimes the access path is correct and the table really is too big for the question being asked. That case is recognisable rather than assumed: the plan already shows a seek, logical reads are proportionate to rows actually returned, and the report is slow in a way that scales smoothly rather than falling off a cliff at a particular date range.
 
-
-
 That is a different engagement — archiving strategy, pre-aggregation, or moving reporting off the transactional system. It is worth naming here because jumping to it first is the expensive mistake, and it is the one an outside firm has the most incentive to recommend.
-
-
-
 
 ### Worth measuring if you run this
 
-
 There are no percentages on this page. A figure is only worth quoting if somebody captured the before state, and in most operational work nobody did. These are the numbers that make the work assessable:
-
-
-
-
 
 - Report runtime at each period setting, before and after — captured before you apply anything.
 
@@ -713,66 +529,29 @@ There are no percentages on this page. A figure is only worth quoting if somebod
 
 - How many reports in the estate share the same root cause — usually more than one.
 
-
-
-
 ### Frequently asked questions
-
-
-
 
 #### Is a slow report always a missing index?
 
 No, but an unindexed filter column is the most common single cause in ERP reporting and the most consistently misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. Check the access path before assuming volume.
 
-
-
-
-
-
-
 #### Why measure logical reads instead of runtime?
 
 Runtime moves with server load, cache state and who else is on the system, so the same query can look twice as fast on a quiet afternoon. Logical reads count pages actually touched and do not move with load, which makes them the honest before-and-after measure.
-
-
-
-
-
-
 
 #### Can you tune without adding indexes?
 
 Often yes. Rewriting a predicate so the indexed column appears bare on one side restores index usability with no schema change at all, and inlining a scalar function removes row-by-row execution. Those are usually tried first precisely because they touch nothing the vendor owns.
 
-
-
-
-
-
-
 #### How long does a diagnosis take?
 
 Confirming whether a specific report is an access-path problem is usually about ten minutes against a restore or replica. Designing and safely applying the fix takes longer, and most of that time is scheduling rather than work.
-
-
-
-
-
-
 
 #### Will this void our ERP support?
 
 That is the platform owner's call, not ours, which is exactly why the conversation happens before anything is applied. Many vendors permit added indexes; some do not. Predicate rewrites and reporting-layer changes avoid the question entirely.
 
-
-
-
-
-
 ### Related
-
-
 
 - [Why your ERP report is fast on Today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date) — this method applied end to end to one real report, including the confirmation steps.
 
@@ -782,14 +561,9 @@ That is the platform owner's call, not ours, which is exactly why the conversati
 
 - [All insights](https://siegestack.com/insights) — technical articles and anonymised breakdowns.
 
-
-
-
-
 #### Got a report that dies on longer date ranges?
 
 Bring the report and the period setting where it falls over. Confirming whether it is an access-path problem takes about ten minutes, and that conversation costs nothing.
-
 
 [Book a call](https://siegestack.com/#schedule) · [Read the worked example](https://siegestack.com/erp-report-slow-month-to-date)
 
@@ -803,111 +577,51 @@ https://siegestack.com/prophet-21
 
 Reporting, integration and tooling for distributors already running the ERP. The hard part is rarely the query — it is knowing which rows count.
 
-
-
-
-
-
-
 Prophet 21 and Kinetic hold everything the business runs on and answer operational questions reluctantly. The data is there. Assembling it correctly is a different job from querying it, and most reporting that goes wrong on these platforms goes wrong quietly — a number that looks plausible, moves in the right direction, and is built on rows that should never have been counted.
-
-
-
 
 **Where the depth actually is.** The hands-on work behind this page is on **Prophet 21**. Kinetic shares the parts that transfer — SQL Server underneath, a vendor-owned schema, the same access-path failure modes in reporting — and differs at the application layer. That distinction is stated here rather than smoothed over, because a consultancy that claims equal depth in every product on its own keyword list is telling you something about its writing, not its experience.
 
-
-
-
-
-
 ### Four traps in P21 reporting that produce confidently wrong numbers
-
 
 These are not exotic. They are the ordinary shape of the schema, and each one has a default behaviour that flatters the metric in exactly the cases nobody is checking.
 
-
-
-
 Trap 01
-
-
 
 #### Open and posted live in different tables
 
 The same reporting period can span unposted transactions and posted history, and those sit in separate tables with different columns. A daily view that reads only the open side is correct. Extend it to a week or a month without unioning history and the number is not wrong by a little — it silently omits everything that has been posted, which on a full month is most of it.
 
-
 This is the classic ERP reporting bug on this platform: it looks right on the view people check most often, and drifts on every longer window. It is also the reason a report can be fast on Today and unusable on month-to-date, which is [a separate problem with the same trigger](https://siegestack.com/erp-report-slow-month-to-date).
 
-
-
-
-
-
 Trap 02
-
-
 
 #### Undated lines counted as successes
 
 On-time percentage compares a receipt or ship date against a due date, and due date itself is a fallback chain — promise, then required, then original. The decision that matters is what to do with a line that has *no* due date at all.
 
-
 Rolling those into the numerator treats missing data as a success. It flatters the metric precisely where the data is worst, which is where you most need the metric to be honest. Excluding them from the ratio and reporting the exclusion count separately is the version that survives being questioned by the person whose department it measures.
 
-
-
-
-
-
 Trap 03
-
-
 
 #### Flags that only exist on one side
 
 Some completeness flags exist on open records and have no equivalent in posted history. Score the history rows zero and a full month reads worse than a single day, purely because most of the month has been posted. The fix is to exclude them from the ratio with an explicit marker rather than let them default to failure — and to say so on the report, because a ratio with a hidden denominator rule is a ratio nobody should act on.
 
-
-
-
-
-
 Trap 04
-
-
 
 #### Identity is a fallback chain, and the fallbacks fail silently
 
 Transactions frequently carry initials or a short code rather than a person. Mapping that to a human runs through a chain — a description field, a network login, the local part of an email address — and every chain has rows that reach the end unmatched.
 
-
 Hiding them produces a leaderboard that is permanently and invisibly wrong. Displaying an explicit *unmapped* bucket turns the same rows into a data-quality finding somebody can close. An unattributed transaction is information; a silently dropped one is a bug you will never be told about.
-
-
-
-
-
 
 **The pattern across all four:** most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence. A dashboard that gets that wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks. Worked through properly in [the KPI console case study](https://siegestack.com/case-studies).
 
-
-
-
-
-
 ### What changes when the schema belongs to the vendor
-
 
 Nearly every constraint that makes this work different from ordinary application development comes from one fact: the tables shipped with the ERP and you did not create them.
 
-
-
-
-
 | Constraint | What it means in practice |
-
 
 | Indexes are a supportability decision first | Adding one to a vendor table is a conversation with the platform owner before it is a technical exercise. It is frequently approved. It should never be applied because it was obviously correct. |
 
@@ -919,76 +633,37 @@ Nearly every constraint that makes this work different from ordinary application
 
 | Customisation belongs outside the schema where possible | Reporting layers, configuration tables and services alongside the ERP survive upgrades. Changes inside vendor objects are a liability you carry forever. |
 
-
-
-
-
-
-
-
 ### Beyond reporting
 
-
-
 Integration
-
-
 
 #### Getting data in and out without a nightly file
 
 Connecting the ERP to a CRM, a storefront or a warehouse system is mostly a question of what happens on the bad day — the API that times out, the format that changed, the record that arrives twice. Retries, circuit breakers, idempotent writes and monitoring are the parts that decide whether an integration is an asset or a recurring incident. The patterns, with production-shaped code, are on the [integration showcase](https://siegestack.com/etl-showcase).
 
-
 The design rule that matters most: replace file drops with a service consumers can ask. A file is stale the moment it is sent, forks into several slightly different versions, and nobody can tell which is current.
 
-
-
-
-
-
 Bulk maintenance
-
-
 
 #### Loading tooling that refuses to half-finish
 
 Bulk maintenance in P21 — pricing, contracts, and anything else that goes out through an export and comes back through an import — usually means reshaping one export into several differently-formatted files by hand. It works, it takes a long time, and it fails in the worst possible way: halfway through a load, leaving a partial mess behind.
 
-
 Purpose-built tooling for this runs in the browser with no backend and nothing leaving the machine. It detects which file is which, stamps the batch identifier down every row, normalises date formats, drops the header the exporter adds, and writes out correctly named files.
-
 
 **The validation design is the part worth stealing.** Failures split into two tiers: conditions that guarantee a broken load are *errors* and stop you; conditions that are merely suspicious are *warnings* and let you proceed. An orphaned child record is an error. A mismatch between related lines is a warning. Collapsing those two into one category is what teaches people to ignore validation entirely.
 
-
-
-
-
-
 Mapping
-
-
 
 #### Understanding what you inherited
 
 Custom views accumulate over years, each joining tables that join other tables, and no map exists. Before any performance work is safe, the map has to exist — parse every view definition, extract the join relationships, cross-reference them against declared key constraints, and write the result somewhere queryable rather than somewhere pretty.
 
-
 The part that decides whether the map is trustworthy is the failure list. Any definition the parser cannot confidently interpret gets written down for a human decision instead of being skipped. **A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.**
-
-
-
-
-
 
 ### Worth measuring if you run this
 
-
 No percentages are published on this page. Any figure worth quoting needs a before state somebody actually captured, and in most operational work nobody did, because instrumenting the before state was nobody's job. These are the measurements that make an engagement here assessable:
-
-
-
-
 
 - Report runtime at each period setting, and logical reads for the query — captured *before* anything is applied, because you cannot go back for it.
 
@@ -1000,66 +675,29 @@ No percentages are published on this page. Any figure worth quoting needs a befo
 
 - Failed or partially completed bulk loads per month.
 
-
-
-
 ### Frequently asked questions
-
-
-
 
 #### Will you add indexes to our P21 database?
 
 Only with the platform owner's agreement, and in a maintenance window. The tables ship with the ERP, so adding an index is a supportability decision before it is a technical one. It also takes a schema-modification lock, which blocks live users for the duration of the build.
 
-
-
-
-
-
-
 #### Do you need production access?
 
 Read access to a restore or a replica is enough to diagnose almost everything. Nothing is applied to production without an agreed window, a captured baseline and a way back.
-
-
-
-
-
-
 
 #### Can you work on Kinetic as well as Prophet 21?
 
 Yes. The reporting and access-path work transfers directly because both sit on SQL Server and both are vendor-owned schemas. The application-layer specifics differ, and the deepest hands-on experience here is on Prophet 21 — that is stated plainly rather than smoothed over.
 
-
-
-
-
-
-
 #### Do we own what you build?
 
 Yes, entirely. Full source, documentation and deployment instructions. You can hand it to another team tomorrow.
-
-
-
-
-
-
 
 #### Do you upgrade or re-implement the ERP itself?
 
 No. This is reporting, integration and tooling around a system you already run. Full re-implementation is a different kind of engagement and there are firms that specialise in it.
 
-
-
-
-
-
 ### Related
-
-
 
 - [What a P21 upgrade does to your reporting](https://siegestack.com/prophet-21-upgrade-reporting) — the three different projects people call an upgrade, what each one breaks, and the baseline to capture before the window opens.
 
@@ -1073,22 +711,11 @@ No. This is reporting, integration and tooling around a system you already run. 
 
 - [Operations modernization](https://siegestack.com/operations-modernization) — the larger engagement: consolidate onto one system of record, then optimize.
 
-
-
-
-
 #### Running P21 or Kinetic and not trusting a number?
 
 Bring the report and the question it is supposed to answer. The first conversation is thirty minutes and costs nothing, and frequently ends with a diagnosis rather than a proposal.
 
-
 Book a call · [See the case studies](https://siegestack.com/case-studies) · [Send it in writing](https://siegestack.com/contact)
-
-
-
-
-
-
 
 ### Thirty minutes, on the report you don't trust
 
@@ -1104,27 +731,11 @@ https://siegestack.com/prophet-21-upgrade-reporting
 
 The upgrade rarely breaks the ERP. It breaks what you built on top of it — and it does so quietly, because a report that reads the wrong rows still returns a number.
 
-
-
-
-
-
-
 Three different projects get called “the P21 upgrade”, and they are not the same size, do not carry the same risk, and do not break the same things. Before anyone estimates the reporting work, it is worth being precise about which one is actually happening — the answer changes whether the reporting layer needs a repair, a rebuild, or nothing at all.
-
-
-
 
 **Scope, stated up front.** This page is about the reporting and integration layer *around* Prophet 21, not about running the upgrade. The upgrade itself is the platform owner’s project, run with Epicor or a reseller, and it should stay that way. What follows is the part that usually has no owner: the custom reports, dashboards, indexes, extracts and integrations that were built against a schema somebody else is about to change.
 
-
-
-
-
-
 ### Three things called an upgrade
-
-
 
 One
 
@@ -1132,13 +743,7 @@ One
 
 The ordinary case. The schema is still the vendor’s and still recognisably itself, but tables gain columns, views get redefined, and objects that were never documented in the first place move without announcement. Nothing here is dramatic on its own. The damage is cumulative and it lands entirely on things that read the database directly.
 
-
 The reporting risk is proportional to how far behind you are, because every skipped release’s schema changes arrive in the same window. A shop two releases behind is doing a repair. A shop that has not upgraded since the desktop client was current is doing an archaeology project first.
-
-
-
-
-
 
 Two
 
@@ -1146,16 +751,9 @@ Two
 
 This one is largely historical now and is still the reason a lot of P21 reporting is in the state it is in. Epicor stopped adding features to the Prophet 21 desktop application at the Spring 2021 release, moved new development to the web application, and ended desktop fixes on 30 November 2022. Dates and versions are in the sources below; re-check them against Epicor before planning around them.
 
-
 What that did to reporting was not subtle: anything whose delivery mechanism was the desktop client — a report launched from a menu, a print job wired to a workstation, a tool that assumed a Windows session — needed a new home, whether or not the query underneath it was still correct. A good deal of it never got one. It got a person running it manually instead, and that person is now the documentation.
 
-
 If you are still on a desktop-era version in 2026, the reporting question is downstream of a support question, and the support question has the date on it.
-
-
-
-
-
 
 Three
 
@@ -1163,103 +761,56 @@ Three
 
 Not an upgrade. Prophet 21 and Kinetic are separate products with separate code bases and separate roadmaps, built for different industries — Prophet 21 for wholesale distribution, Kinetic for discrete and mixed-mode manufacturing. Moving between them is a re-implementation.
 
-
 For the reporting layer that means the honest estimate is *none of it comes across*. Not the queries, not the indexes, not the extracts, not the mappings. The business logic survives — what a metric is supposed to mean, which rows should count, which exceptions are real — and that is worth writing down properly before the old system goes away, because it is the only asset that transfers.
-
 
 When a proposal calls this an upgrade, that is worth a direct question. The word is doing a lot of work.
 
-
-
-
-
-
 ### What actually breaks
-
 
 In every one of the three cases the ERP comes back up and the standard screens work. The failures are in the layer nobody in the upgrade project owns, and they share a characteristic that makes them expensive: **they do not raise errors.**
 
-
-
-
-
-
 | What it is | How it fails | How you find out |
-
-
-
 
 | Queries reading vendor tables directly
 | A column changes meaning, or a row that used to be excluded starts arriving. The query still runs.
 | Somebody notices the number moved and cannot explain why — typically a month later, at close.
 |
 
-
 | Custom indexes on vendor tables
 | Dropped or not carried forward. Nothing is obliged to preserve an object the vendor did not ship.
 | The long-range report starts timing out again. Same query, same plan shape as before it was ever fixed.
 |
-
 
 | Reports bound to the old client
 | The delivery mechanism disappears while the query stays valid.
 | Immediately, and this is the good case — a visible break gets fixed.
 |
 
-
 | Integrations bound to table shape
 | An added column or a changed nullability breaks a load, or worse, does not break it and writes something subtly wrong.
 | The load that fails is found the same day. The one that succeeds incorrectly is found by reconciliation, if there is one.
 |
-
 
 | Anything reading an undocumented view
 | Redefined upstream. The view still exists and still returns rows.
 | Usually never, directly. It surfaces as two reports disagreeing.
 |
 
-
-
-
-
-
-
 This is the same failure mode described in [the four traps in P21 reporting](https://siegestack.com/prophet-21), arriving by a different route. There, the wrong rows were counted because the data model was misread. Here, the model was read correctly and then changed underneath. The symptom is identical — a plausible number, moving in a believable direction, built on rows that should not be in it — and so is the reason it survives so long: nothing in the system objects.
-
-
-
 
 ### The inventory, and the baseline you cannot go back for
 
-
 Two artefacts are worth producing before the upgrade window opens, and both become impossible to produce properly afterwards.
-
-
 
 **The dependency inventory** is the list of everything outside the ERP that reads the ERP: reports, dashboards, scheduled extracts, integrations, spreadsheets with live connections, and the workstation scripts that were never called integrations because one person wrote them. For each one, what it reads and who notices when it is wrong. Most of this list does not exist anywhere when the question is first asked, and assembling it is frequently the most useful part of the exercise regardless of the upgrade — it is the first time anyone has written down what the business actually depends on.
 
-
-
 **The performance baseline** is runtime and logical reads for the reports that matter, captured on the current production system. Logical reads rather than wall-clock time, for the reasons set out in [the SQL Server method page](https://siegestack.com/sql-server-erp-performance): runtime moves with cache state and load, reads do not. This is the measurement that cannot be recovered. Once the window closes the old state is gone, and every later argument about whether the upgrade made reporting slower becomes a disagreement about how it used to feel.
-
-
-
 
 **Index definitions belong in source control, not only in the database.** An index applied to a vendor table during a tuning engagement is invisible to the upgrade and to whoever runs it. If the only record of it is the database it was applied to, the upgrade is the event that silently removes a fix somebody paid for — and the report that starts timing out afterwards looks like a new problem. Keep the definition, the date, and the reason it exists.
 
-
-
-
-
-
 ### Worth measuring if you run this
 
-
 No percentages are published on this page, for the same reason they are absent from the rest of this site: a figure is only worth quoting if somebody captured the before state, and in upgrade work almost nobody did. These are the measurements that make the reporting side of an upgrade assessable rather than anecdotal.
-
-
-
-
 
 - Report runtime *and* logical reads for the reports that matter, captured before the window and again after — the same reports, the same parameters, both times.
 
@@ -1271,83 +822,37 @@ No percentages are published on this page, for the same reason they are absent f
 
 - Elapsed time from the window closing to the last piece of reporting being confirmed working, rather than assumed working.
 
-
-
-
 ### What this is not
-
 
 This is not upgrade delivery, migration planning, or ERP selection. It does not include running the upgrade, sizing the environment, or negotiating with the vendor. Full re-implementation is a different kind of engagement and there are firms that specialise in it — that boundary is stated on [the P21 page](https://siegestack.com/prophet-21) as well, and it has not moved.
 
-
-
 What it is: the inventory, the baseline, and the repair of the reporting and integration layer either side of somebody else’s window.
 
-
-
-
 ### Frequently asked questions
-
-
-
 
 #### Do you run the upgrade itself?
 
 No. The upgrade is the platform owner’s project, run with Epicor or a reseller. This is the reporting and integration layer around it — the inventory of what depends on the schema, the baseline captured before the window, and the repairs afterwards. Those are separate jobs and it is better for you if they are separate people.
 
-
-
-
-
-
-
 #### Is moving from Prophet 21 to Kinetic an upgrade?
 
 No. They are separate products with separate code bases and separate roadmaps, aimed at different industries — Prophet 21 at wholesale distribution, Kinetic at discrete and mixed-mode manufacturing. Moving between them is a re-implementation, and none of your reporting comes across. Anyone describing it as an upgrade is either being loose with the word or has not looked at the schema.
-
-
-
-
-
-
 
 #### Will our custom indexes survive?
 
 Assume not, and plan to re-apply them. An index added to a vendor table is not part of the vendor’s shipped schema, so nothing in the upgrade is obliged to preserve it. The failure is quiet: the report still returns, it just reads the whole history table again. Keep the index definitions in source control with the reason each one exists, not only in the database.
 
-
-
-
-
-
-
 #### When should the baseline be captured?
 
 Before the upgrade window opens, on the current production system. Runtime and logical reads for the reports that matter cannot be recovered afterwards — once the window closes, the old state is gone and every performance argument becomes a memory of how it used to feel.
-
-
-
-
-
-
 
 #### We are several versions behind. Is that a reporting problem or a support problem?
 
 Both, and the support problem is the one with a date on it. Being unsupported does not make a report wrong today; it makes the eventual upgrade larger, because the schema changes accumulate and arrive together. The reporting work is the same either way — inventory what depends on the schema, baseline it, and expect the gap between your version and the current one to be roughly the size of the repair.
 
-
-
-
-
-
 ### Sources, and how dated these are
 
-
 The vendor-specific claims on this page are dated by nature and are stated here with their source so you can re-check rather than trust the page — the same convention used on the Claude articles on this site, and for the same reason: product timelines move, and a page quoted back as current two years later is worse than no page.
-
-
-
-
 
 - **Desktop feature freeze and end of fixes.** The Spring 2021 release (Prophet 21 2021.1) is described as the final desktop version to receive new features, with new development moving to the web application, and no further desktop fixes after 30 November 2022 — [Echopath, December 2020](https://echopath.com/p21-new-features-only-web-app/). That is a third-party summary of an Epicor announcement, not Epicor’s own page; treat the dates as a starting point and confirm them with your account team.
 
@@ -1355,16 +860,9 @@ The vendor-specific claims on this page are dated by nature and are stated here 
 
 - **Everything else here** — what breaks, what to inventory, what to measure — is method rather than vendor fact, and does not go stale on a release schedule.
 
-
-
 Vendor claims on this page last checked 18 August 2026.
 
-
-
-
 ### Related
-
-
 
 - [Epicor P21 and Kinetic reporting and integration](https://siegestack.com/prophet-21) — the main platform page, and the four data-model traps that make P21 reports quietly wrong. Start there if the question is *which rows count*.
 
@@ -1376,14 +874,9 @@ Vendor claims on this page last checked 18 August 2026.
 
 - [Case studies](https://siegestack.com/case-studies) — anonymised, with the measurement discipline this page argues for.
 
-
-
-
-
 #### Upgrade window on the calendar?
 
 The inventory and the baseline are worth doing before it opens, and they are cheap compared with reconstructing them afterwards. Thirty minutes to work out which of the three projects you are actually doing, and what it puts at risk.
-
 
 [Book a call](https://siegestack.com/prophet-21#schedule) · [Send it in writing](https://siegestack.com/contact) · [Back to the P21 page](https://siegestack.com/prophet-21)
 
@@ -1397,39 +890,17 @@ https://siegestack.com/operations-modernization
 
 Consolidate onto one system of record. Then optimize on top of it. In that order.
 
-
-
-
-
-
-
 Most distribution and manufacturing operations carrying two systems of record know they should consolidate. What they usually miss is that the consolidation and the optimization are the same project, and doing them in the wrong order wastes both.
-
-
-
 
 **The sequencing principle.** Do not optimize what is being retired, and do not strand the data the optimization depends on. Those two sentences determine whether this work compounds or gets rebuilt.
 
-
-
-
-
-
 ### Why Order Matters More Than Effort
-
 
 While a business runs on two systems, every network-level answer is assembled across two sources of truth by hand. Those answers are not merely imprecise — they are wrong in ways that are difficult to detect, because nothing about a reconciled spreadsheet announces which side of it was stale.
 
-
-
 So the analysis that would justify the investment cannot be trusted until the consolidation is done. And the consolidation, done without regard for the analysis, throws away exactly the history the analysis needs.
 
-
-
-
-
 | Dependency | Consequence if ignored |
-
 
 | Optimization models are built against the destination system, once | Logic built against the system being retired is discarded at cutover, then built again. |
 
@@ -1439,20 +910,9 @@ So the analysis that would justify the investment cannot be trusted until the co
 
 | Destination layout is designed, not copied | Migration is the one moment warehouse layout can be redesigned at near-zero marginal cost. Copying the legacy layout forfeits it, and changing it later means physically moving inventory you just put away. |
 
-
-
-
-
-
-
 That last one is the one people miss. If sites migrate before the slotting model exists, they get loaded into a bin structure mirroring whatever they had. Fixing it afterwards is a physical cost, not a data cost.
 
-
-
-
 ### The Three Tracks
-
-
 
 Track 1
 
@@ -1460,14 +920,9 @@ Track 1
 
 Migrate the remaining business onto one system of record, with operational history brought forward rather than stranded.
 
-
 Seven workstreams get planned and scoped from day one: master data, inventory, open transactions, financial, history, customizations and integrations, and reporting. The first four are what everyone plans for. **The last three are what run migrations late**, because they are typically discovered in month three rather than scoped in month one.
 
-
 **Guiding principles we hold to:**
-
-
-
 
 - **One system of record, with a hard date.** Indefinite parallel operation is the most expensive available outcome and the most common one.
 
@@ -1479,16 +934,9 @@ Seven workstreams get planned and scoped from day one: master data, inventory, o
 
 - **Retain the cross-reference permanently.** The old-key-to-new-key map is the only way to answer questions about pre-migration history for years afterwards.
 
-
 **History strategy is a business decision, not a technical one**, and it is the single largest lever on cost and timeline. We generally recommend migrating open items plus item-level usage and sales summary — preserving what the analytical work needs at a fraction of full-detail cost — while treating pick, lot and bin history as in-scope regardless, because that is the input to Track 2.
 
-
 **Electronic trading partner integration is almost always the critical path.** Map rebuilds and partner-side test cycles are measured in weeks and cannot be compressed by adding staff. We enumerate partners in week one and open those conversations during build, not after it.
-
-
-
-
-
 
 Track 2
 
@@ -1496,32 +944,17 @@ Track 2
 
 Once the data is in one place, the same analytical capacity that accelerated the migration turns to the operational questions.
 
-
-
 **Slotting.** Assign every item to a bin whose travel cost matches its pick frequency, subject to cube, weight, zone and handling constraints. Re-evaluated on a cadence rather than set once a decade.
-
 
 Conventional ABC classification ranks by dollar volume, which is the wrong primary axis for slotting — a high-value item picked twice a month should not occupy prime real estate. The model uses three inputs instead: **velocity** derived from pick-line frequency weighted toward recent periods, **handling class** from cube, weight and pack configuration, and **affinity** — items that repeatedly appear on the same order, slotted near each other regardless of individual velocity. That third one is where pattern detection genuinely beats judgement, because nobody holds pairwise co-occurrence across tens of thousands of items in their head.
 
-
-
 **Multi-order consolidation.** Three orders shipping today each containing the same item from the same lot means someone travels to that pallet three times and breaks it down three times. The pull should happen once, split downstream. We measure the duplicate-touch baseline first — that number is the size of the prize, and most operations do not know it — then build wave grouping that maximises shared touches while respecting ship date, carrier cutoff and staging capacity.
-
 
 Slotting and consolidation compound: consolidation reduces the number of trips, slotting reduces the cost of each trip. Done in isolation, either is diluted by the other.
 
-
-
 **Purchasing.** Where analytical capacity converts to cash fastest, because the levers are inventory dollars, freight dollars and unit price — all recorded in detail and rarely analysed in aggregate. In recommended sequence: lead-time reality check against promised dates with variance rather than averages; order point tuning where policy and actual usage have drifted apart; purchase order consolidation across sites to reach price breaks and freight thresholds; container fill analysis; forecast variance by programme; a forward expedite-risk list; and a vendor scorecard that is a standing report rather than an argument.
 
-
-
 **Network replenishment.** Most multi-site operations maintain sourcing item by item and never analyse it as a network. Items that should be centrally stocked and transferred are almost certainly being bought at several sites, and items needing local stock are almost certainly being transferred at a cost nobody has priced. Neither condition announces itself. This one waits for Track 1 to complete, for the reason in the table above.
-
-
-
-
-
 
 Track 3
 
@@ -1529,38 +962,21 @@ Track 3
 
 The failure mode of analytical work is that it lives in one analyst's spreadsheet and leaves when they do.
 
-
 The model gets built once and parameterised per site. Each location has its own velocity profile, zone topology and constraint set, so recommendations differ — but the logic, the queries and the review workflow are shared. That is the difference between seven separate projects and one project run seven times.
-
 
 Alongside it: documented playbooks held somewhere the whole company can reach, and site leads brought into the analysis months before their site is affected. People who have followed the work adopt the result faster than people handed a finished workbook on go-live day.
 
-
-
-
-
-
 ### How the Engagement Runs
-
 
 **Prove, package, propagate.** Run the full analysis at one proving-ground site. Convert what worked into a documented playbook. Apply it at the next site with that site's data. Each subsequent site should take materially less effort than the one before — and if it does not, that is the signal the playbook is not yet real.
 
-
-
 **Baselines before changes.** Travel proxy per pick ticket, share of picks from prime locations, forward-bin replenishment frequency, and how much prime space slow movers currently occupy. Without these, any claimed improvement is an opinion. Capturing them is the first two weeks.
-
-
-
 
 #### The access model
 
 Nothing here is a black box making operational decisions. Access escalates in three stages, and each one has to earn the next:
 
-
-
-
 | Stage | What it means |
-
 
 | Read-only | Analysis against a snapshot. Nothing is written anywhere. |
 
@@ -1568,16 +984,7 @@ Nothing here is a black box making operational decisions. Access escalates in th
 
 | Staged writes | Approved changes staged as instructions, still executed through the host system's own transaction path, still with a human approving the batch. |
 
-
-
-
-
-
-
-
 ### What You Actually Receive
-
-
 
 - A costed migration plan with the six gating business decisions surfaced and answered, not deferred.
 
@@ -1593,125 +1000,63 @@ Nothing here is a black box making operational decisions. Access escalates in th
 
 - Documented playbooks, so site two costs less than site one.
 
-
-
-
 ### Work That Stands on Its Own
 
 The three tracks describe a full programme. Most of what follows also gets bought singly, usually because something has a date on it — an acquisition closing, a lease ending, an audit booked, or the one person who understood a system handing in their notice.
-
-
-
-
 
 #### EDI operations
 
 Trading partner onboarding and mapping across X12 and EDIFACT — 830, 850, 856, 810, 862, DELFOR — through partner testing and certification into production.
 
-
 The build is rarely the hard part. What fails is everything around it: **suspense records nobody is watching**, so a rejected document is discovered by the customer rather than by you; per-partner configuration that exists only in one person's memory; and no triage procedure, so every exception escalates to whoever set it up. We deliver monitoring that alerts, a triage runbook, each partner's configuration written down, and a handover — because the honest test of an EDI operation is what happens the week after the person who built it leaves.
 
-
 Related to the note in Track 1: partner-side test cycles are measured in weeks and cannot be compressed by adding people. Enumerate partners in week one.
-
-
-
-
-
-
 
 #### ERP carve-out and cutover
 
 The inverse of Track 1. An acquired facility arrives running on the seller's system, usually under a transition services agreement with an expiry date, and has to be stood up on yours before the clock runs out.
 
-
 Item and supplier masters, pricing, open orders, in-flight inventory and the history decision — the same seven workstreams as a consolidation, on someone else's timetable and with a counterparty whose interest in the extract ends the day they hand it over. Get the data requirements into the transition agreement while there is still leverage to ask. The cross-reference map matters more here than anywhere, because the questions that arrive afterwards are about records that were created in a system you no longer have.
-
-
-
-
-
-
 
 #### Site standup, relocation and consolidation
 
 A warehouse move is a systems project wearing a forklift. Opening a location, closing one into another, or moving one across a country all reduce to the same problem: knowing how the site actually works before anything changes, agreeing what the target looks like, then sequencing a cutover that orders keep flowing through.
 
-
 The documented as-is is the deliverable people skip and then need. It is what makes the target state an argument you can have on paper rather than a discovery you make on the first morning in the new building. Done across several sites and more than one country, including operations where the floor and the system had drifted years apart.
-
-
-
-
-
-
 
 #### Quality and compliance systems
 
 Selecting and implementing a quality management system, and getting material certifications out of shared drives and email into something searchable, current and attributable.
 
-
 The migration is the risk, not the platform. A certificate is evidence because of its provenance, so a document estate that arrives with its revision history flattened has lost the thing that made it worth keeping. Scope that before choosing the destination, not after.
-
-
-
-
-
-
 
 #### Vendor- and customer-managed inventory
 
 Programmes where you hold or replenish stock on a customer's site: kanban and just-in-time scanning, license plates, bin and label services, replenishment signals, and the packing and picking measures that show whether the thing is actually working.
 
-
 These fail at the seam. The customer's floor and your ERP disagree, and the disagreement is invisible until a line goes down. Build the reconciliation before the volume.
-
-
-
-
-
-
 
 #### Inventory accuracy and demand planning
 
 Cycle counting and physical inventory that produce a number that survives challenge, plus forecast loading and demand planning on top of it.
 
-
 A count is a measurement, not a fix. Recurring variance in the same places is a process or a data problem that counting merely reveals — and re-counting an operation that has not addressed the cause is an expensive way to rediscover it each quarter.
-
-
-
-
-
-
 
 #### System selection and rationalization
 
 Vendor-neutral evaluation: what the operation actually needs, what each candidate genuinely does under its demo, what it costs to run rather than to buy, and which of the tools you already pay for it makes redundant.
 
-
 No reseller relationship, no referral fee, nothing to sell you on the other side of the recommendation. A defensible answer is sometimes that you already own something that does the job and nobody was ever trained on it.
-
-
-
-
-
 
 ### Who This Is For
 
 Operations running more than one system of record, or one system nobody has analysed in aggregate. Multi-site distribution where transfers happen but nobody has priced them. Warehouses where slotting was set once and has not been revisited. Purchasing where order points are maintained by hand and lead times are assumptions rather than measurements.
 
-
 This is a different job from reporting, and the two work best together. A dashboard tells you what happened and where to look — [we build those too](https://siegestack.com/#solutions), and most engagements start there because you cannot change what you cannot yet see. This work is the step after: it changes where things sit, how they are picked, and what gets bought. See it, then change it, then watch the same dashboard confirm the change landed.
-
-
-
-
 
 #### Start with the baseline
 
 The first conversation is about what you can measure today, because that determines what any of this can be held to later.
-
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase) · [How the analysis actually gets done](https://siegestack.com/working-with-claude-blog)
 
@@ -1725,313 +1070,108 @@ https://siegestack.com/etl-showcase
 
 Custom ETL pipelines, API integrations, and data engineering — see exactly how we connect your systems
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Bulletproof Reliability
 
 Every system we build anticipates failures before they happen. Your data stays safe, your integrations stay connected, and your business keeps running.
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Zero Downtime
 
 Graceful error recovery means problems get logged and fixed automatically. No 3 AM phone calls, no lost transactions, no angry customers.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Scales With You
 
 Built to handle millions of records from day one. As your business grows, your systems grow with you - no expensive rewrites needed.
-
-
-
-
-
-
-
-
-
 
 ### Systems We Work With Every Day
 
 We've built integrations with these platforms dozens of times. We know where the gotchas are, what the APIs don't tell you, and how to make them work reliably.
 
-
-
-
-
-
 #### CRM Platforms
 
 Sync your customer data, automate workflows, and keep your sales team in the loop.
 
-
-
-
 Salesforce
 ✓
-
-
 
 HubSpot
 ✓
 
-
-
 Zoho CRM
 ✓
-
-
 
 Pipedrive
 ✓
 
-
-
 Microsoft Dynamics
 ✓
-
-
-
-
-
-
-
-
 
 #### ERP Systems
 
 Deep integration with distribution and manufacturing ERPs. We speak your system's language.
 
-
-
-
 Epicor P21
 ✓
-
-
 
 Epicor Kinetic
 ✓
 
-
-
 Infor
 ✓
-
-
 
 Dynamics NAV
 ✓
 
-
-
 Macola
 ✓
-
-
-
-
-
-
-
-
 
 #### E-commerce & Retail
 
 Unify your sales channels, sync inventory, and automate order fulfillment.
 
-
-
-
 Shopify
 ✓
-
-
 
 WooCommerce
 ✓
 
-
-
 BigCommerce
 ✓
-
-
 
 Amazon
 ✓
 
-
-
 Square
 ✓
 
-
-
-
-
-
-
-
-
 Don't see your system? We've integrated with 50+ platforms. If it has an API, we can connect it.
-
-
-
-
-
-
 
 Want to see how we actually build these integrations? Below are real code examples - the same patterns we use in production. Share this with your technical team if you'd like them to review our approach.
 
-
-
-
-
-
-
-
-
-
-
-
-
 ETL Pipeline
-
-
-
-
-
 
 SQL Queries
 
-
-
-
-
-
-
 API Integration
-
-
-
-
-
-
 
 Web Services
 
-
-
-
-
 Monitoring
-
-
-
-
-
-
-
-
-
-
 
 #### Salesforce CRM Sync
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Shopify Order Processing
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Data Warehouse Load
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
-
-
-
 
 extraction.js
 
-
-
-
-
 Production Ready
-
-
-
 
 async function extractData(source) {
 try {
@@ -2059,87 +1199,23 @@ throw new RetryableError(error);
 }
 }
 
-
-
-
-
-
-
-
 #### Error Handling Strategies
-
-
-
-
-
-
-
-
 
 Connection timeout
 
-
 Auto-retry with exponential backoff
-
-
-
-
-
-
-
-
-
-
-
-
 
 Schema mismatch
 
-
 Dynamic field mapping with validation
-
-
-
-
-
-
-
-
-
-
-
-
 
 Data type conflicts
 
-
 Type coercion with fallback defaults
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### Complex Analytics Query
 
 Revenue analysis with error-safe aggregations
-
-
-
-
 
 WITH daily_revenue AS (
 SELECT
@@ -2171,20 +1247,9 @@ ROUND(
 FROM daily_revenue
 ORDER BY day DESC;
 
-
-
-
-
-
-
-
 #### Data Quality Check
 
 Validation query with anomaly detection
-
-
-
-
 
 SELECT
 'Null Customer IDs' as issue,
@@ -2205,20 +1270,9 @@ WHERE amount CURRENT_TIMESTAMP
 -- Alert if any issues found
 HAVING SUM(count) > 0;
 
-
-
-
-
-
-
-
 #### Incremental Sync Query
 
 Safe delta extraction with watermarking
-
-
-
-
 
 -- Get last successful sync timestamp
 WITH last_sync AS (
@@ -2240,84 +1294,23 @@ CURRENT_TIMESTAMP as extracted_at
 FROM orders o
 CROSS JOIN last_sync ls
 WHERE o.updated_at > ls.watermark
-AND o.updated_at 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+AND o.updated_at
 
 #### Stripe Payments
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Shopify Webhooks
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Inventory Aggregation
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
-
-
-
 
 rest-client.js
 
-
-
-
-
 Production Ready
-
-
-
 
 class APIClient {
 constructor(baseURL, options = {}) {
@@ -2362,142 +1355,35 @@ if (attempt setTimeout(resolve, ms));
 }
 }
 
-
-
-
-
-
-
-
 #### Error Handling Strategies
-
-
-
-
-
-
-
-
 
 Network timeouts
 
-
 Exponential backoff with configurable retries
-
-
-
-
-
-
-
-
-
-
-
-
 
 Rate limit exceeded (429)
 
-
 Automatic retry with Retry-After header respect
-
-
-
-
-
-
-
-
-
-
-
-
 
 Server errors (5xx)
 
-
 Circuit breaker pattern with fallback
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### E-commerce Checkout
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Multi-Tenant SaaS
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
 
 #### Real-time Order Tracking
 
-
-
-
-
-
-
 3 error patterns handled
-
-
-
-
-
-
-
-
-
 
 server.js
 
-
-
-
-
 Production Ready
-
-
-
 
 const express = require('express');
 const helmet = require('helmet');
@@ -2565,193 +1451,72 @@ process.exit(0);
 return { app, server };
 }
 
-
-
-
-
-
-
-
 #### Error Handling Strategies
-
-
-
-
-
-
-
-
 
 Unhandled exceptions
 
-
 Global error handler with structured logging
-
-
-
-
-
-
-
-
-
-
-
-
 
 Process termination
 
-
 Graceful shutdown with connection draining
-
-
-
-
-
-
-
-
-
-
-
-
 
 Request tracing failures
 
-
 Correlation IDs with distributed tracing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### Production Monitoring That Actually Helps
 
 Every integration we build includes real-time monitoring. You see what's happening, we get alerted before problems become emergencies.
 
-
-
-
-
-
-
-
 Integration Health Dashboard
 Live
 
-
-
-
-
 API Uptime
-
 
 99.97%
 
-
 +0.02% vs last week
-
-
-
-
 
 Avg Response Time
 
-
 142ms
-
 
 -23ms vs last week
 
-
-
-
-
 Retry Rate
-
 
 2.3%
 
-
 +0.8% vs last week
-
-
-
-
 
 Records Processed
 
-
 1.2M
-
 
 Last 24 hours
 
-
-
-
-
-
-
-
-
 Recent Events
-
-
 
 2 hrs ago
 RESOLVED
 Salesforce API rate limit approached - auto-throttled
 
-
-
 4 hrs ago
 INFO
 Scheduled sync completed: 45,231 records in 3m 42s
-
-
 
 Yesterday
 WARNING
 Shopify webhook delay detected (avg 2.1s) - monitoring
 
-
-
 2 days ago
 RESOLVED
 P21 connection timeout - failover to replica successful
 
-
-
-
-
-
-
-
-
-
 retry-handler.js
 
-
-
-
-
 Production Ready
-
-
-
 
 // Smart retry logic with exponential backoff and circuit breaker
 class ResilientApiClient {
@@ -2856,103 +1621,30 @@ failureThreshold: 5, // Open circuit after 5 consecutive failures
 circuitResetTimeout: 60000 // Try again after 1 minute
 });
 
-
-
-
-
-
-
-
 ##### Scenarios This Handles
-
-
-
-
-
-
-
-
 
 Slow API responses (timeout)
 
-
 Configurable timeout + abort controller kills hung requests
-
-
-
-
-
-
-
-
-
-
-
-
 
 Rate limiting (429 errors)
 
-
 Respects Retry-After header, exponential backoff with jitter
-
-
-
-
-
-
-
-
-
-
-
-
 
 Cascading failures
 
-
 Circuit breaker prevents hammering a dead API
-
-
-
-
-
-
-
-
-
-
-
-
 
 Alert fatigue
 
-
 Batched alerts, severity levels - you get summaries, not spam
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### Like What You See?
 
 This is how we build every system. Your project gets the same attention to detail, the same bulletproof error handling, the same production-ready code.
 
-
-
 [Schedule a Call](https://siegestack.com/#schedule)
 [Learn More About Us](https://siegestack.com/)
-
 
 Feel free to share this page with your technical team for review
 
@@ -2964,14 +1656,9 @@ https://siegestack.com/working-with-claude-blog
 
 Claude AI Workflow · Real Case Study
 
-
-
 ## How to Use Claude AI Effectively
 
 **Most people are using Claude wrong.** They treat it like a chatbot. I use it like a production system — and it ships hours of real work every week.
-
-
-
 
 By **Scott Allen Willis**
 ·
@@ -2983,45 +1670,24 @@ Updated August 10, 2026
 ·
 [View as slide deck →](https://siegestack.com/working-with-claude)
 
-
-
-
 How to Use Claude AIClaude AI WorkflowClaude Best PracticesClaude vs ChatGPTClaude PromptingAI Iteration LoopSystem Design
-
-
 
 This guide is for people who already opened a Claude tab, got an answer that *almost* worked, and walked away thinking AI is overhyped. It's not overhyped. You're using it like a search engine when you should be using it like a junior engineer who never sleeps.
 
-
-
 Below is the exact workflow I use to ship production code, audit databases nobody documented, and harden the things I have already shipped. The same loop, every time, across every domain.
-
-
 
 **The short version, if you are deciding rather than doing.**
 The value is not in the prompt. It is in the loop around it: **define what done means, draft, test against the real system, give feedback precise enough to converge, then ship or repeat.** Almost everyone stops after the draft, which is why almost everyone concludes the tool does not work.
 Two consequences worth a manager's attention. **Verification has to be a step somebody owns**, not a habit you hope for — the failure mode is output that is plausible, well-structured and wrong, and it is discovered in production or not at all. And **route work by difficulty, not by defaulting to the biggest model**; it is the same delegation judgement you already apply to people, and it is where most of the cost savings live.
 Everything below is evidence for those two claims, including the times they cost me. If you want the argument rather than the receipts, you have already got it — the rest is a conversation.
 
-
-
 **Updated August 2026.** This article now includes the security and correctness work that came after the original version: taking a content security policy from B to A+, closing a data exposure I had shipped myself, three production bugs that report nothing, and how to prove a mechanical refactor changed nothing. Corrections are marked where they appear rather than quietly edited, because an article about verification that silently rewrites its own history is worth nothing. Four are marked so far: an invented statistic about how often the model is wrong, the claim that Claude has no memory between sessions, the claim that multi-modal work belongs to ChatGPT, and the outcome of the litigation — kept in the corrections record even though the section it belonged to has been removed. What changed on the product side, and how I checked it, is its own section — with sources.
-
-
 
 **What is Claude AI?** Claude is a large language model built by [Anthropic](https://www.anthropic.com/) for reasoning, coding, long-form writing, and tool use. The most effective way to use Claude is not "better prompting" — it's wrapping the model in a structured workflow with real artifacts, real tests, and tight feedback loops. Prompting is Stage 1. System design is Stage 2. This guide is about Stage 2.
 
-
-
-
 ### What Most People Get Wrong About Claude
 
-
 Three failure modes account for almost every "Claude isn't that useful" complaint I see online:
-
-
-
-
 
 - **They one-shot it.** They paste a vague request, take the first answer, and use it. No iteration, no verification, no second pass. Then they're surprised when the output is generic.
 
@@ -3029,62 +1695,35 @@ Three failure modes account for almost every "Claude isn't that useful" complain
 
 - **They treat the chat as the system.** They run 40-message threads until compaction breaks them. The chat is a tool. The system is your workflow around the chat — your scoped tasks, your context files, your verification loop.
 
-
-
 If you fix only those three things, your Claude experience improves more than switching models ever will.
-
-
-
 
 ### My Actual Claude Workflow (Step-by-Step)
 
-
 People keep asking me for my "prompt template." There isn't one. The thing that matters is the loop, not the wording. Here it is, in full:
-
-
 
 **Define the outcome → Claude drafts → Test against reality → Specific feedback → Ship or repeat.**
 
-
-
 The critical insight: most people stop at step 2. They get a draft and try to use it. The real value is in steps 3 and 4 — testing against your actual environment and giving feedback precise enough that the next iteration converges instead of wandering. That's it. That's the engine. Below is what each step actually means in production.
-
-
-
 
 #### 1. Define the outcome (before you type a single word)
 
 This is the single most important step and the one people skip. You must know exactly what "done" looks like in production reality. Not "a good query." Not "a legal-looking brief." **Done** means: copy-paste into the live environment with zero errors, or filed with zero procedural defects, or a function that logs real probes and blocks nothing legitimate.
 
-
 Write the definition in plain English first: *"After this loop, I will have a single script that replaces the legacy ones, runs in under two seconds on a 10k-row dataset, and requires zero user training."* A model is a world-class pattern-matcher. If the target pattern is fuzzy, the output is fuzzy. Clarity here is the entire game.
-
-
-
 
 #### 2. Claude drafts
 
 Feed the crystal-clear outcome plus all the real data — never summaries. Paste the actual query text, the actual docket entries, the actual log lines, the actual analytics exports. State your hard constraints up front. One-shot draft. No hand-holding yet. Let it go full creative. You'll fix it in the next steps.
 
-
-
-
 #### 3. Test against reality (this is where 95% of AI users fail)
 
 You become the merciless QA department. Run the code in a real dev environment. File the draft in test mode. Deploy the function and hit it with real traffic. Check the indexing tools for the new content.
 
-
 Document every failure with surgical precision. Do not say "it's wrong." Say: *"Line 47 throws an invalid handle on the temp buffer because the query uses an alias that only exists in the older code path."*
-
-
-
 
 #### 4. Specific feedback (the convergence engine)
 
 This is the art. Your feedback must be so precise that the next draft cannot possibly make the same mistake.
-
-
-
 
 - **Bad:** "Make it better."
 
@@ -3092,25 +1731,15 @@ This is the art. Your feedback must be so precise that the next draft cannot pos
 
 - **Even better:** *"Reproduce the exact error I just saw, then fix it, then show me the before/after diff so I can verify."*
 
-
 You are training the model on your exact domain reality in real time. That training only works if your descriptions are reproducible.
-
-
-
 
 #### 5. Ship or repeat
 
 Two choices only. **Ship** = it passes your production test with zero caveats. **Repeat** = go straight back to step 3 with the new failure data. No "maybe one more prompt." The loop is sacred.
 
-
 You keep repeating until the output is production-ready every single time. That's why the audit work delivered measurable gains, and why the exposures and silent faults described below were found at all.
 
-
-
-
 ### Why This Loop Crushes Every Other AI Workflow
-
-
 
 - **It forces you to stay the domain expert.** You define done. You test reality. The model can't hide behind vagueness because you removed it.
 
@@ -3120,12 +1749,7 @@ You keep repeating until the output is production-ready every single time. That'
 
 - **It's model-agnostic.** Swap Claude for Grok, Gemini, GPT — the loop still works because the human is the constant.
 
-
-
-
 ### Pro Tips to Make Your Loop Tighter
-
-
 
 - **Keep a "war room" context file.** Paste it at the start of every new session: definition of done, previous failures, system constraints. Externalized memory beats hoping the model remembers. *This is a Project — see what moved.*
 
@@ -3137,439 +1761,235 @@ You keep repeating until the output is production-ready every single time. That'
 
 - **Time-box every loop to 15–20 minutes.** If it isn't converging, the outcome wasn't defined clearly enough. Go back to step 1. Don't keep prompting.
 
-
-
 That's the entire methodology. It's boring, unsexy, and brutally effective — exactly like real engineering. Everything else in this article is what happens when you run this loop, hard, against real problems.
-
-
-
 
 ### Professional: A 27% Performance Gain Across Hundreds of Database Views
 
-
 I work on line-of-business systems built on relational databases. Custom views accumulate over years. Reports get slow. The interesting question is never "is this view slow" — it's "is the join order wrong, is there a non-sargable predicate, is the index even being used."
 
-
-
 Working with Claude on the audit, I batched the changes into discrete change sets and treated each one as a unit of work with a baseline, a hypothesis, and a rollback. Two patterns came up over and over:
-
-
-
-
 
 - Date math wrapped around an indexed column in a WHERE clause kills sargability. Rewriting it so the column appears bare on one side makes the index usable again.
 
 - Scalar functions in SELECT lists silently force row-by-row execution. Inlining them is ugly but fast.
 
-
-
-
 300+
 
 views audited
-
 
 ~27%
 
 aggregate gain
 
-
 70
 
 change sets
-
 
 99%+
 
 match rate
 
-
-
-
-
 None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the [SiegeStack ETL Showcase](https://siegestack.com/etl-showcase).
-
-
-
 
 ### Professional: Retiring Nine Spreadsheet Macros
 
-
 The other professional win was an architecture change disguised as a cleanup.
-
-
 
 The process ran on nine spreadsheet macros. Each one had to be opened by a person, on a particular machine, in a particular order. They broke in the way macros always break: someone had the file open, or a column moved, or the workbook was on a laptop that was at home that day. When it failed there was no log, only a person noticing that something downstream looked wrong.
 
-
-
 The replacement has three parts, and the separation between them is the whole point.
-
-
 
 **PowerShell does the work.** One script instead of nine macros, watching for input, querying the database directly, and reconciling records. It runs on the server rather than on somebody's desktop, so it does not care whose machine is on or who has a file open.
 
-
-
 **SQL Server Agent runs the schedule.** This is the choice people skip past, and it is the one that mattered. The obvious option was the operating system's task scheduler. Agent was better for reasons that have nothing to do with elegance: it already lived next to the data, it keeps job history without anyone building logging, it has retry and failure notification as configuration rather than code, and it is somewhere the people who look after the database already look. A scheduled task on a random server is invisible until it has been failing for three weeks.
-
-
 
 **A web service delivers the result.** Previously the output was a file that got sent to people. Files go stale the instant they are sent, they fork into six slightly different versions, and nobody can tell which is current. Exposing the result over a service inverts that — consumers ask for it when they need it and get the current answer, and other systems can consume the same endpoint instead of someone re-keying numbers out of an attachment.
 
-
-
 Reconciliation runs at 99%+. The remaining percent is genuinely ambiguous and is surfaced for a human rather than guessed at, which is the same errors-versus-warnings distinction as the tool above. Anything a machine cannot decide honestly should be handed to someone who can, not resolved quietly on its behalf.
-
-
 
 Claude co-authored all three parts. What Claude did not do was pick the architecture. The decision to put orchestration in Agent rather than a scheduled task, and to deliver over a service rather than as a file, came from knowing which failures actually hurt — and those decisions are most of the value. The code was the easy part.
 
-
-
-
-
-
 ### Professional: Mapping a Schema Nobody Had Documented
-
 
 Before the performance work above could start, there was a more basic problem: nothing described how the pieces fit together. Hundreds of view definitions had accumulated over years, each one joining tables that joined other tables, and no map existed. You cannot safely change what you cannot see.
 
-
-
 So the first project was building the map. Claude wrote a parser that read every view definition, extracted the join relationships, and cross-referenced them against the declared key constraints. Output went to flat files rather than a dashboard, deliberately — a queryable artifact beats a pretty one when you are about to make seventy changes against it.
-
-
 
 The part that mattered was the parse log. Any definition the parser could not confidently interpret got written to a failure list instead of being silently skipped. That list was short, but everything on it was a genuine edge case worth a human decision. A parser that quietly drops what it does not understand produces a map that is confidently wrong, which is worse than no map at all.
 
-
-
 Claude wrote the parser. I decided what counted as a join in the ambiguous cases, and those decisions are the only reason the output was trustworthy.
-
-
-
 
 ### Professional: A Tool and Its Manual, Built Together
 
-
 A recurring manual task involved taking an export out of one system, reshaping it by hand into several differently-formatted files, and loading it back in. It worked, it took a long time, and it broke in quiet ways — a mistyped identifier or a date in the wrong format would fail halfway through a load and leave a partial mess behind.
-
-
 
 The replacement runs entirely in the browser. No backend, no upload, nothing leaves the machine. Drop the export files in, and the tool detects which is which, stamps the batch identifier down every row, normalizes the date formats, drops the header the exporter adds, and writes out the correctly-named files.
 
-
-
 The validation design is the part worth stealing. Failures are split into two tiers: conditions that guarantee a broken load are **errors** and stop you, while conditions that are merely suspicious are **warnings** and let you proceed. Collapsing those into one category is what makes people ignore validation entirely.
-
-
 
 Then the manual — a two-part slide deck, with every slide individually linkable so a colleague can be sent to step nine rather than to the document.
 
-
-
 Illustrating it produced the most instructive failure of the whole project. The obvious approach was to have the browser screenshot itself. That does not work: the captures could not be retrieved to disk. Second attempt, having the page capture its own DOM, also failed. What eventually worked was dropping out of the browser entirely — an OS-level screen capture driven from a shell script that brings the right window forward, switches to the right tab, grabs the pixels, and crops them. Three approaches, two dead ends, and the working one was the least elegant.
-
-
 
 That is the loop doing its job. The first idea was reasonable, it was wrong, and finding that out took minutes instead of an afternoon.
 
-
-
-
 ### Personal: Taking a Security Policy from B to A+
-
 
 The same site scored a B. Not because anything was wrong with the server configuration — the headers were all present — but because the content security policy carried `unsafe-inline`, and a policy with `unsafe-inline` in it is not a policy. It is a header that looks like one. It permits precisely the class of injection the policy exists to stop.
 
-
-
 Removing it is not a configuration change. It means removing everything that made it necessary, and on a site that has grown organically that is a lot:
-
-
-
 
 258
 
 inline event handlers → 0
 
-
 118
 
 inline scripts → 0
-
 
 49
 
 style blocks → 0
 
-
 1,316
 
 inline style attributes → 0
 
-
-
-
-
 The end state has no `unsafe-inline` and no `unsafe-eval` in any directive, and the grade went from B / 75 to A+ / 125.
-
-
 
 The interesting part is the exception. Two hundred and three structured-data blocks stayed inline and that is correct: browsers never execute them, and the script directive does not govern them at all. A sweep that "fixed" those would have broken every piece of structured data on the site in exchange for nothing. **Knowing which rule does not apply is worth as much as knowing which one does**, and it is the kind of judgement a model will not make for you unless you already know the answer.
 
-
-
-
 ### Personal: Closing a Data Exposure I Had Shipped Myself
-
 
 This one is uncomfortable to write up, which is the reason to write it up.
 
-
-
 A members table held real personal data — names, email addresses, phone numbers, cities. The signup page talked to the database directly from the browser, using a key printed in the page source, scoped by an email address that the database had no way to verify. Row-level security had never been enabled. From an unauthenticated browser on the other side of the internet, that table returned success and every row in it.
-
-
 
 The fix has two halves and both were necessary. On the code side, every operation moved server-side into a function that takes the caller's identity from a **verified ID token** — signature checked against the identity provider's public keys — and ignores whatever email the request body claims. The browser key and the client-side database SDK came off the page entirely. On the database side, row-level security was enabled and forced, and the public grants revoked. Verified from an outside browser: the table now refuses. Thirty-six assertions cover forged, expired, unsigned, wrong-audience and tampered tokens.
 
-
-
 Two things came out of it that transfer to anything with a database behind it:
-
-
-
-
 
 - **Check for existing policies before enabling row-level security.** That table already had four access policies on it, written at some point and completely inert because the feature was switched off. Enabling it would have *activated* them. Revoking the grants is what actually closed the hole, because privilege denial is evaluated before policies are.
 
 - **A policy that matches a token claim does nothing if your identity provider is not the database's own.** The claim is null, so the policy matches no rows, and it looks exactly like working access control in the dashboard. This is the most convincing kind of broken security: it reads correctly, it deploys cleanly, and it protects nothing.
 
-
-
-
 ### The Bugs That Report Nothing
-
 
 Three separate production faults on the same project, none of which produced an error, a log line, or a failing check. All three read correctly in every file involved. I am grouping them because the lesson is identical.
 
-
-
 **A 404 that lasted six months.** The platform supports two redirect configuration files and one silently takes precedence over the other. A rule in the losing file never runs, and nothing anywhere reports this — both files are individually valid and both read as if they work. One endpoint returned 404 for six months. Another for two days.
-
-
 
 **Two hyphens.** A `--` inside an XML comment is illegal and makes the entire document not well-formed. Search Console reported "couldn't fetch" and zero pages indexed, while the URL returned 200, the correct content type, the correct length, and fetched perfectly when requested as the crawler. **Nothing in the HTTP response reveals it. Only parsing does.** I spent real time looking at headers for a problem that was four bytes of comment syntax.
 
-
-
 **A year-old stylesheet.** Static assets served immutable for a year with no filename fingerprinting, so every reference carries a version token. Ship markup that depends on a new CSS class without bumping that token and returning visitors get unstyled pages for up to a year — while it looks perfect to you, because your first visit fetched both fresh. The same trap bites during debugging: edit a stylesheet, retest without bumping, and a correct fix appears to have failed because the browser served you the cached copy.
-
-
 
 **The common thread:** every one of these passes review and produces no error anywhere. Configuration that reads correctly is not evidence that it works. The only thing that finds this class of bug is probing the live URL and parsing what actually comes back.
 
-
-
-
 ### Never Put a Credential on the Critical Path of a Public Form
-
 
 Two public forms on that site sent an email and returned success only if the send succeeded. When the mail credential died, every submission returned a 500 and **was destroyed** — the handler logged only the domain of the sender's address, never the address itself, so there was nothing to recover from afterwards. Two real people who wrote in over two days were lost that way. Not a theoretical data-loss bug; a specific one, with specific people on the other end who think they were ignored.
 
-
-
 Both forms now post to a platform form handler that records the submission before any mail is attempted. **Read it, write it down, then try to send it.** Anything that can fail independently of the user's intent belongs after the durable write, never before it.
-
-
 
 The same project produced a second lesson about mail that is worth having in advance: the SMTP handshake time was measured at 28.7s, 2.3s, 21.5s, 22.4s and 1.5s. The timeout was set to 7 seconds, which meant roughly half of all sends aborted — and it failed *only in production*, while identical code worked locally every time. I initially wrote the slow handshakes off as an artifact of my home connection. That assumption cost considerably more time than the bug did.
 
-
-
-
 ### Proving a Refactor Changed Nothing
-
 
 Removing 1,316 inline styles is a mechanical change across dozens of files, and "I read the diff and it looks equivalent" is not a claim anyone should accept, including from themselves.
 
-
-
 So the verification was measurement rather than reasoning. Check out the pre-change tree into a temporary directory, serve it and the working tree on two local ports, and for every rendered element on every page read about twenty computed properties, concatenate them, and hash the result. Compare the hashes. Compare the geometry too — bounding rectangles and document height — because identical computed styles will not reveal a font-metric shift.
 
-
-
 It caught two real bugs that looked fine in the diff and produced no console error:
-
-
-
-
 
 - Three pages had a `<style>` block *inside* an inline SVG. Replacing it with a stylesheet link in place does nothing at all — SVG has no such mechanism — and those diagrams would have shipped unstyled.
 
 - Six declarations were silently lost to higher-specificity rules when inline styles became classes, because an inline style attribute outranks nearly everything and a class does not.
 
-
-
 One detail makes the technique trustworthy: **always measure a control file the change never touched.** If the control reports differences too, your instrument is broken rather than your site. That is exactly how a run of false positives got caught before it buried the one real error underneath it.
-
-
-
 
 ### Personal: Rewriting a Reference Site, and Catching Four Errors In It
 
-
 A separate long-running project is a public reference site explaining a narrow area of procedure. Recently I put a full day into deepening it — several guides roughly tripled in length, each claim tied to a specific rule or decision rather than to a summary of one.
-
-
 
 The useful part was not the writing. It was what the rewrite surfaced.
 
-
-
 Checking existing pages against primary sources turned up four substantive errors that had been live for months. One of them appeared on four separate pages and was the kind of mistake a reader could act on and be harmed by — a widely repeated shortcut that is true in a narrow case and misleading in most. Another described a cited authority as supporting a position when it had in fact decided the opposite. A third stated a deadline rule that applies to one category of matter as though it applied to a different one.
-
-
 
 Every one of those was found the same way: by pulling the actual source and reading it, rather than asking whether the earlier draft was right. Asking a model to check its own work tends to produce agreement. Comparing its output against something external produces corrections.
 
-
-
 That is the diagnosis. The fix follows from it, and it took me embarrassingly long to state it plainly: **make opening the source a tool call, not a resolution.** Instruct the model to fetch and quote the primary text before it asserts anything about that text, and to say explicitly when it could not reach the source. A resolution — "I'll be careful about citations" — fails on the day you are tired or in a hurry, which is the same day the error ships. A step the model has to execute leaves a quote in the transcript that you or anyone else can check against the original. It converts a discipline problem into an artifact problem, and artifacts are the only kind of problem this article has ever been able to solve.
-
-
-
 
 12
 
 pages rewritten
 
-
 4
 
 substantive errors found
-
 
 1
 
 tool built from scratch
 
-
 0
 
 found by asking "are you sure"
 
-
-
-
-
 The same day also produced a small interactive tool for the site — the user enters two dates and gets back which options remain open to them and how long each has left. It replaced a wall of prose that answered the same question badly. Most of the effort went into the branch nobody thinks about: what to show when the answer is that every option has already expired.
-
-
-
 
 ### What I Got Wrong in My Own Article
 
-
 This was written in April 2026. The method held up. Several product facts underneath it did not, and an article whose central argument is *verify against the primary source* does not get to leave stale claims standing because they flatter its own narrative. Everything below was checked on **10 August 2026**; if you are reading this much later, check it again rather than trusting me.
-
-
 
 **I said Claude had no memory between sessions. It does.** On paid plans it searches past chats and generates a memory summary automatically, scoped per Project, cited back to the chats it drew from. Incognito writes nothing; free accounts have none.
 
-
-
 **That wrong claim sat inside this page's FAQ structured data** — the machine-readable block that search engines and assistants quote back verbatim. Further down, this same article argues that the worst of four errors I found on another site was the one inside structured data, for exactly that reason. I then shipped the identical class of mistake here and left it live for four months, where it was quoted back as current. That is not a footnote. It is the best evidence in this article for the argument the article is making.
-
-
 
 The advice survives intact, because it was never really about the feature: **curated memory beats extracted memory for anything you cannot afford to lose.** Automatic memory summarises what you happened to say. A context file states what must be true. Only one of those is a specification.
 
-
-
 **Thirty-odd thousand words about working with AI that never named a model.** Not a correction — an omission, and the expensive one. For two years I sent everything to the largest available model, which is the same mistake as running every report against production because it is the server whose name you know. Route by difficulty: the mechanical, high-volume, diff-verifiable work goes to the cheapest tier; the ambiguous, high-consequence work goes to the most capable. **It is the delegation rule you already use with people.** If these were staff, nobody would need to explain it.
-
-
 
 **Most of the hard work here was an agent with a terminal, not a chat window** — the schema audit, the two-port comparison, the control file that proved a checker worked before its output was trusted. Naming that is not an endorsement; it is the difference between a reader reproducing this and a reader assuming it came from pasting into a text box. It also raises the stakes on everything above: an agent that runs its own tests is far more useful, and is also an agent that can be confidently wrong *and have already deployed.*
 
-
-
-
 ### The Honest Limitations
 
-
 Everything above is real. So is everything below. Anyone selling Claude as a magic co-founder is lying.
-
-
-
 
 #### Compaction is not lossless
 
 When the context window fills, older parts of the conversation get summarized. That summary drops nuance and edge cases. You will lose things. Plan for it: checkpoint your decisions in external files, restart sessions deliberately, don't rely on Claude to remember what happened ten thousand tokens ago.
 
-
 As sharpened above, this is three different mechanisms rather than one ambient property — auto-compaction and `/compact` in Claude Code, an opt-in beta with a configurable threshold on the API, and automatic context management on claude.ai that requires code execution to be enabled. The warning holds for all three. Which one you get depends on where you are working.
-
-
-
 
 #### Confidently wrong, often enough to matter
 
 Claude will produce answers that sound right and aren't. Citations get fabricated. Working code gets rewritten unnecessarily. The human is the verification layer — always. If you don't have the domain expertise to catch the wrong answers, you cannot use Claude safely for that domain.
 
-
 An earlier version of this article put a number on that — "roughly 20% of the time." I have removed it, because I never measured it and neither has anyone else quoting you a figure. It was a plausible-sounding number in an article about not trusting plausible-sounding things. The correct statement is that it happens often enough that verification has to be a step in your process rather than something you do when you feel uneasy.
 
-
-
-
 A concrete version of this: across a single reference project, four separate factual errors survived multiple review passes because each one read as authoritative. The one that mattered most had been repeated across four pages. None of them were caught by re-reading the text or by asking whether it was correct. All four were caught by opening the primary source and comparing. Plausibility is not a signal you can use — the failure mode is specifically that wrong answers sound exactly like right ones.
-
-
-
 
 #### Instructions get ignored in long sessions
 
 "Don't change X" gets violated. "Use the function we wrote earlier" gets ignored. Re-state critical constraints in every meaningful turn. Treat the assistant as memoryless even when it isn't.
 
-
-
-
 #### It will bridge a gap rather than report one — unless you say otherwise
 
 This is the limitation with the cheapest fix in the whole article, and I left it out of the original entirely. A model's default behaviour is to produce something. Absent explicit permission to return "I don't know" or "I could not verify this," it will construct the most plausible available answer and hand it to you in the same confident register as everything else — which is exactly the failure mode described two sections up. Put one line in the brief stating that an admitted gap is an acceptable, expected deliverable. You will get gaps back instead of inventions, and a gap tells you precisely where to go and look.
-
-
-
 
 #### Memory is real now — and still not your system of record *(corrected)*
 
 This section used to read: "Default chat has no cross-session memory. What feels like continuity is you re-establishing context every time." That is no longer true, and it is corrected rather than deleted — the full correction and its sources are above. On paid plans Claude searches past chats and generates a memory summary automatically, scoped per Project, with citations back to the chats it drew from.
 
-
 The limitation that remains is narrower and more useful than the one I originally wrote. Automatically generated memory is an *extraction* — a summary of what you happened to say across past conversations. It is not a specification of what must hold. For anything load-bearing, keep authoring the context deliberately, because the failure mode of extracted memory is that you find out what it kept at the moment it matters. Incognito chats write nothing; free accounts have no memory at all. Design for what you control.
-
-
 
 **The honest framing:** Claude is a smart but unreliable junior, not a co-founder. The leverage comes from how you wrap it, not from the model alone. That framing has survived every product change since April — the model got considerably better, the surfaces got considerably more capable, and the verification discipline got *more* load-bearing rather than less, because a junior who can now deploy unsupervised is a junior whose mistakes reach production faster.
 
-
-
-
 ### From Prompting to System Design
-
 
 This is the actual leap, and it's the part most articles miss. Stage 1 thinking is "how do I write a better prompt." Stage 2 thinking is "how do I build a system around the model." Power users live in Stage 2.
 
-
-
 **Don't:**
-
-
-
 
 - Write giant kitchen-sink prompts
 
@@ -3579,12 +1999,7 @@ This is the actual leap, and it's the part most articles miss. Stage 1 thinking 
 
 - Skip verification because the answer "sounds right"
 
-
-
 **Do:**
-
-
-
 
 - Break work into discrete phases with checkpoints
 
@@ -3596,24 +2011,13 @@ This is the actual leap, and it's the part most articles miss. Stage 1 thinking 
 
 - Verify every claim against reality before shipping
 
-
-
 **The real formula:** `Claude + external memory + structured workflows = leverage`. The database audit, the macro retirement, the schema mapping — none of those were "I asked Claude a question." Each one was a system: scoped tasks, real artifacts, tight feedback loops, verification at every step.
-
-
-
 
 ### Claude vs ChatGPT: When to Use Each
 
-
 People keep asking me "Claude vs ChatGPT — which one should I use?" The honest answer is **both, for different things**. They're not interchangeable. After running serious work through both daily, here's the split I actually use:
 
-
-
-
 #### Use Claude when:
-
-
 
 - **You need long, structured reasoning.** Long-form writing, multi-file code refactors, legal drafting, anything that has to hold a coherent thread over thousands of words. Claude's long-context behavior is its strongest feature.
 
@@ -3623,12 +2027,7 @@ People keep asking me "Claude vs ChatGPT — which one should I use?" The honest
 
 - **You're using tool-calling / agents.** Claude's tool-use API and Anthropic's agent SDK are well-designed for production agent workflows.
 
-
-
-
 #### Use ChatGPT when:
-
-
 
 - **You need fast, breadth-first ideation.** Brainstorming, naming, quick research summaries — ChatGPT is faster to first draft and willing to free-associate.
 
@@ -3636,25 +2035,13 @@ People keep asking me "Claude vs ChatGPT — which one should I use?" The honest
 
 - **You need niche plugin integrations.** The ChatGPT plugin/GPT ecosystem is broader for end-user automations.
 
-
-
 Worth noting that the more interesting routing question is not Claude-versus-ChatGPT at all — it is which Claude. Routing across tiers inside one provider is cheaper and higher-leverage than routing across providers, and I spent two years not doing it.
-
-
 
 My personal split is roughly 80/20 Claude/ChatGPT for production work and roughly 50/50 for exploration. Both have their place. Anyone telling you "X is better than Y, period" is selling you something. The official documentation is also worth reading directly — most people skip it, and most "Claude tips" articles you see are downstream of it. It lives at [platform.claude.com/docs](https://platform.claude.com/docs) for the API and [code.claude.com/docs](https://code.claude.com/docs) for Claude Code; the `docs.anthropic.com` link that used to sit in this paragraph now redirects.
 
-
-
-
 ### Common Mistakes That Break Claude
 
-
 If your Claude session feels like it's going nowhere, check this list. Nine times out of ten one of these is the cause:
-
-
-
-
 
 - **Prompting in summary form.** "Help me fix my login bug." Wrong. Paste the actual error stack, the actual code, the actual reproduction steps. Real artifacts only.
 
@@ -3674,15 +2061,9 @@ If your Claude session feels like it's going nowhere, check this list. Nine time
 
 - **Asking it to remember things it can't.** Default chat has no cross-session memory. Re-establish context every time. Or use a project file / system prompt to externalize it.
 
-
-
-
 ### Claude Workflow Template (Copy/Paste)
 
-
 Here's the literal template I paste at the top of any new serious Claude session. Steal it. Modify it. The point isn't the wording — it's that you've forced yourself to answer every question in it before you start prompting.
-
-
 
 `# Session brief
 
@@ -3718,134 +2099,74 @@ Report gaps; do not bridge them.]`
 
 That's it. Six sections. If you can't fill all six in before you start prompting, you're not ready to prompt — go figure out the missing piece first. I can't overstate how much faster work moves once you internalize this.
 
-
-
 **The example section was added in August 2026 and it was the biggest omission in the original.** Few-shot prompting is one of the highest-yield techniques available and my template had no slot for it — five sections describing what I wanted and not one instance of it. A single worked example pins format, length, tone and level of detail simultaneously and does it better than any quantity of adjectives. The two additions to the verification section are the other half of the four-errors lesson: make source-checking a step the model performs rather than a standard you hold, and say out loud that reporting a gap beats inventing a bridge.
 
-
-
-
 ### Frequently Asked Questions
-
-
 
 #### What is Claude AI used for?
 
 Claude is used for long-form writing, code generation and refactoring, structured reasoning over long documents, legal and technical drafting, data analysis, and as the LLM behind agent / tool-use workflows. Its strength is holding coherent context over many thousands of tokens, which makes it well-suited for production engineering work and complex documents.
 
-
-
-
 #### Is Claude better than ChatGPT?
 
 Neither is universally better. Claude tends to win on long-context work, careful editing, conservative tone, and agent and tool-use workflows. ChatGPT tends to win on fast breadth-first ideation, the plugin ecosystem, and native image generation. Don't use "multi-modal" as the dividing line — every current Claude model takes image input and has vision, Claude reads PDFs, and voice mode runs in the Claude apps. Image generation specifically is the real difference. Most serious users keep both open and route work to whichever fits the task. See the comparison section above for the split I use.
-
-
-
 
 #### How do you write good prompts for Claude?
 
 The best Claude prompts aren't clever — they're specific. State the outcome, paste real artifacts (not summaries), list hard constraints, and include any prior failures so the model doesn't repeat them. Then iterate with precise corrections, not vague "try again" prompts. The Claude workflow template above is exactly this, formalized.
 
-
-
-
 #### Can Claude replace developers?
 
 No. Claude amplifies developers — it doesn't replace them. Without domain expertise to verify output, catch hallucinations, and define what "done" actually means, you get confident-sounding garbage. The human is the quality gate. The 27% performance gain in this case study only happened because a human knew which patterns mattered and could test the rewrites against a real database.
-
-
-
 
 #### What's the biggest mistake people make with Claude?
 
 Treating it like a search engine instead of a junior collaborator. They paste a vague question, take the first answer, and walk away. The leverage is in the loop — defining done, drafting, testing against reality, giving precise feedback, and repeating until production-ready. Skip the loop and you're just chatting with an autocomplete.
 
-
-
-
 #### Does Claude have memory between sessions?
 
 **Yes, on paid plans — this answer was corrected in August 2026.** Claude can search and reference your past chats, and can generate a memory summary from your chat history automatically, carrying forward details such as your role, your preferences and your ongoing project context. Memory is scoped separately for each Project, references are cited back to the original chats so you can inspect and delete what it drew from, and there is an experimental import and export for moving memory between Claude and other assistants. Incognito chats write nothing to memory. Free accounts do not have it. Earlier versions of this page said default chat had no persistent cross-session memory; that was true when written and is no longer true, and it is corrected here rather than quietly deleted.
 
-
 The workflow advice underneath the wrong fact survives intact: for constraints you cannot afford to lose, deliberately externalized memory — a context file, Project instructions, a skill — still beats an automatically extracted summary, because you choose what persists rather than discovering afterwards what was kept. Use memory for the ambient context you would otherwise re-explain; author the hard constraints yourself.
-
-
-
 
 #### Should I use Claude Code or the Claude chat app?
 
 Use the chat app for thinking, drafting and reasoning over documents. Use Claude Code when the work involves reading and writing files, running commands and verifying its own output — audits, refactors, migrations, anything where the test-against-reality step can be automated. Cowork is for handing off a multi-step task and reviewing finished work, and Claude for Microsoft 365 puts the same capability inside Excel, PowerPoint and Word, with Outlook in beta. The iteration loop is identical on all of them; the surface only changes who executes the verification step.
 
-
-
-
 #### Which Claude model should I use?
 
 Route by difficulty rather than defaulting to the largest. Haiku is the fastest and cheapest and suits high-volume mechanical work that is easy to check. Sonnet is the best balance of speed and intelligence and handles most day-to-day work. Opus is for complex agentic coding and enterprise work where a subtle error is expensive. Fable is the top tier, aimed at long-running autonomous agents. Routing across tiers within one provider is usually cheaper and higher-leverage than routing across providers.
-
-
-
 
 #### What are Agent Skills, and do I need them?
 
 A skill is a folder built around a `SKILL.md` file — instructions plus optional scripts and reference material — that loads on demand when the task matches, so long reference material costs nothing until it is needed. Personal skills live at `~/.claude/skills/<name>/SKILL.md` and apply across all your projects; per-project skills live at `.claude/skills/<name>/SKILL.md` and can be checked into the repository. On claude.ai you upload a `.zip` of the skill folder under Customize → Skills. You need them once you notice you are pasting the same instructions repeatedly — a skill is that paste, automated, firing when relevant rather than when you remember. The format is an open specification other vendors' agents also read, so it is not a lock-in decision, but custom skills do not sync between surfaces.
 
-
-
-
 ### What I'd Tell Someone Starting Today
-
 
 **You're the expert.** Claude amplifies domain knowledge. If you don't have the knowledge, you get confident-sounding garbage. The human is the quality gate.
 
-
-
 **Specificity compounds.** One precise correction saves five rounds of guessing. Invest the time to describe exactly what's wrong.
-
-
 
 **Ship real things.** The gap between "playing with AI" and "using AI" is whether something goes into production. File the motion. Deploy the script. Push the site live.
 
-
-
 **Side projects matter.** Work done outside the day job sharpens the day job — log analysis, writing, and verification discipline all cross-pollinate.
-
-
 
 **AI levels the playing field — up to a point.** Someone with no legal training produced filings a thirty-year attorney had to brief substantively rather than dispose of on the pleadings. That wasn't possible five years ago. The court still granted the dismissal. Access to the argument is not the same as winning it, and the gap between those two things is where the honest version of this whole article lives.
 
-
-
-
 ### Corrections Record
 
-
 Corrections on this page are marked where they appear rather than quietly edited. This one is kept here because the section it originally belonged to has since been removed, and deleting a correction along with its subject is how a record stops being a record.
-
-
 
 **The litigation outcome (corrected 4 August 2026).**
 For months this article, and the accompanying deck, said the motion to dismiss was *denied* and the case was *set for trial*. That was wrong. **The motion to dismiss was granted.** The suit was dismissed with prejudice in March 2026, and the motion for new trial was overruled by operation of law that June when the court did not rule on it.
 
-
 The claim that survives is narrower and is the only one I make: filings produced by someone with no legal training forced a thirty-year attorney to brief the immunity question substantively rather than dispose of it on the pleadings. **That is not the same as winning**, and an article that blurred the two would be committing the exact error the rest of this piece is about.
-
 
 It is recorded rather than deleted for the same reason as the others: a piece arguing that you must verify against the primary source does not get to erase the occasions when it did not.
 
-
-
-
 ### Sources
 
-
 Every product claim added or corrected in the August 2026 revision, with the page it came from. **All checked 10 August 2026.** An article that tells you to open the primary source owes you the primary sources — and if you are reading this a year from now, the honest instruction is to check them again rather than to trust this list.
-
-
-
-
 
 - **Memory:** [Use Claude's chat search and memory to build on previous context](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) — the two controls, per-Project memory spaces, citations back to source chats, import/export, incognito exclusion, and per-plan availability.
 
@@ -3865,17 +2186,9 @@ Every product claim added or corrected in the August 2026 revision, with the pag
 
 - **Documentation hosts:** [platform.claude.com/docs](https://platform.claude.com/docs) and [code.claude.com/docs](https://code.claude.com/docs). Both `docs.anthropic.com` and `docs.claude.com` redirect to the former.
 
-
-
 **Why this section exists.** The worst of the four errors on the reference site was the one sitting inside structured data — the exact text search engines and assistants quote back. The memory claim corrected above was in this page's own FAQ structured data, and it was quoted back as current for four months. I would rather publish the list of things I checked than ask you to assume I checked them.
 
-
-
-
-
 #### Related
-
-
 
 - [View this case study as a 14-slide presentation →](https://siegestack.com/working-with-claude)
 
@@ -4151,150 +2464,71 @@ https://siegestack.com/insights
 
 Technical write-ups and anonymised problem breakdowns, from work that shipped.
 
-
-
-
-
-
-
 Everything here is written from problems that actually occurred, and everything here is anonymised. No client or employer is named, no client data appears, and identifying details are removed rather than disguised. What is kept is the part that transfers to anyone running the same class of system.
-
-
-
 
 ### Where to start by platform
 
-
-
 Epicor · Prophet 21 & Kinetic
-
-
 
 #### [Epicor P21 & Kinetic Reporting and Integration](https://siegestack.com/prophet-21)
 
 The platform-specific side: the four data-model traps that make P21 reports quietly wrong — open versus posted living in different tables, undated lines counted as successes, flags that exist on only one side, and identity that resolves through a fallback chain — plus what changes when the schema belongs to the vendor. Read this one if the question is *which rows count*.
 
-
-
-
-
-
 Epicor · upgrades
-
-
 
 #### [What a Prophet 21 Upgrade Does to Your Reporting](https://siegestack.com/prophet-21-upgrade-reporting)
 
 Three different projects get called “the P21 upgrade” — a version upgrade, the desktop-to-web transition, and replacing Prophet 21 with Epicor Kinetic, which is a different product and not an upgrade at all. What each one breaks in the layer built on top of the schema, why none of it raises an error, and the two things worth capturing before the window opens because they cannot be recovered afterwards.
 
-
-
-
-
-
 SQL Server · performance method
-
-
 
 #### [SQL Server Performance for ERP Reporting](https://siegestack.com/sql-server-erp-performance)
 
 The diagnostic method, independent of which ERP sits on top: the two patterns behind most slow reports, why logical reads beat runtime as a measure, and why applying the fix needs more care than finding it. Read this one if the question is *why is this slow*.
 
-
-
-
-
-
 ### Technical articles
 
-
-
 SQL Server · ERP reporting
-
-
 
 #### [Why Your ERP Report Is Fast on Today and Times Out on Month-to-Date](https://siegestack.com/erp-report-slow-month-to-date)
 
 The most common performance complaint in ERP reporting and the most consistently misdiagnosed. Short and long date ranges frequently read different tables, and if the history table has no index on the column you filter, the database reads all of it. Covers how to confirm it in about ten minutes, how to design the index, and what to check before adding one to a vendor schema.
 
-
-
-
-
-
 Delivery · Configuration audit
-
-
 
 #### [The config was mine and the fix on paper was still wrong](https://siegestack.com/delivery-config-audit)
 
 A delivery and configuration audit run against this site, written up for the finding that the auditor was wrong rather than for the ones that held. Reading the config produced a defensible remediation item; three requests against the running system showed there was no defect, and that the item would have caused an outage-class fault. What config review can and cannot establish, and what a live probe still cannot tell you.
 
-
-
-
-
-
 ### Case studies
 
-
-
 Reporting · Metrics design
-
-
 
 #### [A KPI console for people who were reading the operation from memory](https://siegestack.com/case-studies/kpi-console)
 
 Receiving and picker productivity metrics, including purchase price variance and on-time and in-full rates. Most of the work was deciding which rows count as evidence and which are absence of evidence — and keeping cost figures off screens that face a public floor.
 
-
-
-
-
-
 Performance · Root cause
-
-
 
 #### [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout)
 
 Reported as “the dashboard is slow.” It was one unindexed date column on a table that shipped with the ERP. The diagnosis took minutes; applying the fix safely took the planning.
 
-
-
-
-
-
 Automation · Architecture
-
-
 
 #### [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service)
 
 Several unrelated paths to a printer, each grown separately, layouts drifting apart. Replaced with one service where label sources are rows in a configuration table rather than new programs.
 
-
-
-
-
-
 ### What tends to get written up here
-
 
 Operational software problems where the request describes the symptom accurately and the cause not at all. “The dashboard is slow” that turns out to be an access path. “We need another label program” that turns out to be a missing abstraction. “We need a report” that turns out to be a disagreement about which rows count.
 
-
-
 If you are running into one of these, the [case studies](https://siegestack.com/case-studies) show the shape of the work and [operations modernization](https://siegestack.com/operations-modernization) covers the larger engagement they sit inside.
-
-
-
-
 
 #### Recognise one of these?
 
 The first conversation is short and costs nothing.
-
 
 [Get in touch](https://siegestack.com/#schedule) · [See the integration work](https://siegestack.com/etl-showcase)
 
@@ -4826,30 +3060,15 @@ https://siegestack.com/case-studies/kpi-console
 
 One engagement, described without the specifics.
 
-
-
-
-
 **The situation.** An operations team ran receiving, picking and purchasing on a SQL Server–backed ERP. Operational questions — is receiving keeping up, are we paying what the purchase order said, who picked what yesterday — were answered by whoever had been there longest. The data existed. Nothing assembled it.
-
-
 
 **What was built.** A reporting console with two audiences and two very different trust levels. Supervisors get the full set in a browser. The floor gets a subset on wall-mounted displays, driven by scoped display tokens.
 
-
-
 That split turned out to be the design constraint that mattered. Several reports carry cost and margin. A screen on an operations floor is visible to everyone who walks past it, including visitors and contractors. So report definitions carry a flag: anything with dollars in it is backend-only, the server refuses to attach it to a display token, and it is never listed in the publicly enumerable set. The restriction lives in the report definition rather than in the page that renders it, because the page is the thing most likely to be rewritten later by someone who does not know the rule.
-
-
 
 **The receiving metrics.** Volume was the easy part. The ones that changed conversations:
 
-
-
-
-
 | Metric | What it measures, and the modelling decision behind it |
-
 
 | Purchase price variance | Receipt cost minus purchase-order line cost. Positive means the business paid above what the PO said. This is the number that gets attention, because it is the gap between what purchasing agreed and what accounts payable will actually be billed. |
 
@@ -4859,36 +3078,19 @@ That split turned out to be the design constraint that mattered. Several reports
 
 | Lines per PO | Receiving effort per order. A cheap proxy for whether purchasing is consolidating or drip-feeding the dock. |
 
-
-
-
-
-
-
 Two of those four rows are decisions about what *not* to count. That ratio is normal. Most of the work in an operational metric is deciding which rows are evidence and which are absence of evidence, and a dashboard that gets it wrong is worse than no dashboard, because it is confidently wrong in the direction nobody checks.
-
-
 
 **Open versus posted.** The same period can span unposted receipts and posted history, which live in separate tables with different columns. Today reads from open receipts only. Week and month union both. Getting this wrong is the classic ERP reporting bug: numbers that look right on a daily view and quietly drift on anything longer.
 
-
-
 **Picker productivity.** A parallel set covers lines picked, quantity, active hours and first and last pick per picker. The awkward part was not the aggregation, it was identity: pickers appear as initials on the transaction, and the mapping to a human runs through a chain of fallbacks — a description field, a Windows login, the local part of an email address, and finally an explicit *unmapped* bucket. Unmapped is displayed rather than hidden. An unattributed pick is a data-quality finding, and hiding it turns a fixable mapping gap into a permanently wrong leaderboard.
 
-
-
 Worth measuring if you run this
-
-
-
 
 - PPV dollars surfaced in the first full month, against what was being caught manually before.
 
 - Time from “how did receiving do last week” to an answer, before and after.
 
 - Share of picks landing in the unmapped bucket, tracked down over time as the mapping is cleaned.
-
-
 
 ### Related
 
@@ -4906,27 +3108,13 @@ https://siegestack.com/case-studies/month-to-date-timeout
 
 One engagement, described without the specifics.
 
-
-
-
-
 **The symptom.** The same KPI report returned instantly for Today and timed out for week-to-date and month-to-date. Reported, reasonably, as “the dashboard is slow.”
-
-
 
 **What it actually was.** The week and month views filter invoice-history on a pick-date column. That column was not indexed. The indexes that existed on the table covered the order number, a history id and line, the lot, and a rowguid — every access path except the one the date filter needed. So the date range forced a full scan of the entire invoice-history table. Today was fast because it read a different, far smaller table; the period views were slow because they touched history, and the shape of the query meant touching history meant reading all of it.
 
-
-
 This is the most common performance root cause in ERP reporting and the one most often misdiagnosed, because the symptom scales with the date range and therefore looks like data volume. It is not a volume problem. It is an access-path problem that volume makes visible.
 
-
-
 **Why the fix needed more care than the diagnosis.** The tables shipped with the ERP; they were not locally created. Adding an index to a vendor schema is a supportability decision before it is a technical one, so the work went to the platform owner before anything was applied. Beyond that:
-
-
-
-
 
 - Index creation takes a schema-modification lock on SQL Server Standard Edition. It blocks live users for the duration of the build, so it belongs in a maintenance window, not in the afternoon it was diagnosed.
 
@@ -4934,24 +3122,15 @@ This is the most common performance root cause in ERP reporting and the one most
 
 - Size and current index state get captured before anything changes, so the change can be evaluated and reversed.
 
-
-
 **The transferable part.** Written up in full as [why an ERP report is fast on today and times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date). In short: when a report is fast on a short window and dies on a longer one, resist the instinct to optimise the query. Look at what the date filter is actually filtering, and whether anything indexes it. The fix is frequently one index. The risk is almost never in the index — it is in applying it to a vendor schema, on the wrong edition, at the wrong time of day.
 
-
-
 Worth measuring if you run this
-
-
-
 
 - Report runtime before and after, at each period setting. Capture it before you apply the index; you cannot go back for it.
 
 - Logical reads for the query, which is the honest measure and does not move with server load.
 
 - Index build duration, so the next maintenance window can be planned rather than guessed.
-
-
 
 ### Related
 
@@ -5105,18 +3284,9 @@ https://siegestack.com/privacy-policy
 
 How we collect, use, and protect your information
 
-
-
-
-
-
-
 ### Information We Collect
 
 We collect information you voluntarily provide when you:
-
-
-
 
 - Schedule a consultation via Calendly
 
@@ -5124,18 +3294,11 @@ We collect information you voluntarily provide when you:
 
 - Engage our services
 
-
 This may include your name, email address, company name, and project details you choose to share.
-
-
-
 
 ### Automatic Information
 
 When you visit our website, we automatically collect certain information through Google Analytics, including:
-
-
-
 
 - Browser type and version
 
@@ -5147,18 +3310,11 @@ When you visit our website, we automatically collect certain information through
 
 - General geographic location (city/region level)
 
-
 This information helps us understand how visitors use our site and improve our services.
-
-
-
 
 ### How We Use Your Information
 
 We use the information we collect to:
-
-
-
 
 - Respond to your inquiries and schedule consultations
 
@@ -5168,15 +3324,9 @@ We use the information we collect to:
 
 - Improve our website and services
 
-
-
-
 ### Information Sharing
 
 We do not sell, trade, or rent your personal information to third parties. We may share information only:
-
-
-
 
 - With your explicit consent
 
@@ -5184,46 +3334,27 @@ We do not sell, trade, or rent your personal information to third parties. We ma
 
 - With service providers who assist in our operations (e.g., Calendly for scheduling)
 
-
-
-
 ### Data Security
 
 We implement reasonable security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.
-
-
-
 
 ### Third-Party Services
 
 Our website uses third-party services including:
 
-
-
-
 - **Google Analytics** - for website analytics
 
 - **Calendly** - for scheduling consultations
 
-
 These services have their own privacy policies governing their use of your data.
-
-
-
 
 ### Cookies
 
 Our website uses cookies for analytics purposes. You can control cookies through your browser settings. Disabling cookies may affect some website functionality.
 
-
-
-
 ### Your Rights
 
 You have the right to:
-
-
-
 
 - Request access to the personal information we hold about you
 
@@ -5231,24 +3362,15 @@ You have the right to:
 
 - Opt out of analytics tracking by using browser settings or extensions
 
-
-
-
 ### Changes to This Policy
 
 We may update this privacy policy from time to time. Changes will be posted on this page with an updated revision date.
-
-
-
 
 ### Contact Us
 
 If you have questions about this privacy policy, please contact us at:
 
-
 [info@siegestack.com](mailto:info@siegestack.com)
-
-
 
 Last updated: January 22, 2026
 
