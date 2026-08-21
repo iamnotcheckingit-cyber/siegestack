@@ -777,25 +777,25 @@
             font-size: 1.1rem;
         }
 
-        .dashboard-live {
+        .dashboard-sample {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--green-soft);
+            color: var(--yellow-soft);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px solid var(--yellow-soft);
+            border-radius: 4px;
+            padding: 0.25rem 0.6rem;
+        }
+
+        .dashboard-note {
+            color: var(--slate);
             font-size: 0.85rem;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--green-soft);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            line-height: 1.5;
+            margin: 0 0 1.25rem;
         }
 
         .metrics-grid {
@@ -837,23 +837,6 @@
             font-size: 1.75rem;
             font-weight: 700;
             font-family: monospace;
-        }
-
-        .metric-trend {
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
-        }
-
-        .metric-trend.up {
-            color: var(--green-soft);
-        }
-
-        .metric-trend.down {
-            color: var(--blue-accent);
-        }
-
-        .metric-card.warning .metric-trend.up {
-            color: var(--yellow-soft);
         }
 
         .alert-timeline {
@@ -1769,35 +1752,33 @@ function createServer(config = {}) {
             <div class="dashboard-container">
                 <div class="dashboard-header">
                     <span class="dashboard-title">Integration Health Dashboard</span>
-                    <span class="dashboard-live"><span class="live-dot"></span> Live</span>
+                    <span class="dashboard-sample">Example &mdash; not live data</span>
                 </div>
+
+                <p class="dashboard-note">Every number and event below is <strong>made up to show the layout</strong>. Nothing here is measured, nothing is connected to a running system, and no client's figures appear on this page. It is here to show what you get to look at, not what anyone achieved.</p>
 
                 <div class="metrics-grid">
                     <div class="metric-card healthy">
                         <div class="metric-label">API Uptime</div>
                         <div class="metric-value">99.97%</div>
-                        <div class="metric-trend up">+0.02% vs last week</div>
                     </div>
                     <div class="metric-card healthy">
                         <div class="metric-label">Avg Response Time</div>
                         <div class="metric-value">142ms</div>
-                        <div class="metric-trend down">-23ms vs last week</div>
                     </div>
                     <div class="metric-card warning">
                         <div class="metric-label">Retry Rate</div>
                         <div class="metric-value">2.3%</div>
-                        <div class="metric-trend up">+0.8% vs last week</div>
                     </div>
                     <div class="metric-card healthy">
                         <div class="metric-label">Records Processed</div>
                         <div class="metric-value">1.2M</div>
-                        <div class="metric-trend">Last 24 hours</div>
                     </div>
                 </div>
 
                 <!-- Alert Timeline -->
                 <div class="alert-timeline">
-                    <div class="timeline-title">Recent Events</div>
+                    <div class="timeline-title">Example events</div>
                     <div class="alert-item resolved">
                         <span class="alert-time">2 hrs ago</span>
                         <span class="alert-status">RESOLVED</span>
@@ -1820,6 +1801,8 @@ function createServer(config = {}) {
                     </div>
                 </div>
             </div>
+
+            <p class="dashboard-note" style="margin-top:1.25rem"><strong style="color:var(--white)">Corrected 21 August 2026.</strong> Until today this panel carried a pulsing &ldquo;Live&rdquo; indicator and week-on-week deltas &mdash; <span style="white-space:nowrap">&ldquo;+0.02% vs last week&rdquo;</span> and the rest &mdash; with nothing anywhere saying the figures were invented. It read as telemetry from a running system. The indicator and the deltas are gone and the panel is now marked for what it is. Stating this rather than quietly editing it is the same rule that keeps unmeasured percentages off the rest of this site.</p>
 
             <!-- Retry Logic Code Example -->
             <div class="code-container" style="margin-top: 2rem;">

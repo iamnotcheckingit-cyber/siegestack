@@ -1470,33 +1470,27 @@ Correlation IDs with distributed tracing
 Every integration we build includes real-time monitoring. You see what's happening, we get alerted before problems become emergencies.
 
 Integration Health Dashboard
-Live
+Example — not live data
+
+Every number and event below is **made up to show the layout**. Nothing here is measured, nothing is connected to a running system, and no client's figures appear on this page. It is here to show what you get to look at, not what anyone achieved.
 
 API Uptime
 
 99.97%
 
-+0.02% vs last week
-
 Avg Response Time
 
 142ms
-
--23ms vs last week
 
 Retry Rate
 
 2.3%
 
-+0.8% vs last week
-
 Records Processed
 
 1.2M
 
-Last 24 hours
-
-Recent Events
+Example events
 
 2 hrs ago
 RESOLVED
@@ -1513,6 +1507,8 @@ Shopify webhook delay detected (avg 2.1s) - monitoring
 2 days ago
 RESOLVED
 P21 connection timeout - failover to replica successful
+
+**Corrected 21 August 2026.** Until today this panel carried a pulsing “Live” indicator and week-on-week deltas — “+0.02% vs last week” and the rest — with nothing anywhere saying the figures were invented. It read as telemetry from a running system. The indicator and the deltas are gone and the panel is now marked for what it is. Stating this rather than quietly editing it is the same rule that keeps unmeasured percentages off the rest of this site.
 
 retry-handler.js
 

@@ -1,9 +1,10 @@
 # Claims basis worksheet
 
-**Purpose.** `data/claims-registry.json` holds 25 entries. Every one of them currently reads
+**Purpose.** `data/claims-registry.json` holds 24 entries — 25 when this file was written; the `/etl-showcase`
+"+0.8% vs last week" delta was removed by W7 and its entry deleted. Every remaining one reads
 `measurementBasis: "TODO(pappy)"` and `dateMeasured: "TODO(pappy)"`, which means the site's
 central editorial rule — *no percentage or performance claim without a measured baseline* — is
-declared but not evidenced anywhere in the repo. This file exists so all 25 can be settled in
+declared but not evidenced anywhere in the repo. This file exists so they can be settled in
 one sitting.
 
 **Nothing here is filled in for you, and nothing is guessed.** The "what would satisfy it"
@@ -20,6 +21,8 @@ column says what evidence the entry needs, not what the answer is.
 **How to use it.** Work down the table. For each row either write the basis into
 `data/claims-registry.json`, delete the claim from the page, or add the `disposition` key.
 Then run `npm run validate:pages`.
+
+**Rows 5–8 are settled — W7 shipped 2026-08-21.** The panel is now marked as an example beside the figures, the pulsing "Live" indicator and the week-on-week deltas are gone, and row 6 no longer exists on the page. Rows 5, 7 and 8 are the three surviving invented numbers; they need no basis because the panel no longer claims they are measurements. The original caveat read:
 
 **Caveat on rows 5–8.** The four `/etl-showcase` figures belong to the mock "Integration Health
 Dashboard" and are the subject of W7. If that display is changed or removed, those rows go with
@@ -58,7 +61,8 @@ Published as: "B → A+ security grade, one site" (`/`) and the numeric scores 7
 (`/working-with-claude-blog#security-grade`).
 
 Needs: the scoring tool by name, and the dates of the before and after scans. Lower value than
-M1 and M2 — W6 removes this figure from the homepage row, so it survives only in the article.
+M1 and M2 — W6 removed this figure from the homepage row on 2026-08-21, so it now survives
+only in the article, where it is labelled Personal.
 
 ---
 
@@ -83,7 +87,7 @@ separate and each needs its own basis.
 
 ---
 
-## The 25 registered claims
+## The registered claims
 
 | # | Claim | × | Route | Where it appears | Source anchor | What would satisfy the basis |
 |---|---|---|---|---|---|---|
@@ -91,10 +95,10 @@ separate and each needs its own basis.
 | 2 | `82%` | 1 | `/case-studies` | Same sentence as row 1 | — | Same as row 1. The registry readme already names this one. |
 | 3 | `faster` | 1 | `/case-studies` | Same sentence as row 1 | — | Same as row 1 — the token is inside the quoted example, not an assertion. |
 | 4 | `faster` | 1 | `/case-studies/label-service` | "For a floor printer this matters — it prints faster, positions predictably…" | — | Either a print-time comparison (native label commands vs rendered image, same printer, same label, N runs) with a date, or `not-a-claim` if this is qualitative. |
-| 5 | `0.02%` | 1 | `/etl-showcase` | Mock dashboard, "API Uptime 99.97% **+0.02% vs last week**" | — | **See W7 caveat.** As a live delta it has no basis and cannot acquire one; the figure is illustrative. |
-| 6 | `0.8%` | 1 | `/etl-showcase` | Mock dashboard, "Retry Rate 2.3% **+0.8% vs last week**" | — | Same as row 5. |
-| 7 | `2.3%` | 1 | `/etl-showcase` | Mock dashboard, "**Retry Rate 2.3%**" | — | Same as row 5. |
-| 8 | `99.97%` | 1 | `/etl-showcase` | Mock dashboard, "**API Uptime 99.97%**" | — | Same as row 5. |
+| 5 | `0.02%` | 1 | `/etl-showcase` | Now only inside the correction note, which quotes the removed "+0.02% vs last week" | — | Nothing needed. It survives as a quotation inside a published correction — the same shape as row 17. |
+| 6 | `0.8%` | — | `/etl-showcase` | **GONE.** Was "Retry Rate 2.3% +0.8% vs last week"; the deltas were removed by W7 and the registry entry deleted with them. | — | Nothing needed. Kept as a row so the numbering does not shift under you. |
+| 7 | `2.3%` | 1 | `/etl-showcase` | Example dashboard, "**Retry Rate 2.3%**"; panel now marked "Example — not live data" | — | Nothing needed. The panel no longer presents this as a measurement. |
+| 8 | `99.97%` | 1 | `/etl-showcase` | Example dashboard, "**API Uptime 99.97%**"; panel now marked "Example — not live data" | — | Nothing needed. Same as row 7. |
 | 9 | `~27%` | 1 | `/` | Stat row, "~27% performance gain" | `/working-with-claude-blog#perf-gain` | What was measured (elapsed time? logical reads? CPU?), across how many views, against what baseline capture, with what tool, on what date. The article says "aggregate gain" — say aggregated over what population. |
 | 10 | `100%` | 1 | `/` | FAQ, "Do we own the code you write?" → "100%. Everything we build is yours." | — | Not a measurement — it is an ownership answer. Candidate for `not-a-claim`. |
 | 11 | `99%` | 1 | `/` | Stat row, "99%+ automation match rate" | `#macros`, which contains no match rate — **W5 is HELD, see Q1** | Blocked by **Q1**. The anchor is wrong and the label is wrong, but which provenance is correct is unknown, so the anchor cannot be re-pointed yet. Answer Q1, then M1. |
