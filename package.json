@@ -4,7 +4,7 @@
   "private": true,
   "description": "siegestack.com. Static pages, plus Netlify functions for the contact form, the consultant expertise form, and the private threads at /jesse and /nicole.",
   "scripts": {
-    "test": "node scripts/test/forms.test.mjs && node scripts/test/sweep.test.mjs && node scripts/test/publish-gate.test.mjs",
+    "test": "node scripts/test/forms.test.mjs && node scripts/test/sweep.test.mjs && node scripts/test/publish-gate.test.mjs && node scripts/test/cross-coverage.test.mjs",
     "test:defects": "node scripts/test/forms.test.mjs --defects && node scripts/test/sweep.test.mjs --defects",
     "build:pages": "node scripts/build-page-index.mjs",
     "build:llms": "node scripts/build-llms-full.mjs",
