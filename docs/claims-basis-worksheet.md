@@ -85,6 +85,37 @@ Answer this before touching M1's 99%+ component, row 23, or the homepage stat ro
 are genuinely separate measurements that happen to share a figure, say so — then M1 and M2 stay
 separate and each needs its own basis.
 
+### Leading hypothesis — UNCONFIRMED, do not act on it
+
+**The 99%+ belongs to the script-replacement engagement, not the view audit.** This is a
+reading of the page text, not a recollection, and nobody has confirmed it. It is written down
+so it can be checked, not so it can be assumed.
+
+The reasoning, all of it internal evidence:
+
+- The `#macros` section describes the replacement script as "querying the database directly,
+  **and reconciling records**." A reconciliation is what produces a match rate.
+- The deck slide reads "Tested against **legacy output** until we hit 99%+ match" — legacy
+  output being what the replaced macros produced. It sits beside the migration and cut-over
+  language, not beside anything about database views.
+- In the `#perf-gain` summary line — "300+ views audited · ~27% aggregate gain · 70 change
+  sets · 99%+ match rate" — three of the four items measure the same object and the fourth
+  does not. It reads like a figure appended to a list it does not belong to.
+
+**What it would mean if it holds.** The homepage tile is correct exactly as it stands —
+right anchor (`#macros`) and right label ("automation match rate"), because replacing manual
+macros with a scheduled script *is* the automation. The defect shrinks to **one item on the
+`#perf-gain` summary line that belongs to a different engagement**. That inverts W5: the fix
+lands on the article, not on the homepage.
+
+**What keeps it unconfirmed.** A view-rewrite audit produces a natural match rate of its own —
+a rewritten view returning the same rows as the original — so 99%+ is plausible in both
+places, which is presumably how it drifted. The text can say which reading is more coherent.
+It cannot say which one happened.
+
+If it holds, **M1 and M2 are two measurements, not one figure with two stories**, and each
+needs its own basis.
+
 ---
 
 ## The registered claims
