@@ -1119,7 +1119,7 @@ function renderCanvas(){
       node.innerHTML =
         `<div style="width:100%;height:100%;display:flex;flex-direction:column">`+
         `<div style="flex:1;min-height:0;display:flex;justify-content:center;align-items:center">${codeSvg}</div>`+
-        (showV?`<div style="text-align:center;font-size:${fontPx(el.size||8)}px;line-height:1.1">${esc(raw)}</div>`:``)+
+        (showV?`<div style="text-align:center;font-size:${fontPx(el.size||8)}px;font-weight:${el.bold?700:400};line-height:1.1">${esc(raw)}</div>`:``)+
         `</div>`;
       const svg=node.querySelector("svg"); if(svg){svg.style.width="100%";svg.style.height="100%";}
       }
@@ -1423,15 +1423,18 @@ function renderProps(){
             <option value="Q" ${(el.ecLevel||"M")==="Q"?"selected":""}>Q · ~25%</option>
             <option value="H" ${(el.ecLevel||"M")==="H"?"selected":""}>H · ~30%</option></select></div>`);
   }
-  // size + bold/align (text)
-  if(el.type!=="image")
-  add(`<div class="prop"><label>Font size (pt)</label><input id="p_size" type="number" step="0.5" value="${el.size||8}"></div>`);
+  /* size + bold. Both apply to a barcode or QR too: they set the size and weight of
+     the human-readable value printed under the code, so a caption can be made legible
+     without touching the code above it. Align and wrap stay text-only. */
+  if(el.type!=="image"){
+    add(`<div class="prop"><label>Font size (pt)</label><input id="p_size" type="number" step="0.5" value="${el.size||8}"></div>`);
+    add(`<div class="checkrow"><input type="checkbox" id="p_bold" ${el.bold?"checked":""}><label for="p_bold">Bold</label></div>`);
+  }
   if(el.type==="text"){
     add(`<div class="prop"><label>Align</label><select id="p_align">
           <option ${el.align==="left"?"selected":""}>left</option>
           <option ${el.align==="center"?"selected":""}>center</option>
           <option ${el.align==="right"?"selected":""}>right</option></select></div>`);
-    add(`<div class="checkrow"><input type="checkbox" id="p_bold" ${el.bold?"checked":""}><label for="p_bold">Bold</label></div>`);
     add(`<div class="checkrow"><input type="checkbox" id="p_wrap" ${el.wrap!==false?"checked":""}><label for="p_wrap">Wrap text</label></div>`);
   }
   // geometry — shown in inches (matches the label size and the ruler), each box labeled
@@ -1849,7 +1852,7 @@ function pelHTML(el,row){
     const codeSvg = el.type==="qrcode" ? (QR.svg(enc,{level:el.ecLevel||"M"})||"") : code128svg(enc,{height:60});
     return `<div class="pel" style="${style}"><div style="width:100%;height:100%;display:flex;flex-direction:column">`+
       `<div style="flex:1;min-height:0;display:flex;justify-content:center;align-items:center">${codeSvg}</div>`+
-      (showV?`<div style="text-align:center;font-size:${el.size||8}pt;line-height:1.05">${esc(raw)}</div>`:``)+
+      (showV?`<div style="text-align:center;font-size:${el.size||8}pt;font-weight:${el.bold?700:400};line-height:1.05">${esc(raw)}</div>`:``)+
       `</div></div>`;
   }
   // text — data-px is the starting size; the fit script in the print doc shrinks it to fit
