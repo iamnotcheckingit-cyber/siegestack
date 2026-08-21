@@ -58,6 +58,7 @@ const PAGES = [
   ['about.html', '/about', 'About SiegeStack'],
   ['contact.html', '/contact', 'Contact'],
   ['privacy-policy.html', '/privacy-policy', 'Privacy policy'],
+  ['corrections.html', '/corrections', 'Corrections'],
 ];
 
 const ENTITIES = {

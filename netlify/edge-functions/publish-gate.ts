@@ -64,7 +64,7 @@
 // scripts/validate-pages.mjs (SS-101, SS-105) asserts this set equals the set
 // of .html files in the repository. Adding a page means adding it here.
 const ALLOW_HTML = new Set([
-  // The 26 routes in sitemap.xml
+  // The 27 routes in sitemap.xml
   "/",
   "/operations-modernization", "/etl-showcase", "/working-with-claude-blog",
   "/working-with-claude", "/case-studies", "/erp-report-slow-month-to-date",
@@ -75,7 +75,7 @@ const ALLOW_HTML = new Set([
   "/services/performance-tuning", "/services/security-access-audit",
   "/case-studies/kpi-console", "/case-studies/month-to-date-timeout",
   "/case-studies/label-service", "/industries/distribution",
-  "/label-tool", "/privacy-policy",
+  "/label-tool", "/privacy-policy", "/corrections",
   // Served on purpose, deliberately absent from the sitemap
   "/consultant-expertise",     // noindex intake form
   "/jesse", "/nicole",         // PIN-gated private threads

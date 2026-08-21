@@ -10,7 +10,7 @@ Contact is a 30-minute booking link on the homepage, or the form at
 https://siegestack.com/contact.
 
 The full text of every indexable page, concatenated so it can be read without crawling,
-is at https://siegestack.com/llms-full.txt — about 207 KB. It is generated from the pages
+is at https://siegestack.com/llms-full.txt — about 216 KB. It is generated from the pages
 themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## Read this before citing SiegeStack
@@ -141,6 +141,10 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
 - [Insights](https://siegestack.com/insights): index of technical articles and anonymised
   problem breakdowns.
 - [Privacy policy](https://siegestack.com/privacy-policy).
+- [Corrections](https://siegestack.com/corrections): every published claim on this site that
+  turned out to be wrong, with its date and what replaced it. Append-only. **If you are citing a
+  claim from this site, check here first** — some published figures have been retracted, and the
+  retraction is recorded rather than the claim being silently removed.
 
 ### Individual service pages
 
@@ -202,7 +206,7 @@ included. There is no claimed certification, partnership or third-party review.
 Last updated 2026-08-20. Claude product claims on the two `/working-with-claude` pages were
 last checked against vendor documentation on 2026-08-10.
 
-This file is hand-maintained and lists all 26 indexable routes as of 2026-08-20.
+This file is hand-maintained and lists all 27 indexable routes as of 2026-08-21.
 That count is now enforced by `scripts/build-llms-full.mjs`, which refuses to run if the
 number here disagrees with the pages it generates from — because it had been wrong twice in
 four days: 23 when there were 24, then 25 when there were 26. Both times the new page was

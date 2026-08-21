@@ -447,6 +447,17 @@ const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b
         error('SS-601', p.route, 'Numeric or comparative performance claim with no entry in data/claims-registry.json.', `"${claim}" ×${n}`);
       } else if (n > (entry.occurrences ?? 0)) {
         error('SS-601', p.route, `Claim appears ${n} times but only ${entry.occurrences} are registered. A new instance was added.`, `"${claim}"`);
+      } else if (entry.disposition === 'not-a-claim') {
+        // The registry's readme has always named this as one of the three valid
+        // outcomes, and until now nothing implemented it -- so marking an entry
+        // not-a-claim changed nothing and the warning stayed. That made the
+        // documented way of resolving a row a promise the tool did not keep,
+        // which is the same defect class as a stale derived value. A reason is
+        // required: an unexplained disposition is indistinguishable from someone
+        // silencing a warning they got tired of, exactly as with SS-001.
+        if (!String(entry.reason ?? '').trim()) {
+          error('SS-601', p.route, 'Claim is marked disposition:"not-a-claim" with no reason. An unexplained disposition is indistinguishable from a silenced warning.', `"${claim}"`);
+        }
       } else if (String(entry.measurementBasis).startsWith('TODO')) {
         warn('SS-601', p.route, 'Claim is registered but has no measurement basis yet.', `"${claim}" ×${n}`);
       }
