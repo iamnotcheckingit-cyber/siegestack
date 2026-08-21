@@ -22,6 +22,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { checkInputs, INPUT_MANIFEST, CORPUS_MANIFEST } from './lib/input-guard.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -44,18 +45,41 @@ if (process.argv.some((a) => /^--(fix|write|write-lastmod|repair)$/.test(a))) {
 // ---------------------------------------------------------------------------
 // Inputs
 // ---------------------------------------------------------------------------
-const MODEL = rdJson('data/pages.json');
-const PAGES = MODEL.pages;
-const SUPPRESSIONS = rdJson('data/validation-suppressions.json').suppressions ?? [];
-const FRESH_EXCL = rdJson('data/freshness-exclusions.json').exclusions ?? [];
-const OG_OVERRIDES = rdJson('data/og-overrides.json').overrides ?? [];
-const NON_HTML = rdJson('data/non-html-routes.json').routes ?? [];
-const JSONLD_EXEMPT = rdJson('data/jsonld-exempt.json').routes ?? [];
-const CLAIMS = rdJson('data/claims-registry.json').claims ?? [];
-const STATED_COUNTS = rdJson('data/stated-correction-counts.json').routes ?? [];
+/**
+ * Every input is read through readInput(), defensively and exactly once, so
+ * SS-003 can report a malformed file rather than the process dying on it before
+ * a single finding is printed. The read sites are also what the manifest
+ * coverage test counts -- see scripts/test/input-guard.test.mjs.
+ */
+const rawInputs = new Map();
+const readInput = (file) => {
+  if (rawInputs.has(file)) return rawInputs.get(file);
+  let rec;
+  if (!has(file)) rec = { present: false };
+  else {
+    try { rec = { present: true, parsed: rdJson(file) }; }
+    catch (e) { rec = { present: true, parseError: String(e.message) }; }
+  }
+  rawInputs.set(file, rec);
+  return rec;
+};
+const listOf = (file, key) => {
+  const v = readInput(file).parsed?.[key];
+  return Array.isArray(v) ? v : [];
+};
+
+const MODEL = readInput('data/pages.json').parsed ?? { pages: [] };
+const PAGES = Array.isArray(MODEL.pages) ? MODEL.pages : [];
+const SUPPRESSIONS = listOf('data/validation-suppressions.json', 'suppressions');
+const FRESH_EXCL = listOf('data/freshness-exclusions.json', 'exclusions');
+const OG_OVERRIDES = listOf('data/og-overrides.json', 'overrides');
+const NON_HTML = listOf('data/non-html-routes.json', 'routes');
+const JSONLD_EXEMPT = listOf('data/jsonld-exempt.json', 'routes');
+const CLAIMS = listOf('data/claims-registry.json', 'claims');
+const STATED_COUNTS = listOf('data/stated-correction-counts.json', 'routes');
 
 const DENYLIST_LOCAL = '.denylist.local.json';
-const DENYLIST = has(DENYLIST_LOCAL) ? (rdJson(DENYLIST_LOCAL).terms ?? []) : null;
+const DENYLIST = readInput(DENYLIST_LOCAL).present ? listOf(DENYLIST_LOCAL, 'terms') : null;
 
 const INDEXABLE = PAGES.filter((p) => p.class === 'indexable');
 const byRoute = new Map(PAGES.map((p) => [p.route, p]));
@@ -93,6 +117,31 @@ const routeSkip = (id, route, why, observed) => {
   routeSkips.push({ id, route });
   warn(id, route, why, observed);
 };
+
+// ---------------------------------------------------------------------------
+// SS-003 — the inputs must be usable before any finding below means anything
+//
+// Runs first because a green run on vacuous inputs is worse than a red one: it
+// is the shape every finding in the 2026-08-21 sweep had. The logic is a pure
+// function in scripts/lib/input-guard.mjs so it can be tested by handing it
+// broken inputs rather than by breaking real files.
+//
+// It catches TOTAL regressions, not partial ones -- see the header of that
+// module. A green SS-003 is not evidence the extractor is healthy for every
+// page.
+// ---------------------------------------------------------------------------
+{
+  for (const spec of INPUT_MANIFEST) readInput(spec.file);
+  const corpora = new Map(
+    CORPUS_MANIFEST.map(({ file }) => [
+      file,
+      has(file) ? { present: true, bytes: Buffer.byteLength(rd(file)) } : { present: false, bytes: 0 },
+    ]),
+  );
+  for (const f of checkInputs({ inputs: rawInputs, corpora, model: MODEL })) {
+    findings.push(f); // never suppressible: a suppressed input guard is the bug it exists to catch
+  }
+}
 
 // ---------------------------------------------------------------------------
 // SS-001 — the suppression file validates itself
