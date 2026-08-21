@@ -87,6 +87,35 @@ and `error-page`.
 | **SS-602** | error, or **SKIPPED** | all output | Employer, client, facility, person or contract identifiers anywhere in page text, JSON-LD, `llms.txt`, `llms-full.txt` or `sitemap.xml` | Terms load from `.denylist.local.json`, which is gitignored. The terms are never committed and are never printed in output: this repository is public and CI logs are public, so a committed denylist would publish exactly the strings it exists to keep off the site — the same failure as a `robots.txt` `Disallow` advertising a private URL, which `netlify.toml` already refuses to do for `/jesse`. **Reports SKIPPED when the file is absent, never PASSED**: a policy check that silently passes when its input is missing is worse than no check. |
 | **SS-603** | warning | indexable | "best-in-class", "world-class", "synergy", "cutting-edge", "seamless integration", "game-changing", "industry-leading", "turnkey solution", "paradigm shift", and eleven more | Stock marketing phrasing. Warning — it is a house-style matter, not a correctness one. |
 
+## SS-6xx (continued) — the corrections practice
+
+The site corrects published claims in public rather than editing them quietly. Until
+2026-08-21 that rested entirely on remembering, and no rule referenced it. **None of these
+can detect a correction that *should* have been written and was not** — that needs a
+judgement about whether a fact changed. They check what is decidable from the tree.
+
+Markers are read from attributes, never from the word "correction" in the prose: that word
+is a QR error-correction level on `/label-tool` and a data-rights bullet on
+`/privacy-policy`, and it is **absent from the retraction of the "roughly 20% of the time"
+figure**, which never uses it.
+
+| ID | Severity | Scope | Catches | Why it exists |
+|---|---|---|---|---|
+| **SS-604** | error | all 32 | A `data-correction` or `data-disclosure` slug present in the file's previous commit and missing now | The page states the principle itself: "deleting a correction along with its subject is how a record stops being a record." The disclosure half matters more — losing the "Example — not live data" marker re-opens the exact defect W7 closed. **Checks the commit, not the working tree**: SS-002 already blocks dirty trees, and proving this rule by breaking the working tree yields a silent pass that looks like a broken rule. |
+| **SS-605** | error | any page declaring `data-correction-count` | A stated count that disagrees with the distinct slugs marked | `/working-with-claude-blog` enumerates its corrections in prose. That sentence went stale the moment a fifth was added — it said four — and grepping for the new heading would have said everything was fine. Same class as the slide count in eleven places. Counts **distinct slugs, not elements**: one correction can be surfaced twice on a page (`cross-session-memory` has a section and an FAQ answer), and a reader counts corrections, not mentions. |
+| **SS-606** | warning | all 32 | A `claims-registry.json` claim no longer present on its route, on a page with no correction marker | Warning on purpose. A claim can vanish because the whole section went — the article keeps the litigation correction "even though the section it belonged to has been removed" — and the house convention of **quoting the retracted figure inside the retraction** keeps the token on the page, so a correctly written correction never trips it. It fires on silent deletions, which is the right polarity, but it caught **one of the three** corrections shipped 2026-08-21. That is its honest reach. |
+
+**Corrections vs standing disclosures are different things and carry different markup.**
+A correction is dated and describes something that *changed*. A standing disclosure
+(`data-disclosure`) describes something still on the page — the invented figures on
+`/etl-showcase` and the marker that makes them honest. Nothing was corrected there. They
+are separate fields in the model so that no ageing or collapse rule can ever treat a
+disclosure as an old correction and strip it.
+
+**All four checks were proven to fail on a deliberately broken tree before being trusted**
+— SS-605 and SS-606 by editing the working copy, SS-604 (both halves) by committing the
+deletion on a throwaway branch.
+
 ## SS-7xx — hygiene
 
 | ID | Severity | Scope | Catches | Why it exists |
