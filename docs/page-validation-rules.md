@@ -46,9 +46,36 @@ and `error-page`.
 
 | ID | Severity | Scope | Catches | Why it exists |
 |---|---|---|---|---|
-| **SS-201** | error | indexable | `sitemapLastmod` ≠ the date of the newest commit touching `sourceFile`, **excluding** SHAs in `data/freshness-exclusions.json` | **Phase 1 finding: 24 of 26 routes drifted.** Raw git dates are unusable on their own — commit `b1f31e9` added a `<main>` landmark to all 32 files in one pass and reset every date to 2026-08-20, so a rule keyed to git alone reports 26 content changes that did not happen, which trains you to ignore it. The exclusion list is what makes the signal real. A SHA belongs there only if it changed no published copy at all. |
+| **SS-201** | error, or a **route-skip** | indexable | `sitemapLastmod` ≠ the date of the newest commit touching `sourceFile`, **excluding** SHAs in `data/freshness-exclusions.json` | **Phase 1 finding: 24 of 26 routes drifted.** Raw git dates are unusable on their own — commit `b1f31e9` added a `<main>` landmark to all 32 files in one pass and reset every date to 2026-08-20, so a rule keyed to git alone reports 26 content changes that did not happen, which trains you to ignore it. The exclusion list is what makes the signal real. A SHA belongs there only if it changed no published copy at all. |
 | **SS-202** | error | indexable | `lastmod` in the future | A date nobody can have measured. |
 | **SS-203** | error (exit 2) | the validator itself | `--fix`, `--write`, `--write-lastmod`, `--repair` | Not a check on the site; a check on this file. Auto-stamping `lastmod` on build makes every page permanently "fresh" and deletes the only signal SS-201 carries. The validator refuses to grow a write mode. |
+
+### Route-skips, and why SS-201 grew them
+
+A rule can be unable to check **one** route without being unable to check any. That state is a
+**route-skip**: a warning naming the route and the reason, *plus* a count in the summary line.
+A skipped route that produces no output is indistinguishable from a passing one.
+
+```
+0 error(s), 29 warning(s), 0 route-skip(s), 2 skipped, 0 suppressed
+```
+
+SS-201 has three non-checking states, and until 2026-08-21 two of them were invisible:
+
+| State | Old behaviour | Now |
+|---|---|---|
+| `git-unavailable` — git threw | Skipped the whole rule | Unchanged. This is the **only** condition that disables the rule for every route. |
+| `no-history` — the file has never been committed | **Returned the same sentinel as a broken git**, tripping `gitOk = false; break`. One new page disabled freshness for all 26 routes, mid-change, when the check matters most. `git log -- newfile` exits 0 with empty output, so `''.split(' ')` yielded an undefined date. | Route-skip. Expected exactly once, on the commit that introduces the page; the warning says so, and a route still skipping later means the file is not being committed. |
+| `all-excluded` — every commit touching the file is in the exclusions list | Returned `null`, which `if (actual && …)` silently swallowed. The route was never checked and never said so. | Route-skip naming the route and pointing at the exclusions file. |
+
+**A second rule was collaterally disabled.** SS-202 (future `lastmod`) lived inside the SS-201
+loop, so the `break` on a git problem switched off the future-date check for every remaining
+route too. It now runs in its own loop and needs no git at all.
+
+**Proven, not assumed.** A staged-but-uncommitted page route-skipped itself while a
+deliberately broken `lastmod` on `/about` still errored — under the old code `/about` would
+have been silently unchecked. Excluding the four commits touching one page put **nine** routes
+into `all-excluded`, all nine now reported; previously all nine passed silently.
 
 ## SS-3xx — metadata
 
