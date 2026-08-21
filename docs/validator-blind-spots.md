@@ -117,6 +117,27 @@ file parsed to a non-empty collection of the expected shape, every corpus accoun
 reports anything vacuous as a skip. That would close B1, B2, B5, B8, B9, B10 and B14 at once,
 and would put the honesty in one place rather than in twenty.
 
+## Status — what was built, and what was deliberately not
+
+Shipped 2026-08-21, after this sweep:
+
+- **B6** — SS-601 no longer advises deleting registry rows it could not read.
+- **B7** — SS-605's expectation moved to `data/stated-correction-counts.json`, outside the page.
+- **SS-003**, the input guard, closing **B1, B2, B3, B4, B5, B8, B9, B10 and B14**.
+- Cross-coverage for SS-604 and SS-102 asserted in `scripts/test/cross-coverage.test.mjs`, so
+  the two accidental couplings are now guarantees.
+
+**Known gap, captured and not scheduled: partial regressions.** SS-003's population class fires
+when a model field is empty on *every* page. It does **not** fire when the extractor breaks for
+*some* pages, and nothing else would catch that either. Detecting it needs a stored baseline
+count per field to compare against — a different and much heavier mechanism than an assertion
+pass, with its own staleness problem. The limitation is stated in the rule's own text and in
+`scripts/lib/input-guard.mjs`, on the principle that a capability nobody wrote down becomes a
+capability everybody assumes.
+
+Still open from the table, all low and all argued in place: **B12** (rating markup inside an
+unparseable block is invisible to SS-503), **B13**, **B15**, **B16**.
+
 ## Coverage note
 
 The sweep covered every rule from SS-001 to SS-701. Two findings are marked **INFERRED** and
