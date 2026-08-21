@@ -71,13 +71,13 @@ performance gain
 
 views audited
 
-[B → A+](https://siegestack.com/working-with-claude-blog#security-grade)
-
-security grade, one site
-
 [99%+](https://siegestack.com/working-with-claude-blog#macros)
 
 automation match rate
+
+All three come from one write-up of how we work, not from separate client engagements.
+
+**Corrected 21 August 2026.** A fourth figure — a B → A+ security grade — was removed from this row. It came from a personal project, and standing it beside professional results without saying so overstated what it was. It is still in [the article](https://siegestack.com/working-with-claude-blog#security-grade), labelled.
 
 ### What We Build
 
