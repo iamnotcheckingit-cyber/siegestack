@@ -1,0 +1,17 @@
+{
+  "_readme": [
+    "Per-rule, per-route suppression for scripts/validate-pages.mjs.",
+    "",
+    "A suppression turns one rule off for one route. It never turns off a rule file-wide,",
+    "and it never turns off a rule for every route -- that is what deleting the rule is for,",
+    "and deleting it is at least visible in a diff.",
+    "",
+    "reason is REQUIRED and is itself validated (SS-001). A suppression with no reason is an",
+    "error, because an unexplained suppression is indistinguishable from a bug someone got",
+    "tired of. Say what makes this route the exception, not that the rule is annoying.",
+    "",
+    "Fields: ruleId, route, reason, addedOn (YYYY-MM-DD).",
+    "Seeded empty on purpose: the Phase 2 failure list is meant to be read, not silenced."
+  ],
+  "suppressions": []
+}

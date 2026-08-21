@@ -1,0 +1,22 @@
+{
+  "_readme": [
+    "SS-201. Commits listed here are ignored when working out the newest commit that",
+    "touched a source file. They are the commits that changed every file without changing",
+    "what any page says.",
+    "",
+    "This list exists because the freshness rule is otherwise unusable. A sitewide",
+    "accessibility or footer pass resets the git date on every page at once, and a rule",
+    "keyed to raw git dates then reports 26 content changes that did not happen -- which",
+    "trains you to ignore it, which is worse than not having it.",
+    "",
+    "Add a SHA here only when the commit genuinely changed no page content. If it touched",
+    "copy on even one page, do not exclude it; fix that page's lastmod instead."
+  ],
+  "exclusions": [
+    {
+      "sha": "b1f31e9",
+      "reason": "Bulk non-content rewrite: added a <main> landmark to every page and stopped footer links relying on colour alone. Touched all 32 HTML files, changed no published copy, and reset every git date to 2026-08-20.",
+      "addedOn": "2026-08-20"
+    }
+  ]
+}

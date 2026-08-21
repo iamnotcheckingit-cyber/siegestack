@@ -1,0 +1,572 @@
+/**
+ * validate-pages — the invariants that keep siegestack.com honest.
+ *
+ *   npm run validate:pages
+ *
+ * Errors exit non-zero. Warnings print and exit zero. Every rule has a stable
+ * ID so one can be suppressed for one route without disabling the file.
+ *
+ * IT DOES NOT PARSE HTML. Everything it checks comes out of data/pages.json,
+ * built by scripts/build-page-index.mjs. Two scripts parsing the same HTML with
+ * two slightly different regexes is a bug generator: the validator would pass on
+ * text the generator never saw, or fail on text that is not really there. One
+ * extractor, one model, one set of blind spots.
+ *
+ * IT NEVER WRITES. Not to sitemap.xml, not to lastmod, not to anything. See
+ * SS-203 -- a validator that repairs the value it is checking is not a
+ * validator, it is a laundering step that guarantees a green build.
+ *
+ * Node builtins only, plus `git log` for SS-201.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const rd = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
+const rdJson = (p) => JSON.parse(rd(p));
+const has = (p) => fs.existsSync(path.join(ROOT, p));
+
+// ---------------------------------------------------------------------------
+// SS-203 guard, first thing, before anything is loaded.
+// ---------------------------------------------------------------------------
+if (process.argv.some((a) => /^--(fix|write|write-lastmod|repair)$/.test(a))) {
+  console.error(
+    'SS-203  This validator has no write mode and will not grow one.\n' +
+    '        A failing SS-201 means a human decides whether the page changed.\n' +
+    '        Auto-stamping lastmod on build makes every page permanently "fresh"\n' +
+    '        and deletes the only signal the rule exists to carry.'
+  );
+  process.exit(2);
+}
+
+// ---------------------------------------------------------------------------
+// Inputs
+// ---------------------------------------------------------------------------
+const MODEL = rdJson('data/pages.json');
+const PAGES = MODEL.pages;
+const SUPPRESSIONS = rdJson('data/validation-suppressions.json').suppressions ?? [];
+const FRESH_EXCL = rdJson('data/freshness-exclusions.json').exclusions ?? [];
+const OG_OVERRIDES = rdJson('data/og-overrides.json').overrides ?? [];
+const NON_HTML = rdJson('data/non-html-routes.json').routes ?? [];
+const JSONLD_EXEMPT = rdJson('data/jsonld-exempt.json').routes ?? [];
+const CLAIMS = rdJson('data/claims-registry.json').claims ?? [];
+
+const DENYLIST_LOCAL = '.denylist.local.json';
+const DENYLIST = has(DENYLIST_LOCAL) ? (rdJson(DENYLIST_LOCAL).terms ?? []) : null;
+
+const INDEXABLE = PAGES.filter((p) => p.class === 'indexable');
+const byRoute = new Map(PAGES.map((p) => [p.route, p]));
+const nonHtmlRoutes = new Set(NON_HTML.map((r) => r.route));
+
+// ---------------------------------------------------------------------------
+// Reporting
+// ---------------------------------------------------------------------------
+const findings = [];
+const skipped = [];
+const suppressed = [];
+
+const isSuppressed = (id, route) =>
+  SUPPRESSIONS.some((s) => s.ruleId === id && s.route === route && String(s.reason ?? '').trim());
+
+function report(severity, id, route, message, observed) {
+  if (isSuppressed(id, route)) { suppressed.push({ id, route, message }); return; }
+  findings.push({ severity, id, route, message, observed });
+}
+const error = (id, route, message, observed) => report('error', id, route, message, observed);
+const warn = (id, route, message, observed) => report('warning', id, route, message, observed);
+const skip = (id, why) => skipped.push({ id, why });
+
+// ---------------------------------------------------------------------------
+// SS-001 — the suppression file validates itself
+// ---------------------------------------------------------------------------
+for (const [i, s] of SUPPRESSIONS.entries()) {
+  const where = `data/validation-suppressions.json[${i}]`;
+  if (!String(s.reason ?? '').trim()) {
+    findings.push({ severity: 'error', id: 'SS-001', route: where,
+      message: 'Suppression has no reason. An unexplained suppression is indistinguishable from a bug someone got tired of.',
+      observed: JSON.stringify(s) });
+  }
+  if (!s.ruleId || !s.route) {
+    findings.push({ severity: 'error', id: 'SS-001', route: where,
+      message: 'Suppression needs both ruleId and route.', observed: JSON.stringify(s) });
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s.addedOn ?? ''))) {
+    findings.push({ severity: 'error', id: 'SS-001', route: where,
+      message: 'Suppression needs addedOn as YYYY-MM-DD, so an old one can be found and re-argued.',
+      observed: String(s.addedOn) });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SS-002 — the model must describe HEAD, not a snapshot of some earlier tree
+// ---------------------------------------------------------------------------
+{
+  let headSha = null;
+  try { headSha = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT }).toString().trim(); }
+  catch { skip('SS-002', 'git unavailable; cannot confirm data/pages.json describes HEAD'); }
+
+  if (headSha) {
+    if (MODEL.generatedFrom?.commit !== headSha) {
+      findings.push({ severity: 'error', id: 'SS-002', route: 'data/pages.json',
+        message: 'Page model is stale. It was generated from a different commit, so every rule below would be validating a tree that is not this one. Run: node scripts/build-page-index.mjs',
+        observed: `generatedFrom.commit=${MODEL.generatedFrom?.commit} HEAD=${headSha}` });
+    }
+    let dirty = [];
+    try {
+      dirty = execFileSync('git', ['status', '--porcelain', '--', '*.html'], { cwd: ROOT })
+        .toString().trim().split('\n').filter(Boolean);
+    } catch { /* handled above */ }
+    if (dirty.length) {
+      findings.push({ severity: 'error', id: 'SS-002', route: 'data/pages.json',
+        message: 'HTML files are modified relative to HEAD, so the page model does not describe the tree being validated.',
+        observed: dirty.join(' | ').slice(0, 300) });
+    }
+  }
+}
+
+// ===========================================================================
+// SS-1xx — Route parity
+// ===========================================================================
+
+// SS-101 — filesystem HTML routes ≡ ALLOW_HTML ≡ sitemap ∪ noindex ∪ error ∪ verification
+{
+  const fsRoutes = new Set(PAGES.map((p) => p.route));
+  const allowHtml = new Set(MODEL.allowHtml ?? []);
+  const expected = new Set(
+    PAGES.filter((p) => ['indexable', 'served-noindex', 'error-page', 'verification'].includes(p.class))
+      .map((p) => p.route)
+  );
+
+  for (const r of fsRoutes) {
+    if (!allowHtml.has(r)) {
+      error('SS-101', r, 'HTML route exists in the repository but is absent from ALLOW_HTML in publish-gate.ts, so it is not served.', r);
+    }
+  }
+  for (const r of allowHtml) {
+    if (!fsRoutes.has(r)) {
+      error('SS-101', r, 'ALLOW_HTML names a route with no HTML file behind it. Either the page was deleted and the allow entry left, or the entry is a typo.', r);
+    }
+  }
+  for (const r of expected) {
+    if (!fsRoutes.has(r)) error('SS-101', r, 'Classified route has no source file.', r);
+  }
+  for (const r of MODEL.totals?.phantomSitemapEntries ?? []) {
+    error('SS-101', r, 'Sitemap lists a route with no HTML file behind it.', r);
+  }
+}
+
+// SS-102 — sitemap ≡ llms.txt
+{
+  const sitemapRoutes = new Set(INDEXABLE.map((p) => p.route));
+  const llms = new Set(MODEL.llmsTxtRoutes ?? []);
+  // llms.txt legitimately references non-page URLs; they are not sitemap drift.
+  const llmsIgnorable = new Set([...nonHtmlRoutes, '/llms.txt', '/llms-full.txt', '/robots.txt', '/sitemap.xml']);
+
+  for (const r of sitemapRoutes) {
+    if (!llms.has(r)) {
+      error('SS-102', r, 'In sitemap.xml but not linked from llms.txt. llms.txt is hand-maintained and has gone stale before -- twelve pages were missing for a day.', r);
+    }
+  }
+  for (const r of llms) {
+    if (!sitemapRoutes.has(r) && !llmsIgnorable.has(r)) {
+      error('SS-102', r, 'Linked from llms.txt but absent from sitemap.xml. Either it should be published, or llms.txt is pointing crawlers at something unlisted.', r);
+    }
+  }
+}
+
+// SS-103 — no sitemap route disallowed by robots.txt
+for (const p of INDEXABLE) {
+  if (p.robotsTxtDisallowed) {
+    error('SS-103', p.route, 'Route is in sitemap.xml and disallowed by robots.txt. The two files are giving crawlers opposite instructions.', `robots.txt Disallow matches ${p.route}`);
+  }
+}
+
+// SS-104 — inSitemap && noindex
+for (const p of PAGES) {
+  if (p.inSitemap && p.noindex) {
+    error('SS-104', p.route, 'Route is in sitemap.xml and carries noindex. The sitemap asks for indexing and the page refuses; one of them is stale.', p.robotsDirective);
+  }
+}
+
+// SS-105 — standing guard on the .html deny-by-default fix
+{
+  const allowHtml = new Set(MODEL.allowHtml ?? []);
+  for (const p of PAGES) {
+    if (!allowHtml.has(p.route)) {
+      error('SS-105', p.route, `${p.sourceFile} is in the publish directory but not in ALLOW_HTML. Before 2026-08-20 it would have been served anyway, because .html was allowed by extension.`, p.sourceFile);
+    }
+  }
+}
+
+// ===========================================================================
+// SS-2xx — Freshness
+// ===========================================================================
+{
+  const excluded = new Set(FRESH_EXCL.map((e) => String(e.sha).slice(0, 7)));
+  for (const e of FRESH_EXCL) {
+    if (!String(e.reason ?? '').trim()) {
+      findings.push({ severity: 'error', id: 'SS-201', route: 'data/freshness-exclusions.json',
+        message: 'Freshness exclusion has no reason.', observed: JSON.stringify(e) });
+    }
+  }
+
+  const contentDate = (file) => {
+    let log;
+    try { log = execFileSync('git', ['log', '--format=%h %cs', '--', file], { cwd: ROOT }).toString().trim(); }
+    catch { return undefined; }
+    for (const line of log.split('\n')) {
+      const [sha, date] = line.split(' ');
+      if (!excluded.has(sha.slice(0, 7))) return date;
+    }
+    return null; // every commit touching this file is excluded
+  };
+
+  const scoped = PAGES.filter((p) => p.inSitemap && !['verification', 'error-page'].includes(p.class));
+  const today = new Date().toISOString().slice(0, 10);
+
+  let gitOk = true;
+  for (const p of scoped) {
+    const actual = contentDate(p.sourceFile);
+    if (actual === undefined) { gitOk = false; break; }
+
+    if (actual && p.sitemapLastmod !== actual) {
+      error('SS-201', p.route,
+        'sitemap lastmod disagrees with the newest content commit touching the source file.',
+        `lastmod=${p.sitemapLastmod} newest-content-commit=${actual} (${p.sourceFile})`);
+    }
+    if (p.sitemapLastmod && p.sitemapLastmod > today) {
+      error('SS-202', p.route, 'sitemap lastmod is in the future.', `lastmod=${p.sitemapLastmod} today=${today}`);
+    }
+  }
+  if (!gitOk) skip('SS-201', 'git history unavailable in this environment (shallow clone or no git); freshness not checked here, CI checks it');
+}
+
+// ===========================================================================
+// SS-3xx — Metadata
+// ===========================================================================
+const BRAND_SUFFIX = /\| SiegeStack$/;
+
+{
+  const seenTitles = new Map();
+  const seenDescs = new Map();
+
+  for (const p of INDEXABLE) {
+    // SS-301
+    if (!p.title) error('SS-301', p.route, 'No <title>.', null);
+    else {
+      if (p.titleLength > 60) error('SS-301', p.route, `Title is ${p.titleLength} chars; over 60 it is truncated in results.`, p.title);
+      if (!BRAND_SUFFIX.test(p.title)) error('SS-301', p.route, 'Title does not end in the brand suffix "| SiegeStack".', p.title);
+      const prev = seenTitles.get(p.title);
+      if (prev) error('SS-301', p.route, `Title is not unique; also used by ${prev}.`, p.title);
+      else seenTitles.set(p.title, p.route);
+    }
+
+    // SS-302
+    if (!p.metaDescription) error('SS-302', p.route, 'No meta description.', null);
+    else {
+      if (p.descriptionLength < 120 || p.descriptionLength > 160) {
+        error('SS-302', p.route, `Meta description is ${p.descriptionLength} chars; outside 120-160.`, p.metaDescription);
+      }
+      if (/(?:\.\.\.|…)$/.test(p.metaDescription) || /[,;-]$/.test(p.metaDescription.trim())) {
+        error('SS-302', p.route, 'Meta description looks truncated mid-thought.', p.metaDescription.slice(-60));
+      }
+      const prev = seenDescs.get(p.metaDescription);
+      if (prev) error('SS-302', p.route, `Meta description is not unique; also used by ${prev}.`, p.metaDescription.slice(0, 60));
+      else seenDescs.set(p.metaDescription, p.route);
+    }
+
+    // SS-305
+    if (!p.canonical) error('SS-305', p.route, 'No canonical link.', null);
+    else {
+      if (!/^https:\/\//.test(p.canonical)) error('SS-305', p.route, 'Canonical is not an absolute https URL.', p.canonical);
+      if (p.canonicalSelfReferencing === false) error('SS-305', p.route, 'Canonical does not point at this route.', p.canonical);
+    }
+  }
+
+  // SS-303 / SS-304 — indexable errors, everything else warns
+  for (const p of PAGES) {
+    const sev = p.class === 'indexable' ? error : warn;
+    if (p.h1Count !== 1) sev('SS-303', p.route, `Page has ${p.h1Count} <h1> elements; it must have exactly one.`, p.h1.join(' | ') || '(none)');
+    for (const s of p.headingSkips) sev('SS-304', p.route, 'Heading level skips a rank.', s);
+  }
+
+  // SS-306 — og divergence must be declared
+  const declared = new Set(OG_OVERRIDES.map((o) => `${o.route}|${o.field}`));
+  for (const o of OG_OVERRIDES) {
+    if (!String(o.reason ?? '').trim()) {
+      findings.push({ severity: 'error', id: 'SS-306', route: 'data/og-overrides.json',
+        message: 'og override has no reason.', observed: JSON.stringify({ route: o.route, field: o.field }) });
+    }
+  }
+  for (const p of INDEXABLE) {
+    if (p.ogTitle !== p.title && !declared.has(`${p.route}|og:title`)) {
+      error('SS-306', p.route, 'og:title differs from <title> and the divergence is not declared in data/og-overrides.json.', `title=${p.title} og=${p.ogTitle}`);
+    }
+    if (p.ogDescription !== p.metaDescription && !declared.has(`${p.route}|og:description`)) {
+      error('SS-306', p.route, 'og:description differs from the meta description and the divergence is not declared.', `og=${String(p.ogDescription).slice(0, 70)}`);
+    }
+  }
+}
+
+// ===========================================================================
+// SS-4xx — Link integrity
+// ===========================================================================
+for (const p of PAGES) {
+  // SS-401
+  for (const target of p.internalLinksOut) {
+    if (!byRoute.has(target) && !nonHtmlRoutes.has(target)) {
+      error('SS-401', p.route, 'Internal link resolves to nothing.', target);
+    }
+  }
+  // SS-402
+  if (p.class === 'indexable') {
+    for (const target of p.internalLinksOut) {
+      const t = byRoute.get(target);
+      if (t?.noindex) error('SS-402', p.route, 'Indexable page links to a noindex page, passing crawlers to a dead end.', target);
+    }
+  }
+  // SS-404
+  for (const hop of p.internalLinksNeedingHop) {
+    warn('SS-404', p.route, `Internal link needs a redirect hop; link straight to ${hop.resolvesTo}.`, hop.hrefAsWritten);
+  }
+}
+// SS-403
+for (const p of INDEXABLE) {
+  if (p.inboundInternalLinks === 0) {
+    warn('SS-403', p.route, 'Orphan: in the sitemap with zero inbound internal links.', '0 inbound');
+  }
+}
+
+// ===========================================================================
+// SS-5xx — Structured data
+// ===========================================================================
+const TYPE_ALLOWLIST = new Set([
+  'Organization', 'ProfessionalService', 'Person', 'WebSite', 'WebPage',
+  'CollectionPage', 'ContactPage', 'AboutPage', 'Article', 'TechArticle',
+  'BlogPosting', 'BreadcrumbList', 'ListItem', 'ItemList', 'FAQPage',
+  'Question', 'Answer', 'Service', 'OfferCatalog', 'Offer', 'Thing',
+  'SoftwareApplication', 'WebApplication', 'ImageObject',
+  'PresentationDigitalDocument', 'HowTo', 'HowToStep', 'PostalAddress',
+  'ContactPoint', 'CreativeWork',
+]);
+const RATING_KEYS = /"(?:aggregateRating|reviewRating|ratingValue|ratingCount|reviewCount)"|"@type"\s*:\s*"(?:Review|AggregateRating|Rating)"/;
+
+/**
+ * SS-502 identity index: entity -> field -> value -> routes asserting it.
+ *
+ * Comparison is on the INTERSECTION of fields, not on the whole node. Most
+ * Organization nodes on this site are nested publisher/author references that
+ * legitimately carry only a name; demanding a byte-identical node would report
+ * twenty findings that are all "a stub is shorter than the full record" and none
+ * that are a contradiction. A field present in two places with two different
+ * values is a contradiction. A field present in one place is a reference.
+ */
+const identityIndex = new Map();
+const IDENTITY_FIELDS = ['url', 'email', 'logo', 'sameAs', 'jobTitle', 'description', 'telephone'];
+
+for (const p of PAGES) {
+  for (const err of p.jsonLdParseErrors) {
+    error('SS-501', p.route, 'JSON-LD block does not parse, so no consumer reads any of it.', err);
+  }
+  for (const t of p.jsonLd) {
+    if (!TYPE_ALLOWLIST.has(t)) {
+      error('SS-501', p.route, 'JSON-LD @type is not in the allowlist. Add it deliberately or remove it.', t);
+    }
+  }
+  const raw = JSON.stringify(p.jsonLdGraphs ?? []);
+  if (RATING_KEYS.test(raw)) {
+    error('SS-503', p.route, 'Rating or review markup found. There is no legitimate source for it on this site.', raw.match(RATING_KEYS)?.[0]);
+  }
+
+  // SS-502 — index every identity assertion; conflicts are resolved after the loop
+  const walk = (n) => {
+    if (Array.isArray(n)) return n.forEach(walk);
+    if (!n || typeof n !== 'object') return;
+    const types = [].concat(n['@type'] ?? []);
+    for (const t of ['Organization', 'Person', 'ProfessionalService']) {
+      if (!types.includes(t) || !n.name) continue;
+      const entity = `${t} "${n.name}"`;
+      if (!identityIndex.has(entity)) identityIndex.set(entity, new Map());
+      const fields = identityIndex.get(entity);
+      for (const f of IDENTITY_FIELDS) {
+        if (n[f] === undefined) continue;
+        const value = JSON.stringify(n[f]);
+        if (!fields.has(f)) fields.set(f, new Map());
+        const values = fields.get(f);
+        if (!values.has(value)) values.set(value, new Set());
+        values.get(value).add(p.route);
+      }
+    }
+    Object.values(n).forEach(walk);
+  };
+  walk(p.jsonLdGraphs ?? []);
+}
+
+for (const [entity, fields] of identityIndex) {
+  for (const [field, values] of fields) {
+    if (values.size < 2) continue;
+    const variants = [...values].map(([v, routes]) => `${v} on ${[...routes].join(', ')}`);
+    // Reported once per conflicting field, against the first route that asserts
+    // it, rather than once per page -- the defect is one disagreement, not N.
+    const firstRoute = [...[...values][0][1]][0];
+    error('SS-502', firstRoute,
+      `${entity} asserts ${values.size} different values for "${field}" across the site. Consumers keep whichever they crawled last.`,
+      variants.join('   |   '));
+  }
+}
+
+// SS-504
+{
+  const exempt = new Set(JSONLD_EXEMPT.map((r) => r.route));
+  for (const p of INDEXABLE) {
+    if (p.jsonLd.length === 0 && !exempt.has(p.route)) {
+      warn('SS-504', p.route, 'Indexable route carries no JSON-LD and is not listed in data/jsonld-exempt.json.', '0 blocks');
+    }
+  }
+}
+
+// ===========================================================================
+// SS-6xx — Content policy
+// ===========================================================================
+const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b|\bimproved\b|\bcut\b)/gi;
+
+{
+  const registered = new Map();
+  for (const c of CLAIMS) registered.set(`${c.route}|${c.claim}`, c);
+
+  for (const p of INDEXABLE) {
+    const counts = new Map();
+    for (const m of p.textContent.matchAll(CLAIM_RE)) {
+      counts.set(m[0], (counts.get(m[0]) ?? 0) + 1);
+    }
+    for (const [claim, n] of counts) {
+      const entry = registered.get(`${p.route}|${claim}`);
+      if (!entry) {
+        error('SS-601', p.route, 'Numeric or comparative performance claim with no entry in data/claims-registry.json.', `"${claim}" ×${n}`);
+      } else if (n > (entry.occurrences ?? 0)) {
+        error('SS-601', p.route, `Claim appears ${n} times but only ${entry.occurrences} are registered. A new instance was added.`, `"${claim}"`);
+      } else if (String(entry.measurementBasis).startsWith('TODO')) {
+        warn('SS-601', p.route, 'Claim is registered but has no measurement basis yet.', `"${claim}" ×${n}`);
+      }
+    }
+  }
+  // Registry entries whose claim has left the page.
+  for (const c of CLAIMS) {
+    const p = byRoute.get(c.route);
+    if (!p) { warn('SS-601', c.route, 'Claims registry names a route that does not exist.', c.claim); continue; }
+    if (!new RegExp(CLAIM_RE.source, 'gi').test(p.textContent) || !p.textContent.includes(c.claim.replace(/^~/, '~'))) {
+      const still = [...p.textContent.matchAll(CLAIM_RE)].some((m) => m[0] === c.claim);
+      if (!still) warn('SS-601', c.route, 'Registry entry no longer matches anything on the page; delete it.', c.claim);
+    }
+  }
+}
+
+// SS-602 — identifier denylist
+if (!DENYLIST) {
+  skip('SS-602', `${DENYLIST_LOCAL} not present. Copy data/denylist.example.json to it and fill in the terms. This rule is REPORTED AS SKIPPED, not passed -- a policy check that silently passes when its input is missing is worse than no check.`);
+} else {
+  const corpora = [
+    ...PAGES.map((p) => ({ where: p.route, text: p.textContent })),
+    ...PAGES.map((p) => ({ where: `${p.route} (JSON-LD)`, text: JSON.stringify(p.jsonLdGraphs ?? []) })),
+    { where: 'llms.txt', text: rd('llms.txt') },
+    { where: 'llms-full.txt', text: has('llms-full.txt') ? rd('llms-full.txt') : '' },
+    { where: 'sitemap.xml', text: rd('sitemap.xml') },
+  ];
+  for (const { term, substring } of DENYLIST) {
+    if (!term) continue;
+    const esc = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(substring ? esc : `\\b${esc}\\b`, 'i');
+    for (const c of corpora) {
+      if (re.test(c.text)) {
+        // The term itself is NOT printed. This output can land in a public CI log.
+        error('SS-602', c.where, 'Denylisted identifier found in published output. The term is not printed here on purpose -- CI logs are public. Search locally.', `denylist entry #${DENYLIST.findIndex((d) => d.term === term) + 1}`);
+      }
+    }
+  }
+}
+
+// SS-603 — marketing filler
+const FILLER = [
+  'best-in-class', 'world-class', 'synergy', 'synergies', 'cutting-edge',
+  'state-of-the-art', 'seamless integration', 'game-changer', 'game-changing',
+  'leverage our', 'industry-leading', 'best of breed', 'turnkey solution',
+  'robust and scalable', 'mission-critical solution', 'thought leader',
+  'move the needle', 'low-hanging fruit', 'paradigm shift', 'holistic approach',
+];
+for (const p of INDEXABLE) {
+  for (const phrase of FILLER) {
+    if (new RegExp(`\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(p.textContent)) {
+      warn('SS-603', p.route, 'Marketing filler phrase.', phrase);
+    }
+  }
+}
+
+// ===========================================================================
+// SS-7xx — Hygiene
+// ===========================================================================
+{
+  let imgCount = 0;
+  for (const p of INDEXABLE) {
+    for (const img of p.images) {
+      imgCount++;
+      if (!img.altPresent) warn('SS-701', p.route, '<img> has no alt attribute.', img.src);
+      else if (img.altEmpty) warn('SS-701', p.route, '<img> has an empty alt. Correct for decoration; wrong if it carries meaning.', img.src);
+      else {
+        const near = `${img.adjacentTextBefore} ${img.adjacentTextAfter}`.toLowerCase();
+        if (img.alt.length > 8 && near.includes(img.alt.toLowerCase())) {
+          warn('SS-701', p.route, 'alt text duplicates adjacent visible text verbatim; a screen reader hears it twice.', img.alt);
+        }
+      }
+    }
+  }
+  if (imgCount === 0) {
+    skip('SS-701', 'No <img> elements on any indexable page. Every graphic on this site is inline SVG or CSS, and the only two <img> tags live inside a <script> template literal on /label-tool. The rule passes vacuously -- it is not evidence of good alt text.');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Output
+// ---------------------------------------------------------------------------
+const errors = findings.filter((f) => f.severity === 'error');
+const warnings = findings.filter((f) => f.severity === 'warning');
+
+const order = (f) => f.id;
+const grouped = (list) => {
+  const g = new Map();
+  for (const f of list.sort((a, b) => order(a).localeCompare(order(b)))) {
+    if (!g.has(f.id)) g.set(f.id, []);
+    g.get(f.id).push(f);
+  }
+  return g;
+};
+
+const print = (label, list) => {
+  if (!list.length) return;
+  console.log(`\n${label} (${list.length})`);
+  for (const [id, items] of grouped(list)) {
+    console.log(`\n  ${id}  ${items.length} ${items.length === 1 ? 'finding' : 'findings'}`);
+    for (const f of items) {
+      console.log(`    ${f.route}`);
+      console.log(`      ${f.message}`);
+      if (f.observed != null && f.observed !== '') console.log(`      observed: ${String(f.observed).slice(0, 220)}`);
+    }
+  }
+};
+
+console.log(`validate-pages  ${PAGES.length} routes (${INDEXABLE.length} indexable)  @ ${MODEL.generatedFrom?.commit}`);
+print('ERRORS', errors);
+print('WARNINGS', warnings);
+
+if (skipped.length) {
+  console.log(`\nSKIPPED (${skipped.length})`);
+  for (const s of skipped) console.log(`  ${s.id}  ${s.why}`);
+}
+if (suppressed.length) {
+  console.log(`\nSUPPRESSED (${suppressed.length})`);
+  for (const s of suppressed) console.log(`  ${s.id}  ${s.route}`);
+}
+
+console.log(`\n${errors.length} error(s), ${warnings.length} warning(s), ${skipped.length} skipped, ${suppressed.length} suppressed`);
+process.exit(errors.length ? 1 : 0);

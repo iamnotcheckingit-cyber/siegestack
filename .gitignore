@@ -8,3 +8,9 @@ node_modules/
 # private-files/ is committed on purpose -- that folder IS how a file gets to
 # Jesse. It is kept off the web by the 404 rule in netlify.toml, not by being
 # absent from the repo. Remember the repo is public: nothing secret goes in it.
+
+# SS-602 identifier denylist. The terms are employer, client, facility and
+# person names that must never appear on the site -- so committing them to a
+# PUBLIC repository would publish the exact strings the rule exists to catch.
+# data/denylist.example.json is the committed, redacted template.
+.denylist.local.json

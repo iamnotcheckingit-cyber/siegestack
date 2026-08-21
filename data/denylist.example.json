@@ -1,0 +1,25 @@
+{
+  "_readme": [
+    "SS-602. REDACTED EXAMPLE. This file is committed; the real one is not.",
+    "",
+    "The real list lives at .denylist.local.json, which is gitignored. Copy this file to",
+    "that name and replace the terms. The terms themselves must never be committed: this",
+    "repository is public, so a denylist of client and employer identifiers would publish",
+    "exactly the identifiers it exists to keep off the site. That is not hypothetical -- it",
+    "is the same failure as a robots.txt Disallow advertising a private URL, which",
+    "netlify.toml already refuses to do for /jesse.",
+    "",
+    "Matching is case-insensitive and whole-word by default. Set \"substring\": true on an",
+    "entry for fragments such as a contract-number prefix.",
+    "",
+    "If .denylist.local.json is absent, SS-602 reports SKIPPED rather than passing. A rule",
+    "that silently passes when its input is missing is worse than no rule."
+  ],
+  "terms": [
+    { "term": "EXAMPLE-EMPLOYER-NAME", "note": "employer, never named on the site" },
+    { "term": "EXAMPLE-CLIENT-NAME", "note": "client" },
+    { "term": "EXAMPLE-PLANT-OR-SITE-NAME", "note": "facility / plant name" },
+    { "term": "EXAMPLE-PERSON-NAME", "note": "real-world individual" },
+    { "term": "EXAMPLE-CONTRACT-PREFIX", "substring": true, "note": "contract / PO number prefix" }
+  ]
+}
