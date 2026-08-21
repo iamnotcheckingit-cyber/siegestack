@@ -3373,3 +3373,146 @@ If you have questions about this privacy policy, please contact us at:
 Last updated: January 22, 2026
 
 ---
+
+
+# Corrections
+https://siegestack.com/corrections
+
+## Corrections
+
+Every published claim on this site that turned out to be wrong, and what replaced it
+
+When something published here is wrong, it gets corrected in the open rather than quietly
+edited. This page is the record. It is append-only: nothing is removed from it, including
+the errors, because a record you can delete from is not a record.
+
+Each entry links back to the page it belongs to. The correction is also marked on that
+page, where the claim was, so a reader meeting the old version in a search result or a
+shared link finds the correction next to it rather than having to come here.
+
+### How long a notice stays where the claim was
+
+A correction whose subject **is still on the page** stays in place
+permanently. The clearest case is the [ETL showcase](https://siegestack.com/etl-showcase): the example
+dashboard's figures are invented, they are still displayed, and the marker saying so is what
+makes them honest. That is a standing disclosure, not history, and it never collapses at any
+age.
+
+A correction whose subject **was removed** stays where the claim was for
+**90 days**, then collapses to a dated one-line link into this page, with the
+full text moving here word for word. Ninety days covers the window in which someone can
+still meet the old claim in a cached result, a shared link, or a model that crawled the page
+before the fix — long enough that they land on the correction, short enough that a page is
+not permanently explaining an absence to people who never saw the presence.
+
+Collapsing moves the text. It never shortens it and never deletes it.
+
+### 2026
+
+#### Invented figures presented as live telemetry
+
+**21 August 2026 · [ETL Showcase](https://siegestack.com/etl-showcase)**
+
+The Integration Health Dashboard on that page carried a pulsing green “Live”
+indicator, four metrics, week-on-week deltas and a timeline of dated events. Every figure was
+invented to show the layout, and nothing on the page said so. It read as telemetry from a
+running system.
+
+The indicator and the deltas were removed. The panel now carries an unmissable marker
+beside the figures stating that every number and event is made up to show the layout, that
+nothing is measured or connected to a running system, and that no client's figures appear.
+The layout was kept: showing what monitoring looks like is legitimate, and the defect was
+the missing marker rather than the mock-up.
+
+On a site whose editorial rule is that no percentage is published without a measured
+baseline, this was the worst thing on it.
+
+#### A personal result standing among professional ones
+
+**21 August 2026 · [Home](https://siegestack.com/)**
+
+The four-figure row under “Proof, Not Promises” read as four client outcomes.
+All four came from a single write-up of how the work is done, and one of them —
+a **B → A+ security grade** — is labelled *Personal* in the
+section it links to. A personal project standing unmarked beside professional results
+overstated what it was.
+
+The figure was removed from the row rather than relabelled, and the row now says plainly
+that it comes from one write-up of how the work is done rather than from separate
+engagements. The grade itself remains in
+[the article](https://siegestack.com/working-with-claude-blog#security-grade), where it is labelled.
+
+#### An invented statistic about how many people skip testing
+
+**21 August 2026 · [How We Use Claude AI to Ship Real Work](https://siegestack.com/working-with-claude-blog)**
+
+A heading read *“3. Test against reality (this is where 95% of AI users
+fail)”*. Nobody measured that, and an article about testing claims against reality
+does not get to publish one it invented. The heading now reads *“this is the step
+that gets skipped”*, which asserts nothing countable.
+
+This is the second invented statistic corrected on that page, two sections from the
+first.
+
+#### The claim that Claude has no memory between sessions
+
+**10 August 2026 · [the article](https://siegestack.com/working-with-claude-blog) and [the deck](https://siegestack.com/working-with-claude)**
+
+Both said default chat had no persistent cross-session memory and that what felt like
+continuity was the reader re-establishing context every time. That was accurate when written
+and stopped being accurate: on paid plans Claude searches past chats and can generate a
+memory summary automatically, scoped per Project, with citations back to the chats it drew
+from.
+
+The workflow advice survived the correction. For constraints you cannot afford to lose,
+deliberately externalised memory still beats an automatic one.
+
+#### A claim that multi-modal work belonged to another tool
+
+**10 August 2026 · [How We Use Claude AI to Ship Real Work](https://siegestack.com/working-with-claude-blog)**
+
+A comparison bullet claimed general multi-modal parity favoured OpenAI. The narrower and
+accurate statement is about image *generation* specifically, which Claude does not do
+natively — it produces SVG, charts and code-built artifacts, or calls an image model
+through MCP.
+
+#### An invented statistic about how often the model is wrong
+
+**4 August 2026 · [How We Use Claude AI to Ship Real Work](https://siegestack.com/working-with-claude-blog)**
+
+An earlier version put a number on it — *“roughly 20% of the
+time”*. It was removed, because it was never measured. It was a plausible-sounding
+number in an article about not trusting plausible-sounding things.
+
+The correct statement is that it happens often enough that verification has to be a step
+in the process rather than something done when you feel uneasy.
+
+#### The outcome of the litigation
+
+**4 August 2026 · [How We Use Claude AI to Ship Real Work](https://siegestack.com/working-with-claude-blog#corrections)**
+
+For months the article and the accompanying deck said the motion to dismiss was
+*denied* and the case was *set for trial*. That was wrong. **The motion
+to dismiss was granted.** The suit was dismissed with prejudice in March 2026, and the
+motion for new trial was overruled by operation of law that June when the court did not rule
+on it.
+
+The claim that survives is narrower and is the only one made: filings produced by someone
+with no legal training forced a thirty-year attorney to brief the immunity question
+substantively rather than dispose of it on the pleadings. That is not the same as winning.
+
+It is kept in the record even though the section it originally belonged to has been
+removed, which is the reason this page is append-only.
+
+### What is not on this page
+
+Ordinary edits. Rewording, restructuring, a page getting shorter or a heading getting
+clearer are not corrections and are not listed here. This page is for claims that were
+*wrong* — something stated as fact that was not one.
+
+Standing disclosures are also not corrections, and are not listed as such. The
+“not live data” marker on the ETL showcase labels content that is still on the
+page; nothing about it was corrected. It appears above only because the framing around it
+was.
+
+---

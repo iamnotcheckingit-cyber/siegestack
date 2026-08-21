@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://siegestack.com/erp-report-slow-month-to-date</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -82,27 +82,27 @@
   </url>
   <url>
     <loc>https://siegestack.com/services/erp-integration</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/services/etl-data-pipelines</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/services/bi-dashboards</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/services/automated-reporting</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/services/performance-tuning</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/services/security-access-audit</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/case-studies/kpi-console</loc>
@@ -118,7 +118,7 @@
   </url>
   <url>
     <loc>https://siegestack.com/industries/distribution</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
   </url>
   <url>
     <loc>https://siegestack.com/label-tool</loc>
@@ -128,6 +128,10 @@
   </url>
   <url>
     <loc>https://siegestack.com/privacy-policy</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-21</lastmod>
+  </url>
+  <url>
+    <loc>https://siegestack.com/corrections</loc>
+    <lastmod>2026-08-21</lastmod>
   </url>
 </urlset>

@@ -258,6 +258,26 @@
       "contextOnPage": [
         "…peline or a multi-step workflow. Sometimes a clean prompt in a fresh session is faster and better than an elaborate system. I built complexity that didn't earn its ke…"
       ]
+    },
+    {
+      "claim": "95%",
+      "route": "/corrections",
+      "occurrences": 1,
+      "disposition": "not-a-claim",
+      "reason": "A quotation of a retracted figure inside the record that retracts it. The site never asserted this on /corrections; the page exists to say it was wrong. Same shape as the 20% entry below and as the '+0.02% vs last week' quotation on /etl-showcase.",
+      "contextOnPage": [
+        "A heading read “3. Test against reality (this is where 95% of AI users fail)”. Nobody measured that…"
+      ]
+    },
+    {
+      "claim": "20%",
+      "route": "/corrections",
+      "occurrences": 1,
+      "disposition": "not-a-claim",
+      "reason": "A quotation of a retracted figure inside the record that retracts it. Publishing the corrections record necessarily republishes the wording being corrected; that is the point of the record.",
+      "contextOnPage": [
+        "An earlier version put a number on it — “roughly 20% of the time”. It was removed, because it was never measured."
+      ]
     }
   ]
 }

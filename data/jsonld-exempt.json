@@ -1,16 +1,21 @@
 {
-  "_readme": [
-    "SS-504. Indexable routes that are not expected to carry JSON-LD.",
-    "",
-    "Legal and policy pages only. A privacy policy describes what the site does with data;",
-    "there is no schema.org type that says anything true about it, and inventing one",
-    "(WebPage with a made-up description) is worse than the absence."
-  ],
-  "routes": [
-    {
-      "route": "/privacy-policy",
-      "reason": "Legal page. No JSON-LD, deliberately -- confirmed 2026-08-20 when its noindex was removed.",
-      "addedOn": "2026-08-20"
-    }
-  ]
+ "_readme": [
+  "SS-504. Indexable routes that are not expected to carry JSON-LD.",
+  "",
+  "Legal and policy pages only. A privacy policy describes what the site does with data;",
+  "there is no schema.org type that says anything true about it, and inventing one",
+  "(WebPage with a made-up description) is worse than the absence."
+ ],
+ "routes": [
+  {
+   "route": "/privacy-policy",
+   "reason": "Legal page. No JSON-LD, deliberately -- confirmed 2026-08-20 when its noindex was removed.",
+   "addedOn": "2026-08-20"
+  },
+  {
+   "route": "/corrections",
+   "reason": "A corrections record. No schema.org type describes one, and the nearest candidates (Article, CollectionPage) would assert authorship or a collection of works that this page is not. Inventing a type to satisfy a rule is worse than the absence.",
+   "addedOn": "2026-08-21"
+  }
+ ]
 }

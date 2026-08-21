@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9JTK6CC9J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (location.hostname === 'siegestack.com' || location.hostname === 'www.siegestack.com') {
+        gtag('config', 'G-D9JTK6CC9J');
+      }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="alternate icon" href="/favicon.ico">
+    <title>Corrections | SiegeStack</title>
+    <meta name="description" content="Every correction made to a published claim on this site, with its date and the wording it replaced. Nothing is deleted here, including the errors.">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <title>ETL and Data Pipelines | SiegeStack</title>
-    <meta name="description" content="ETL pipelines for distribution and manufacturing: scheduled, logged and monitored data flows that replace manual exports and macros nobody else can run.">
-    <meta name="author" content="SiegeStack">
-    <link rel="canonical" href="https://siegestack.com/services/etl-data-pipelines">
+    <link rel="canonical" href="https://siegestack.com/corrections">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://siegestack.com/services/etl-data-pipelines">
-    <meta property="og:title" content="ETL and Data Pipelines | SiegeStack">
-    <meta property="og:description" content="ETL pipelines for distribution and manufacturing: scheduled, logged and monitored data flows that replace manual exports and macros nobody else can run.">
+    <meta property="og:url" content="https://siegestack.com/corrections">
+    <meta property="og:title" content="Corrections | SiegeStack">
+    <meta property="og:description" content="Every correction made to a published claim on this site, with its date and the wording it replaced. Nothing is deleted here, including the errors.">
     <meta property="og:image" content="https://siegestack.com/og-card.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -22,38 +29,12 @@
     <meta property="og:site_name" content="SiegeStack">
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://siegestack.com/services/etl-data-pipelines">
-    <meta name="twitter:title" content="ETL and Data Pipelines | SiegeStack">
-    <meta name="twitter:description" content="ETL pipelines for distribution and manufacturing: scheduled, logged and monitored data flows that replace manual exports and macros nobody else can run.">
+    <meta name="twitter:url" content="https://siegestack.com/corrections">
+    <meta name="twitter:title" content="Corrections | SiegeStack">
+    <meta name="twitter:description" content="Every correction made to a published claim on this site, with its date and the wording it replaced.">
     <meta name="twitter:image" content="https://siegestack.com/og-card.jpg">
-    <meta name="twitter:image:alt" content="SiegeStack — custom integrations, dashboards and apps">
     <meta name="twitter:site" content="@SiegeStack">
-    <meta name="twitter:creator" content="@SiegeStack">
-    <meta name="theme-color" content="#0a192f">
 
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "name": "ETL and Data Pipelines",
-        "description": "ETL pipelines for distribution and manufacturing: scheduled, logged and monitored data flows that replace manual exports and macros nobody else can run.",
-        "provider": {"@type": "Organization", "name": "SiegeStack", "url": "https://siegestack.com/"},
-        "areaServed": "United States",
-        "url": "https://siegestack.com/services/etl-data-pipelines"
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "SiegeStack", "item": "https://siegestack.com/"},
-            {"@type": "ListItem", "position": 2, "name": "Services", "item": "https://siegestack.com/#solutions"},
-            {"@type": "ListItem", "position": 3, "name": "ETL and Data Pipelines", "item": "https://siegestack.com/services/etl-data-pipelines"}
-        ]
-    }
-    </script>
     <style>
         * {
             margin: 0;
@@ -258,24 +239,124 @@
     <main>
 
     <div class="hero">
-        <h1>ETL &amp; Data Pipelines</h1>
-        <p>Scheduled, logged, monitored — instead of a person and a spreadsheet.</p>
+        <h1>Corrections</h1>
+        <p>Every published claim on this site that turned out to be wrong, and what replaced it</p>
     </div>
 
     <div class="content">
-        <p>The pipeline that needs building is rarely the interesting part. The part that matters is what happens when a source is late, a format changes, or a row does not match &mdash; and whether anyone learns about it before a report is wrong.</p>
-        <h2>What this covers</h2>
-        <ul>
-            <li><strong>Replacing manual exports</strong> and the copy-paste between systems that follows them.</li>
-            <li><strong>Retiring fragile macros</strong> &mdash; the ones that run on one machine, in the right order, when somebody remembers. Replaced with something scheduled, logged and monitored.</li>
-            <li><strong>Consolidating into one place</strong> so a question does not require opening five systems.</li>
-            <li><strong>Identity resolution that shows its misses.</strong> Where a transaction carries initials or a short code rather than a person, the mapping runs through a chain of fallbacks, and every chain has rows that reach the end unmatched. Those are displayed, not hidden &mdash; an unattributed row is a data-quality finding, and hiding it turns a fixable gap into a permanently wrong number.</li>
-        </ul>
-        <h2>See it in detail</h2>
-        <p><a href="/etl-showcase">The integration showcase</a> covers the patterns with real code. <a href="/case-studies/label-service">The label service</a> is one example of the shape: a program per label became one configuration-driven service.</p>
-        <p><a href="/contact">Talk about a pipeline</a></p>
+        <p>When something published here is wrong, it gets corrected in the open rather than quietly
+        edited. This page is the record. It is append-only: nothing is removed from it, including
+        the errors, because a record you can delete from is not a record.</p>
+
+        <p>Each entry links back to the page it belongs to. The correction is also marked on that
+        page, where the claim was, so a reader meeting the old version in a search result or a
+        shared link finds the correction next to it rather than having to come here.</p>
+
+        <h2>How long a notice stays where the claim was</h2>
+
+        <p>A correction whose subject <strong>is still on the page</strong> stays in place
+        permanently. The clearest case is the <a href="/etl-showcase">ETL showcase</a>: the example
+        dashboard's figures are invented, they are still displayed, and the marker saying so is what
+        makes them honest. That is a standing disclosure, not history, and it never collapses at any
+        age.</p>
+
+        <p>A correction whose subject <strong>was removed</strong> stays where the claim was for
+        <strong>90 days</strong>, then collapses to a dated one-line link into this page, with the
+        full text moving here word for word. Ninety days covers the window in which someone can
+        still meet the old claim in a cached result, a shared link, or a model that crawled the page
+        before the fix — long enough that they land on the correction, short enough that a page is
+        not permanently explaining an absence to people who never saw the presence.</p>
+
+        <p>Collapsing moves the text. It never shortens it and never deletes it.</p>
+
+        <h2>2026</h2>
+
+        <h3 id="etl-dashboard-live-framing">Invented figures presented as live telemetry</h3>
+        <p><strong>21 August 2026 &middot; <a href="/etl-showcase">ETL Showcase</a></strong></p>
+        <p>The Integration Health Dashboard on that page carried a pulsing green &ldquo;Live&rdquo;
+        indicator, four metrics, week-on-week deltas and a timeline of dated events. Every figure was
+        invented to show the layout, and nothing on the page said so. It read as telemetry from a
+        running system.</p>
+        <p>The indicator and the deltas were removed. The panel now carries an unmissable marker
+        beside the figures stating that every number and event is made up to show the layout, that
+        nothing is measured or connected to a running system, and that no client's figures appear.
+        The layout was kept: showing what monitoring looks like is legitimate, and the defect was
+        the missing marker rather than the mock-up.</p>
+        <p>On a site whose editorial rule is that no percentage is published without a measured
+        baseline, this was the worst thing on it.</p>
+
+        <h3 id="homepage-security-grade-stat">A personal result standing among professional ones</h3>
+        <p><strong>21 August 2026 &middot; <a href="/">Home</a></strong></p>
+        <p>The four-figure row under &ldquo;Proof, Not Promises&rdquo; read as four client outcomes.
+        All four came from a single write-up of how the work is done, and one of them &mdash;
+        a <strong>B &rarr; A+ security grade</strong> &mdash; is labelled <em>Personal</em> in the
+        section it links to. A personal project standing unmarked beside professional results
+        overstated what it was.</p>
+        <p>The figure was removed from the row rather than relabelled, and the row now says plainly
+        that it comes from one write-up of how the work is done rather than from separate
+        engagements. The grade itself remains in
+        <a href="/working-with-claude-blog#security-grade">the article</a>, where it is labelled.</p>
+
+        <h3 id="testing-step-rate">An invented statistic about how many people skip testing</h3>
+        <p><strong>21 August 2026 &middot; <a href="/working-with-claude-blog">How We Use Claude AI to Ship Real Work</a></strong></p>
+        <p>A heading read <em>&ldquo;3. Test against reality (this is where 95% of AI users
+        fail)&rdquo;</em>. Nobody measured that, and an article about testing claims against reality
+        does not get to publish one it invented. The heading now reads <em>&ldquo;this is the step
+        that gets skipped&rdquo;</em>, which asserts nothing countable.</p>
+        <p>This is the second invented statistic corrected on that page, two sections from the
+        first.</p>
+
+        <h3 id="cross-session-memory">The claim that Claude has no memory between sessions</h3>
+        <p><strong>10 August 2026 &middot; <a href="/working-with-claude-blog">the article</a> and <a href="/working-with-claude">the deck</a></strong></p>
+        <p>Both said default chat had no persistent cross-session memory and that what felt like
+        continuity was the reader re-establishing context every time. That was accurate when written
+        and stopped being accurate: on paid plans Claude searches past chats and can generate a
+        memory summary automatically, scoped per Project, with citations back to the chats it drew
+        from.</p>
+        <p>The workflow advice survived the correction. For constraints you cannot afford to lose,
+        deliberately externalised memory still beats an automatic one.</p>
+
+        <h3 id="multimodal-parity">A claim that multi-modal work belonged to another tool</h3>
+        <p><strong>10 August 2026 &middot; <a href="/working-with-claude-blog">How We Use Claude AI to Ship Real Work</a></strong></p>
+        <p>A comparison bullet claimed general multi-modal parity favoured OpenAI. The narrower and
+        accurate statement is about image <em>generation</em> specifically, which Claude does not do
+        natively &mdash; it produces SVG, charts and code-built artifacts, or calls an image model
+        through MCP.</p>
+
+        <h3 id="model-wrongness-rate">An invented statistic about how often the model is wrong</h3>
+        <p><strong>4 August 2026 &middot; <a href="/working-with-claude-blog">How We Use Claude AI to Ship Real Work</a></strong></p>
+        <p>An earlier version put a number on it &mdash; <em>&ldquo;roughly 20% of the
+        time&rdquo;</em>. It was removed, because it was never measured. It was a plausible-sounding
+        number in an article about not trusting plausible-sounding things.</p>
+        <p>The correct statement is that it happens often enough that verification has to be a step
+        in the process rather than something done when you feel uneasy.</p>
+
+        <h3 id="litigation-outcome">The outcome of the litigation</h3>
+        <p><strong>4 August 2026 &middot; <a href="/working-with-claude-blog#corrections">How We Use Claude AI to Ship Real Work</a></strong></p>
+        <p>For months the article and the accompanying deck said the motion to dismiss was
+        <em>denied</em> and the case was <em>set for trial</em>. That was wrong. <strong>The motion
+        to dismiss was granted.</strong> The suit was dismissed with prejudice in March 2026, and the
+        motion for new trial was overruled by operation of law that June when the court did not rule
+        on it.</p>
+        <p>The claim that survives is narrower and is the only one made: filings produced by someone
+        with no legal training forced a thirty-year attorney to brief the immunity question
+        substantively rather than dispose of it on the pleadings. That is not the same as winning.</p>
+        <p>It is kept in the record even though the section it originally belonged to has been
+        removed, which is the reason this page is append-only.</p>
+
+        <h2>What is not on this page</h2>
+
+        <p>Ordinary edits. Rewording, restructuring, a page getting shorter or a heading getting
+        clearer are not corrections and are not listed here. This page is for claims that were
+        <em>wrong</em> &mdash; something stated as fact that was not one.</p>
+
+        <p>Standing disclosures are also not corrections, and are not listed as such. The
+        &ldquo;not live data&rdquo; marker on the ETL showcase labels content that is still on the
+        page; nothing about it was corrected. It appears above only because the framing around it
+        was.</p>
     </div>
-    </main>
+
+</main>
 
     <footer class="site-footer">
         <div class="foot-grid">
