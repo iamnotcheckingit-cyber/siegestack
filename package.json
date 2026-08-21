@@ -5,7 +5,12 @@
   "description": "siegestack.com. Static pages, plus Netlify functions for the contact form, the consultant expertise form, and the private threads at /jesse and /nicole.",
   "scripts": {
     "test": "node scripts/test/forms.test.mjs && node scripts/test/sweep.test.mjs && node scripts/test/publish-gate.test.mjs",
-    "test:defects": "node scripts/test/forms.test.mjs --defects && node scripts/test/sweep.test.mjs --defects"
+    "test:defects": "node scripts/test/forms.test.mjs --defects && node scripts/test/sweep.test.mjs --defects",
+    "build:pages": "node scripts/build-page-index.mjs",
+    "build:llms": "node scripts/build-llms-full.mjs",
+    "validate:pages": "node scripts/build-page-index.mjs && node scripts/validate-pages.mjs",
+    "validate:pages:only": "node scripts/validate-pages.mjs",
+    "netlify:build": "npm run build:llms && npm run validate:pages && npm test"
   },
   "dependencies": {
     "@netlify/blobs": "^10.7.12",

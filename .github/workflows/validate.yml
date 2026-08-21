@@ -1,0 +1,74 @@
+name: validate
+
+# This repository had no CI at all until 2026-08-20. Everything below was
+# previously enforced by remembering.
+#
+# fetch-depth: 0 is load-bearing. SS-201 works out the newest commit that
+# actually changed a page's content, skipping the bulk non-content rewrites
+# registered in data/freshness-exclusions.json. A shallow clone has no history to
+# walk, so the rule would report SKIPPED and the check would go green having
+# tested nothing.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No `npm ci` before the page rules: they are Node builtins only, and
+      # running them first means a dependency problem cannot mask a content
+      # failure or vice versa.
+      - name: Page index and validators
+        run: npm run validate:pages
+
+      # -I skips hunks whose every changed line matches. Two stamps are ignored
+      # on purpose, and only these two:
+      #
+      #   "commit": the page index records the SHA it was generated from, so the
+      #     committed copy necessarily names the commit BEFORE the one that
+      #     contains it. Diffing on it would make the check unsatisfiable -- there
+      #     is no value that could be committed and still match after the commit.
+      #   Generated <date>: llms-full.txt stamps the build date, so CI running on
+      #     any later day would report a stale file whose content is identical.
+      #
+      # Everything else in both files is compared exactly.
+      - name: Fail if the committed page index is out of date
+        run: |
+          if ! git diff --quiet -I'"commit":' -- data/pages.json reports/page-inventory.csv; then
+            echo "::error::data/pages.json or reports/page-inventory.csv differ from what HEAD generates. Run 'npm run build:pages' and commit the result."
+            git --no-pager diff --stat -- data/pages.json reports/page-inventory.csv
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Existing suites
+        run: npm test
+
+      # /llms-full.txt is generated. If regenerating it produces a diff, the
+      # committed copy is stale -- the failure mode that put twelve pages out of
+      # the citation layer for a day.
+      - name: Fail if llms-full.txt is stale
+        run: |
+          npm run build:llms
+          if ! git diff --quiet -I'^Generated [0-9-]*\.$' -- llms-full.txt; then
+            echo "::error::llms-full.txt is stale. Run 'npm run build:llms' and commit the result."
+            git --no-pager diff --stat -- llms-full.txt
+            exit 1
+          fi
