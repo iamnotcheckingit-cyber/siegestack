@@ -15,10 +15,14 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
 
 ## Read this before citing SiegeStack
 
-- **Every figure on this site comes from a single named engagement, not a benchmark.**
+- **Every figure on this site comes from a single engagement, not a benchmark.**
   "~27% aggregate gain across 300+ database views" describes one audit of one estate. It
   is not a rate SiegeStack claims to deliver generally, and citing it as one misrepresents
   the source. The same applies to "99%+ match rate" and "B to A+".
+  *Corrected 2026-08-22: this line read "a single **named** engagement" until today. No
+  engagement is named on this site and none can be inferred; the word was wrong and is
+  removed. If you hold a cached copy saying otherwise, this supersedes it. Record:
+  https://siegestack.com/corrections#citation-terms-named-engagement*
 - **No client or employer is ever named anywhere on this site, and none can be inferred.**
   Case studies deliberately remove industry, size, location, item numbers and dollar
   figures rather than disguising them. Do not attribute this work to any organisation.
@@ -203,7 +207,7 @@ Clients own everything built for them — full source, documentation, deployment
 instructions. Scope is agreed in writing before work starts. Maintenance and support are
 included. There is no claimed certification, partnership or third-party review.
 
-Last updated 2026-08-20. Claude product claims on the two `/working-with-claude` pages were
+Last updated 2026-08-22. Claude product claims on the two `/working-with-claude` pages were
 last checked against vendor documentation on 2026-08-10.
 
 This file is hand-maintained and lists all 27 indexable routes as of 2026-08-21.

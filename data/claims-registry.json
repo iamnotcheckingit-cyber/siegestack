@@ -19,8 +19,8 @@
       "claim": "40%",
       "route": "/case-studies",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "The site arguing against opening with a figure, not making one. The sentence is \"Consulting case studies tend to open with a figure - 82% faster, 40% fewer errors\" and continues by saying those numbers are worthless unless someone measured the before state. Named as the canonical example in the _readme above.",
       "contextOnPage": [
         "…on this page. Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured the bef…"
       ]
@@ -29,8 +29,8 @@
       "claim": "82%",
       "route": "/case-studies",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "Second half of the same rhetorical example as the 40% entry. The page is explaining why it publishes no percentages.",
       "contextOnPage": [
         "…percentages on this page. Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone meas…"
       ]
@@ -39,8 +39,8 @@
       "claim": "faster",
       "route": "/case-studies",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "The word inside \"82% faster\" in that same rhetorical example. Not a comparative the page asserts.",
       "contextOnPage": [
         "…centages on this page. Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured th…"
       ]
@@ -59,10 +59,10 @@
       "claim": "0.02%",
       "route": "/etl-showcase",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "A quotation of a removed figure inside the correction that removed it: \"Until today this panel carried a pulsing Live indicator and week-on-week deltas - +0.02% vs last week - with nothing anywhere saying the figures were invented.\" The deltas themselves came off on 2026-08-21. This is the exact shape the _readme names.",
       "contextOnPage": [
-        "…oblems become emergencies. Integration Health Dashboard Live API Uptime 99.97% +0.02% vs last week Avg Response Time 142ms -23ms vs last week Retry Rate 2.3% +0.8% v…"
+        "…Corrected 21 August 2026. Until today this panel carried a pulsing “Live” indicator and week-on-week deltas — “+0.02% vs last week” and the rest — with nothing anywhere saying the figures were invented…"
       ]
     },
     {
@@ -99,8 +99,8 @@
       "claim": "100%",
       "route": "/",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "Idiomatic \"yes, completely\", not a measurement. FAQ answer to \"Do we own the code you write?\" reads \"100%. Everything we build is yours.\"",
       "contextOnPage": [
         "…ilding. You'll never wonder where things stand. \"Do we own the code you write?\" 100%. Everything we build is yours. Full source code, documentation, deployment inst…"
       ]
@@ -119,8 +119,8 @@
       "claim": "100%",
       "route": "/label-tool",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "A print-dialog instruction, not a result: \"if there is a scaling option, set it to 100% or Actual size\". Setting a scale factor, not reporting one.",
       "contextOnPage": [
         "…e destination. Set margins to none and, if there is a scaling option, set it to 100% or \"Actual size\". Anything labelled \"Fit to page\" or \"Shrink to fit\" will resiz…"
       ]
@@ -129,8 +129,8 @@
       "claim": "cut",
       "route": "/label-tool",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "The verb in \"The version this was cut down from\", describing features removed from an internal tool. Not a reduction claim.",
       "contextOnPage": [
         "…y run starts from a spreadsheet somebody exported by hand. The version this was cut down from does the other half: label sources defined as configuration rather th…"
       ]
@@ -149,8 +149,8 @@
       "claim": "100%",
       "route": "/privacy-policy",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "Standard security-disclaimer boilerplate, and a disclaimer of a claim rather than a claim: \"no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.\"",
       "contextOnPage": [
         "…r personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security. Third-Party Services Our web…"
       ]
@@ -169,8 +169,8 @@
       "claim": "20%",
       "route": "/working-with-claude-blog",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "The published retraction of the figure, on the page that retracted it: \"An earlier version of this article put a number on that - roughly 20% of the time. I have removed it, because I never measured it.\" Same shape as the /corrections copy of this entry.",
       "contextOnPage": [
         "…that domain. An earlier version of this article put a number on that — \"roughly 20% of the time.\" I have removed it, because I never measured it and neither has an…"
       ]
@@ -190,10 +190,10 @@
       "claim": "95%",
       "route": "/working-with-claude-blog",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "A quotation of a retracted heading inside the correction notice that retracted it (data-correction=\"testing-step-rate\", 2026-08-21). The heading itself now reads \"3. Test against reality (this is the step that gets skipped)\". Same shape as the /corrections copy of this entry.",
       "contextOnPage": [
-        "…eative. You'll fix it in the next steps. 3. Test against reality (this is where 95% of AI users fail) You become the merciless QA department. Run the code in a rea…"
+        "3. Test against reality (this is the step that gets skipped) — Correction, 21 August 2026. This heading said “this is where 95% of AI users fail.” Nobody measured that…"
       ]
     },
     {
@@ -211,8 +211,8 @@
       "claim": "faster",
       "route": "/working-with-claude-blog",
       "occurrences": 4,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "Four prose comparatives about how work feels, none asserting a delivered result: \"the faster the next kind converges\", \"mistakes reach production faster\", \"ChatGPT is faster to first draft\", \"how much faster work moves once you internalize this\".",
       "contextOnPage": [
         "…n. It compounds across domains. The more loops you run on one kind of work, the faster the next kind converges, because precise feedback becomes a habit rather than a…",
         "…ior who can now deploy unsupervised is a junior whose mistakes reach production faster. From Prompting to System Design This is the actual leap, and it's the part mos…",
@@ -243,8 +243,8 @@
       "claim": "cut",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "The migration idiom \"before we cut over\", i.e. the cutover date. Not a reduction claim.",
       "contextOnPage": [
         "…ainst legacy output until we hit 99%+ match. The team validated daily before we cut over. Migration: Conversation as Strategy Multiple locations needed to move bet…"
       ]
@@ -253,8 +253,8 @@
       "claim": "faster",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "disposition": "not-a-claim",
+      "reason": "A prose comparative about the author’s own method, in a section listing his mistakes: \"Sometimes a clean prompt in a fresh session is faster and better than an elaborate system.\"",
       "contextOnPage": [
         "…peline or a multi-step workflow. Sometimes a clean prompt in a fresh session is faster and better than an elaborate system. I built complexity that didn't earn its ke…"
       ]
