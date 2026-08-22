@@ -187,7 +187,7 @@ console.log('  private-page check: clean');
  * Derived-value check: any page saying "N-slide" must agree with the deck.
  *
  * This exists because of a real defect. The deck was condensed 37 -> 14 in
- * 8288964, every reference inside working-with-claude.html was updated, and a
+ * 5f3965e, every reference inside working-with-claude.html was updated, and a
  * link on working-with-claude-blog.html was missed. This file then FAITHFULLY
  * REPRODUCED the wrong figure, because it is generated from the pages and the
  * page was wrong -- so regenerating could never fix it and made it look

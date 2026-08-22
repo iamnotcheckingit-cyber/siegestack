@@ -14,7 +14,7 @@
   ],
   "exclusions": [
     {
-      "sha": "b1f31e9",
+      "sha": "acbeda6",
       "reason": "Bulk non-content rewrite: added a <main> landmark to every page and stopped footer links relying on colour alone. Touched all 32 HTML files, changed no published copy, and reset every git date to 2026-08-20.",
       "addedOn": "2026-08-20"
     }

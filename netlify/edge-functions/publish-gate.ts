@@ -25,7 +25,7 @@
  * workers, the manifests, robots.txt, the sitemap. Allowing those back requires
  * a self-referential 200 rewrite per file, which is unpredictable, and a broad
  * rule matching ahead of a specific one is precisely what 404'd the best page on
- * this site in d0aa04a. A gate that can enumerate is safer than a rule that has
+ * this site in 19ea665. A gate that can enumerate is safer than a rule that has
  * to be tricked into exceptions.
  *
  * THE ASYMMETRY IS DELIBERATE
@@ -90,7 +90,7 @@ const ALLOW_HTML = new Set([
 // the path as requested, before the rewrite engine, so a denied /about.html
 // never reaches the rule that would have sent it to /about. The equity-carrying
 // P21 redirects are the ones that matter here — see the note in netlify.toml
-// about d0aa04a, where a rule matching ahead of another 404'd the best page on
+// about 19ea665, where a rule matching ahead of another 404'd the best page on
 // the site. Every `<route>.html` source is derived from ALLOW_HTML below rather
 // than listed, so the two cannot drift; only the odd ones out live here.
 const ALLOW_REDIRECT_SOURCE = new Set([

@@ -672,7 +672,7 @@ for (const p of INDEXABLE) {
 // SS-6xx (continued) — the corrections practice
 //
 // The site's editorial posture is that a published claim which turns out to be
-// wrong is corrected in public rather than quietly edited. Until 89458a4 that
+// wrong is corrected in public rather than quietly edited. Until 32cea3f that
 // rested entirely on remembering, and nothing in this file referenced it.
 //
 // None of these rules can detect a correction that SHOULD have been written and
