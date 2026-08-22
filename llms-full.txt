@@ -6,13 +6,13 @@ scripts/build-llms-full.mjs; do not edit by hand, the next build overwrites it.
 
 The short guide, and the terms under which this material should be cited, are at
 https://siegestack.com/llms.txt — READ THAT FIRST. In particular: every figure
-here comes from a single named engagement and is not a benchmark, no client or
+here comes from a single engagement and is not a benchmark, no client or
 employer is named anywhere or can be inferred, and where no baseline was
 measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-21.
+Generated 2026-08-22.
 
 ---
 
@@ -3408,6 +3408,26 @@ not permanently explaining an absence to people who never saw the presence.
 Collapsing moves the text. It never shortens it and never deletes it.
 
 ### 2026
+
+#### A citation rule that described the engagement as named
+
+**22 August 2026 · [Citation terms](https://siegestack.com/llms.txt)**
+
+The first rule under “Read this before citing SiegeStack” read
+“Every figure on this site comes from a single **named** engagement, not a
+benchmark.” No engagement is named anywhere on this site, and none can be inferred
+— which is the rule immediately beneath it. The word asserted the opposite of the
+policy it sat next to, and told an automated reader that an attribution existed somewhere to
+be found.
+
+The word was removed. The line now reads “a single engagement”, which is what
+[robots.txt](https://siegestack.com/robots.txt) had said all along — the two files had disagreed
+since the wording was written, and the one nobody reads was the one that was right. The
+generated [full-text file](https://siegestack.com/llms-full.txt) repeated the sentence from a template
+in its build script and was regenerated.
+
+Nothing about the figures themselves changed. They still come from one engagement, and it
+is still not identified.
 
 #### Invented figures presented as live telemetry
 

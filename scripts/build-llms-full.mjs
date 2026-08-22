@@ -137,7 +137,7 @@ scripts/build-llms-full.mjs; do not edit by hand, the next build overwrites it.
 
 The short guide, and the terms under which this material should be cited, are at
 https://siegestack.com/llms.txt — READ THAT FIRST. In particular: every figure
-here comes from a single named engagement and is not a benchmark, no client or
+here comes from a single engagement and is not a benchmark, no client or
 employer is named anywhere or can be inferred, and where no baseline was
 measured no percentage is published.
 
