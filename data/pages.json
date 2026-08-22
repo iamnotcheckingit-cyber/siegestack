@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "f0f6856",
+    "commit": "c7ea361",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -1255,8 +1255,8 @@
       "sitemapLastmod": "2026-08-22",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": false,
+      "gitLastCommitDate": "2026-08-22",
+      "lastmodMatchesGit": true,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
