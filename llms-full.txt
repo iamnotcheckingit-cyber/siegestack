@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-22.
+Generated 2026-08-23.
 
 ---
 

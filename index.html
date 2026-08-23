@@ -1016,6 +1016,46 @@
                 io.observe(widget);
             })();
             </script>
+            <script>
+            (function () {
+                // calendly_open -- the site's first custom GA4 event, added 2026-08-23.
+                //
+                // Deliberately NOT hooked to loadCalendly() in the block above. That fires
+                // 600px early, and a full-page synthetic monitor scrolling this page trips
+                // it -- which is exactly the datacenter traffic that already accounts for
+                // about half the "users" in the GA4 City report. So this counts the widget
+                // as reached only once it has been meaningfully on screen for a continuous
+                // second. A drive-by scroll to the footer does not count.
+                //
+                // gtag() is always defined here, but gtag('config') is hostname-gated to
+                // siegestack.com, so on localhost and Netlify previews this pushes to
+                // dataLayer and goes nowhere. That is the intended no-op.
+                var widget = document.querySelector('.calendly-inline-widget');
+                if (!widget || !('IntersectionObserver' in window)) return;
+
+                var sent = false;
+                var timer = null;
+                var io = new IntersectionObserver(function (entries) {
+                    var e = entries[entries.length - 1];
+                    // Ratio alone is not portable: 50% of a 700px widget is 350px, which a
+                    // short landscape phone viewport can never show. Either test passing is
+                    // enough.
+                    var visible = e.isIntersecting && (e.intersectionRatio >= 0.5 || e.intersectionRect.height >= 200);
+                    if (visible) {
+                        if (sent || timer) return;
+                        timer = setTimeout(function () {
+                            sent = true;
+                            io.disconnect();
+                            if (typeof gtag === 'function') { gtag('event', 'calendly_open'); }
+                        }, 1000);
+                    } else if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+                }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+                io.observe(widget);
+            })();
+            </script>
             <!-- Calendly inline widget end -->
         </div>
     </section>
