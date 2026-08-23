@@ -1056,6 +1056,32 @@
                 io.observe(widget);
             })();
             </script>
+            <script>
+            (function () {
+                // calendly_booked -- the actual conversion, added 2026-08-23.
+                //
+                // Calendly posts a message to the parent window when someone completes a
+                // booking inside the embedded iframe. Nothing else on this page can observe
+                // that: the iframe is cross-origin, so there is no DOM to watch.
+                //
+                // The origin check is NOT optional and must not be relaxed to a substring
+                // test. Calendly's own documented snippet checks only e.data.event, which
+                // means any page or iframe able to postMessage here could forge a booking
+                // and inflate the one number on this site that is meant to represent money.
+                // If Calendly ever serves the widget from another origin this stops firing
+                // -- an undercount, which is the correct direction to fail in.
+                if (!document.querySelector('.calendly-inline-widget')) return;
+
+                var sent = false;
+                addEventListener('message', function (e) {
+                    if (sent) return;
+                    if (e.origin !== 'https://calendly.com') return;
+                    if (!e.data || e.data.event !== 'calendly.event_scheduled') return;
+                    sent = true;
+                    if (typeof gtag === 'function') { gtag('event', 'calendly_booked'); }
+                });
+            })();
+            </script>
             <!-- Calendly inline widget end -->
         </div>
     </section>
