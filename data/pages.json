@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "2dfb61d",
+    "commit": "8ebc9c8",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -1121,8 +1121,8 @@
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "gitLastCommitDate": "2026-08-23",
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
@@ -2336,8 +2336,8 @@
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "1.0",
       "sitemapChangefreq": "weekly",
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "gitLastCommitDate": "2026-08-23",
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": false,
@@ -3976,8 +3976,8 @@
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.9",
       "sitemapChangefreq": "monthly",
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "gitLastCommitDate": "2026-08-23",
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,

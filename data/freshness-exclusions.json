@@ -17,6 +17,11 @@
       "sha": "acbeda6",
       "reason": "Bulk non-content rewrite: added a <main> landmark to every page and stopped footer links relying on colour alone. Touched all 32 HTML files, changed no published copy, and reset every git date to 2026-08-20.",
       "addedOn": "2026-08-20"
+    },
+    {
+      "sha": "8ebc9c8",
+      "reason": "Added the calendly_open and contact_submit GA4 events to index.html, contact.html and prophet-21.html. Script blocks only -- no published copy changed on any of the three pages, so their sitemap lastmod should not move and tell search engines otherwise.",
+      "addedOn": "2026-08-23"
     }
   ]
 }
