@@ -22,6 +22,11 @@
       "sha": "8ebc9c8",
       "reason": "Added the calendly_open and contact_submit GA4 events to index.html, contact.html and prophet-21.html. Script blocks only -- no published copy changed on any of the three pages, so their sitemap lastmod should not move and tell search engines otherwise.",
       "addedOn": "2026-08-23"
+    },
+    {
+      "sha": "1947bb9",
+      "reason": "Added the calendly_booked GA4 event to index.html, contact.html and prophet-21.html. One script block per page, no published copy changed, so their sitemap lastmod should not move.",
+      "addedOn": "2026-08-23"
     }
   ]
 }
