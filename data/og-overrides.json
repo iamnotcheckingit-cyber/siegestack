@@ -52,13 +52,6 @@
       "reason": "TODO(pappy): confirm intentional"
     },
     {
-      "route": "/",
-      "field": "og:description",
-      "pageValue": "SiegeStack builds custom integrations, dashboards and apps — and audits the ones you already have. ETL pipelines, BI, security and access-control review.",
-      "ogValue": "We build the custom integrations, dashboards, and apps that make your business run smoother.",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
       "route": "/operations-modernization",
       "field": "og:title",
       "pageValue": "Operations Modernization: Consolidate First | SiegeStack",
