@@ -43,17 +43,32 @@ Rows **9, 11, 16, 18, 20** (first occurrence only) and **N1**, and **22** — th
 Published as: "300+ views audited · ~27% aggregate gain · 70 change sets · 99%+ match rate."
 Source section: `/working-with-claude-blog#perf-gain`.
 
-**Answered 2026-08-27, two of six.** What was measured: **elapsed time**. Date: **2026-03-10**,
-now recorded on every `~27%`/`27%` row and on row 11.
+**Answered 2026-08-27, four of six — and the `~27%` is now fully answered.**
 
-| M1 needs | state |
-|---|---|
-| what was measured | **elapsed time** |
-| the date | **2026-03-10** |
-| how the baseline was captured, and with what tool | open |
-| what population the ~27% is aggregated over | open |
-| what counts as an audited view, and how 300+ was counted | open |
-| what "match" means in the 99%+, and against what comparison key | open |
+| M1 needs | state | whose figure |
+|---|---|---|
+| what was measured | **elapsed time** | ~27% |
+| how the baseline was captured, and with what tool | **a SQL Server trace** | ~27% |
+| what population the ~27% is aggregated over | **the 70 rewritten views**, not the 300+ audited | ~27% |
+| the date | **2026-03-10** | both |
+| what counts as an audited view, and how 300+ was counted | open | N1, the `300+` |
+| what "match" means in the 99%+, and against what comparison key | open | rows 11, 20-first |
+
+**The four `~27%`/`27%` rows are complete and their `TODO` prefixes are gone** — 16 warnings → 12.
+That is the first time a row on this sheet has actually cleared. The two remaining items belong
+to the other two figures in the same summary line, not to the gain.
+
+**Answering the population corrected a published claim the same day.** The section heading read
+"A 27% Performance Gain Across **Hundreds** of Database Views". Hundreds were audited; the gain
+is over the 70 rewritten — a smaller population, and the difference flatters the figure. Heading
+corrected, `perf-gain-population`, and the measurement is now published on the page under the
+summary line. **Note what found it: not a reader and not a validator, but being made to write
+down what the number was measured against.** The wrong population had been on the page since it
+was written and every check passed over it.
+
+**`300+` is still not registered at all.** SS-601 tokenises digit-percent, digit-x and four
+verbs, so a bare count is invisible to it — recorded here as N1. The audited-view definition is
+therefore unenforced as well as unanswered.
 
 **"Elapsed time" answers the ~27%, not the 99%+.** A match rate is not measured in elapsed
 time, so the last row above is untouched by this answer and row 11's basis was re-opened rather

@@ -102,7 +102,7 @@
       "claim": "~27%",
       "route": "/",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "measurementBasis": "Elapsed time, against a baseline captured with a SQL Server trace, aggregated over the 70 rewritten views -- NOT over the 300+ audited -- measured 2026-03-10. Answered in two parts on 2026-08-27. The population is why the section heading was corrected the same day (perf-gain-population): it read 'Across Hundreds of Database Views'.",
       "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…copy-paste template you can steal for your own workflow. Read the case study → ~27% performance gain 300+ views audited B → A+ security grade, one site 99%+ automa…"
@@ -172,8 +172,8 @@
     {
       "claim": "~27%",
       "route": "/working-with-claude-blog",
-      "occurrences": 1,
-      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "occurrences": 2,
+      "measurementBasis": "Elapsed time, against a baseline captured with a SQL Server trace, aggregated over the 70 rewritten views -- NOT over the 300+ audited -- measured 2026-03-10. Answered in two parts on 2026-08-27. The population is why the section heading was corrected the same day (perf-gain-population): it read 'Across Hundreds of Database Views'. Second occurrence is the on-page correction notice (perf-gain-population) restating the figure to name its population.",
       "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…force row-by-row execution. Inlining them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever…"
@@ -193,7 +193,7 @@
       "claim": "27%",
       "route": "/working-with-claude-blog",
       "occurrences": 2,
-      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "measurementBasis": "Elapsed time, against a baseline captured with a SQL Server trace, aggregated over the 70 rewritten views -- NOT over the 300+ audited -- measured 2026-03-10. Answered in two parts on 2026-08-27. The population is why the section heading was corrected the same day (perf-gain-population): it read 'Across Hundreds of Database Views'.",
       "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…at happens when you run this loop, hard, against real problems. Professional: A 27% Performance Gain Across Hundreds of Database Views I work on line-of-business s…",
@@ -213,8 +213,8 @@
     {
       "claim": "99%",
       "route": "/working-with-claude-blog",
-      "occurrences": 2,
-      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; M1's date is 2026-03-10 and its measurement is elapsed time (which describes the ~27%, not a match rate); M2 has neither. NO dateMeasured IS SET: one field cannot hold two measurement dates, and putting M1's date here would date M2's reconciliation to a day nobody claimed.",
+      "occurrences": 3,
+      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; M1's date is 2026-03-10 and its measurement is elapsed time (which describes the ~27%, not a match rate); M2 has neither. NO dateMeasured IS SET: one field cannot hold two measurement dates, and putting M1's date here would date M2's reconciliation to a day nobody claimed. Third occurrence is the published-basis paragraph under the summary line, which names the 99%+ only to say it is a SEPARATE measurement whose comparison key is not published yet.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…ng them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever. The leverage was running the loo…",
@@ -237,7 +237,7 @@
       "claim": "~27%",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "measurementBasis": "Elapsed time, against a baseline captured with a SQL Server trace, aggregated over the 70 rewritten views -- NOT over the 300+ audited -- measured 2026-03-10. Answered in two parts on 2026-08-27. The population is why the section heading was corrected the same day (perf-gain-population): it read 'Across Hundreds of Database Views'.",
       "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…re production. The AI accelerated the work. My standards were the quality gate. ~27% performance improvement measured after deployment Replacing What Nobody Underst…"
@@ -301,6 +301,26 @@
       "reason": "The corrections log quoting the figure whose provenance it is correcting (homepage-match-rate-provenance, 27 August 2026). Both instances are inside that entry, which exists to say WHICH engagement the figure came from -- it asserts no new result. Same disposition as the figures quoted inside their own correction notices elsewhere in this registry.",
       "contextOnPage": [
         "The homepage-match-rate-provenance entry, which names both of the article's 99%+ figures in order to distinguish them."
+      ]
+    },
+    {
+      "claim": "27%",
+      "route": "/corrections",
+      "occurrences": 1,
+      "disposition": "not-a-claim",
+      "reason": "The corrections log quoting the figure whose population it is correcting (perf-gain-population, 27 August 2026). The entry exists to say the gain was measured over 70 rewritten views rather than hundreds audited; it asserts no new result. Same disposition as the other correction-notice quotes here.",
+      "contextOnPage": [
+        "The perf-gain-population entry."
+      ]
+    },
+    {
+      "claim": "~27%",
+      "route": "/corrections",
+      "occurrences": 1,
+      "disposition": "not-a-claim",
+      "reason": "The corrections log quoting the figure whose population it is correcting (perf-gain-population, 27 August 2026). The entry exists to say the gain was measured over 70 rewritten views rather than hundreds audited; it asserts no new result. Same disposition as the other correction-notice quotes here.",
+      "contextOnPage": [
+        "The perf-gain-population entry."
       ]
     }
   ]
