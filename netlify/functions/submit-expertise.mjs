@@ -76,8 +76,38 @@ const clean = (v, max) => String(v ?? '').trim().slice(0, max);
 // the stored record keeps the raw field names exactly as submitted.
 const label = (field) => field.replace(/_+/g, ' ').trim();
 
+/**
+ * CLOSED TO SUBMISSIONS, 2026-08-26.
+ *
+ * The route and the page stay live. This function stops accepting writes and
+ * says so in the response, rather than the page being deleted -- closing writes
+ * is reversible in one commit and deletion is not, and whether the form is
+ * still wanted has not been decided.
+ *
+ * IT RETURNS 410 GONE, NOT 503. A 503 says try again later, which would make a
+ * retrying client hammer a form that is never coming back on its own. 410 says
+ * this resource is deliberately finished. The body names the reason so a human
+ * reading a network tab gets the same answer as a human reading the page.
+ *
+ * The guard is FIRST, before the body is parsed. Nothing about a rejected
+ * submission is read, and nothing is logged from it -- a closed form that keeps
+ * a record of what people tried to send is still collecting.
+ *
+ * To reopen: delete this block. Everything below it still works, and the
+ * expertise-inventory script still reads the store.
+ */
+const CLOSED = true;
+
 export default async (req) => {
   if (req.method !== 'POST') return json({ ok: false, error: 'method' }, 405);
+
+  if (CLOSED) {
+    return json({
+      ok: false,
+      error: 'form_closed',
+      message: 'This form is closed and is not accepting submissions.',
+    }, 410);
+  }
 
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -139,10 +169,22 @@ export default async (req) => {
     languagesSpoken: clean(body.languagesSpoken, MAX.languagesSpoken),
     yearsInDistribution: years,
     skills,
-    // The unparsed payload, capped. The parser above is opinionated and the
-    // form's field list changes over time; keeping the original means a future
-    // question about an old submission is answerable without a migration.
-    raw: JSON.stringify(body).slice(0, 60000),
+    // NO `raw` FIELD. It used to store JSON.stringify(body).slice(0, 60000) --
+    // the whole unparsed payload, on an anonymous public endpoint, so it could
+    // hold up to 60KB of anything anyone chose to POST. It was a debugging
+    // convenience retained by default on every record.
+    //
+    // Two reasons it is gone rather than disclosed. A field that is not needed
+    // is cheaper to delete than to describe in a privacy policy, and this one
+    // was not read by anything. And it was the field that made the deletion
+    // right hard to honour: clearing a parsed field left a second copy of the
+    // same data sitting in `raw`, so only deleting the whole record ever
+    // satisfied a request, which is not what a reader would assume.
+    //
+    // The stated reason for keeping it -- answering a later question about an
+    // old submission without a migration -- is real but does not outweigh
+    // holding arbitrary attacker-controlled bytes indefinitely. If it is ever
+    // needed again, keep it ONLY on a parse failure, never on the happy path.
     at: new Date().toISOString(),
     ua: clean(req.headers.get('user-agent'), 300),
   };

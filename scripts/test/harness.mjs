@@ -65,7 +65,23 @@ function must(src, re, to, what) {
  *
  * defects: { file: 'notify'|'pending'|<fn>, re, to } applied before import.
  */
-export async function load(which, { defect = null, fastBudget = false } = {}) {
+/**
+ * `reopen` flips the CLOSED guard in submit-expertise.mjs back off for one
+ * load. /api/expertise was closed to submissions on 2026-08-26, which would
+ * otherwise have meant deleting sixteen assertions describing what the endpoint
+ * does with a submission -- the storage ordering, the identity/skill split, the
+ * reply-to handling, the rating bounds. Those are the specification, and the
+ * form is closed reversibly, so the spec is kept and exercised against the
+ * reopened path instead.
+ *
+ * It is DELIBERATELY TOLERANT of the guard being absent: if the CLOSED block
+ * has been deleted for a genuine reopening, there is nothing to flip and these
+ * tests are then running against the shipped code, which is correct. What
+ * stops that being silent is the separate closed-contract test in
+ * forms.test.mjs -- it asserts a 410 and will fail the moment the form is
+ * really reopened, which is the right time to be made to think about it.
+ */
+export async function load(which, { defect = null, fastBudget = false, reopen = false } = {}) {
   const patch = (fileKey, src) => {
     if (defect && defect.file === fileKey) {
       if (!defect.re.test(src)) throw new Error(`defect did not match ${fileKey} -- this suite is stale`);
@@ -85,6 +101,7 @@ export async function load(which, { defect = null, fastBudget = false } = {}) {
   const notifyFile = write('notify', patch('notify', notifySrc));
 
   let fnSrc = fs.readFileSync(SRC[which], 'utf8');
+  if (reopen) fnSrc = fnSrc.replace(/const CLOSED = true;/, 'const CLOSED = false;');
   fnSrc = must(fnSrc, /from '@netlify\/blobs'/, `from '${STUB_BLOBS}'`, `${which} blobs import`);
   fnSrc = must(fnSrc, /from '\.\.\/lib\/notify\.mjs'/, `from '${pathToFileURL(notifyFile).href}'`, `${which} notify import`);
   fnSrc = must(fnSrc, /from '\.\.\/lib\/pending\.mjs'/, `from '${pathToFileURL(pendingFile).href}'`, `${which} pending import`);

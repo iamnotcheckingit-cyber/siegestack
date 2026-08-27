@@ -84,7 +84,7 @@ async function suite(opts = {}) {
 
   await check('expertise: a valid submission is stored and reported ok', async () => {
     reset(SMTP_ENV);
-    const res = await (await load('expertise', opts))(post(EXP_URL, FORM));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM));
     const j = await res.json();
     eq(res.status, 200, 'status');
     eq(j.ok, true, 'ok');
@@ -97,7 +97,7 @@ async function suite(opts = {}) {
     eq(rec.email, 'consultant@example.org', 'email');
     eq(rec.yearsInDistribution, 12, 'years coerced to a number');
     eq(rec.skills, { Bank_Reconciliation: 4, Cash_Receipts: 3, Sales_Tax: 0, Widgets: 2 }, 'skills');
-    truthy(rec.raw, 'raw payload kept');
+    eq(rec.raw, undefined, 'NO raw payload: the unparsed 60KB body is no longer stored');
     eq(blobs.__state.calls[0].opts.consistency, 'strong', 'strong consistency requested');
   });
 
@@ -108,7 +108,7 @@ async function suite(opts = {}) {
     const realSent = mailer.__mail.sent.push.bind(mailer.__mail.sent);
     blobs.__state.calls.push = (v) => { if (v.key.startsWith('matrix/')) order.push('store'); return realStore(v); };
     mailer.__mail.sent.push = (v) => { order.push('mail'); return realSent(v); };
-    await (await load('expertise', opts))(post(EXP_URL, FORM));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM));
     blobs.__state.calls.push = realStore;
     mailer.__mail.sent.push = realSent;
     eq(order, ['store', 'mail'], 'ordering');
@@ -117,24 +117,24 @@ async function suite(opts = {}) {
   await check('expertise: a store failure is reported honestly as a 503', async () => {
     reset(SMTP_ENV);
     blobs.__state.failNext = true;
-    const res = await (await load('expertise', opts))(post(EXP_URL, FORM));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM));
     eq(res.status, 503, 'status');
     eq((await res.json()).error, 'store_failed', 'error');
   });
 
   await check('expertise: GET is rejected', async () => {
     reset(SMTP_ENV);
-    eq((await (await load('expertise', opts))(new Request(EXP_URL))).status, 405, 'status');
+    eq((await (await load('expertise', { ...opts, reopen: true }))(new Request(EXP_URL))).status, 405, 'status');
   });
 
   await check('expertise: malformed JSON is a 400', async () => {
     reset(SMTP_ENV);
-    eq((await (await load('expertise', opts))(post(EXP_URL, '{not json'))).status, 400, 'status');
+    eq((await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, '{not json'))).status, 400, 'status');
   });
 
   await check('expertise: a missing name is a 400 and stores nothing', async () => {
     reset(SMTP_ENV);
-    const res = await (await load('expertise', opts))(post(EXP_URL, { ...FORM, consultantName: '   ' }));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, consultantName: '   ' }));
     eq(res.status, 400, 'status');
     eq((await res.json()).error, 'name_required', 'error');
     eq(keysOf(expStore(), 'matrix/').length, 0, 'nothing stored');
@@ -142,7 +142,7 @@ async function suite(opts = {}) {
 
   await check('expertise: a missing email is a 400 and stores nothing', async () => {
     reset(SMTP_ENV);
-    const res = await (await load('expertise', opts))(post(EXP_URL, { ...FORM, email: '' }));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, email: '' }));
     eq(res.status, 400, 'status');
     eq((await res.json()).error, 'email_required', 'error');
     eq(keysOf(expStore(), 'matrix/').length, 0, 'nothing stored');
@@ -150,14 +150,14 @@ async function suite(opts = {}) {
 
   await check('expertise: a malformed email is a 400', async () => {
     reset(SMTP_ENV);
-    const res = await (await load('expertise', opts))(post(EXP_URL, { ...FORM, email: 'not-an-address' }));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, email: 'not-an-address' }));
     eq(res.status, 400, 'status');
     eq((await res.json()).error, 'email_invalid', 'error');
   });
 
   await check('expertise: a reply reaches the consultant, and From stays the alias', async () => {
     reset(SMTP_ENV);
-    await (await load('expertise', opts))(post(EXP_URL, FORM));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM));
     const sent = mailer.__mail.sent[0];
     eq(sent.replyTo, 'consultant@example.org', 'replyTo');
     // Sending as the consultant's own domain would fail SPF.
@@ -167,7 +167,7 @@ async function suite(opts = {}) {
 
   await check('expertise: phone, call window and time zone travel together', async () => {
     reset(SMTP_ENV);
-    await (await load('expertise', opts))(post(EXP_URL, { ...FORM, phone: '+1 555 0134 x22', bestTimeToCall: 'Morning (8-11)', timeZone: 'CT' }));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, phone: '+1 555 0134 x22', bestTimeToCall: 'Morning (8-11)', timeZone: 'CT' }));
     const rec = [...expStore().values()].find((v) => v.consultantName);
     eq(rec.phone, '+1 555 0134 x22', 'phone stored verbatim');
     eq(rec.bestTimeToCall, 'Morning (8-11)', 'window');
@@ -182,7 +182,7 @@ async function suite(opts = {}) {
     reset(SMTP_ENV);
     // "2" is a valid rating, so a contact field carrying it is exactly how one
     // would leak into the matrix if it fell out of the identity set.
-    await (await load('expertise', opts))(post(EXP_URL, { ...FORM, phone: '2', timeZone: '3' }));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, phone: '2', timeZone: '3' }));
     const rec = [...expStore().values()].find((v) => v.consultantName);
     eq(Object.keys(rec.skills).sort(), ['Bank_Reconciliation', 'Cash_Receipts', 'Sales_Tax', 'Widgets'], 'skills');
     eq(rec.phone, '2', 'phone kept as a contact field');
@@ -190,13 +190,13 @@ async function suite(opts = {}) {
 
   await check('expertise: an omitted phone reads as not given', async () => {
     reset(SMTP_ENV);
-    await (await load('expertise', opts))(post(EXP_URL, FORM));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM));
     truthy(mailer.__mail.sent[0].text.includes('Phone:      (not given)'), 'phone line');
   });
 
   await check('expertise: out-of-range ratings are dropped, not fatal', async () => {
     reset(SMTP_ENV);
-    const res = await (await load('expertise', opts))(post(EXP_URL, { ...FORM, Bad_High: '9', Bad_Neg: '-1', Bad_Text: 'expert', Bad_Float: '2.5' }));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, Bad_High: '9', Bad_Neg: '-1', Bad_Text: 'expert', Bad_Float: '2.5' }));
     eq(res.status, 200, 'status');
     const rec = [...expStore().values()].find((v) => v.consultantName);
     eq(Object.keys(rec.skills).sort(), ['Bank_Reconciliation', 'Cash_Receipts', 'Sales_Tax', 'Widgets'], 'skills kept');
@@ -204,7 +204,7 @@ async function suite(opts = {}) {
 
   await check('expertise: a blank years field stores null, not an empty string', async () => {
     reset(SMTP_ENV);
-    await (await load('expertise', opts))(post(EXP_URL, { ...FORM, yearsInDistribution: '' }));
+    await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, { ...FORM, yearsInDistribution: '' }));
     eq([...expStore().values()].find((v) => v.consultantName).yearsInDistribution, null, 'years');
   });
 
@@ -212,9 +212,45 @@ async function suite(opts = {}) {
     reset(SMTP_ENV);
     const big = { ...FORM };
     for (let i = 0; i < 700; i++) big['Skill_' + i] = '1';
-    const res = await (await load('expertise', opts))(post(EXP_URL, big));
+    const res = await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, big));
     eq(res.status, 400, 'status');
     eq((await res.json()).error, 'too_many_fields', 'error');
+  });
+
+
+  // ---------------- /api/expertise, as it is actually deployed ----------------
+  //
+  // Every expertise case above loads the function with reopen: true, because
+  // those assertions describe what the endpoint does with a submission and the
+  // closure is reversible. These three describe what it does TODAY, and they
+  // load the shipped source unmodified. If the form is genuinely reopened,
+  // these are the tests that fail and demand a decision.
+
+  await check('expertise: the form is CLOSED -- a POST is refused with 410', async () => {
+    reset(SMTP_ENV);
+    const res = await (await load('expertise', opts))(post(EXP_URL, FORM));
+    eq(res.status, 410, 'status is 410 Gone, not 503 -- 503 invites a retry of a form that is not coming back');
+    const j = await res.json();
+    eq(j.ok, false, 'ok');
+    eq(j.error, 'form_closed', 'error names the reason');
+    truthy(j.message, 'a human reading a network tab gets the same answer as one reading the page');
+  });
+
+  await check('expertise: a refused submission is stored NOWHERE', async () => {
+    reset(SMTP_ENV);
+    await (await load('expertise', opts))(post(EXP_URL, FORM));
+    eq(keysOf(expStore(), 'matrix/').length, 0, 'nothing stored');
+    eq(keysOf(expStore(), 'sent/').length, 0, 'no marker');
+    eq(mailer.__mail.sent.length, 0, 'nothing emailed');
+  });
+
+  await check('expertise: a refused submission is never even parsed', async () => {
+    reset(SMTP_ENV);
+    // Malformed JSON would be a 400 from the parser on the open path. Closed,
+    // it must not reach the parser at all -- a closed form that still reads
+    // what people send it is still collecting.
+    const res = await (await load('expertise', opts))(post(EXP_URL, '{not json'));
+    eq(res.status, 410, 'closed before the body is read, so 410 rather than 400');
   });
 
   // ---------------- /api/contact ----------------
@@ -266,7 +302,7 @@ async function suite(opts = {}) {
 
   await check('no provider: stored anyway, reason no_provider, no marker', async () => {
     reset({});
-    const j = await (await (await load('expertise', opts))(post(EXP_URL, FORM))).json();
+    const j = await (await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM))).json();
     eq(j.ok, true, 'ok');
     eq(j.notified, false, 'notified');
     eq(j.reason, 'no_provider', 'reason');
@@ -278,7 +314,7 @@ async function suite(opts = {}) {
   await check('CONTACT_TO unset: no_to, and no default is invented', async () => {
     reset(SMTP_ENV);
     delete process.env.CONTACT_TO;
-    const j = await (await (await load('expertise', opts))(post(EXP_URL, FORM))).json();
+    const j = await (await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM))).json();
     eq(j.reason, 'no_to', 'reason');
     eq(mailer.__mail.sent.length, 0, 'nothing sent');
   });
@@ -286,12 +322,12 @@ async function suite(opts = {}) {
   await check('CONTACT_FROM unset: no_from', async () => {
     reset(SMTP_ENV);
     delete process.env.CONTACT_FROM;
-    eq((await (await (await load('expertise', opts))(post(EXP_URL, FORM))).json()).reason, 'no_from', 'reason');
+    eq((await (await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM))).json()).reason, 'no_from', 'reason');
   });
 
   await check('a same-DOMAIN destination is refused, not just the same address', async () => {
     reset({ ...SMTP_ENV, CONTACT_TO: 'scott@siegestack.com' });
-    const j = await (await (await load('expertise', opts))(post(EXP_URL, FORM))).json();
+    const j = await (await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM))).json();
     eq(j.reason, 'to_equals_from', 'reason');
     eq(mailer.__mail.sent.length, 0, 'nothing sent');
   });
@@ -299,7 +335,7 @@ async function suite(opts = {}) {
   await check('an SMTP failure keeps the submission, names the code, redacts the address', async () => {
     reset(SMTP_ENV);
     mailer.__mail.mode = 'throw';
-    const j = await (await (await load('expertise', opts))(post(EXP_URL, FORM))).json();
+    const j = await (await (await load('expertise', { ...opts, reopen: true }))(post(EXP_URL, FORM))).json();
     eq(j.ok, true, 'ok');
     eq(j.notified, false, 'notified');
     eq(j.reason, 'smtp_eauth_535', 'reason');
@@ -314,7 +350,7 @@ async function suite(opts = {}) {
     reset(SMTP_ENV);
     mailer.__mail.mode = 'hang';
     const t0 = Date.now();
-    const j = await (await (await load('expertise', { ...opts, fastBudget: true }))(post(EXP_URL, FORM))).json();
+    const j = await (await (await load('expertise', { ...opts, fastBudget: true, reopen: true }))(post(EXP_URL, FORM))).json();
     const ms = Date.now() - t0;
     eq(j.ok, true, 'ok');
     eq(j.notified, false, 'notified');
