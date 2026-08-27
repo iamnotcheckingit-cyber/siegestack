@@ -24,6 +24,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { checkInputs, INPUT_MANIFEST, CORPUS_MANIFEST } from './lib/input-guard.mjs';
 import { parseGate } from './lib/gate-replay.mjs';
+import { parseRewrites } from './lib/rewrite-replay.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -449,6 +450,10 @@ for (const p of PAGES) {
   // which is the failure it exists to catch, one level up.
   {
     const gate = parseGate(ROOT);
+    const rw = parseRewrites(ROOT);
+    if (!rw.ok) {
+      skip('SS-106', `Cannot replay the netlify.toml rewrite table, so a path served by a 200-rewrite cannot be told apart from a missing file: ${rw.why}`);
+    }
     if (!gate.ok) {
       skip('SS-106', `Cannot replay publish-gate.ts, so whether a referenced file would actually be served is unknown: ${gate.why}`);
     }
@@ -478,12 +483,30 @@ for (const p of PAGES) {
       const key = `${route}|${url}`;
       if (seen.has(key)) return;
       seen.add(key);
-      const file = url.replace(/^\//, '');
+      // RESOLVE THROUGH THE REWRITE TABLE FIRST, and this is a correction.
+      //
+      // The first version of this rule asked the filesystem about the REQUESTED
+      // path. /favicon.ico has never existed as a file and has always returned
+      // 200, because netlify.toml rewrites it — so the rule reported a 404 on 23
+      // pages that were not 404ing, and 23 pages were edited on the strength of
+      // it. The edit was right for a different reason (a browser asking for .ico
+      // cannot render the SVG it was being handed) but the finding was wrong.
+      //
+      // Six paths here are served that way: /favicon.ico, four apple-touch-icon
+      // variants, and /audit — which rewrites into /docs/, a directory the gate
+      // denies. That last one works because the edge judges the REQUESTED path,
+      // before the rewrite engine, so the deny never applies to the target.
+      const served = rw.ok ? rw.resolve(url) : url;
+      const file = served.replace(/^\//, '');
       const onDisk = has(file) || has(`${file}.html`) || has(`${file}/index.html`);
+      const via = served === url ? '' : ` It is served from ${served} by a netlify.toml 200-rewrite, and that target is what is missing.`;
       if (!onDisk) {
-        error('SS-106', route, `Page references a file that is not in the repository (${where}).`, url);
+        error('SS-106', route, `Page references a file that is not in the repository (${where}).${via}`, url);
         return;
       }
+      // The gate is asked about the REQUESTED path, because that is what it
+      // sees. Asking it about the rewrite target would deny /audit, which is
+      // served every day.
       if (gate.ok && !gate.isAllowed(url)) {
         error('SS-106', route,
           `File exists but publish-gate.ts would DENY it, so it 404s in production (${where}). The gate is deny-by-default: adding a file and referencing it are two separate acts.`,

@@ -186,11 +186,39 @@ if (!changed.length) {
 // edited changing its CSS is ordinary. A page you did not open changing its CSS
 // is the thing a shared stylesheet made possible, and it is worth naming
 // separately rather than burying in a list of twenty-two routes.
+//
+// THE COMPARISON POINT DEPENDS ON WHETHER THE TREE IS DIRTY, and getting that
+// wrong inverts the whole signal.
+//
+// The first version asked `git diff --name-only HEAD` and nothing else. That is
+// right locally, before committing, which is where it was written and tested.
+// In CI the checkout is clean, so it returns NOTHING, every differing page falls
+// into the "untouched markup" bucket, and the alarm category fires on every
+// intentional CSS change — in the one environment that gates the deploy. The
+// loudest line in the build becomes the line that is always there, which is
+// precisely how a check stops being read. This one exists to be read.
+//
+// So: dirty tree, compare against HEAD. Clean tree, compare the commit against
+// its parent, which is the change actually under inspection. SS-201 reaches for
+// git the same way and for the same reason.
 let touched = null;
+let basis = null;
 try {
   const { execFileSync } = await import('node:child_process');
-  const out = execFileSync('git', ['diff', '--name-only', 'HEAD'], { cwd: ROOT }).toString();
-  touched = new Set(out.split('\n').map((s) => s.trim()).filter(Boolean));
+  const git = (args) => execFileSync('git', args, { cwd: ROOT }).toString();
+  const dirty = git(['status', '--porcelain']).trim().length > 0;
+  if (dirty) {
+    touched = new Set(git(['diff', '--name-only', 'HEAD']).split('\n').map((s) => s.trim()).filter(Boolean));
+    basis = 'the working tree against HEAD';
+  } else {
+    // A first commit has no parent; there is nothing to compare and saying so
+    // beats reporting every page as an unexplained change.
+    const parent = git(['rev-list', '--max-count=1', '--skip=1', 'HEAD']).trim();
+    if (parent) {
+      touched = new Set(git(['diff', '--name-only', `${parent}..HEAD`]).split('\n').map((s) => s.trim()).filter(Boolean));
+      basis = `HEAD against its parent ${parent.slice(0, 7)}`;
+    }
+  }
 } catch { /* no git, or not a repository -- fall back to the plain listing */ }
 
 const bySource = new Map(model.pages.map((p) => [p.route, p.sourceFile]));
@@ -198,6 +226,8 @@ const untouched = touched ? changed.filter(([r]) => !touched.has(bySource.get(r)
 const edited = touched ? changed.filter(([r]) => touched.has(bySource.get(r))) : changed;
 
 console.log(`css-fingerprint: ${changed.length} page(s) differ from the committed fingerprint.`);
+if (basis) console.log(`  (markup compared by ${basis})`);
+else console.log('  (git unavailable, so no page can be classified by whether its markup moved)');
 
 if (untouched.length) {
   console.log('');

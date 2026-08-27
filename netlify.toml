@@ -690,27 +690,44 @@
 [functions]
   included_files = ["private-files/**", "private-files-nicole/**"]
 
+# THESE FIVE POINTED AT /favicon.svg UNTIL 2026-08-26, AND THAT WAS THE BUG.
+#
+# Every one of them exists because a client asks for the path unprompted:
+# browsers request /favicon.ico whether or not a page links it, and iOS requests
+# the apple-touch-icon names the same way. A client only falls back to .ico when
+# it CANNOT render the SVG icon it was offered — so answering .ico with an SVG
+# hands it the exact format it just told you it could not use. Same for
+# apple-touch-icon.png.
+#
+# None of this ever 404'd; a 200-rewrite always returned a file. It was a
+# correct-looking rule serving the wrong bytes, which is harder to see than a
+# missing file and is why it survived. Now they all resolve to /favicon.png,
+# which is a raster and is what asked for.
+#
+# The page-level <link rel="alternate icon"> was repointed at /favicon.png in
+# 64e5550, and the reason recorded there was WRONG — see the correction in the
+# commit that changed these lines.
 [[redirects]]
   from = "/favicon.ico"
-  to = "/favicon.svg"
+  to = "/favicon.png"
   status = 200
 
 [[redirects]]
   from = "/apple-touch-icon.png"
-  to = "/favicon.svg"
+  to = "/favicon.png"
   status = 200
 
 [[redirects]]
   from = "/apple-touch-icon-precomposed.png"
-  to = "/favicon.svg"
+  to = "/favicon.png"
   status = 200
 
 [[redirects]]
   from = "/apple-touch-icon-120x120.png"
-  to = "/favicon.svg"
+  to = "/favicon.png"
   status = 200
 
 [[redirects]]
   from = "/apple-touch-icon-120x120-precomposed.png"
-  to = "/favicon.svg"
+  to = "/favicon.png"
   status = 200
