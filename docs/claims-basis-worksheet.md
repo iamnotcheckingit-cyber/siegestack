@@ -43,10 +43,26 @@ Rows **9, 11, 16, 18, 20** (first occurrence only) and **N1**, and **22** — th
 Published as: "300+ views audited · ~27% aggregate gain · 70 change sets · 99%+ match rate."
 Source section: `/working-with-claude-blog#perf-gain`.
 
-Needs, in one paragraph: what was measured (elapsed time, logical reads, CPU — which?), how the
-baseline was captured and with what tool, what population the ~27% is aggregated over, what
-counts as an audited view and how 300+ was counted, what "match" means in the 99%+ and against
-what comparison key, and the date.
+**Answered 2026-08-27, two of six.** What was measured: **elapsed time**. Date: **2026-03-10**,
+now recorded on every `~27%`/`27%` row and on row 11.
+
+| M1 needs | state |
+|---|---|
+| what was measured | **elapsed time** |
+| the date | **2026-03-10** |
+| how the baseline was captured, and with what tool | open |
+| what population the ~27% is aggregated over | open |
+| what counts as an audited view, and how 300+ was counted | open |
+| what "match" means in the 99%+, and against what comparison key | open |
+
+**"Elapsed time" answers the ~27%, not the 99%+.** A match rate is not measured in elapsed
+time, so the last row above is untouched by this answer and row 11's basis was re-opened rather
+than left reading as filled.
+
+**Every partially-answered row keeps its `TODO(pappy)` prefix, with the answer written after
+it.** That is deliberate: SS-601 treats a non-TODO basis as done, and two of six is not done.
+The warning count stayed at 16 across this answer, which is the behaviour the rule was changed
+for on 2026-08-27 — the number moves when a claim is measured, not when it is discussed.
 
 ### M2 — the macro-replacement reconciliation
 

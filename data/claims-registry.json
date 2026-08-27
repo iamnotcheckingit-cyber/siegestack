@@ -15,6 +15,11 @@
     "two separated by / for a measurement spanning days) is an ERROR rather than a warning: it",
     "looks answered and records nothing. A date after today is an error for the same reason.",
     "",
+    "PARTIAL ANSWERS KEEP THE TODO PREFIX, with what was answered written after it. A basis is",
+    "either sufficient to check the claim or it is not, and SS-601 reads any non-TODO value as",
+    "sufficient -- so half an answer left unprefixed silences the row. Write the half down; keep",
+    "the prefix. dateMeasured is different: a date is whole or absent, so it is filled outright.",
+    "",
     "occurrences is load-bearing: SS-601 errors when a page carries MORE instances of a",
     "token than are registered, so adding a second unmeasured \"27%\" to a page that already",
     "has a registered one is caught. It is not matched on context, because a typo fix",
@@ -97,8 +102,8 @@
       "claim": "~27%",
       "route": "/",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…copy-paste template you can steal for your own workflow. Read the case study → ~27% performance gain 300+ views audited B → A+ security grade, one site 99%+ automa…"
       ]
@@ -117,8 +122,8 @@
       "claim": "99%",
       "route": "/",
       "occurrences": 2,
-      "measurementBasis": "The database view audit -- the same measurement the two figures beside it come from. Confirmed 2026-08-27 by the operator, against a written hypothesis in docs/claims-basis-worksheet.md that argued the opposite. The article reports a second, separate 99%+ (a reconciliation rate for the macro-replacement work); this row is NOT that one.",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL. Provenance is settled: the database view audit (M1), confirmed 2026-08-27, and NOT the separate 99%+ reconciliation the same article reports at #macros. But M1's answer of 2026-08-27 was 'elapsed time', which describes the ~27% gain and cannot describe a match rate. Still needed: what 'match' means here and against what comparison key.",
+      "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…tudy → ~27% performance gain 300+ views audited B → A+ security grade, one site 99%+ automation match rate What We Build Solutions that solve real problems and del…"
       ],
@@ -168,8 +173,8 @@
       "claim": "~27%",
       "route": "/working-with-claude-blog",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…force row-by-row execution. Inlining them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever…"
       ]
@@ -188,8 +193,8 @@
       "claim": "27%",
       "route": "/working-with-claude-blog",
       "occurrences": 2,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…at happens when you run this loop, hard, against real problems. Professional: A 27% Performance Gain Across Hundreds of Database Views I work on line-of-business s…",
         "…y means, you get confident-sounding garbage. The human is the quality gate. The 27% performance gain in this case study only happened because a human knew which pa…"
@@ -209,7 +214,7 @@
       "claim": "99%",
       "route": "/working-with-claude-blog",
       "occurrences": 2,
-      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; neither measurement's method or date is recorded yet, so this basis is a provenance, not a basis.",
+      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; M1's date is 2026-03-10 and its measurement is elapsed time (which describes the ~27%, not a match rate); M2 has neither. NO dateMeasured IS SET: one field cannot hold two measurement dates, and putting M1's date here would date M2's reconciliation to a day nobody claimed.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…ng them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever. The leverage was running the loo…",
@@ -232,8 +237,8 @@
       "claim": "~27%",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL, answered 2026-08-27: what was measured is ELAPSED TIME. Still needed before this is a basis: how the baseline was captured and with what tool, and what population the ~27% is aggregated over. Kept TODO-prefixed on purpose so SS-601 keeps warning -- two of six answers is not an answer.",
+      "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…re production. The AI accelerated the work. My standards were the quality gate. ~27% performance improvement measured after deployment Replacing What Nobody Underst…"
       ]
