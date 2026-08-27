@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "eb145aa",
+    "commit": "bb0f69b",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -314,7 +314,7 @@
       "metaDescription": "Three anonymised problems: a receiving and purchasing KPI console, a month-to-date report that timed out on a missing index, and a multi-source label service.",
       "descriptionLength": 158,
       "ogTitle": "ERP Reporting, Tuning & Automation Case Studies | SiegeStack",
-      "ogDescription": "Three anonymised problems: a KPI console, an index-tuning root cause, and a multi-source label service.",
+      "ogDescription": "Three anonymised problems: a receiving and purchasing KPI console, a month-to-date report that timed out on a missing index, and a multi-source label service.",
       "canonical": "https://siegestack.com/case-studies",
       "canonicalSelfReferencing": true,
       "h1": [
@@ -1640,8 +1640,8 @@
       "titleLength": 50,
       "metaDescription": "Custom integrations for Salesforce, HubSpot, Zoho, Epicor P21, Kinetic, Infor and Dynamics NAV. We connect your CRM, ERP and e-commerce with real reliability.",
       "descriptionLength": 158,
-      "ogTitle": "CRM & ERP Integration Experts | SiegeStack",
-      "ogDescription": "Custom integrations for Salesforce, HubSpot, Epicor P21, Kinetic, Infor, and more. We connect your business systems with bulletproof reliability.",
+      "ogTitle": "CRM & ERP Integration & ETL Pipelines | SiegeStack",
+      "ogDescription": "Custom integrations for Salesforce, HubSpot, Zoho, Epicor P21, Kinetic, Infor and Dynamics NAV. We connect your CRM, ERP and e-commerce with real reliability.",
       "canonical": "https://siegestack.com/etl-showcase",
       "canonicalSelfReferencing": true,
       "h1": [
@@ -3290,7 +3290,7 @@
       "metaDescription": "What SiegeStack collects when you book a consultation or send an email, what we do with it, and which third-party services touch it. Plain English.",
       "descriptionLength": 147,
       "ogTitle": "Privacy Policy | SiegeStack",
-      "ogDescription": "How SiegeStack collects, uses and protects your information, including automatic data and third-party services.",
+      "ogDescription": "What SiegeStack collects when you book a consultation or send an email, what we do with it, and which third-party services touch it. Plain English.",
       "canonical": "https://siegestack.com/privacy-policy",
       "canonicalSelfReferencing": true,
       "h1": [
@@ -3396,11 +3396,11 @@
       "textContent": "Privacy Policy | SiegeStack SiegeStack Solutions Process Prophet 21 Operations ETL Showcase Case Studies Insights About FAQ Free Label Maker Get Started ☰ Privacy Policy How we collect, use, and protect your information Information We Collect We collect information you voluntarily provide when you: Schedule a consultation via Calendly Contact us via email Engage our services This may include your name, email address, company name, and project details you choose to share. Automatic Information When you visit our website, we automatically collect certain information through Google Analytics, including: Browser type and version Operating system Pages visited and time spent Referring website General geographic location (city/region level) This information helps us understand how visitors use our site and improve our services. How We Use Your Information We use the information we collect to: Respond to your inquiries and schedule consultations Provide the services you request Send project updates and communications Improve our website and services Information Sharing We do not sell, trade, or rent your personal information to third parties. We may share information only: With your explicit consent To comply with legal obligations With service providers who assist in our operations (e.g., Calendly for scheduling) Data Security We implement reasonable security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security. Third-Party Services Our website uses third-party services including: Google Analytics - for website analytics Calendly - for scheduling consultations These services have their own privacy policies governing their use of your data. Cookies Our website uses cookies for analytics purposes. You can control cookies through your browser settings. Disabling cookies may affect some website functionality. Your Rights You have the right to: Request access to the personal information we hold about you Request correction or deletion of your personal information Opt out of analytics tracking by using browser settings or extensions Changes to This Policy We may update this privacy policy from time to time. Changes will be posted on this page with an updated revision date. Contact Us If you have questions about this privacy policy, please contact us at: info@siegestack.com Last updated: January 22, 2026 Solutions Free label maker ERP integration ETL & pipelines BI dashboards Automated reporting Performance tuning Security & access audit Platforms & Work Prophet 21 & Kinetic SQL Server performance For distributors Case studies Insights Company About Process FAQ Contact Privacy policy Corrections &copy; 2026 SiegeStack. All rights reserved. info@siegestack.com · Remote, working with distribution and manufacturing operations · GitHub",
       "wordCount": 420,
       "inSitemap": true,
-      "sitemapLastmod": "2026-08-21",
+      "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
@@ -4928,7 +4928,7 @@
       "metaDescription": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method, the two common patterns, and fixing a vendor schema safely.",
       "descriptionLength": 157,
       "ogTitle": "SQL Server Performance for ERP Reporting",
-      "ogDescription": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method and how to apply the fix to a vendor schema safely.",
+      "ogDescription": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method, the two common patterns, and fixing a vendor schema safely.",
       "canonical": "https://siegestack.com/sql-server-erp-performance",
       "canonicalSelfReferencing": true,
       "h1": [

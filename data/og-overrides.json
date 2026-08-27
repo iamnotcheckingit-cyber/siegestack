@@ -5,8 +5,22 @@
     "error, because drift and deliberate social copy look identical in a diff.",
     "",
     "Seeded 2026-08-20 with the 9 title and 11 description divergences that already",
-    "existed, all marked TODO(pappy). The build is green while they are reviewed. Replace",
-    "each reason with why the social copy differs, or align the two and delete the entry."
+    "existed, all marked TODO(pappy). REVIEWED 2026-08-26: six were drift and were",
+    "resolved by aligning the page and og values and deleting the entry -- one on / as",
+    "part of the homepage retitle, then /etl-showcase (title and description),",
+    "/privacy-policy, /case-studies and /sql-server-erp-performance. The fourteen that",
+    "remain are real patterns and each reason now says which one, so the next reader can",
+    "disagree with a specific decision rather than with a placeholder.",
+    "",
+    "THE TWO PATTERNS WORTH KNOWING BEFORE ADDING ONE:",
+    "  - og:title drops the \"| SiegeStack\" suffix. A card already shows the domain.",
+    "  - og:description may exceed the 120-160 SS-302 allows for a meta description,",
+    "    and several deliberately do. Shortening FOR social is the giveaway of drift,",
+    "    not intent -- og is the surface with more room, not less.",
+    "",
+    "SS-306 DOES NOT POLICE twitter:title OR twitter:description AT ALL. Half of every",
+    "divergence on this site was therefore never reported. Where an og value was",
+    "aligned above, its twitter twin was brought with it by hand."
   ],
   "overrides": [
     {
@@ -14,133 +28,112 @@
       "field": "og:title",
       "pageValue": "About Scott Allen Willis | SiegeStack",
       "ogValue": "About SiegeStack — Scott Allen Willis",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
-      "route": "/case-studies",
-      "field": "og:description",
-      "pageValue": "Three anonymised problems: a receiving and purchasing KPI console, a month-to-date report that timed out on a missing index, and a multi-source label service.",
-      "ogValue": "Three anonymised problems: a KPI console, an index-tuning root cause, and a multi-source label service.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional, and this one is a reorder rather than a trim. The page title leads with the person because that is what someone searching for it typed. A shared card leads with the brand because the reader has usually not heard of either yet.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/erp-report-slow-month-to-date",
       "field": "og:title",
       "pageValue": "Why Your ERP Report Times Out on Month-to-Date | SiegeStack",
       "ogValue": "Why Your ERP Report Times Out on Month-to-Date",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: og:title is the page title without the \"| SiegeStack\" suffix. A social card already shows the domain, so the suffix is duplicated chrome in the one place the brand is never ambiguous. Same pattern on /prophet-21 and /sql-server-erp-performance.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/erp-report-slow-month-to-date",
       "field": "og:description",
       "pageValue": "A report that is instant for today and times out for month-to-date is rarely a volume problem. How to diagnose the missing index and apply it safely.",
       "ogValue": "Fast on today, dead on month-to-date. It is an access-path problem, not a volume problem — and the fix is usually one index.",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
-      "route": "/etl-showcase",
-      "field": "og:title",
-      "pageValue": "CRM & ERP Integration & ETL Pipelines | SiegeStack",
-      "ogValue": "CRM & ERP Integration Experts | SiegeStack",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
-      "route": "/etl-showcase",
-      "field": "og:description",
-      "pageValue": "Custom integrations for Salesforce, HubSpot, Zoho, Epicor P21, Kinetic, Infor and Dynamics NAV. We connect your CRM, ERP and e-commerce with real reliability.",
-      "ogValue": "Custom integrations for Salesforce, HubSpot, Epicor P21, Kinetic, Infor, and more. We connect your business systems with bulletproof reliability.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: a hook rather than a summary. \"Fast on today, dead on month-to-date\" is the symptom in the reader's own words; the meta description has to be the version that reads well under a blue link.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/operations-modernization",
       "field": "og:title",
       "pageValue": "Operations Modernization: Consolidate First | SiegeStack",
       "ogValue": "Operations Modernization | Consolidate, Then Optimize",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: the page title states the thesis in the colon clause (\"Consolidate First\") and the og title states it as the full phrase, \"Consolidate, Then Optimize\", because a card has room for the whole idea and a SERP line does not.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/operations-modernization",
       "field": "og:description",
       "pageValue": "Running two systems of record? Consolidate onto one, then optimize slotting, order consolidation, purchasing and network replenishment on top of it.",
       "ogValue": "Two systems of record make every network-level answer wrong in ways nobody can see. Consolidate first, then optimize. A staged engagement model.",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
-      "route": "/privacy-policy",
-      "field": "og:description",
-      "pageValue": "What SiegeStack collects when you book a consultation or send an email, what we do with it, and which third-party services touch it. Plain English.",
-      "ogValue": "How SiegeStack collects, uses and protects your information, including automatic data and third-party services.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: the og copy names the consequence (\"every network-level answer wrong in ways nobody can see\") that the 160-character meta description has no room for.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/prophet-21-upgrade-reporting",
       "field": "og:title",
       "pageValue": "What a Prophet 21 Upgrade Does to Reporting | SiegeStack",
       "ogValue": "What a Prophet 21 Upgrade Does to Your Reporting",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: suffix dropped, and \"Your\" restored. The page title has to lose it to stay inside SS-301's 60 characters; og:title has no such cap, so the sentence reads the way it was written.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/prophet-21-upgrade-reporting",
       "field": "og:description",
       "pageValue": "Three different things get called a P21 upgrade. What each does to custom reports, indexes and integrations on Epicor Prophet 21, and the baseline to capture.",
       "ogValue": "A version upgrade, the desktop-to-web move, and replacing P21 with Kinetic are three different projects. What each one does to reporting built on a vendor schema.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: 163 characters, deliberately over what SS-302 allows a meta description. og has no such limit, and the extra room is spent naming all three things people call an upgrade.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/prophet-21",
       "field": "og:title",
       "pageValue": "Epicor P21 & Kinetic Reporting and Integration | SiegeStack",
       "ogValue": "Epicor P21 & Kinetic Reporting and Integration",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: page title minus the \"| SiegeStack\" suffix, for the same reason as /erp-report-slow-month-to-date. No other difference.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/prophet-21",
       "field": "og:description",
       "pageValue": "Reporting and integration on Epicor Prophet 21 and Kinetic: the data-model traps that make P21 reports quietly wrong, and what a vendor schema changes.",
       "ogValue": "The P21 data-model traps that make reports quietly wrong — open versus posted, undated lines, unmapped identity — and what changes when the schema is the vendor",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: the og copy enumerates the traps -- open versus posted, undated lines, unmapped identity -- where the meta description can only say that traps exist. NOTE: this value was truncated at an apostrophe in data/pages.json until 2026-08-26; the page was always correct.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/sql-server-erp-performance",
       "field": "og:title",
       "pageValue": "SQL Server Performance for ERP Reporting | SiegeStack",
       "ogValue": "SQL Server Performance for ERP Reporting",
-      "reason": "TODO(pappy): confirm intentional"
-    },
-    {
-      "route": "/sql-server-erp-performance",
-      "field": "og:description",
-      "pageValue": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method, the two common patterns, and fixing a vendor schema safely.",
-      "ogValue": "Slow ERP reports are usually an access-path problem, not a volume problem. The diagnostic method and how to apply the fix to a vendor schema safely.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: page title minus the \"| SiegeStack\" suffix. No other difference.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/working-with-claude-blog",
       "field": "og:title",
       "pageValue": "How to Use Claude AI Effectively | SiegeStack",
       "ogValue": "How to Use Claude AI Effectively: A Real Workflow That Ships Production Work",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: suffix dropped and the subtitle restored. \"A Real Workflow That Ships Production Work\" is what the page is about and does not fit inside 60 characters. NOTE: this route is being retitled to make its relationship to the business explicit; re-read this entry then.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/working-with-claude-blog",
       "field": "og:description",
       "pageValue": "How to use Claude AI effectively, from someone who ships real work with it daily. The workflow, the iteration loop, the mistakes, and a template you can steal.",
       "ogValue": "Stop treating Claude like a chatbot. Here",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: opens on the objection (\"Stop treating Claude like a chatbot\") instead of the topic, and names Claude vs ChatGPT, which is a query people actually type. NOTE: this value was truncated at an apostrophe in data/pages.json until 2026-08-26; the page was always correct.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/working-with-claude",
       "field": "og:title",
       "pageValue": "Working with Claude: A 14-Slide Case Study | SiegeStack",
       "ogValue": "Working with Claude: A 14-Slide Case Study on Shipping Production Work",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: suffix dropped and the subtitle restored, as on /working-with-claude-blog. NOTE: retitle pending on that route; re-read this one at the same time.",
+      "reviewed": "2026-08-26"
     },
     {
       "route": "/working-with-claude",
       "field": "og:description",
       "pageValue": "A 14-slide case study on using Claude AI effectively, from someone who ships with it daily. The workflow, the iteration loop, and a copy-paste template.",
       "ogValue": "Stop treating Claude like a chatbot. A 14-slide case study on the Claude workflow, the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.",
-      "reason": "TODO(pappy): confirm intentional"
+      "reason": "Intentional: same opening as /working-with-claude-blog, plus the slide count, so the two cards read as a pair rather than as duplicates.",
+      "reviewed": "2026-08-26"
     }
   ]
 }
