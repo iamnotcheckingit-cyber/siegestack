@@ -374,34 +374,33 @@ for (const p of PAGES) {
   // ordinary case of writing tomorrow's date into a page you are about to ship.
   //
   // ============================ SEVERITY ==================================
-  // WARNING, AND ONLY UNTIL /privacy-policy IS AMENDED.
+  // error(), and the one route that cannot satisfy it yet is SUPPRESSED rather
+  // than the rule being downgraded for everybody.
   //
-  // It is not a warning because the defect is minor. It is a warning because
-  // one of the two pages it currently fires on cannot be fixed honestly yet:
-  // the privacy policy's visible date should move when the policy text is
-  // amended to describe what the forms actually collect, and stamping today's
-  // date on unamended text would assert a currency the document does not have
-  // -- which is the same lie in the other direction.
+  // This shipped as warn() for about an hour, with a comment instructing
+  // whoever published the privacy amendment to promote it. That was the same
+  // defect the rule exists to catch: a control that lives only as prose. If the
+  // amendment had shipped on a busy day the promotion would have been skipped,
+  // SS-204 would have stayed a warning permanently, and /privacy-policy would
+  // have stayed stale -- reported forever, at a severity nobody reads, by the
+  // rule built to catch exactly that. It is the same species as SS-602
+  // reporting SKIPPED forever, and as a retention period with no deletion job
+  // behind it.
   //
-  // A NOTE ON FIXING A FINDING, because it looks circular the first time.
-  // Editing the visible date is itself a content change, so the commit that
-  // applies the fix becomes the newest content commit -- which means the
-  // correct value to write is the date of THAT commit, i.e. today, not the
-  // date the rule just reported. /working-with-claude-blog went 10 Aug -> 21 Aug
-  // -> 26 Aug for exactly this reason. That is the rule behaving correctly: a
-  // page displaying a last-updated date should refresh it whenever the page
-  // changes, and a bulk pass that should NOT refresh it is what the exclusions
-  // file is for.
+  // The suppression inverts the failure mode. data/validation-suppressions.json
+  // now carries one entry, for /privacy-policy only, naming the amendment as
+  // the unblock. SS-001 already forces that file to validate itself and to
+  // carry a reason and a date, so the entry cannot rot silently. Removing it is
+  // now a REQUIRED STEP of publishing the amendment rather than a remembered
+  // one: forget, and the build goes red instead of quietly staying yellow.
   //
-  // PROMOTE THIS TO error() IN THE COMMIT THAT PUBLISHES THAT AMENDMENT.
-  // There is no ratchet file behind it and no suppression; this comment is the
-  // whole mechanism, which is why it says so this loudly.
+  // Every other route is checked at error severity from today.
   // =========================================================================
   for (const p of scoped) {
     if (!p.visibleUpdated) continue;
 
     if (!p.visibleUpdated.iso) {
-      warn('SS-204', p.route,
+      error('SS-204', p.route,
         'Page shows a last-updated label whose date could not be parsed, so no rule can check it against anything.',
         p.visibleUpdated.text);
       continue;
@@ -411,9 +410,56 @@ for (const p of PAGES) {
     if (r.state !== 'ok') continue; // SS-201 already reports why, per route
 
     if (p.visibleUpdated.iso < r.date) {
-      warn('SS-204', p.route,
+      error('SS-204', p.route,
         'The date shown to a reader is older than the newest content commit touching the page, so the page tells a human it has not changed since a date it demonstrably has. If the content genuinely did not change, add that commit to data/freshness-exclusions.json rather than editing the date.',
         `visible="${p.visibleUpdated.text}" (${p.visibleUpdated.iso})  newest-content-commit=${r.date}  sitemap-lastmod=${p.sitemapLastmod}`);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // SS-205 -- a claim that something was DONE needs evidence it was done
+  //
+  // THE ORDERING PROBLEM THIS EXISTS FOR. Closing /consultant-expertise to
+  // submissions, deleting what it collected, and amending the privacy policy to
+  // describe both are three steps on one critical path, and only the middle one
+  // had a guard. scripts/expertise-purge.mjs refuses to run unless the endpoint
+  // is actually closed. Nothing stopped the policy publishing BEFORE the purge
+  // -- and the drafted policy contains the sentence "those records have been
+  // deleted and that store no longer holds anything."
+  //
+  // Publishing that sentence before the deletion has happened is not a stale
+  // date. It is a false statement about personal data in the one document whose
+  // entire purpose is to be relied on, and no amount of intending to run the
+  // script afterwards makes it retroactively true.
+  //
+  // HOW IT WORKS. Mark the claim in the markup:
+  //
+  //   <p data-requires-receipt="expertise-purge">... have been deleted ...</p>
+  //
+  // and the rule requires data/receipts/expertise-purge.json to exist and to
+  // record verified: true. scripts/expertise-purge.mjs writes that file only
+  // after re-listing the store and finding it empty -- it does not trust its own
+  // delete loop -- so the receipt cannot be produced by intending to purge.
+  //
+  // AN ATTRIBUTE, NOT A PHRASE MATCH. Keying off the sentence's wording would
+  // mean the guard silently stopped applying the first time somebody reworded
+  // it, which is the failure mode of every check that greps for prose. The
+  // attribute survives rewording, and its absence is visible in a diff.
+  for (const p of PAGES) {
+    for (const name of p.requiresReceipt ?? []) {
+      const file = `data/receipts/${name}.json`;
+      const input = readInput(file);
+      if (!input.present) {
+        error('SS-205', p.route,
+          `Page makes a claim marked data-requires-receipt="${name}", but ${file} does not exist. The claim asserts something was done; nothing here records that it was.`,
+          file);
+        continue;
+      }
+      if (input.parsed?.verified !== true) {
+        error('SS-205', p.route,
+          `${file} exists but does not record verified: true, so it is not evidence the work completed.`,
+          JSON.stringify(input.parsed ?? null).slice(0, 160));
+      }
     }
   }
 

@@ -11,7 +11,21 @@
     "tired of. Say what makes this route the exception, not that the rule is annoying.",
     "",
     "Fields: ruleId, route, reason, addedOn (YYYY-MM-DD).",
-    "Seeded empty on purpose: the Phase 2 failure list is meant to be read, not silenced."
+    "Seeded empty on purpose: the Phase 2 failure list is meant to be read, not silenced.",
+    "",
+    "FIRST ENTRY ADDED 2026-08-26, and it is worth saying why it is not a retreat from that.",
+    "SS-204 could have shipped as a warning instead, with a comment asking someone to promote",
+    "it later. A suppression here is strictly stronger: the rule runs at error severity for",
+    "every other route from day one, the exception is named and dated and reasoned, and",
+    "deleting it is forced by the work that unblocks it. A downgrade would have protected",
+    "nothing and reminded nobody."
   ],
-  "suppressions": []
+  "suppressions": [
+    {
+      "ruleId": "SS-204",
+      "route": "/privacy-policy",
+      "reason": "The visible date reads \"Last updated: January 22, 2026\" against a newest content commit of 2026-08-26, and SS-204 is right about that. It cannot be fixed by editing the date: the policy text does not yet describe what the two forms actually collect, where submissions are stored, how long they are kept, or how a deletion request is honoured, and stamping today onto unamended text would assert a currency the document does not have -- the same lie in the other direction. The amendment is drafted and blocked on two things: running scripts/expertise-purge.mjs --confirm (no Netlify credentials on the authoring machine), and confirming no submitted address was ever added to a mailing list. DELETE THIS ENTRY IN THE COMMIT THAT PUBLISHES THE AMENDMENT -- that is what makes removing it a required step rather than a remembered one.",
+      "addedOn": "2026-08-26"
+    }
+  ]
 }

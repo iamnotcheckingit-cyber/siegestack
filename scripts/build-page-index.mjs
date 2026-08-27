@@ -407,6 +407,12 @@ for (const file of htmlFiles) {
   // Robots
   const metaRobots = decode(meta(clean, 'name', 'robots') ?? '') || null;
   const visibleUpdatedValue = visibleUpdated(clean);
+
+  // Claims that are only true once something has actually been DONE, tagged in
+  // the markup so a rule can hold them to it. See SS-205.
+  const requiresReceipt = [
+    ...new Set([...clean.matchAll(/\bdata-requires-receipt="([a-z0-9-]+)"/g)].map((m) => m[1])),
+  ];
   const xRobots = headerRobotsFor(route);
   const robotsDirective = [metaRobots, xRobots].filter(Boolean).join(' + ') || null;
   const noindex = /noindex/i.test(robotsDirective ?? '');
@@ -487,6 +493,7 @@ for (const file of htmlFiles) {
     wordCount,
     inSitemap: sitemap.has(route),
     visibleUpdated: visibleUpdatedValue,
+    requiresReceipt,
     sitemapLastmod: sm?.lastmod ?? null,
     sitemapPriority: sm?.priority ?? null,
     sitemapChangefreq: sm?.changefreq ?? null,

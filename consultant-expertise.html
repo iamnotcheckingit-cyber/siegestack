@@ -142,6 +142,17 @@
         .form-closed-notice p { margin: 0 0 8px; }
         .form-closed-notice p:last-child { margin-bottom: 0; }
         .form-closed-notice a { color: #7a5c00; }
+        .form-disabled {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            min-width: 0;
+            opacity: 0.55;
+        }
+        .form-disabled .submit-btn {
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
         .form-closed-notice .correction {
             margin-top: 12px;
             padding-top: 12px;
@@ -178,6 +189,7 @@
         </div>
 
         <form id="expertiseForm">
+            <fieldset disabled class="form-disabled">
             <!-- Background Information -->
             <h2>Consultant Background</h2>
             
@@ -291,7 +303,8 @@
             <h2>Functional/Vertical Expertise</h2>
             <div id="functionalSkills"></div>
 
-            <button type="submit" class="submit-btn">Submit Expertise Profile</button>
+            <button type="submit" class="submit-btn" disabled>Submissions are closed</button>
+            </fieldset>
         </form>
     </div>
 

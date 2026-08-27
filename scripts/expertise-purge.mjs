@@ -108,6 +108,33 @@ if (failed.length) {
 }
 
 if (after.length === 0 && !failed.length) {
+  // The receipt SS-205 requires. Written only here: after the delete loop, after
+  // re-listing, and only when the re-list came back empty. It is deliberately
+  // not written by the loop itself -- the whole point is that it is evidence the
+  // store IS empty, not evidence that a deletion was attempted.
+  fs.mkdirSync(path.join(ROOT, 'data/receipts'), { recursive: true });
+  fs.writeFileSync(
+    path.join(ROOT, 'data/receipts/expertise-purge.json'),
+    JSON.stringify({
+      _readme: [
+        'Evidence that the siegestack-expertise blob store was emptied, required by SS-205',
+        'before any page may publish a claim marked data-requires-receipt="expertise-purge".',
+        'Written by scripts/expertise-purge.mjs only after re-listing the store and finding',
+        'it empty. Commit it: CI reads this file, not the live store.',
+      ],
+      store: 'siegestack-expertise',
+      verified: true,
+      verifiedBy: 'scripts/expertise-purge.mjs re-listed the store after deleting and found 0 keys',
+      deleted: done,
+      remaining: after.length,
+      purgedAt: new Date().toISOString(),
+    }, null, 2) + '\n'
+  );
+  console.log('');
+  console.log('  receipt written: data/receipts/expertise-purge.json');
+  console.log('  COMMIT IT. SS-205 reads that file, not the live store, and the privacy');
+  console.log('  policy sentence about deletion cannot publish until it is in the repo.');
+
   console.log('');
   console.log('Store is empty, verified by re-listing after the deletion.');
   console.log('The policy may now state that no expertise submissions are retained.');
