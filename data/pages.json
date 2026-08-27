@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "5b3fc17",
+    "commit": "b4f9e9d",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -76,11 +76,7 @@
     "indexable": 27,
     "sitemapEntries": 27,
     "phantomSitemapEntries": [],
-    "unresolvedInternalLinkTargets": {
-      "/audit": [
-        "/delivery-config-audit"
-      ]
-    }
+    "unresolvedInternalLinkTargets": {}
   },
   "pages": [
     {

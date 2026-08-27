@@ -702,7 +702,7 @@
 # None of this ever 404'd; a 200-rewrite always returned a file. It was a
 # correct-looking rule serving the wrong bytes, which is harder to see than a
 # missing file and is why it survived. Now they all resolve to /favicon.png,
-# which is a raster and is what asked for.
+# which is a raster, and a raster is what those clients asked for.
 #
 # The page-level <link rel="alternate icon"> was repointed at /favicon.png in
 # 64e5550, and the reason recorded there was WRONG — see the correction in the

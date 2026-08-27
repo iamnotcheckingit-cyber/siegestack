@@ -33,6 +33,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { parseRewrites } from './lib/rewrite-replay.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ORIGIN = 'https://siegestack.com';
@@ -567,13 +568,32 @@ for (const p of pages) {
 }
 
 // Link targets nothing in the universe resolves to.
+// A target is unresolved only if NOTHING serves it: not a page in the universe,
+// and not a netlify.toml 200-rewrite either.
+//
+// This field named /audit for weeks, and /audit is served every day —
+// it rewrites to /docs/audit-2026-08-16.md at status 200. It was the same blind
+// spot SS-106 had until 2026-08-26: ask the filesystem about the REQUESTED path
+// and a rewritten path looks missing. There it produced a finding that got 23
+// pages edited. Here it produced nothing, because NOTHING READS THIS FIELD —
+// which is the only reason it was harmless, and not a good one. A published
+// diagnostic that is wrong and unread is worse than one that is wrong and
+// noticed.
+const rewrites = parseRewrites(ROOT);
+if (!rewrites.ok) {
+  console.error(`build-page-index: cannot replay the netlify.toml rewrite table (${rewrites.why}).`);
+  console.error('Refusing to emit unresolvedInternalLinkTargets from an incomplete view: every');
+  console.error('rewritten path would be reported as unresolved.');
+  process.exit(1);
+}
 const unresolved = new Map();
 for (const p of pages) {
   for (const target of p.internalLinksOut) {
-    if (!byRoute.has(target)) {
-      if (!unresolved.has(target)) unresolved.set(target, []);
-      unresolved.get(target).push(p.route);
-    }
+    if (byRoute.has(target)) continue;
+    const served = rewrites.resolve(target);
+    if (served !== target && fs.existsSync(path.join(ROOT, served.replace(/^\//, '')))) continue;
+    if (!unresolved.has(target)) unresolved.set(target, []);
+    unresolved.get(target).push(p.route);
   }
 }
 
