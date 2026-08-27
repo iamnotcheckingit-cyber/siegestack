@@ -177,9 +177,9 @@ buyer there would be worse than not linking.
 
 ## By industry
 
-- [For distributors](https://siegestack.com/industries/distribution): the same work stated
-  for distribution specifically — reporting that can be trusted, integration without
-  nightly files, and multi-site operations whose numbers agree.
+- [For distributors](https://siegestack.com/industries/distribution): the hub page for
+  distribution work — who it is for, what usually turns out to be wrong, the five kinds
+  of work with a page each, what an engagement looks like, and what determines the cost.
 
 ## About and contact
 

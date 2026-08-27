@@ -3041,29 +3041,99 @@ One industry page, because this is where the experience actually is.
 
 This is the only industry page on this site. There is no manufacturing page, no e-commerce page and no retail page, because a page that cannot be filled with first-hand specifics is worth less than no page at all.
 
-### What distributors actually arrive with
+### Who this is for
 
-- **A report that is fast on Today and times out on Month.** Usually an access path problem that volume made visible. [Performance tuning](https://siegestack.com/services/performance-tuning).
+Wholesale distributors and light manufacturers running an ERP on SQL Server, usually across more than one site. The shape matters more than the size: **the ERP is the system of record, and spreadsheets do the real work.** Purchasing is decided in a workbook nobody else can open. The number the sales meeting runs on is exported, pasted and adjusted before anyone looks at it. There is a report everybody knows to run for Today and nobody runs for the month.
 
-- **Numbers nobody trusts.** Open and posted records living in separate tables, so any window longer than a day under-reports. Undated lines counted as on-time successes. [The P21 data-model traps](https://siegestack.com/prophet-21).
+None of that is a failure of discipline. It is what people do when the system does not answer the question they actually have, and it is the most reliable signal that there is work here worth doing.
 
-- **Two systems of record** that were supposed to be consolidated years ago, making every network-level answer wrong in a way nobody can see. [Operations modernization](https://siegestack.com/operations-modernization).
+### What usually turns out to be wrong
 
-- **A nightly file** holding two systems together. [ERP integration](https://siegestack.com/services/erp-integration).
+Almost none of it is what the request said it was. The request describes the symptom accurately and the cause not at all, which is why the first move is always to reproduce it against your data.
 
-- **A process that runs because one person remembers the order of the steps.** [ETL and pipelines](https://siegestack.com/services/etl-data-pipelines).
+- **A report that is fast on Today and times out on Month.** Usually an access path problem that volume merely made visible, and usually one line of DDL. [Performance tuning](https://siegestack.com/services/performance-tuning).
 
-### Why distribution specifically
+- **Numbers nobody trusts.** Open and posted records in separate tables, so any window longer than a day under-reports. Undated lines counted as on-time successes. Identity resolved through a fallback chain that quietly picks the wrong record when the first match is missing. [The P21 data-model traps](https://siegestack.com/prophet-21).
 
-The work is on distribution ERPs and the operations around them: receiving, picking, purchasing, transfers between sites, and the reporting all of it feeds. That means the data-model traps are familiar rather than discovered on your time, and the questions asked in the first conversation are the ones that turn out to matter.
+- **Two systems of record** that were supposed to be consolidated years ago, making every network-level answer wrong in a way nobody can see — because each system is internally consistent and neither one is lying. [Operations modernization](https://siegestack.com/operations-modernization).
 
-Deep hands-on experience is Epicor Prophet 21. Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/prophet-21) rather than implying equal depth in both.
+- **A nightly file** holding two systems together, with no alert on the night it does not arrive. [ERP integration](https://siegestack.com/services/erp-integration).
+
+- **A process that runs because one person remembers the order of the steps**, or because a macro lives on one particular workstation. [ETL and pipelines](https://siegestack.com/services/etl-data-pipelines).
+
+- **A report somebody runs by hand every Monday** and emails to eleven people, four of whom have left. [Automated reporting](https://siegestack.com/services/automated-reporting).
+
+### The five kinds of work
+
+Every engagement here is one of these, or a sequence of them, listed in the order they usually need doing rather than by size.
+
+#### Integration — making two systems agree
+
+Order, item and pricing flows between the ERP and whatever sits either side of it. The hard part is never the API; it is what happens on the third failure at 2am, whether anyone finds out, and whether a partial load left something for a person to unpick by hand. Tooling that validates everything and then commits turns a mistyped identifier into a rejected row instead of a half-finished state. See [ERP integration](https://siegestack.com/services/erp-integration) and [the integration showcase](https://siegestack.com/etl-showcase).
+
+#### Pipelines — moving data on a schedule you can audit
+
+The nightly file, the workstation macro, the export-reshape-import loop one person knows. Replacing those is less about the transformation than about being able to answer *did it run, did it run completely, and how would we know.* See [ETL and data pipelines](https://siegestack.com/services/etl-data-pipelines).
+
+#### Reporting and BI — deciding which rows count as evidence
+
+A dashboard request is almost always a definitional question in a technical costume. Before anything renders, somebody has to rule on whether an open order counts, whether a credit reverses the original month, and which of two date columns the business actually means. That ruling is the deliverable; the console displays it. See [BI dashboards](https://siegestack.com/services/bi-dashboards).
+
+Once the definitions hold, the reports people run by hand can stop being run by hand — on a schedule, to whoever still needs them, with a record of what was sent. See [automated reporting](https://siegestack.com/services/automated-reporting).
+
+#### SQL Server performance — the access path, not the volume
+
+Slow ERP reporting is usually an access-path problem that grew visible rather than a capacity problem that grew real. The diagnostic question is narrow: what exactly does the date filter filter on, and does anything index it. Applying the answer to a schema owned by your ERP vendor is a supportability decision before a technical one. See [performance tuning](https://siegestack.com/services/performance-tuning) and [the method in full](https://siegestack.com/sql-server-erp-performance).
+
+#### Reliability and audit — finding what reports nothing
+
+The defects that survive longest return no error: a permission rule matching nothing while looking like it works, a form reporting success on a notification that never sent, a config that reads correctly and does not run. Checking what an anonymous request can actually retrieve is a different exercise from reading the file that describes it. See [security and access audit](https://siegestack.com/services/security-access-audit) and [a case where reading the config gave the wrong answer](https://siegestack.com/delivery-config-audit).
+
+### What an engagement looks like
+
+A 30-minute call first, to find out whether the problem is the one you think it is. Bring the report that falls over, or the number two systems disagree about. That conversation costs nothing and often ends with something you can act on without engaging anybody.
+
+If there is work, it arrives as a scoped proposal naming what gets built, what gets measured before it is built, and what would count as it not having worked. Then working software weekly — not a status report weekly.
+
+Baselines come before changes. If nobody captured the before state, any claim about the after state is an opinion, which is why the [case studies](https://siegestack.com/case-studies) carry no percentages and say so. Capturing the baseline is part of the work, not an add-on.
+
+### What determines the cost
+
+No price on this page, because four things move it and none are what people expect:
+
+- **How many systems have to agree.** One is a report. Two is an integration. Three is a project, and the middle one is where the surprises live.
+
+- **Whether the definitions exist yet.** If nobody has ruled on what counts as an on-time line, that ruling is a series of conversations rather than a piece of code.
+
+- **Whose schema it is.** Work alongside a vendor ERP is cheaper to support for years than work inside it, and that trade-off gets made explicitly and early.
+
+- **Whether anything can be measured today.** An operation with no instrumentation needs a baseline before it needs a build.
+
+What does *not* move it much: headcount, and how many users the thing will have.
 
 ### Proof
 
-[Three anonymised engagements](https://siegestack.com/case-studies) · [integration patterns with real code](https://siegestack.com/etl-showcase) · [the write-ups](https://siegestack.com/insights)
+Three anonymised engagements. Industry, size, location and dollar values are removed rather than disguised, so what is left is the part that transfers.
 
-[Start a conversation](https://siegestack.com/contact)
+- [A KPI console for people reading the operation from memory](https://siegestack.com/case-studies/kpi-console) — two audiences at two trust levels, with cost-bearing reports refused to floor displays at the report-definition layer rather than the render layer.
+
+- [The report that worked on Today and timed out on Month](https://siegestack.com/case-studies/month-to-date-timeout) — the most consistently misdiagnosed complaint in ERP reporting, and what it actually was.
+
+- [One label service instead of a label program per label](https://siegestack.com/case-studies/label-service) — new labels stopped being deployments.
+
+Longer write-ups, including the ones about a mistake rather than a result, are in [insights](https://siegestack.com/insights). Where something published here turned out to be wrong, it is in [corrections](https://siegestack.com/corrections) rather than quietly edited.
+
+### Why distribution specifically
+
+Receiving, picking, purchasing, transfers between sites, and the reporting all of it feeds. The data-model traps are familiar rather than discovered on your time, and the questions asked in the first conversation are the ones that turn out to matter.
+
+Deep hands-on experience is Epicor Prophet 21; Kinetic shares the transferable parts, and [that page says so explicitly](https://siegestack.com/prophet-21) rather than implying equal depth in both. [One person does the work](https://siegestack.com/about), stated plainly because it changes what you should expect in both directions.
+
+### Start with the smallest real thing
+
+Bring one report that is wrong, or one number two systems disagree about. That is a better starting point than a list of everything.
+
+[Book a 30-minute call](https://siegestack.com/contact) · [or send the details first](https://siegestack.com/#schedule)
 
 ---
 
