@@ -136,7 +136,9 @@ bases; the single `measurementBasis` names both instead. Recorded as a schema li
 
 **What that leaves.** Every 99%+ on the site now has a known provenance. **None has a
 measurement.** M1 and M2 both still need method, comparison key and date — see their sections.
-`dateMeasured` is `TODO(pappy)` on every row, and SS-601 does not look at it.
+`dateMeasured` is `TODO(pappy)` on every row. **SS-601 now checks it** (2026-08-27), so the
+three provenance-only rows warn again and the count went back 13 → 16. That is the honest
+number: it counts rows nobody has measured, not rows nobody has traced.
 
 ### Superseded hypothesis — kept because it was wrong in an instructive way
 

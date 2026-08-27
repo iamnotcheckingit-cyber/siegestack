@@ -862,8 +862,66 @@ const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b
         if (!String(entry.reason ?? '').trim()) {
           error('SS-601', p.route, 'Claim is marked disposition:"not-a-claim" with no reason. An unexplained disposition is indistinguishable from a silenced warning.', `"${claim}"`);
         }
-      } else if (String(entry.measurementBasis).startsWith('TODO')) {
-        warn('SS-601', p.route, 'Claim is registered but has no measurement basis yet.', `"${claim}" ×${n}`);
+      } else {
+        /**
+         * SS-601's other half, added 2026-08-27.
+         *
+         * This registry's readme has said since it was written that "Each entry
+         * needs measurementBasis and dateMeasured filled in, OR the claim
+         * removed from the page, OR the entry marked not-a-claim". The rule read
+         * ONLY measurementBasis. That is the same defect as the not-a-claim gap
+         * closed on 2026-08-21 -- the readme promising something the tool did
+         * not implement -- and it did the same kind of harm: on 2026-08-27 three
+         * rows were answered with a PROVENANCE ("it came from the view audit")
+         * and no measurement, and the warning count fell 15 -> 13 as though
+         * three claims had been substantiated. Nothing had been measured. A
+         * count that moves on half an answer is worse than no count, because it
+         * is read as progress.
+         *
+         * MISSING AND TODO ARE THE SAME STATE HERE. Testing only for a TODO
+         * prefix would mean deleting the field silences the check, which is B7
+         * in docs/validator-blind-spots.md: the expectation has to survive the
+         * removal of the thing it inspects.
+         *
+         * ONE FINDING PER CLAIM, never two. Two half-answers are one unfinished
+         * row, and emitting a warning per field would double the backlog number
+         * without a single new fact being missing -- which is the failure this
+         * whole change exists to correct.
+         *
+         * A FILLED DATE THAT IS NOT A DATE IS AN ERROR, not a warning. "last
+         * spring" passes any is-it-empty test and records nothing; unlike a
+         * TODO, it looks answered. Same reasoning as SS-202 for the future
+         * check: a measurement dated after today did not happen.
+         */
+        const filled = (v) => {
+          const t = String(v ?? '').trim();
+          return t !== '' && !t.startsWith('TODO');
+        };
+        const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+        const noBasis = !filled(entry.measurementBasis);
+        const noDate = !filled(entry.dateMeasured);
+
+        if (noBasis && noDate) {
+          warn('SS-601', p.route, 'Claim is registered but has neither a measurement basis nor a date.', `"${claim}" ×${n}`);
+        } else if (noBasis) {
+          warn('SS-601', p.route, 'Claim has a date but no measurement basis.', `"${claim}" ×${n}`);
+        } else if (noDate) {
+          warn('SS-601', p.route, 'Claim has a measurement basis but no dateMeasured, so it records a PROVENANCE rather than a measurement. Knowing which engagement a figure came from is not knowing that anyone measured it.', `"${claim}" ×${n}`);
+        } else {
+          // Both filled. Now the date has to survive being read as one.
+          const raw = String(entry.dateMeasured).trim();
+          const parts = raw.split('/');
+          const bad = parts.filter((d) => !ISO_DAY.test(d) || Number.isNaN(Date.parse(d)));
+          if (parts.length > 2 || bad.length) {
+            error('SS-601', p.route, 'dateMeasured is filled but is not an ISO date (YYYY-MM-DD, or two of them separated by "/" for a measurement spanning days). A filled field that is not a date reads as answered and records nothing.', `"${claim}" dateMeasured=${JSON.stringify(raw)}`);
+          } else {
+            const today = new Date().toISOString().slice(0, 10);
+            const future = parts.filter((d) => d > today);
+            if (future.length) {
+              error('SS-601', p.route, 'dateMeasured is in the future. A measurement dated after today did not happen.', `"${claim}" dateMeasured=${JSON.stringify(raw)} today=${today}`);
+            }
+          }
+        }
       }
     }
   }
