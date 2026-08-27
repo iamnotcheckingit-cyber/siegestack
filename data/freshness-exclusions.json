@@ -32,6 +32,11 @@
       "sha": "3ad3435",
       "reason": "Phase 5 CSS consolidation. Replaced the inline <style> block on 22 pages with links to /assets/site.<hash>.css plus doc.<hash>.css or article.<hash>.css. Every rule was carried across unchanged and an equivalence pass compared the effective value of every declaration on every page before and after -- see docs/css-consolidation-2026-08-26.md. The only intended difference is --blue-bright defined once in :root instead of inlined as a var() fallback, which is the same colour. NO PUBLISHED COPY CHANGED on any of the 22, so their sitemap lastmod must not move and tell search engines otherwise.",
       "addedOn": "2026-08-26"
+    },
+    {
+      "sha": "a60e0d8",
+      "reason": "Phase 6 typography. Self-hosted Inter, Playfair Display and JetBrains Mono, removed the fonts.googleapis.com and fonts.gstatic.com references from the two AI pages, and pointed 27 pages at the shared stacks. This CHANGES HOW PAGES LOOK and changes nothing any page says -- not a word of copy moved. A sitemap lastmod tells a search engine the content was revised, and it was not. The one thing here that is a disclosure change rather than a presentation change, the removal of a third party, is recorded in /corrections instead, which is where a reader would look for it.",
+      "addedOn": "2026-08-26"
     }
   ]
 }

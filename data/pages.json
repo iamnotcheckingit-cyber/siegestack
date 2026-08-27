@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "32b45a7",
+    "commit": "a60e0d8",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -3241,8 +3241,8 @@
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.7",
       "sitemapChangefreq": "monthly",
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "gitLastCommitDate": "2026-08-26",
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
@@ -6511,8 +6511,8 @@
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
       "sitemapChangefreq": "monthly",
-      "gitLastCommitDate": "2026-08-21",
-      "lastmodMatchesGit": true,
+      "gitLastCommitDate": "2026-08-26",
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
