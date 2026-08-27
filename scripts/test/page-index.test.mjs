@@ -75,6 +75,18 @@ async function loadMeta({ withDefect }) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'siegestack-pageindex-'));
   const scripts = path.join(dir, 'scripts');
   fs.mkdirSync(scripts);
+  // The sliced header imports by RELATIVE path, so whatever it imports has to
+  // exist beside the copy. On 2026-08-26 build-page-index.mjs grew
+  // `import { parseRewrites } from './lib/rewrite-replay.mjs'` and this suite
+  // went red with a Node resolver stack and no statement about what it was
+  // testing -- a bad way to find out a fixture is incomplete, and indistinguishable
+  // at a glance from the extractor itself being broken. Copy the whole lib
+  // directory rather than naming files, so the next import does not need this
+  // edited. rewrite-replay.mjs does its IO inside parseRewrites() rather than at
+  // module scope, so importing it keeps the header side-effect-free and the
+  // reason for cutting at all still holds.
+  const lib = path.join(REPO, 'scripts', 'lib');
+  if (fs.existsSync(lib)) fs.cpSync(lib, path.join(scripts, 'lib'), { recursive: true });
   // Everything above this marker is pure: imports, ROOT/ORIGIN constants,
   // decode(), meta(). Everything below reads the filesystem and writes the
   // artifacts. Cutting here is what makes the import side-effect-free.
@@ -85,7 +97,21 @@ async function loadMeta({ withDefect }) {
     process.exit(2);
   }
   const file = path.join(scripts, 'meta-only.mjs');
-  fs.writeFileSync(file, src.slice(0, cut));
+  const header = src.slice(0, cut);
+  fs.writeFileSync(file, header);
+
+  // Assert the fixture actually satisfies the header before importing it, so an
+  // unmet import is reported as a fixture gap in this suite's own voice instead
+  // of as ERR_MODULE_NOT_FOUND from the module loader.
+  const missing = [...header.matchAll(/^import[^\n]*?from\s+['"](\.[^'"]+)['"]/gm)]
+    .map((m) => m[1])
+    .filter((spec) => !fs.existsSync(path.resolve(scripts, spec)));
+  if (missing.length) {
+    console.error(`REFUSING TO RUN: the pure header of build-page-index.mjs imports ${missing.join(', ')}, which this fixture does not provide.`);
+    console.error('Copy it into the temp scripts directory alongside scripts/lib, above.');
+    process.exit(2);
+  }
+
   const mod = await import(pathToFileURL(file).href);
   if (typeof mod.meta !== 'function') {
     console.error('REFUSING TO RUN: build-page-index.mjs no longer exports meta().');
