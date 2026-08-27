@@ -122,7 +122,7 @@
       "claim": "99%",
       "route": "/",
       "occurrences": 2,
-      "measurementBasis": "TODO(pappy) -- PARTIAL. Provenance is settled: the database view audit (M1), confirmed 2026-08-27, and NOT the separate 99%+ reconciliation the same article reports at #macros. But M1's answer of 2026-08-27 was 'elapsed time', which describes the ~27% gain and cannot describe a match rate. Still needed: what 'match' means here and against what comparison key.",
+      "measurementBasis": "A view-audit match rate: each rewritten view's result set compared against the original's, match defined as EXACT EQUALITY ON EVERY FIELD. Same audit as the ~27% gain (elapsed time, SQL Server trace baseline, 70 rewritten views). Provenance confirmed 2026-08-27, matching rule 2026-08-27. Distinct from the separate 99%+ reconciliation the same article reports at #macros, which is M2.",
       "dateMeasured": "2026-03-10",
       "contextOnPage": [
         "…tudy → ~27% performance gain 300+ views audited B → A+ security grade, one site 99%+ automation match rate What We Build Solutions that solve real problems and del…"
@@ -214,7 +214,7 @@
       "claim": "99%",
       "route": "/working-with-claude-blog",
       "occurrences": 3,
-      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit, measured 2026-03-10. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation, a row-by-row compare measured 2026-05-04. Occurrence 3 is the published-basis paragraph restating the figure as a separate measurement. NO dateMeasured IS SET AND NOW CANNOT BE: the two measurements have DIFFERENT dates, so the single field is not merely awkward here, it is incapable of being correct. Both still need what counts as a match.",
+      "measurementBasis": "TODO(pappy) -- BLOCKED BY THE REGISTRY'S SHAPE, NOT BY A MISSING ANSWER. Both measurements under this row are now fully specified. Occurrence 1 (#perf-gain summary line) is M1: exact equality on every field, measured 2026-03-10. Occurrence 2 ('Reconciliation runs at 99%+' at #macros) is M2: row-by-row, exact equality on every field, measured 2026-05-04. Occurrence 3 restates the figure in the published-basis paragraph. The registry is keyed on (claim, route) and holds ONE dateMeasured, and these two dates differ -- so no value in that field can be correct and no SS-601 message fits this row. It is kept TODO-prefixed because that is the least wrong of the available states, not because anything is unanswered. The fix is a per-occurrence structure or a different key.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…ng them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever. The leverage was running the loo…",
@@ -247,7 +247,7 @@
       "claim": "99%",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy) -- PARTIAL. M2, the macro-replacement reconciliation: the same measurement the article states at /working-with-claude-blog#macros, restated on the '9 Macros -> 1 Automation' slide. Method answered 2026-08-27: a ROW-BY-ROW COMPARE against the legacy output the replaced macros produced. Still needed before this is a basis: what counts as a MATCHING row -- exact equality on every field, or a key with a tolerance -- and what makes the residual percent 'genuinely ambiguous', which the page asserts but does not define. TODO-prefixed on purpose: with the date now filled, dropping the prefix would clear this row on a method without a matching rule.",
+      "measurementBasis": "M2, the macro-replacement reconciliation, restated on the '9 Macros -> 1 Automation' slide: the new script's output compared against the legacy output the replaced macros produced, ROW BY ROW, match defined as EXACT EQUALITY ON EVERY FIELD. Method and date answered 2026-08-27. Separately open, and NOT part of this basis: the page calls the residual percent 'genuinely ambiguous' and nothing defines what put a row in that bucket -- that is a prose assertion about the leftovers, not a term in the match rate.",
       "dateMeasured": "2026-05-04",
       "contextOnPage": [
         "…from the intent, not the legacy code. Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over. Migration: Conversation as…"

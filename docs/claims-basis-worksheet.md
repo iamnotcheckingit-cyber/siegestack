@@ -51,8 +51,8 @@ Source section: `/working-with-claude-blog#perf-gain`.
 | how the baseline was captured, and with what tool | **a SQL Server trace** | ~27% |
 | what population the ~27% is aggregated over | **the 70 rewritten views**, not the 300+ audited | ~27% |
 | the date | **2026-03-10** | both |
-| what counts as an audited view, and how 300+ was counted | open | N1, the `300+` |
-| what "match" means in the 99%+, and against what comparison key | open | rows 11, 20-first |
+| what counts as an audited view, and how 300+ was counted | open | the `300+`, registered 2026-08-27 |
+| what "match" means in the 99%+, and against what comparison key | **exact equality on every field** | rows 11, 20-first |
 
 **The four `~27%`/`27%` rows are complete and their `TODO` prefixes are gone** — 16 warnings → 12.
 That is the first time a row on this sheet has actually cleared. The two remaining items belong
@@ -119,19 +119,30 @@ always two numbers.
 | what legacy output it was reconciled against | **what the replaced macros produced** — stated on the deck slide |
 | the comparison method | **a row-by-row compare** |
 | the date | **2026-05-04** |
-| what counts as a MATCHING row, and what makes the residual "genuinely ambiguous" | open |
+| what counts as a MATCHING row | **exact equality on every field** |
 
-**One answer away from clearing.** "Row-by-row compare" says every row was examined; it does not
-say what made a row match — exact equality across every field, or a key with a tolerance. The
-page asserts the remaining percent is "genuinely ambiguous and is surfaced for a human"; nothing
-defines what put a row in that bucket. Row 23 keeps its `TODO` prefix for exactly that reason:
-with the date now filled, dropping it would clear the row on a method with no matching rule.
+**CLEARED 2026-08-27.** Row-by-row, exact equality on every field, against the legacy macro
+output, 2026-05-04. Row 23's `TODO` prefix is gone, and the basis is now published on the page
+under the reconciliation sentence, the way M1's sits under the summary line.
 
-**M1 and M2 now have DIFFERENT dates, and that settles the row 20 question.** 2026-03-10 and
-2026-05-04. Row 20 carries both measurements in one registry row keyed on (claim, route), so its
-single `dateMeasured` is no longer merely awkward — **it cannot be correct**, whichever date is
-written there. Splitting the key, or a per-occurrence structure, is the only fix; recorded here
-rather than built, because it changes the registry's shape and SS-601 reads that shape.
+**One thing did NOT clear with it, and it is not part of this basis.** The page says the residual
+percent is "genuinely ambiguous and is surfaced for a human rather than guessed at". With match
+set at exact equality, the residual is simply every row that differed — so "genuinely ambiguous"
+characterises *why* they differed, and it is asserted rather than shown. That is a prose claim
+about the leftovers, not a term in the match rate, so it does not block the figure. **SS-601
+cannot see it: no number in it.** Recorded here because this is the only place it will be seen.
+
+**Row 20 is now the ONLY item on this sheet blocked by the tool rather than by an answer.** Both
+of its measurements are fully specified. It holds them in one row keyed on (claim, route) with
+one `dateMeasured`, and the two dates differ — 2026-03-10 and 2026-05-04 — so **no value in that
+field can be correct, and no SS-601 message fits the row either**: it is neither missing a basis
+nor recording a mere provenance. It stays `TODO`-prefixed as the least wrong available state. The
+fix is a per-occurrence structure or a different key, which changes the shape SS-601 reads;
+recorded rather than built.
+
+**And a duplicate row is not a workaround.** `registered` is a `Map` keyed on `route|claim`, so
+two rows sharing that pair do not both survive — the second silently replaces the first. Adding
+a second row 20 would be data loss, not a split.
 
 **Not published on the page yet, deliberately.** M1's `~27%` got its basis printed under the
 summary line the day it was complete. M2's is not complete, and a partial basis on the page
@@ -282,7 +293,7 @@ rule today, so neither would turn the build red no matter what it said.
 
 | # | Claim | Route | Where it appears | Source anchor | Why SS-601 misses it | What would satisfy the basis |
 |---|---|---|---|---|---|---|
-| N1 | `300+` | `/` and `/working-with-claude-blog` | Stat row, "300+ views audited"; and the article summary line | `/working-with-claude-blog#perf-gain` | **NOT REGISTERED.** SS-601 tokenises digit-percent, digit-x, and the words faster/reduced/improved/cut. A bare count with a `+` matches none of them. | The population definition: what counts as an audited view, how the 300 was counted, and on what date. This is the denominator for rows 9, 11, 16 and 20 — without it none of those percentages have a scope. |
+| N1 | `300+` | `/`, `/working-with-claude-blog` and the deck | Stat row, "300+ views audited"; the article summary line; the slide title | `/working-with-claude-blog#perf-gain` | **REGISTERED 2026-08-27** as three rows, one per route. SS-601's pattern now matches a bare count carrying a trailing `+`; it previously tokenised only digit-percent, digit-x and four verbs. | The population definition: what counts as an audited view, how the 300 was counted, and on what date. **Still the largest open item on this sheet** — and note the ~27% is aggregated over the 70 rewritten views, not over this 300+, so these two figures in one summary line have different populations. |
 | N2 | `B → A+` | `/working-with-claude-blog` only, as of 2026-08-21 | The article section. **Removed from the homepage stat row by W6** — it came from a personal project and stood unlabelled beside professional results | `/working-with-claude-blog#security-grade` | **NOT REGISTERED.** A letter grade contains no digit-percent, digit-x, or tracked verb. | The scoring tool and both report dates. The article states the numeric scores (75 → 125), so the tool is identifiable — name it, and record when each scan ran. Lower priority now that it is confined to the article, where it is labelled *Personal*. |
 
 ### If you want these two enforced
