@@ -214,7 +214,7 @@
       "claim": "99%",
       "route": "/working-with-claude-blog",
       "occurrences": 3,
-      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; M1's date is 2026-03-10 and its measurement is elapsed time (which describes the ~27%, not a match rate); M2 has neither. NO dateMeasured IS SET: one field cannot hold two measurement dates, and putting M1's date here would date M2's reconciliation to a day nobody claimed. Third occurrence is the published-basis paragraph under the summary line, which names the 99%+ only to say it is a SEPARATE measurement whose comparison key is not published yet.",
+      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit, measured 2026-03-10. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation, a row-by-row compare measured 2026-05-04. Occurrence 3 is the published-basis paragraph restating the figure as a separate measurement. NO dateMeasured IS SET AND NOW CANNOT BE: the two measurements have DIFFERENT dates, so the single field is not merely awkward here, it is incapable of being correct. Both still need what counts as a match.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…ng them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever. The leverage was running the loo…",
@@ -247,8 +247,8 @@
       "claim": "99%",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "M2, the macro-replacement reconciliation -- the same measurement the article states at /working-with-claude-blog#macros, restated on the '9 Macros -> 1 Automation' slide. Confirmed 2026-08-27 by the operator. NOT the view audit, and not a separate migration: 'migration' was this worksheet's own reading of the slide's cut-over language.",
-      "dateMeasured": "TODO(pappy)",
+      "measurementBasis": "TODO(pappy) -- PARTIAL. M2, the macro-replacement reconciliation: the same measurement the article states at /working-with-claude-blog#macros, restated on the '9 Macros -> 1 Automation' slide. Method answered 2026-08-27: a ROW-BY-ROW COMPARE against the legacy output the replaced macros produced. Still needed before this is a basis: what counts as a MATCHING row -- exact equality on every field, or a key with a tolerance -- and what makes the residual percent 'genuinely ambiguous', which the page asserts but does not define. TODO-prefixed on purpose: with the date now filled, dropping the prefix would clear this row on a method without a matching rule.",
+      "dateMeasured": "2026-05-04",
       "contextOnPage": [
         "…from the intent, not the legacy code. Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over. Migration: Conversation as…"
       ]

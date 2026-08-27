@@ -1160,7 +1160,9 @@ Amazon
 Square
 ✓
 
-Don't see your system? We've integrated with 50+ platforms. If it has an API, we can connect it.
+Don't see your system? If it has an API, we can connect it.
+
+**Corrected 27 August 2026.** This line said “We’ve integrated with 50+ platforms.” Nobody counted them. The figure is removed rather than replaced with a smaller one, because the honest number is not known either — the systems named above are the ones this site is willing to stand behind.
 
 Want to see how we actually build these integrations? Below are real code examples - the same patterns we use in production. Share this with your technical team if you'd like them to review our approach.
 
@@ -3640,6 +3642,26 @@ not permanently explaining an absence to people who never saw the presence.
 Collapsing moves the text. It never shortens it and never deletes it.
 
 ### 2026
+
+#### A platform count that was never counted
+
+**27 August 2026 · [CRM and ERP integration showcase](https://siegestack.com/etl-showcase)**
+
+The note under the integrations grid read *“Don’t see your system? We’ve
+integrated with 50+ platforms.”* Nobody counted them. It is the plainest kind of
+breach of the rule this site publishes about itself — a figure with no measurement
+behind it — and it sat on the page longer than any other correction listed here,
+because nothing was looking for it.
+
+The figure is removed rather than made smaller. Replacing it with a lower number would need
+someone to have counted, and nobody has; the systems named in the grid above it are the
+ones this site stands behind. The line now reads “Don’t see your system? If it
+has an API, we can connect it.”
+
+How it was found is worth recording. The check that enforces this rule reads numbers
+out of the pages, and until the day before this correction it could not see a bare count
+— it matched percentages and multipliers only. Extending it to catch figures like
+“50+” surfaced this on the first run, on a page nobody was auditing.
 
 #### A gain credited to a bigger population than it was measured over
 

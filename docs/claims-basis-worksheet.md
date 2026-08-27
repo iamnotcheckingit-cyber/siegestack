@@ -112,9 +112,30 @@ The word "migration" came from the deck's own cut-over language, and reading it 
 engagement is what made Q1 look like a contradiction: two accounts of one number. There were
 always two numbers.
 
-Needs: what legacy output the new script was reconciled against, the comparison key and
-tolerance, what makes the residual percent "ambiguous", and the date. **No longer blocked** —
-the provenance is settled, the measurement detail is not.
+**Answered 2026-08-27, two of four.**
+
+| M2 needs | state |
+|---|---|
+| what legacy output it was reconciled against | **what the replaced macros produced** — stated on the deck slide |
+| the comparison method | **a row-by-row compare** |
+| the date | **2026-05-04** |
+| what counts as a MATCHING row, and what makes the residual "genuinely ambiguous" | open |
+
+**One answer away from clearing.** "Row-by-row compare" says every row was examined; it does not
+say what made a row match — exact equality across every field, or a key with a tolerance. The
+page asserts the remaining percent is "genuinely ambiguous and is surfaced for a human"; nothing
+defines what put a row in that bucket. Row 23 keeps its `TODO` prefix for exactly that reason:
+with the date now filled, dropping it would clear the row on a method with no matching rule.
+
+**M1 and M2 now have DIFFERENT dates, and that settles the row 20 question.** 2026-03-10 and
+2026-05-04. Row 20 carries both measurements in one registry row keyed on (claim, route), so its
+single `dateMeasured` is no longer merely awkward — **it cannot be correct**, whichever date is
+written there. Splitting the key, or a per-occurrence structure, is the only fix; recorded here
+rather than built, because it changes the registry's shape and SS-601 reads that shape.
+
+**Not published on the page yet, deliberately.** M1's `~27%` got its basis printed under the
+summary line the day it was complete. M2's is not complete, and a partial basis on the page
+would read as a full one.
 
 ### M3 — the security grade
 
