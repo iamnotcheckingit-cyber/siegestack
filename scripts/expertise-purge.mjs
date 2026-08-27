@@ -123,6 +123,14 @@ if (after.length === 0 && !failed.length) {
         'it empty. Commit it: CI reads this file, not the live store.',
       ],
       store: 'siegestack-expertise',
+      // Re-tested by SS-205 on every validate run. A receipt is evidence about
+      // the past; this is what lets the present revoke it. Reopen the form and
+      // the receipt is void, so the page cannot keep claiming an empty store.
+      voidIf: {
+        description: 'The expertise endpoint was closed to writes when this purge ran. If it is reopened, the store can be written to again and this receipt no longer describes the present.',
+        file: 'netlify/functions/submit-expertise.mjs',
+        mustContain: 'const CLOSED = true;',
+      },
       verified: true,
       verifiedBy: 'scripts/expertise-purge.mjs re-listed the store after deleting and found 0 keys',
       deleted: done,

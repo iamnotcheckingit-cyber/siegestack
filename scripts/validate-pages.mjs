@@ -445,6 +445,21 @@ for (const p of PAGES) {
   // mean the guard silently stopped applying the first time somebody reworded
   // it, which is the failure mode of every check that greps for prose. The
   // attribute survives rewording, and its absence is visible in a diff.
+  //
+  // A RECEIPT IS EVIDENCE ABOUT THE PAST AND THE PAST CAN BE UNDONE. The first
+  // version of this rule checked only that the receipt existed and said
+  // verified: true, which meant reopening /consultant-expertise would leave the
+  // receipt passing while the endpoint wrote to the store again -- and
+  // /privacy-policy would go on asserting an empty store, with every rule green.
+  // The purge script already refuses to run unless the endpoint is closed; that
+  // guard has to exist at validate time too, or it only ever protected the
+  // moment of the purge.
+  //
+  // So a receipt DECLARES ITS OWN VOID CONDITION and this rule re-tests it on
+  // every run. It is the same choice as attribute-over-phrase-match, one level
+  // up: key on the condition, never on a past assertion about the condition.
+  // A receipt with no voidIf is an error, because a receipt that cannot be
+  // invalidated is exactly the thing this paragraph is about.
   for (const p of PAGES) {
     for (const name of p.requiresReceipt ?? []) {
       const file = `data/receipts/${name}.json`;
@@ -455,10 +470,33 @@ for (const p of PAGES) {
           file);
         continue;
       }
-      if (input.parsed?.verified !== true) {
+      const r = input.parsed;
+      if (r?.verified !== true) {
         error('SS-205', p.route,
           `${file} exists but does not record verified: true, so it is not evidence the work completed.`,
-          JSON.stringify(input.parsed ?? null).slice(0, 160));
+          JSON.stringify(r ?? null).slice(0, 160));
+        continue;
+      }
+
+      const v = r.voidIf;
+      if (!v || !v.file || !v.mustContain) {
+        error('SS-205', p.route,
+          `${file} records verified: true but declares no voidIf { file, mustContain }. A receipt with no revalidation condition is a past assertion, and the condition it attested to can be undone without anything noticing.`,
+          JSON.stringify(r).slice(0, 200));
+        continue;
+      }
+
+      if (!has(v.file)) {
+        error('SS-205', p.route,
+          `${file} is void: its voidIf names ${v.file}, which does not exist. The condition it depends on cannot be confirmed.`,
+          v.file);
+        continue;
+      }
+
+      if (!rd(v.file).includes(v.mustContain)) {
+        error('SS-205', p.route,
+          `RECEIPT VOID. ${file} attests to work whose precondition no longer holds: ${v.file} no longer contains ${JSON.stringify(v.mustContain)}. ${v.description ?? ''} The page is making a claim that was true when the receipt was written and is not true now.`.trim(),
+          `${v.file} :: expected ${JSON.stringify(v.mustContain)}`);
       }
     }
   }
