@@ -27,6 +27,11 @@
       "sha": "1947bb9",
       "reason": "Added the calendly_booked GA4 event to index.html, contact.html and prophet-21.html. One script block per page, no published copy changed, so their sitemap lastmod should not move.",
       "addedOn": "2026-08-23"
+    },
+    {
+      "sha": "3ad3435",
+      "reason": "Phase 5 CSS consolidation. Replaced the inline <style> block on 22 pages with links to /assets/site.<hash>.css plus doc.<hash>.css or article.<hash>.css. Every rule was carried across unchanged and an equivalence pass compared the effective value of every declaration on every page before and after -- see docs/css-consolidation-2026-08-26.md. The only intended difference is --blue-bright defined once in :root instead of inlined as a var() fallback, which is the same colour. NO PUBLISHED COPY CHANGED on any of the 22, so their sitemap lastmod must not move and tell search engines otherwise.",
+      "addedOn": "2026-08-26"
     }
   ]
 }
