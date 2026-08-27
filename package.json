@@ -10,7 +10,8 @@
     "build:llms": "node scripts/build-llms-full.mjs",
     "validate:pages": "node scripts/build-page-index.mjs && node scripts/validate-pages.mjs",
     "validate:pages:only": "node scripts/validate-pages.mjs",
-    "netlify:build": "npm run build:llms && npm run validate:pages && npm test"
+    "netlify:build": "npm run build:llms && npm run validate:pages && npm run check:css && npm test",
+    "check:css": "node scripts/css-fingerprint.mjs --check"
   },
   "dependencies": {
     "@netlify/blobs": "^10.7.12",

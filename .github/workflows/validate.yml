@@ -55,6 +55,13 @@ jobs:
             exit 1
           fi
 
+      # The refactor verifier. It compares what actually applies to each page
+      # against the committed fingerprint, so a shared-stylesheet edit cannot
+      # change 22 pages while the diff looks like it changed one. Runs BEFORE
+      # npm ci, like the page rules, so a dependency problem cannot mask it.
+      - name: Effective CSS matches the committed fingerprint
+        run: npm run check:css
+
       - name: Install dependencies
         run: npm ci
 
