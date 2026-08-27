@@ -12,7 +12,7 @@ measured no percentage is published.
 
 Private and noindex pages are deliberately absent.
 
-Generated 2026-08-23.
+Generated 2026-08-27.
 
 ---
 
@@ -87,7 +87,7 @@ Solutions that solve real problems and deliver measurable results. Worked exampl
 
 Automate data flows between your tools. No more copy-pasting between spreadsheets and systems.
 
-[→ ETL Showcase](https://siegestack.com/etl-showcase)
+[→ ETL & Data Pipelines](https://siegestack.com/services/etl-data-pipelines)
 
 #### See Your Numbers, Real-Time
 
@@ -99,7 +99,7 @@ Custom dashboards that actually answer your questions. Know what's happening wit
 
 Make your systems talk to each other. CRM to ERP, e-commerce to inventory, whatever you need.
 
-[→ API Integration](https://siegestack.com/etl-showcase)
+[→ ERP Integration](https://siegestack.com/services/erp-integration)
 
 #### Sleep Through the Night
 
@@ -154,18 +154,21 @@ The person who knows how the process works will eventually leave. We turn what i
 Most exposures are not break-ins. They are a key in a page, a table with access control that was never switched on, or a policy that matches nothing while looking like it works. We check what an anonymous browser can actually retrieve, and close it properly.
 
 → Access Control Audit
+[→ Access Review](https://siegestack.com/services/security-access-audit)
 
 #### Lock Down What You Already Shipped
 
 Security headers that permit exactly what they were added to prevent are the norm, not the exception. We remove what forces the loophole open rather than documenting why it has to stay, and we show you the grade before and after.
 
 → Application Hardening
+[→ Security Headers](https://siegestack.com/services/security-access-audit)
 
 #### Forms That Don't Lose Submissions
 
 A form that sends an email and reports success only if the send worked will silently destroy enquiries the day a credential expires. We move the durable write in front of the notification, so a delivery failure is an alert, not a deletion.
 
 → Reliability Review
+[→ Silent Failure Audit](https://siegestack.com/delivery-config-audit)
 
 #### The Bugs Nothing Reports
 
@@ -178,14 +181,16 @@ Redirect rules that never run. A sitemap the whole internet says is fine and no 
 Before you act on a dashboard, it is worth knowing whether pages are tagged twice, whether one property is fed by several sites, and whether your staging traffic is counted as real. Frequently no code needs writing — the reports were just never true.
 
 → Measurement Audit
+[→ Analytics Audit](https://siegestack.com/delivery-config-audit)
 
 #### Prove Nothing Broke
 
 For a large mechanical change, "the diff looks equivalent" is not evidence. We measure the old and new versions side by side and compare what actually renders, so a refactor ships with proof instead of confidence.
 
 → Refactor Verification
+[→ How We Work](https://siegestack.com/about)
 
-Running a distribution or manufacturing operation? The heavier operational work — EDI, ERP carve-outs, opening and moving sites, quality systems, vendor-managed inventory, inventory accuracy and system selection — is described under [operations modernization](https://siegestack.com/operations-modernization).
+Running a distribution or manufacturing operation? The heavier operational work — EDI, ERP carve-outs, opening and moving sites, quality systems, vendor-managed inventory, inventory accuracy and system selection — is described under [operations modernization](https://siegestack.com/operations-modernization). If you want the shorter version first — what usually turns out to be wrong in a distribution stack, and which of these five kinds of work fixes it — start with [technology for distributors](https://siegestack.com/industries/distribution).
 
 ### What That Looks Like Built
 
@@ -297,7 +302,7 @@ Three problems, described without the specifics.
 
 Everything below is anonymised. No client or employer is named, no client data appears here, and the details that would identify an organisation — industry, size, location, systems by name, item numbers and dollar figures — have been removed rather than disguised. What is left is the part that transfers — the problem as it presented, what it actually turned out to be, and what was built. Where a number would matter, it is called out as something to measure rather than asserted.
 
-**Why there are no percentages on this page.** Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured the before state, and in most operational work nobody did, because the before state was nobody's job to instrument. Where a baseline was captured, it is named. Where it was not, saying so is more useful than a number nobody can reproduce.
+**Why there are no percentages on this page.** Consulting case studies tend to open with a figure — 82% faster, 40% fewer errors. Those numbers are only worth anything if someone measured the before state, and in most operational work nobody did, because the before state was nobody's job to instrument. Where a baseline was captured, it is named. Where it was not, saying so is more useful than a number nobody can reproduce. When a figure on this site turns out to be wrong, or to have been stood beside things it does not belong with, it is [written up in the corrections log](https://siegestack.com/corrections) rather than quietly edited away.
 
 Case 01
 
@@ -340,6 +345,8 @@ That is the common shape of operational software work: the request describes the
 - [How the analysis actually gets done](https://siegestack.com/working-with-claude-blog) — the working method behind these engagements.
 
 - [Why your ERP report times out on month-to-date](https://siegestack.com/erp-report-slow-month-to-date) — the technical write-up of Case 02.
+
+- [Technology for distributors](https://siegestack.com/industries/distribution) — the shape of operation all three of these ran inside.
 
 #### Recognise any of these?
 
@@ -438,6 +445,8 @@ Ask a narrower question instead: *what exactly does the date filter filter on, a
 - [Operations modernization](https://siegestack.com/operations-modernization) — what happens after the reporting is trustworthy: slotting, order consolidation, purchasing and network replenishment.
 
 - [CRM & ERP integration](https://siegestack.com/etl-showcase) — the pipeline and integration work that feeds reporting like this.
+
+- [Automated reporting](https://siegestack.com/services/automated-reporting) — once the report is fast enough to trust, the next question is why anyone is still running it by hand.
 
 #### Got a report that dies on longer date ranges?
 
@@ -558,6 +567,10 @@ That is the platform owner's call, not ours, which is exactly why the conversati
 - [Epicor P21 & Kinetic reporting and integration](https://siegestack.com/prophet-21) — the platform-specific side. Start there if the question is *which rows count* rather than *why is this slow*.
 
 - [Case studies](https://siegestack.com/case-studies) — including the report that worked on Today and timed out on Month.
+
+- [Performance tuning](https://siegestack.com/services/performance-tuning) — what an engagement built on this method actually involves, and what determines its cost.
+
+- [Technology for distributors](https://siegestack.com/industries/distribution) — where performance work sits among the other four things that usually need doing.
 
 - [All insights](https://siegestack.com/insights) — technical articles and anonymised breakdowns.
 
@@ -710,6 +723,8 @@ No. This is reporting, integration and tooling around a system you already run. 
 - [CRM & ERP integration showcase](https://siegestack.com/etl-showcase) — integration patterns with production-shaped code.
 
 - [Operations modernization](https://siegestack.com/operations-modernization) — the larger engagement: consolidate onto one system of record, then optimize.
+
+- [Technology for distributors](https://siegestack.com/industries/distribution) — the same work described by the operation it runs in rather than by the ERP it runs on.
 
 #### Running P21 or Kinetic and not trusting a number?
 
@@ -1052,7 +1067,7 @@ No reseller relationship, no referral fee, nothing to sell you on the other side
 
 Operations running more than one system of record, or one system nobody has analysed in aggregate. Multi-site distribution where transfers happen but nobody has priced them. Warehouses where slotting was set once and has not been revisited. Purchasing where order points are maintained by hand and lead times are assumptions rather than measurements.
 
-This is a different job from reporting, and the two work best together. A dashboard tells you what happened and where to look — [we build those too](https://siegestack.com/#solutions), and most engagements start there because you cannot change what you cannot yet see. This work is the step after: it changes where things sit, how they are picked, and what gets bought. See it, then change it, then watch the same dashboard confirm the change landed.
+This is a different job from reporting, and the two work best together. A dashboard tells you what happened and where to look — [we build those too](https://siegestack.com/#solutions), and most engagements start there because you cannot change what you cannot yet see. This work is the step after: it changes where things sit, how they are picked, and what gets bought. See it, then change it, then watch the same dashboard confirm the change landed. If you are not sure which of the two you need yet, [technology for distributors](https://siegestack.com/industries/distribution) lays out the five kinds of work side by side and what each one is for.
 
 #### Start with the baseline
 
@@ -1641,6 +1656,8 @@ This is how we build every system. Your project gets the same attention to detai
 
 [Schedule a Call](https://siegestack.com/#schedule)
 [Learn More About Us](https://siegestack.com/)
+
+The two service pages behind this showcase describe what an engagement looks like rather than what the code looks like: [ERP integration](https://siegestack.com/services/erp-integration) for making two systems agree, and [ETL & data pipelines](https://siegestack.com/services/etl-data-pipelines) for moving the data between them on a schedule you can audit.
 
 Feel free to share this page with your technical team for review
 
