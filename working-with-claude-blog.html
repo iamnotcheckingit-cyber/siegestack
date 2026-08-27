@@ -112,13 +112,10 @@
 }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+<noscript></noscript>
 
-<style>
+<link rel="stylesheet" href="/assets/fonts.fcdf8bd0b5.css">
+    <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --navy-dark:#0a192f;--navy:#112240;--navy-light:#1d3557;
@@ -127,7 +124,7 @@
   --white:#e6f1ff;--gold:#F9A825;--red:#ff6b6b;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--navy-dark);color:var(--lightest-slate);line-height:1.7;font-size:17px}
+body{font-family:var(--font-body);background:var(--navy-dark);color:var(--lightest-slate);line-height:1.7;font-size:17px}
 
 nav.topnav{position:fixed;top:0;width:100%;background:rgba(10,25,47,.95);backdrop-filter:blur(10px);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(100,255,218,.1)}
 nav.topnav a.nav-logo{font-size:1.4rem;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-1px}
@@ -138,14 +135,14 @@ nav.topnav .nav-links a:hover{color:var(--blue-accent)}
 
 article{max-width:760px;margin:0 auto;padding:9rem 1.5rem 6rem}
 
-.eyebrow{color:var(--blue-accent);font-family:'JetBrains Mono',monospace;font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
-h1.title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2rem,5vw,3.4rem);color:var(--white);line-height:1.1;margin-bottom:1.2rem;font-weight:700}
+.eyebrow{color:var(--blue-accent);font-family:var(--font-mono);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+h1.title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.4rem);color:var(--white);line-height:1.1;margin-bottom:1.2rem;font-weight:700}
 .lede{font-size:1.2rem;color:var(--light-slate);margin-bottom:2rem;line-height:1.6}
 .byline{display:flex;gap:1rem;align-items:center;color:var(--slate);font-size:.9rem;border-top:1px solid rgba(100,255,218,.15);border-bottom:1px solid rgba(100,255,218,.15);padding:1rem 0;margin-bottom:3rem;flex-wrap:wrap}
 .byline a{color:var(--blue-accent);text-decoration:none}
 .byline a:hover{text-decoration:underline}
 
-article h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3.5vw,2.2rem);color:var(--white);margin:3rem 0 1rem;line-height:1.2}
+article h2{font-family:var(--font-display);font-size:clamp(1.5rem,3.5vw,2.2rem);color:var(--white);margin:3rem 0 1rem;line-height:1.2}
 article h3{font-size:1.25rem;color:var(--lightest-slate);margin:2rem 0 .8rem;font-weight:600}
 article p{margin-bottom:1.3rem;color:var(--light-slate)}
 article p strong{color:var(--white);font-weight:600}
@@ -154,21 +151,21 @@ article a:hover{border-bottom-color:var(--blue-accent)}
 article ul{margin:0 0 1.5rem 1.5rem;color:var(--light-slate)}
 article ul li{margin-bottom:.5rem}
 article blockquote{border-left:3px solid var(--blue-accent);padding:.6rem 0 .6rem 1.4rem;margin:1.8rem 0;font-style:italic;color:var(--lightest-slate)}
-article code{font-family:'JetBrains Mono',monospace;background:rgba(100,255,218,.08);color:var(--blue-accent);padding:.15em .4em;border-radius:3px;font-size:.9em}
+article code{font-family:var(--font-mono);background:rgba(100,255,218,.08);color:var(--blue-accent);padding:.15em .4em;border-radius:3px;font-size:.9em}
 
 .callout{background:var(--navy);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:1.2rem 1.5rem;margin:2rem 0;color:var(--lightest-slate)}
 .callout strong{color:var(--white)}
 
 .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:2rem 0}
-.tag-row span{background:rgba(100,255,218,.1);color:var(--blue-accent);padding:.3em .8em;border-radius:99px;font-size:.8rem;font-family:'JetBrains Mono',monospace}
+.tag-row span{background:rgba(100,255,218,.1);color:var(--blue-accent);padding:.3em .8em;border-radius:99px;font-size:.8rem;font-family:var(--font-mono)}
 
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin:2rem 0}
 .stat{background:var(--navy);border:1px solid rgba(100,255,218,.15);border-radius:8px;padding:1.2rem;text-align:center}
-.stat .num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--blue-accent);font-weight:700;line-height:1}
+.stat .num{font-family:var(--font-display);font-size:2rem;color:var(--blue-accent);font-weight:700;line-height:1}
 .stat .label{font-size:.8rem;color:var(--slate);margin-top:.4rem}
 
 .related{background:var(--navy);border-radius:10px;padding:2rem;margin-top:4rem}
-.related h3{margin-top:0;color:var(--white);font-family:'Playfair Display',serif;font-size:1.4rem}
+.related h3{margin-top:0;color:var(--white);font-family:var(--font-display);font-size:1.4rem}
 .related ul{list-style:none;margin:0;padding:0}
 .related li{padding:.5rem 0;border-bottom:1px solid rgba(100,255,218,.1)}
 .related li:last-child{border-bottom:none}
@@ -567,7 +564,7 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p>Here's the literal template I paste at the top of any new serious Claude session. Steal it. Modify it. The point isn't the wording — it's that you've forced yourself to answer every question in it before you start prompting.</p>
 
-  <pre style="background:var(--navy);border:1px solid rgba(100,255,218,.2);border-radius:8px;padding:1.4rem;overflow-x:auto;color:var(--lightest-slate);font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6;margin:1.5rem 0"><code># Session brief
+  <pre style="background:var(--navy);border:1px solid rgba(100,255,218,.2);border-radius:8px;padding:1.4rem;overflow-x:auto;color:var(--lightest-slate);font-family:var(--font-mono);font-size:.85rem;line-height:1.6;margin:1.5rem 0"><code># Session brief
 
 ## Outcome (definition of done)
 - [What artifact will exist when this session is over?]

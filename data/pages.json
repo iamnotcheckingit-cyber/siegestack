@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "3ad3435",
+    "commit": "32b45a7",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -298,7 +298,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -510,7 +511,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -639,7 +641,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -772,7 +775,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -902,7 +906,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -1170,7 +1175,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -1315,7 +1321,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -1501,7 +1508,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -1696,7 +1704,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -1977,7 +1986,9 @@
       "wordCount": 1720,
       "inSitemap": true,
       "visibleUpdated": null,
-      "localStylesheets": [],
+      "localStylesheets": [
+        "/assets/fonts.fcdf8bd0b5.css"
+      ],
       "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
@@ -2424,7 +2435,9 @@
       "wordCount": 1718,
       "inSitemap": true,
       "visibleUpdated": null,
-      "localStylesheets": [],
+      "localStylesheets": [
+        "/assets/fonts.fcdf8bd0b5.css"
+      ],
       "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
@@ -2685,7 +2698,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -2906,7 +2920,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -3218,7 +3233,9 @@
       "wordCount": 2192,
       "inSitemap": true,
       "visibleUpdated": null,
-      "localStylesheets": [],
+      "localStylesheets": [
+        "/assets/fonts.fcdf8bd0b5.css"
+      ],
       "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
@@ -3506,7 +3523,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -3644,7 +3662,8 @@
         "iso": "2026-01-22"
       },
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -3929,7 +3948,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -4235,7 +4255,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -4495,7 +4516,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -4658,7 +4680,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -4816,7 +4839,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -4975,7 +4999,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -5139,7 +5164,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -5307,7 +5333,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
@@ -5585,7 +5612,8 @@
       "inSitemap": true,
       "visibleUpdated": null,
       "localStylesheets": [
-        "/assets/site.c5bd116dbc.css",
+        "/assets/fonts.fcdf8bd0b5.css",
+        "/assets/site.9e57e27687.css",
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
@@ -6030,11 +6058,10 @@
         "text": "Updated: August 26, 2026",
         "iso": "2026-08-26"
       },
-      "localStylesheets": [],
-      "externalStylesheets": [
-        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap",
-        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap"
+      "localStylesheets": [
+        "/assets/fonts.fcdf8bd0b5.css"
       ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -6476,11 +6503,10 @@
       "wordCount": 4505,
       "inSitemap": true,
       "visibleUpdated": null,
-      "localStylesheets": [],
-      "externalStylesheets": [
-        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap",
-        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      "localStylesheets": [
+        "/assets/fonts.fcdf8bd0b5.css"
       ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",

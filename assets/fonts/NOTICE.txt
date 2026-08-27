@@ -1,0 +1,17 @@
+Fonts self-hosted by siegestack.com
+==================================
+
+All three families are licensed under the SIL Open Font License, Version 1.1,
+the full text of which is in OFL.txt in this directory. Self-hosting and
+redistribution are expressly permitted by that licence; shipping the licence
+alongside the fonts is what it requires in return.
+
+  Inter             Rasmus Andersson       https://rsms.me/inter/
+  Playfair Display  Claus Eggers Sorensen  https://github.com/clauseggers/Playfair-Display
+  JetBrains Mono    JetBrains              https://www.jetbrains.com/lp/mono/
+
+Only the latin subset of each face is shipped, and only the weights the site
+actually applies. They were taken from the Google Fonts CDN on 2026-08-26 and
+the CDN references were removed from the site in the same commit -- see
+/corrections. The filenames carry a content hash because netlify.toml serves
+them with max-age=31536000, immutable.

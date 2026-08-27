@@ -1,0 +1,75 @@
+/* siegestack.com -- self-hosted webfonts
+ *
+ * WHY SELF-HOSTED. Until 2026-08-26 two pages loaded these from
+ * fonts.googleapis.com and fonts.gstatic.com, which sent every visitor's IP
+ * address to Google on every page load -- a third party the privacy policy did
+ * not name. Self-hosting removes the request rather than disclosing it.
+ *
+ * WHY HASHED FILENAMES AND NOT ?v=. netlify.toml serves /*.woff2 with
+ * max-age=31536000, immutable. Fonts are the ideal immutable asset because they
+ * change almost never -- which is exactly why a version token is the wrong tool
+ * for them: a token you have to remember, on a file you touch once every two
+ * years, is a token you will forget. The hash is part of the name, so there is
+ * nothing to remember.
+ *
+ * WHAT IS HERE. The latin subset only, and only the weights the site applies.
+ * The old Google Fonts URLs asked for more than was ever used: Inter 500 that
+ * nothing set, and Playfair italic that appears nowhere in any stylesheet.
+ * 137.8 KB for 6 faces.
+ *
+ * font-display: swap keeps text visible while a face loads, so a slow font is
+ * a reflow rather than a blank page.
+ *
+ * Licences: assets/fonts/OFL.txt and assets/fonts/NOTICE.txt. All three
+ * families are SIL Open Font License 1.1, which permits this and requires the
+ * licence to travel with them.
+ */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/inter-400.8909904ab6.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/inter-500.f3779f1efc.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/assets/fonts/inter-600.f9a06e79cd.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/assets/fonts/inter-700.6f56409fd3.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/assets/fonts/playfair-700.28453852ea.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-400.14425ba9c6.woff2') format('woff2');
+}
+
+:root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+}

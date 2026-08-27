@@ -104,6 +104,28 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# /*.woff2 -- SIX FILES SINCE 2026-08-26, AND THERE WAS NO RULE FOR THEM.
+#
+# Before Phase 6 this repository tracked zero font files, so woff2 fell through
+# to the /* default of max-age=3600. An hour, on the single most cacheable asset
+# a site has. Fonts are the ideal immutable asset precisely because they change
+# almost never.
+#
+# WHICH IS ALSO WHY ?v= WOULD BE THE WRONG TOOL HERE, and why this rule is safe
+# in a way the /*.css one had to be argued into. A version token on a file you
+# touch once every two years is a token you will forget. These filenames carry a
+# content hash instead -- assets/fonts/inter-400.<hash>.woff2 -- so the year-long
+# freeze is correct by construction and there is nothing to remember on the day
+# a face changes.
+#
+# publish-gate.ts already allows woff2 by extension, so unlike .css this needed
+# no gate change. Worth knowing before assuming the two behave alike: adding a
+# stylesheet required editing the gate, adding a font did not.
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Served on purpose, but not part of the published surface: everything reachable
 # and absent from sitemap.xml gets noindex. The audit report is the case that
 # motivated this -- llms.txt tells AI crawlers how to cite this site, and a
