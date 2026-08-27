@@ -417,6 +417,61 @@ for (const p of PAGES) {
   }
 
   // -------------------------------------------------------------------------
+  // SS-106 -- a stylesheet a page asks for must exist AND get past the gate
+  //
+  // WHY THIS EXISTS. Phase 5 moved every page onto /assets/site.<hash>.css, and
+  // publish-gate.ts is deny-by-default: ALLOW_EXT covers svg/png/jpg/webp/avif/
+  // gif/ico/woff2 and does NOT cover .css. The three new stylesheets would have
+  // 404'd and every page on the site would have rendered unstyled -- in a commit
+  // whose own diff looks like a tidy-up. Nothing in the suite would have said a
+  // word: the HTML was valid, the files existed, the tests passed.
+  //
+  // It checks BOTH halves, because either alone is a false negative. A file
+  // present in the repository but denied by the gate is a 404 in production. A
+  // file the gate would allow but which does not exist is a 404 too. The
+  // gate's own logic is replayed from its source, the same way SS-101/SS-105
+  // replay ALLOW_HTML, so this cannot drift from what actually ships.
+  //
+  // Off-site stylesheets are deliberately NOT checked for existence -- a Google
+  // Fonts URL is a third-party request, which is a privacy question rather than
+  // a missing-file question. They are reported so that question stays visible.
+  {
+    const gateSrc = has('netlify/edge-functions/publish-gate.ts') ? rd('netlify/edge-functions/publish-gate.ts') : null;
+    let assetRe = null;
+    if (gateSrc) {
+      const m = gateSrc.match(/const ALLOW_ASSET_CSS = (\/[^;]*\/i);/);
+      if (m) { try { assetRe = new RegExp(m[1].slice(1, -2), 'i'); } catch { assetRe = null; } }
+    }
+    if (!gateSrc) {
+      skip('SS-106', 'publish-gate.ts is not readable, so whether a stylesheet would be served cannot be replayed.');
+    } else if (!assetRe) {
+      error('SS-106', 'netlify/edge-functions/publish-gate.ts',
+        'Could not find ALLOW_ASSET_CSS in publish-gate.ts. This rule replays that pattern to decide whether a stylesheet would actually be served; without it the check would pass by looking at nothing.',
+        'expected: const ALLOW_ASSET_CSS = /.../i;');
+    }
+
+    for (const p of PAGES) {
+      for (const href of p.localStylesheets ?? []) {
+        const file = href.replace(/^\//, '').split('?')[0];
+        if (!has(file)) {
+          error('SS-106', p.route, 'Page links a stylesheet that is not in the repository.', href);
+          continue;
+        }
+        if (assetRe && !assetRe.test(href.split('?')[0])) {
+          error('SS-106', p.route,
+            'Stylesheet exists but publish-gate.ts would DENY it, so it 404s in production and the page renders unstyled. .css is not in ALLOW_EXT; it is allowed only under /assets/.',
+            href);
+        }
+      }
+      for (const href of p.externalStylesheets ?? []) {
+        warn('SS-106', p.route,
+          'Page loads a stylesheet from another origin. Every visitor\'s IP reaches that host on every page load, which is a third-party disclosure question rather than a broken-link one.',
+          href);
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // SS-205 -- a claim that something was DONE needs evidence it was done
   //
   // THE ORDERING PROBLEM THIS EXISTS FOR. Closing /consultant-expertise to

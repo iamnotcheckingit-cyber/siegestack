@@ -410,6 +410,13 @@ for (const file of htmlFiles) {
 
   // Claims that are only true once something has actually been DONE, tagged in
   // the markup so a rule can hold them to it. See SS-205.
+  // Local stylesheets this page asks the browser to fetch. Off-site ones are
+  // recorded separately: a Google Fonts URL is a third-party request and a
+  // privacy question, not a file that has to exist in the repository.
+  const stylesheets = [...clean.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map((m) => m[1]);
+  const localStylesheets = stylesheets.filter((h) => h.startsWith('/'));
+  const externalStylesheets = stylesheets.filter((h) => !h.startsWith('/'));
+
   const requiresReceipt = [
     ...new Set([...clean.matchAll(/\bdata-requires-receipt="([a-z0-9-]+)"/g)].map((m) => m[1])),
   ];
@@ -493,6 +500,8 @@ for (const file of htmlFiles) {
     wordCount,
     inSitemap: sitemap.has(route),
     visibleUpdated: visibleUpdatedValue,
+    localStylesheets,
+    externalStylesheets,
     requiresReceipt,
     sitemapLastmod: sm?.lastmod ?? null,
     sitemapPriority: sm?.priority ?? null,

@@ -1,0 +1,73 @@
+/* siegestack.com -- the "doc" template
+ *
+ * Short pages: the six services, the policy pages, the individual case studies,
+ * contact. h2 at 1.3rem with a rule under it, coloured body copy, undecorated
+ * links, a fixed 2.5rem hero.
+ *
+ * Loaded AFTER site.css and at the same specificity, so document order is what
+ * makes these win. DO NOT REORDER THE TWO <link> TAGS.
+ */
+
+.nav-links a {
+  color: var(--light-slate);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-left: 2rem;
+}
+.hero {
+  padding: 8rem 2rem 3rem;
+  text-align: center;
+  background: var(--navy);
+  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+}
+.hero h1 {
+  font-size: 2.5rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.hero p {
+  color: var(--slate);
+}
+h2 {
+  color: var(--white);
+  font-size: 1.3rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+}
+h2:first-of-type {
+  margin-top: 0;
+}
+p {
+  margin-bottom: 1rem;
+  color: var(--light-slate);
+}
+ul {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  color: var(--light-slate);
+}
+a {
+  color: var(--blue-accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+footer {
+  background: var(--navy-dark);
+  border-top: 1px solid rgba(100, 255, 218, 0.1);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+footer p {
+  color: var(--slate);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+}

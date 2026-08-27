@@ -125,6 +125,20 @@ const ALLOW_PREFIX = [
   "/.netlify/",
 ];
 
+// Stylesheets, and ONLY from /assets/.
+//
+// They carry a content hash in the filename — see the header of
+// assets/site.*.css and the /*.css note in netlify.toml — so listing each one
+// here would mean editing this file on every CSS change, and forgetting would
+// 404 the stylesheet and render the entire site unstyled. Scoping to one
+// directory keeps "adding a .css is a decision" true, because the DIRECTORY is
+// the decision: a stray .css anywhere else is still denied, and anything under
+// /assets/ that is not a stylesheet is still denied.
+//
+// No slashes in the character class, so /assets/sub/x.css does not match and
+// neither does a traversal that decodes to one.
+const ALLOW_ASSET_CSS = /^\/assets\/[a-z0-9._-]+\.css$/i;
+
 // Media only. Adding an image must not require editing this file; adding a page
 // must. `html` is deliberately NOT in this list — that was the hole.
 const ALLOW_EXT = /\.(?:svg|png|jpe?g|webp|avif|gif|ico|woff2?)$/i;
@@ -179,7 +193,8 @@ function isAllowed(rawPath: string): boolean {
     ALLOW_EXACT.has(bare) ||
     ALLOW_REDIRECT_SOURCE.has(path) ||
     ALLOW_PREFIX.some((p) => path.startsWith(p)) ||
-    ALLOW_EXT.test(path)
+    ALLOW_EXT.test(path) ||
+    ALLOW_ASSET_CSS.test(path)
   );
 }
 

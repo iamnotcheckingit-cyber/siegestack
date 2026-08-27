@@ -84,154 +84,14 @@
         ]
     }
     </script>
+    <link rel="stylesheet" href="/assets/site.c5bd116dbc.css">
+    <link rel="stylesheet" href="/assets/article.c305c30cd1.css">
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-
-      :root {
-        --navy-dark: #0a192f;
-        --navy: #112240;
-        --blue-accent: #64ffda;
-        --blue-bright: #57cbff;
-        --slate: #8892b0;
-        --light-slate: #a8b2d1;
-        --lightest-slate: #ccd6f6;
-        --white: #e6f1ff;
+          /* Page-specific only. Everything shared is in /assets/site.c5bd116dbc.css and /assets/article.c305c30cd1.css. */
+          .om-track h3 {
+        margin-top: 0;
       }
-
-      html { scroll-behavior: smooth; }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        background: var(--navy-dark);
-        color: var(--lightest-slate);
-        line-height: 1.6;
-      }
-
-      nav {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        background: rgba(10, 25, 47, 0.95);
-        backdrop-filter: blur(10px);
-        z-index: 1000;
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-      }
-
-      .nav-logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--white);
-        text-decoration: none;
-        letter-spacing: -1px;
-      }
-
-      .nav-links { display: flex; gap: 2rem; align-items: center; }
-
-      .nav-links a {
-        color: var(--light-slate);
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.2s;
-      }
-
-      .nav-links a:hover { color: var(--blue-accent); }
-
-      .nav-links a.btn-primary,
-      .nav-links a.btn-primary:hover { color: var(--navy-dark); }
-
-      .btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s;
-        cursor: pointer;
-        border: none;
-        font-size: 0.9rem;
-      }
-
-      .btn-primary { background: var(--blue-accent); color: var(--navy-dark); }
-      .btn-primary:hover { background: var(--blue-bright); transform: translateY(-2px); }
-
-      .mobile-menu-btn {
-        display: none;
-        background: none;
-        border: none;
-        color: var(--light-slate);
-        font-size: 1.5rem;
-        cursor: pointer;
-      }
-
-      .hero h1 {
-        font-size: clamp(2rem, 5vw, 3rem);
-        color: var(--white);
-        line-height: 1.15;
-        margin-bottom: 1rem;
-        font-weight: 700;
-      }
-
-      .subtitle {
-        color: var(--slate);
-        font-size: 1.15rem;
-        max-width: 720px;
-        margin: 0 auto;
-      }
-
-      h2 { color: var(--white); font-size: 1.6rem; margin: 2.5rem 0 1rem; }
-      h3 { color: var(--white); font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
-      p { margin-bottom: 1rem; }
-      ul { margin: 0 0 1rem 1.25rem; }
-      li { margin-bottom: 0.5rem; }
-      a { color: var(--blue-accent); }
-
-      @media (max-width: 768px) {
-        .nav-links { display: none; }
-        .mobile-menu-btn { display: block; }
-      }
-
-      .om-wrap { max-width: 980px; margin: 0 auto; padding: 2rem; }
-      .om-lead { font-size: 1.15rem; line-height: 1.75; }
-      .om-callout { border-left: 4px solid var(--blue-accent, #64ffda); background: rgba(100,255,218,0.06);
-                    padding: 1.2rem 1.5rem; border-radius: 6px; margin: 2rem 0; }
-      .om-table-wrap { overflow-x: auto; }
-      .om-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
-      .om-table th, .om-table td { border: 1px solid rgba(136,146,176,0.3); padding: 0.7rem 0.9rem;
-                                   text-align: left; vertical-align: top; }
-      .om-table th { background: rgba(136,146,176,0.12); font-weight: 700; }
-      .om-track { border: 1px solid rgba(136,146,176,0.3); border-radius: 10px;
-                  padding: 1.4rem 1.6rem; margin: 1.4rem 0; }
-      .om-track h3 { margin-top: 0; }
-      .om-num { display:inline-block; font-size:0.75rem; letter-spacing:.08em; text-transform:uppercase;
-                color: var(--blue-accent, #64ffda); font-weight:700; margin-bottom:.4rem; }
-    
-        /* Site footer — shared across pages. Uses only the four custom properties
-           every page defines (--navy-dark, --slate, --blue-accent, --white), so it
-           renders identically everywhere without a shared stylesheet. */
-        .site-footer { background: var(--navy-dark); border-top: 1px solid rgba(100,255,218,0.1); padding: 3rem 2rem 2rem; }
-        .foot-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
-        .foot-grid h3 { color: var(--white); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem; font-weight: 600; }
-        .foot-grid a { display: block; color: var(--slate); text-decoration: none; font-size: .9rem; margin-bottom: .5rem; }
-        .foot-grid a:hover, .foot-grid a:focus-visible { color: var(--blue-accent); text-decoration: underline; }
-        .foot-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(136,146,176,.2); text-align: center; }
-        .foot-bottom p { color: var(--slate); font-size: .85rem; margin-bottom: .4rem; }
-        .foot-bottom a { color: var(--blue-accent); text-decoration: underline; text-underline-offset: .15em; }
-        .foot-bottom a:hover, .foot-bottom a:focus-visible { color: var(--white); }
-
-        /* Hand the nav over to the menu button while the row still fits. With
-           ten links plus the CTA the desktop row needs ~1280px; below that it
-           overlapped the logo, and below ~1024 it ran off the right edge. That
-           was already true at a narrower width before the label-maker link was
-           added — this fixes the existing gap rather than only the new one. */
-        @media (max-width: 1280px) {
-            .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
-        }
-</style>
+        </style>
 </head>
 <body>
 
@@ -418,8 +278,6 @@
 
         </div>
     </main>
-
-
     <!-- Simple mobile menu toggle. Same handler as index.html -- this button
          was present on this page but wired up on no page except index.html and
          etl-showcase.html, so on a phone it rendered and did nothing. -->

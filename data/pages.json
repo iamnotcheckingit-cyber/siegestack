@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "32eb4ce",
+    "commit": "d6dfa1b",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -127,6 +127,8 @@
       "wordCount": 14,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -295,6 +297,11 @@
       "wordCount": 669,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -502,6 +509,11 @@
       "wordCount": 618,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -626,6 +638,11 @@
       "wordCount": 778,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -754,6 +771,11 @@
       "wordCount": 480,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -879,6 +901,11 @@
       "wordCount": 601,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -996,6 +1023,8 @@
       "wordCount": 245,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -1140,6 +1169,11 @@
       "wordCount": 257,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -1280,6 +1314,11 @@
       "wordCount": 1823,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -1461,6 +1500,11 @@
       "wordCount": 1814,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.7",
@@ -1651,6 +1695,11 @@
       "wordCount": 1583,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.8",
@@ -1928,6 +1977,8 @@
       "wordCount": 1720,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -1977,6 +2028,8 @@
       "wordCount": 2,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -2371,6 +2424,8 @@
       "wordCount": 1718,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "1.0",
@@ -2629,6 +2684,11 @@
       "wordCount": 1430,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -2845,6 +2905,11 @@
       "wordCount": 799,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
@@ -2899,6 +2964,8 @@
       "wordCount": 55,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -3151,6 +3218,8 @@
       "wordCount": 2192,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.7",
@@ -3205,6 +3274,8 @@
       "wordCount": 55,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -3434,6 +3505,11 @@
       "wordCount": 2469,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -3567,6 +3643,11 @@
         "text": "Last updated: January 22, 2026",
         "iso": "2026-01-22"
       },
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -3847,6 +3928,11 @@
       "wordCount": 2279,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
@@ -4148,6 +4234,11 @@
       "wordCount": 2007,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -4239,6 +4330,8 @@
       "wordCount": 725,
       "inSitemap": false,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -4401,6 +4494,11 @@
       "wordCount": 567,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -4559,6 +4657,11 @@
       "wordCount": 583,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -4712,6 +4815,11 @@
       "wordCount": 606,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -4866,6 +4974,11 @@
       "wordCount": 550,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5025,6 +5138,11 @@
       "wordCount": 571,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5188,6 +5306,11 @@
       "wordCount": 709,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/doc.41dcc80e68.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5461,6 +5584,11 @@
       "wordCount": 1570,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [
+        "/assets/site.c5bd116dbc.css",
+        "/assets/article.c305c30cd1.css"
+      ],
+      "externalStylesheets": [],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -5902,6 +6030,11 @@
         "text": "Updated: August 26, 2026",
         "iso": "2026-08-26"
       },
+      "localStylesheets": [],
+      "externalStylesheets": [
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap",
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap"
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -6343,6 +6476,11 @@
       "wordCount": 4505,
       "inSitemap": true,
       "visibleUpdated": null,
+      "localStylesheets": [],
+      "externalStylesheets": [
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap",
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
