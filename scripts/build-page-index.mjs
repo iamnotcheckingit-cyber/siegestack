@@ -106,6 +106,51 @@ export function meta(html, attr, value) {
   return null;
 }
 
+/**
+ * The visible "Last updated" date a page shows a READER, if it shows one.
+ *
+ * Distinct from sitemapLastmod, which is what the page tells a CRAWLER, and
+ * from gitLastCommitDate, which is what the repository knows. Nothing compared
+ * the first against the other two until SS-204, so /privacy-policy could and
+ * did display "Last updated: January 22, 2026" on a file whose newest content
+ * commit was seven months later.
+ *
+ * REQUIRES THE LABEL, not just a date. /corrections is full of lines like
+ * "26 August 2026 &middot; Citation terms" and every one of them is the date of
+ * a correction, not of the page. Matching a bare date there would invent a
+ * freshness claim the page never made and then report it as wrong.
+ *
+ * Returns { text, iso } or null. `iso` is null when the words are present but
+ * the date does not parse -- which is itself worth seeing, because a date a
+ * machine cannot read is one a rule cannot check.
+ */
+const MONTHS = {
+  january: '01', february: '02', march: '03', april: '04', may: '05', june: '06',
+  july: '07', august: '08', september: '09', october: '10', november: '11', december: '12',
+};
+
+function visibleUpdated(html) {
+  // Comments, script and style are already gone from `clean`; this is called
+  // with that copy. Tags are dropped so the label and the date can be adjacent
+  // across markup, which they are on /working-with-claude-blog.
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ');
+  const m = /\b(Last updated|Last reviewed|Updated)\b[:\s]*([A-Z][a-z]+ \d{1,2},? \d{4}|\d{1,2} [A-Z][a-z]+ \d{4}|\d{4}-\d{2}-\d{2})/.exec(text);
+  if (!m) return null;
+
+  const raw = m[2].trim();
+  let iso = null;
+  let d;
+  if ((d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw))) iso = raw;
+  else if ((d = /^([A-Za-z]+) (\d{1,2}),? (\d{4})$/.exec(raw))) {
+    const mm = MONTHS[d[1].toLowerCase()];
+    if (mm) iso = `${d[3]}-${mm}-${String(d[2]).padStart(2, '0')}`;
+  } else if ((d = /^(\d{1,2}) ([A-Za-z]+) (\d{4})$/.exec(raw))) {
+    const mm = MONTHS[d[2].toLowerCase()];
+    if (mm) iso = `${d[3]}-${mm}-${String(d[1]).padStart(2, '0')}`;
+  }
+  return { text: `${m[1]}: ${raw}`, iso };
+}
+
 /** Every @type in a JSON-LD graph, however deeply nested. */
 function collectTypes(node, out = []) {
   if (Array.isArray(node)) { node.forEach((n) => collectTypes(n, out)); return out; }
@@ -361,6 +406,7 @@ for (const file of htmlFiles) {
 
   // Robots
   const metaRobots = decode(meta(clean, 'name', 'robots') ?? '') || null;
+  const visibleUpdatedValue = visibleUpdated(clean);
   const xRobots = headerRobotsFor(route);
   const robotsDirective = [metaRobots, xRobots].filter(Boolean).join(' + ') || null;
   const noindex = /noindex/i.test(robotsDirective ?? '');
@@ -440,6 +486,7 @@ for (const file of htmlFiles) {
     textContent,
     wordCount,
     inSitemap: sitemap.has(route),
+    visibleUpdated: visibleUpdatedValue,
     sitemapLastmod: sm?.lastmod ?? null,
     sitemapPriority: sm?.priority ?? null,
     sitemapChangefreq: sm?.changefreq ?? null,

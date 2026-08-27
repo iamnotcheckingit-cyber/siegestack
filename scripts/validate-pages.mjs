@@ -345,6 +345,78 @@ for (const p of PAGES) {
         `lastmod=${p.sitemapLastmod} newest-content-commit=${r.date} (${p.sourceFile})`);
     }
   }
+  // -------------------------------------------------------------------------
+  // SS-204 -- a visible "Last updated" date must not contradict the repository
+  //
+  // THE GAP THIS CLOSES. Three things on this site claim how fresh a page is:
+  //
+  //   sitemapLastmod       what the page tells a crawler   -- SS-201 checks it
+  //   gitLastCommitDate    what the repository knows       -- SS-201's source
+  //   the visible date     what the page tells a READER    -- nothing checked it
+  //
+  // So a page could advertise a date to a human that its own history
+  // contradicts, indefinitely, on a site whose /corrections page exists
+  // precisely to stop that. /privacy-policy displayed "Last updated:
+  // January 22, 2026" against a newest content commit seven months later, and
+  // every rule in this file was green the whole time. Same defect class as
+  // SS-201, one rule short.
+  //
+  // IT REUSES freshness-exclusions.json, deliberately and for the same reason
+  // SS-201 does: a sitewide footer or accessibility pass must not make every
+  // dated page report a false staleness. If this rule fires on a page whose
+  // content genuinely did not change, the fix is an exclusion -- which moves
+  // this rule and SS-201 together, because they read the same list.
+  //
+  // ONLY BACKWARDS COUNTS. A visible date OLDER than the newest content commit
+  // is the defect: the reader is told the page has not changed since a date it
+  // demonstrably has. A visible date NEWER is a different mistake and SS-202
+  // already refuses future sitemap dates; catching it here would fire on the
+  // ordinary case of writing tomorrow's date into a page you are about to ship.
+  //
+  // ============================ SEVERITY ==================================
+  // WARNING, AND ONLY UNTIL /privacy-policy IS AMENDED.
+  //
+  // It is not a warning because the defect is minor. It is a warning because
+  // one of the two pages it currently fires on cannot be fixed honestly yet:
+  // the privacy policy's visible date should move when the policy text is
+  // amended to describe what the forms actually collect, and stamping today's
+  // date on unamended text would assert a currency the document does not have
+  // -- which is the same lie in the other direction.
+  //
+  // A NOTE ON FIXING A FINDING, because it looks circular the first time.
+  // Editing the visible date is itself a content change, so the commit that
+  // applies the fix becomes the newest content commit -- which means the
+  // correct value to write is the date of THAT commit, i.e. today, not the
+  // date the rule just reported. /working-with-claude-blog went 10 Aug -> 21 Aug
+  // -> 26 Aug for exactly this reason. That is the rule behaving correctly: a
+  // page displaying a last-updated date should refresh it whenever the page
+  // changes, and a bulk pass that should NOT refresh it is what the exclusions
+  // file is for.
+  //
+  // PROMOTE THIS TO error() IN THE COMMIT THAT PUBLISHES THAT AMENDMENT.
+  // There is no ratchet file behind it and no suppression; this comment is the
+  // whole mechanism, which is why it says so this loudly.
+  // =========================================================================
+  for (const p of scoped) {
+    if (!p.visibleUpdated) continue;
+
+    if (!p.visibleUpdated.iso) {
+      warn('SS-204', p.route,
+        'Page shows a last-updated label whose date could not be parsed, so no rule can check it against anything.',
+        p.visibleUpdated.text);
+      continue;
+    }
+
+    const r = contentDate(p.sourceFile);
+    if (r.state !== 'ok') continue; // SS-201 already reports why, per route
+
+    if (p.visibleUpdated.iso < r.date) {
+      warn('SS-204', p.route,
+        'The date shown to a reader is older than the newest content commit touching the page, so the page tells a human it has not changed since a date it demonstrably has. If the content genuinely did not change, add that commit to data/freshness-exclusions.json rather than editing the date.',
+        `visible="${p.visibleUpdated.text}" (${p.visibleUpdated.iso})  newest-content-commit=${r.date}  sitemap-lastmod=${p.sitemapLastmod}`);
+    }
+  }
+
   if (!gitOk) skip('SS-201', 'git itself is unavailable (shallow clone or no git). This is the ONLY condition that disables the whole rule; a single undatable file no longer does. CI checks it.');
 }
 
