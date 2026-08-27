@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "4aecd85",
+    "commit": "5b3fc17",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [

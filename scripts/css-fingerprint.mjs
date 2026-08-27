@@ -241,7 +241,7 @@ if (untouched.length) {
 }
 if (edited.length) {
   console.log('');
-  console.log(`  ${edited.length} page(s) whose own HTML also changed in this working tree:`);
+  console.log(`  ${edited.length} page(s) whose own HTML also changed, measured by ${basis}:`);
   for (const [route, , b, a] of edited) console.log(`    ${route}${b ? `   ${b}  ->  ${a}` : ''}`);
 }
 
