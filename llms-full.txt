@@ -3634,7 +3634,7 @@ Collapsing moves the text. It never shortens it and never deletes it.
 
 #### A form that could not be submitted, for six months
 
-**26 August 2026 · [Consultant expertise form](https://siegestack.com/consultant-expertise)**
+**26 August 2026 · Consultant expertise form (`/consultant-expertise`, noindex)**
 
 From **10 February 2026 to 16 August 2026**, the consultant expertise form
 posted to `/.netlify/functions/submit-expertise` — a function that had never
