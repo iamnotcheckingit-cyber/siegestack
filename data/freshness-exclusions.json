@@ -37,6 +37,11 @@
       "sha": "a60e0d8",
       "reason": "Phase 6 typography. Self-hosted Inter, Playfair Display and JetBrains Mono, removed the fonts.googleapis.com and fonts.gstatic.com references from the two AI pages, and pointed 27 pages at the shared stacks. This CHANGES HOW PAGES LOOK and changes nothing any page says -- not a word of copy moved. A sitemap lastmod tells a search engine the content was revised, and it was not. The one thing here that is a disclosure change rather than a presentation change, the removal of a third party, is recorded in /corrections instead, which is where a reader would look for it.",
       "addedOn": "2026-08-26"
+    },
+    {
+      "sha": "64e5550",
+      "reason": "Repointed <link rel=\"alternate icon\"> from /favicon.ico, which has never existed in this repository, to /favicon.png, which does. One attribute on 23 pages, no copy changed. The rest of that commit is the publish gate and the validator.",
+      "addedOn": "2026-08-26"
     }
   ]
 }
