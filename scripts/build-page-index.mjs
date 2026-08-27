@@ -61,12 +61,49 @@ const decode = (s) =>
     .replace(/\s+/g, ' ')
     .trim();
 
-/** <meta> lookup that tolerates attribute order (content= before name=). */
-function meta(html, attr, value) {
+/**
+ * <meta> lookup that tolerates attribute order (content= before name=).
+ *
+ * THE CONTENT GROUP MUST CLOSE ON THE QUOTE THAT OPENED IT. It used to be
+ * `content=["']([^"']*)["']` -- a character class excluding BOTH quote
+ * characters regardless of which one had opened the attribute -- so
+ * content="Here's the workflow" was read as `Here`, silently, with no error
+ * anywhere. Measured at HEAD on 2026-08-26: two og:descriptions were truncated
+ * in data/pages.json, /working-with-claude-blog at "Here" and /prophet-21 at
+ * "the vendor".
+ *
+ * SCOPE OF THAT, stated exactly, because it is smaller than it first looked:
+ * llms-full.txt does not emit og:description and reports/page-inventory.csv
+ * carries descriptionLength (the meta description) rather than the og value, so
+ * NOTHING PUBLISHED WAS WRONG. The damage was confined to the model.
+ *
+ * IT WAS INVISIBLE BECAUSE BOTH ROUTES ALREADY DECLARED AN OG DIVERGENCE in
+ * data/og-overrides.json. SS-306 asks only whether og differs from the page
+ * value; a truncated value differs; so a declared divergence sat on top of a
+ * parsing bug and made it indistinguishable from intent.
+ *
+ * THE VARIANT THAT HAS NOT FIRED YET IS THE WORSE ONE. meta() also feeds
+ * `description` and `robots`. No description on this site contains an
+ * apostrophe today. The day one does, SS-302 measures the length of a string
+ * the page does not serve and reports a correct description as too short --
+ * and the repair for that reads as padding a description, not as fixing a
+ * parser.
+ *
+ * The rewrite matches one <meta> tag at a time and backreferences the
+ * delimiter, so the content group cannot run past its own closing quote or
+ * across a tag boundary. Exported for scripts/test/page-index.test.mjs: this
+ * was the only component the entire validation suite depends on that had no
+ * test of its own.
+ */
+export function meta(html, attr, value) {
   const v = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const a = new RegExp(`<meta[^>]*\\b${attr}=["']${v}["'][^>]*\\bcontent=["']([^"']*)["']`, 'i');
-  const b = new RegExp(`<meta[^>]*\\bcontent=["']([^"']*)["'][^>]*\\b${attr}=["']${v}["']`, 'i');
-  return (html.match(a) || html.match(b) || [])[1] ?? null;
+  const named = new RegExp(`\\b${attr}=(["'])${v}\\1`, 'i');
+  for (const [tag] of html.matchAll(/<meta\b[^>]*>/gi)) {
+    if (!named.test(tag)) continue;
+    const c = tag.match(/\bcontent=(["'])([\s\S]*?)\1/i);
+    if (c) return c[2];
+  }
+  return null;
 }
 
 /** Every @type in a JSON-LD graph, however deeply nested. */

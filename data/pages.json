@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "6580951",
+    "commit": "eb145aa",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -3696,7 +3696,7 @@
       "metaDescription": "Reporting and integration on Epicor Prophet 21 and Kinetic: the data-model traps that make P21 reports quietly wrong, and what a vendor schema changes.",
       "descriptionLength": 151,
       "ogTitle": "Epicor P21 & Kinetic Reporting and Integration",
-      "ogDescription": "The P21 data-model traps that make reports quietly wrong — open versus posted, undated lines, unmapped identity — and what changes when the schema is the vendor",
+      "ogDescription": "The P21 data-model traps that make reports quietly wrong — open versus posted, undated lines, unmapped identity — and what changes when the schema is the vendor's.",
       "canonical": "https://siegestack.com/prophet-21",
       "canonicalSelfReferencing": true,
       "h1": [
@@ -5199,7 +5199,7 @@
       "metaDescription": "How to use Claude AI effectively, from someone who ships real work with it daily. The workflow, the iteration loop, the mistakes, and a template you can steal.",
       "descriptionLength": 159,
       "ogTitle": "How to Use Claude AI Effectively: A Real Workflow That Ships Production Work",
-      "ogDescription": "Stop treating Claude like a chatbot. Here",
+      "ogDescription": "Stop treating Claude like a chatbot. Here's the Claude AI workflow that ships real work — the iteration loop, common mistakes, Claude vs ChatGPT, and a copy-paste template.",
       "canonical": "https://siegestack.com/working-with-claude-blog",
       "canonicalSelfReferencing": true,
       "h1": [
