@@ -142,12 +142,24 @@
         .form-closed-notice p { margin: 0 0 8px; }
         .form-closed-notice p:last-child { margin-bottom: 0; }
         .form-closed-notice a { color: #7a5c00; }
+        .form-closed-notice .correction {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(230,167,0,0.45);
+            font-size: 0.92em;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h1>Consultant Expertise Submission Form</h1>
         
+        <div class="form-closed-notice">
+            <p><strong>This form is closed.</strong> It is no longer accepting submissions. Anything sent to it is refused rather than stored.</p>
+            <p>The page is left up so the matrix itself stays readable. If you were asked to complete it, please <a href="/contact">get in touch</a> instead.</p>
+            <p class="correction" data-correction="consultant-form-stored-nothing" data-corrected="2026-08-26"><strong>Corrected 26 August 2026.</strong> From 10 February to 16 August 2026 this form posted to a function that had never been written. Every submission returned 404 and showed an error &mdash; nothing was accepted and then lost, but nobody could submit it either, and there are no logs that would say whether anyone tried. <a href="/corrections#consultant-form-stored-nothing">The full entry is in the corrections log</a>.</p>
+        </div>
+
         <div class="success-message" id="successMessage">
             Thank you! Your expertise profile has been submitted successfully.
         </div>

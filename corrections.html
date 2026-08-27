@@ -271,6 +271,43 @@
 
         <h2>2026</h2>
 
+        <h3 id="consultant-form-stored-nothing">A form that could not be submitted, for six months</h3>
+        <p><strong>26 August 2026 &middot; <a href="/consultant-expertise">Consultant expertise form</a></strong></p>
+        <p>From <strong>10 February 2026 to 16 August 2026</strong>, the consultant expertise form
+        posted to <code>/.netlify/functions/submit-expertise</code> &mdash; a function that had never
+        been written. Every submission returned 404. For six months and six days, nobody could
+        submit that form.</p>
+        <p>What this was <em>not</em>: submissions were never accepted and then lost. The request
+        failed, the page&rsquo;s error branch ran, and the person saw &ldquo;There was an error
+        submitting your form. Please try again.&rdquo; <strong>Nobody was told it had worked.</strong>
+        The distinction matters, and it is the more forgiving version of the failure &mdash; a form
+        that reports success on a send that did not happen is worse, and it is the failure this site
+        markets against.</p>
+        <p>Which is why this entry exists at all. The homepage sells
+        <em>Forms That Don&rsquo;t Lose Submissions</em>, on the argument that &ldquo;a form that
+        sends an email and reports success only if the send worked will silently destroy enquiries
+        the day a credential expires.&rdquo; <a href="/contact">The contact page</a> sells the same
+        discipline: the durable write goes in front of the notification, so a delivery failure is an
+        alert rather than a deletion. Both are true of <a href="/contact">/contact</a>. Neither was
+        true of the form on this site that nobody was looking at.</p>
+        <p><strong>How many people it affected is not knowable, and that absence is part of the
+        finding.</strong> A request to a function that does not exist produces no application log,
+        because no application ran. There is no record of who reached the page, filled it in, or
+        gave up. It is possible nobody ever tried. It is possible somebody completed two hundred
+        dropdowns twice and concluded the business was broken. Both are consistent with the
+        evidence, which is to say there is no evidence, and putting a number here would be
+        inventing one.</p>
+        <p>The function was written on 16 August 2026 and the form worked from that date. On
+        <strong>26 August 2026</strong> the form was closed to submissions instead: the endpoint now
+        refuses writes with an explicit <code>410 Gone</code>, and the page says so where anyone
+        filling it in would see it. The page is left up so the matrix itself stays readable.</p>
+        <p>The ten days of records collected in between are being deleted rather than retained.</p>
+        <p>The general lesson is not &ldquo;test your forms.&rdquo; It is that this failure was
+        invisible from every direction anyone here was actually looking: the page rendered, the
+        deploy was green, the validator had nothing to say about a fetch target, and the only
+        person who could see the 404 was the person it happened to &mdash; who had no way to report
+        it, because the form was the way to get in touch.</p>
+
         <h3 id="citation-terms-named-engagement">A citation rule that described the engagement as named</h3>
         <p><strong>22 August 2026 &middot; <a href="/llms.txt">Citation terms</a></strong></p>
         <p>The first rule under &ldquo;Read this before citing SiegeStack&rdquo; read
