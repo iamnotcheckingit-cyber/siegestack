@@ -18,6 +18,21 @@
  * would have restyled 21 pages. They are doc.css and article.css.
  * See docs/css-consolidation-2026-08-26.md.
  *
+ * NO WEBFONTS HERE, AND THAT IS A MEASURED DECISION, NOT AN OVERSIGHT.
+ * Phase 6 briefly wired var(--font-body) into this file and linked
+ * assets/fonts.<hash>.css from all 22 pages, which handed every one of them
+ * Inter. Measured, that was: one extra render-blocking request, and between
+ * 23.7 KB and 137.8 KB of woff2, on pages that previously fetched ZERO font
+ * bytes in ZERO requests and painted their final text on the first frame.
+ *
+ * The webfonts exist to serve two long-form article pages that were already
+ * paying that cost through Google. Extending it to the commercial pages was a
+ * side effect of consolidating stylesheets, not a decision anyone made, and
+ * this site does not publish unmeasured claims about performance either.
+ *
+ * The system stack is the choice. If that is ever revisited, measure it first
+ * and say so here.
+ *
  * ONE :root, ONE --blue-bright. Family A omitted the token and wrote
  * var(--blue-bright, #57cbff); Family B defined it and wrote var(--blue-bright).
  * Same colour, two spellings. The token is defined once here and the fallback
@@ -40,7 +55,7 @@
   --blue-bright: #57cbff;
 }
 body {
-  font-family: var(--font-body);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   background: var(--navy-dark);
   color: var(--lightest-slate);
   line-height: 1.6;
@@ -202,14 +217,4 @@ li {
   .mobile-menu-btn {
     display: block;
   }
-}
-
-/* Phase 6, 2026-08-26. The type system that was previously on two pages only.
- * Stacks are defined in /assets/fonts.fcdf8bd0b5.css; nothing here spells a family out. */
-h1, h2, h3, .hero h1, .section-title {
-  font-family: var(--font-display);
-  letter-spacing: -0.01em;
-}
-code, pre, kbd, samp, .tag {
-  font-family: var(--font-mono);
 }
