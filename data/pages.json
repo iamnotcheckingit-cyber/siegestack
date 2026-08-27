@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "b4f9e9d",
+    "commit": "4d58bce",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -607,10 +607,42 @@
       ],
       "headingSkips": [],
       "jsonLd": [
+        "Article",
         "BreadcrumbList",
-        "ListItem"
+        "CollectionPage",
+        "ListItem",
+        "Organization",
+        "WebPage"
       ],
       "jsonLdGraphs": [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "A KPI console for people who were reading the operation from memory",
+          "description": "Receiving, picking and purchasing measures for two audiences with two trust levels. Cost-bearing reports are refused to floor displays at the definition layer.",
+          "about": "Receiving and picker productivity metrics on a SQL Server-backed ERP",
+          "url": "https://siegestack.com/case-studies/kpi-console",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://siegestack.com/case-studies/kpi-console"
+          },
+          "inLanguage": "en-US",
+          "author": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "isPartOf": {
+            "@type": "CollectionPage",
+            "name": "Case Studies",
+            "url": "https://siegestack.com/case-studies"
+          }
+        },
         {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
@@ -700,7 +732,7 @@
         }
       ],
       "requiresReceipt": [],
-      "sitemapLastmod": "2026-08-21",
+      "sitemapLastmod": "2026-08-27",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-26",
@@ -758,10 +790,42 @@
       ],
       "headingSkips": [],
       "jsonLd": [
+        "Article",
         "BreadcrumbList",
-        "ListItem"
+        "CollectionPage",
+        "ListItem",
+        "Organization",
+        "WebPage"
       ],
       "jsonLdGraphs": [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "One label service instead of a label program per label",
+          "description": "Replacing a program-per-label sprawl with one configuration-driven label service, so a new label becomes a configuration change rather than a deployment.",
+          "about": "Consolidating multiple label sources into one configuration-driven service",
+          "url": "https://siegestack.com/case-studies/label-service",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://siegestack.com/case-studies/label-service"
+          },
+          "inLanguage": "en-US",
+          "author": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "isPartOf": {
+            "@type": "CollectionPage",
+            "name": "Case Studies",
+            "url": "https://siegestack.com/case-studies"
+          }
+        },
         {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
@@ -851,7 +915,7 @@
         }
       ],
       "requiresReceipt": [],
-      "sitemapLastmod": "2026-08-21",
+      "sitemapLastmod": "2026-08-27",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-26",
@@ -905,10 +969,42 @@
       ],
       "headingSkips": [],
       "jsonLd": [
+        "Article",
         "BreadcrumbList",
-        "ListItem"
+        "CollectionPage",
+        "ListItem",
+        "Organization",
+        "WebPage"
       ],
       "jsonLdGraphs": [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "The report that worked on Today and timed out on Month",
+          "description": "A report fast on a single day and dead on a month range. An access-path problem that volume made visible, not a volume problem, and how it was confirmed.",
+          "about": "A month-to-date report timeout root-caused to an unindexed date column on a vendor table",
+          "url": "https://siegestack.com/case-studies/month-to-date-timeout",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://siegestack.com/case-studies/month-to-date-timeout"
+          },
+          "inLanguage": "en-US",
+          "author": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "isPartOf": {
+            "@type": "CollectionPage",
+            "name": "Case Studies",
+            "url": "https://siegestack.com/case-studies"
+          }
+        },
         {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
@@ -999,7 +1095,7 @@
         }
       ],
       "requiresReceipt": [],
-      "sitemapLastmod": "2026-08-21",
+      "sitemapLastmod": "2026-08-27",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-26",
@@ -1392,8 +1488,51 @@
         }
       ],
       "headingSkips": [],
-      "jsonLd": [],
-      "jsonLdGraphs": [],
+      "jsonLd": [
+        "BreadcrumbList",
+        "ListItem",
+        "Organization",
+        "WebPage",
+        "WebSite"
+      ],
+      "jsonLdGraphs": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Corrections | SiegeStack",
+          "description": "Every correction made to a published claim on this site, with its date and the wording it replaced. Nothing is deleted here, including the errors.",
+          "url": "https://siegestack.com/corrections",
+          "inLanguage": "en-US",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "SiegeStack",
+              "item": "https://siegestack.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Corrections",
+              "item": "https://siegestack.com/corrections"
+            }
+          ]
+        }
+      ],
       "jsonLdParseErrors": [],
       "internalLinksOut": [
         "/",
@@ -1466,11 +1605,11 @@
         }
       ],
       "requiresReceipt": [],
-      "sitemapLastmod": "2026-08-26",
+      "sitemapLastmod": "2026-08-27",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-26",
-      "lastmodMatchesGit": true,
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
@@ -3895,8 +4034,51 @@
         }
       ],
       "headingSkips": [],
-      "jsonLd": [],
-      "jsonLdGraphs": [],
+      "jsonLd": [
+        "BreadcrumbList",
+        "ListItem",
+        "Organization",
+        "WebPage",
+        "WebSite"
+      ],
+      "jsonLdGraphs": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Privacy Policy | SiegeStack",
+          "description": "What SiegeStack collects when you book a consultation or send an email, what we do with it, and which third-party services touch it. Plain English.",
+          "url": "https://siegestack.com/privacy-policy",
+          "inLanguage": "en-US",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SiegeStack",
+            "url": "https://siegestack.com/"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "SiegeStack",
+              "item": "https://siegestack.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Privacy Policy",
+              "item": "https://siegestack.com/privacy-policy"
+            }
+          ]
+        }
+      ],
       "jsonLdParseErrors": [],
       "internalLinksOut": [
         "/",
@@ -3958,11 +4140,11 @@
         }
       ],
       "requiresReceipt": [],
-      "sitemapLastmod": "2026-08-26",
+      "sitemapLastmod": "2026-08-27",
       "sitemapPriority": null,
       "sitemapChangefreq": null,
       "gitLastCommitDate": "2026-08-26",
-      "lastmodMatchesGit": true,
+      "lastmodMatchesGit": false,
       "inNetlifyAllow": true,
       "inAllowHtml": true,
       "hasPrettyUrlRewrite": true,
