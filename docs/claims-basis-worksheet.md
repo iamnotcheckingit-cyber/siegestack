@@ -37,7 +37,9 @@ several places. Settle the measurement once and every row that inherits it is an
 
 ### M1 — the database view audit
 
-Rows **9, 11, 16, 18, 20** and **N1**, and possibly **22** and **23** (see Q1).
+Rows **9, 11, 16, 18, 20** (first occurrence only) and **N1**, and **22** — the deck's
+~27% sits on the "Auditing 300+ Database Views" slide, so it is this measurement.
+**Row 23 is NOT M1**: answered 2026-08-27, it is M2. Row 20 is split across both — see M2.
 Published as: "300+ views audited · ~27% aggregate gain · 70 change sets · 99%+ match rate."
 Source section: `/working-with-claude-blog#perf-gain`.
 
@@ -46,13 +48,27 @@ baseline was captured and with what tool, what population the ~27% is aggregated
 counts as an audited view and how 300+ was counted, what "match" means in the 99%+ and against
 what comparison key, and the date.
 
-### M2 — the migration reconciliation
+### M2 — the macro-replacement reconciliation
 
-Row **23**, and row **24** if "cut over" turns out to belong to it.
-Published as: "Tested against legacy output until we hit 99%+ match" (`/working-with-claude` deck).
+**Identified 2026-08-27. This was filed as "the migration reconciliation", as though it were a
+separate engagement. It is not.** It is the nine-spreadsheet-macros replacement, and it is
+published in two places that describe the same measurement:
 
-Needs: what was migrated, what legacy output it was reconciled against, the comparison key and
-tolerance, and the date. **Blocked by Q1** — this may not be a separate measurement at all.
+| Where | Wording |
+|---|---|
+| `/working-with-claude-blog#macros` | "Reconciliation runs at 99%+. The remaining percent is genuinely ambiguous and is surfaced for a human" |
+| `/working-with-claude` deck, "9 Macros → 1 Automation" | "Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over." |
+
+Rows **23** and the *second* occurrence of row **20**. Row **24** ("cut over") is the same
+slide and remains a `not-a-claim` candidate, unruled.
+
+The word "migration" came from the deck's own cut-over language, and reading it as a distinct
+engagement is what made Q1 look like a contradiction: two accounts of one number. There were
+always two numbers.
+
+Needs: what legacy output the new script was reconciled against, the comparison key and
+tolerance, what makes the residual percent "ambiguous", and the date. **No longer blocked** —
+the provenance is settled, the measurement detail is not.
 
 ### M3 — the security grade
 
@@ -107,12 +123,20 @@ The homepage was quoting the first and linking to the second. This is not one fi
 stories, which is the shape this section assumed throughout — so the framing "at most one is
 right" in the table above was wrong too: both were right, about different work.
 
-**What is still open, and it is not what row 23 says.** Row 23 (the deck: "Tested against
-legacy output until we hit 99%+ match") was blocked on the premise that it and row 16 were
-competing accounts of one measurement. With two real measurements established, the deck slide
-may simply be a third, or it may be `#macros`'s reconciliation restated. **Nobody has said
-which, so row 23 stays open** — and so does row 20, which is a single registry row covering
-*both* blog occurrences and therefore cannot take one basis. Neither was touched.
+**Row 23 — ANSWERED 2026-08-27, same day.** The deck slide ("Tested against legacy output
+until we hit 99%+ match") is `#macros`'s reconciliation restated: same measurement, second
+place. The page confirms the answer rather than merely permitting it — the slide is titled
+"9 Macros → 1 Automation". So the slide is accurate as written and nothing on it changed;
+what changed is M2's identity, which had been filed as a separate "migration reconciliation"
+purely because of the slide's cut-over wording.
+
+**Row 20 is answered too, and still cannot be recorded properly.** Its two occurrences are M1
+and M2 respectively. The registry is keyed on (claim, route), so one row cannot carry two
+bases; the single `measurementBasis` names both instead. Recorded as a schema limit in the row.
+
+**What that leaves.** Every 99%+ on the site now has a known provenance. **None has a
+measurement.** M1 and M2 both still need method, comparison key and date — see their sections.
+`dateMeasured` is `TODO(pappy)` on every row, and SS-601 does not look at it.
 
 ### Superseded hypothesis — kept because it was wrong in an instructive way
 
@@ -173,10 +197,10 @@ needs its own basis.
 | 17 | `20%` | 1 | `/working-with-claude-blog` | "An earlier version of this article put a number on that — 'roughly 20% of the time.' I have removed it, because I never measured it…" | `#corrections` | Nothing. This is the published correction *recording* an unmeasured figure. `not-a-claim` — and if the text is ever removed, the correction goes with it. |
 | 18 | `27%` | 2 | `/working-with-claude-blog` | Section heading "A 27% Performance Gain Across Hundreds of Database Views", plus one body instance | `#perf-gain` | Same as row 16. Note `×2` — SS-601 errors if a third instance appears. |
 | 19 | `95%` | 1 | `/working-with-claude-blog` | "Test against reality (this is where 95% of AI users fail)" | — | **This one needs a real decision.** It is a rhetorical figure about a population nobody has surveyed — the same class as the "confidently wrong ~20%" statistic already removed as a correction. Either a citation or removal; `not-a-claim` would be generous. |
-| 20 | `99%` | 2 | `/working-with-claude-blog` | Summary line (row 16), plus one body instance | `#perf-gain` | Same evidence as row 11 — this is the source instance. |
+| 20 | `99%` | 2 | `/working-with-claude-blog` | Summary line (row 16) at `#perf-gain`, plus the body sentence "Reconciliation runs at 99%+" at `#macros` | `#perf-gain` **and** `#macros` | **TWO MEASUREMENTS IN ONE ROW.** Occurrence 1 is M1, occurrence 2 is M2 — established 2026-08-27. Both provenances are known; the registry is keyed on (claim, route) and cannot hold two bases for one row, so the single `measurementBasis` names both. That is a schema limit, not an answer: neither measurement has its detail or date yet. |
 | 21 | `faster` | 4 | `/working-with-claude-blog` | Four prose instances, e.g. "the faster the next kind converges" | — | Prose throughout. Candidate for `not-a-claim`. Note `×4` — a fifth instance turns the build red. |
 | 22 | `~27%` | 1 | `/working-with-claude` | Deck slide: "~27% performance improvement measured after deployment" | — (the deck has no section anchors) | Same evidence as row 16. The slide says "measured after deployment", which asserts a measurement more strongly than the article does — so this wording needs the basis or needs softening. |
-| 23 | `99%` | 1 | `/working-with-claude` | Deck slide: "Tested against legacy output until we hit 99%+ match." | — | Blocked by **Q1** — see M2. This frames the figure as a migration reconciliation, which is a different engagement from the view audit in row 16. One of the two framings is wrong. |
+| 23 | `99%` | 1 | `/working-with-claude` | Deck slide: "Tested against legacy output until we hit 99%+ match." | — | **ANSWERED 2026-08-27 — M2**, the macro-replacement reconciliation restated from `#macros`. Not a third measurement and not the view audit. The slide is accurate as written; nothing on the page changed. Basis recorded, `dateMeasured` open. |
 | 24 | `cut` | 1 | `/working-with-claude` | "The team validated daily before we cut over." | — | "cut over" is prose. Candidate for `not-a-claim`. |
 | 25 | `faster` | 1 | `/working-with-claude` | "a clean prompt in a fresh session is faster and better than an elaborate system" | — | Prose. Candidate for `not-a-claim`. |
 

@@ -201,7 +201,7 @@
       "claim": "99%",
       "route": "/working-with-claude-blog",
       "occurrences": 2,
-      "measurementBasis": "TODO(pappy)",
+      "measurementBasis": "TWO MEASUREMENTS, one row -- the registry is keyed on (claim, route) and cannot split them. Occurrence 1, the #perf-gain summary line, is M1, the database view audit. Occurrence 2, 'Reconciliation runs at 99%+' at #macros, is M2, the macro-replacement reconciliation. Both provenances confirmed 2026-08-27; neither measurement's method or date is recorded yet, so this basis is a provenance, not a basis.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…ng them is ugly but fast. 300+ views audited ~27% aggregate gain 70 change sets 99%+ match rate None of those patterns are clever. The leverage was running the loo…",
@@ -234,7 +234,7 @@
       "claim": "99%",
       "route": "/working-with-claude",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
+      "measurementBasis": "M2, the macro-replacement reconciliation -- the same measurement the article states at /working-with-claude-blog#macros, restated on the '9 Macros -> 1 Automation' slide. Confirmed 2026-08-27 by the operator. NOT the view audit, and not a separate migration: 'migration' was this worksheet's own reading of the slide's cut-over language.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…from the intent, not the legacy code. Tested against legacy output until we hit 99%+ match. The team validated daily before we cut over. Migration: Conversation as…"
