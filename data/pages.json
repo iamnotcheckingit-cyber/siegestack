@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/build-page-index.mjs",
   "generatedFrom": {
-    "commit": "c241811",
+    "commit": "d18e9ca",
     "allowListSource": "netlify/edge-functions/publish-gate.ts"
   },
   "allowHtml": [
@@ -129,6 +129,12 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -303,6 +309,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -516,6 +544,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -646,6 +696,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -780,6 +852,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -911,6 +1005,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -1030,6 +1146,12 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/consultant-form.js",
+          "where": "script"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -1180,6 +1302,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": null,
@@ -1330,6 +1474,36 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        },
+        {
+          "url": "/llms.txt",
+          "where": "anchor"
+        },
+        {
+          "url": "/robots.txt",
+          "where": "anchor"
+        },
+        {
+          "url": "/llms-full.txt",
+          "where": "anchor"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -1517,6 +1691,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.7",
@@ -1713,6 +1909,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.8",
@@ -1994,6 +2212,20 @@
         "/assets/fonts.fcdf8bd0b5.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -2045,6 +2277,7 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -2443,6 +2676,20 @@
         "/assets/fonts.fcdf8bd0b5.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "1.0",
@@ -2707,6 +2954,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -2929,6 +3198,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
@@ -2985,6 +3276,20 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/private-icon-180.png",
+          "where": "link"
+        },
+        {
+          "url": "/jesse-manifest.json",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -3241,6 +3546,20 @@
         "/assets/fonts.fcdf8bd0b5.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.7",
@@ -3297,6 +3616,20 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/private-icon-180.png",
+          "where": "link"
+        },
+        {
+          "url": "/nicole-manifest.json",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -3532,6 +3865,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -3671,6 +4026,24 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -3957,6 +4330,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",
@@ -4264,6 +4659,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -4357,6 +4774,12 @@
       "visibleUpdated": null,
       "localStylesheets": [],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": null,
       "sitemapPriority": null,
@@ -4525,6 +4948,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -4689,6 +5134,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -4848,6 +5315,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5008,6 +5497,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5173,6 +5684,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5342,6 +5875,28 @@
         "/assets/doc.41dcc80e68.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/doc.41dcc80e68.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": null,
@@ -5621,6 +6176,28 @@
         "/assets/article.c305c30cd1.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/site.9e57e27687.css",
+          "where": "link"
+        },
+        {
+          "url": "/assets/article.c305c30cd1.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -6066,6 +6643,20 @@
         "/assets/fonts.fcdf8bd0b5.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon-sw.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-26",
       "sitemapPriority": "0.9",
@@ -6511,6 +7102,20 @@
         "/assets/fonts.fcdf8bd0b5.css"
       ],
       "externalStylesheets": [],
+      "assetRefs": [
+        {
+          "url": "/favicon-sw.svg",
+          "where": "link"
+        },
+        {
+          "url": "/favicon.png",
+          "where": "link"
+        },
+        {
+          "url": "/assets/fonts.fcdf8bd0b5.css",
+          "where": "link"
+        }
+      ],
       "requiresReceipt": [],
       "sitemapLastmod": "2026-08-21",
       "sitemapPriority": "0.8",

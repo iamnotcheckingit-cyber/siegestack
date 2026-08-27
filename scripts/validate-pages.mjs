@@ -23,6 +23,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { checkInputs, INPUT_MANIFEST, CORPUS_MANIFEST } from './lib/input-guard.mjs';
+import { parseGate } from './lib/gate-replay.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -417,52 +418,93 @@ for (const p of PAGES) {
   }
 
   // -------------------------------------------------------------------------
-  // SS-106 -- a stylesheet a page asks for must exist AND get past the gate
+  // SS-106 -- everything a page references must exist AND get past the gate
   //
-  // WHY THIS EXISTS. Phase 5 moved every page onto /assets/site.<hash>.css, and
-  // publish-gate.ts is deny-by-default: ALLOW_EXT covers svg/png/jpg/webp/avif/
-  // gif/ico/woff2 and does NOT cover .css. The three new stylesheets would have
-  // 404'd and every page on the site would have rendered unstyled -- in a commit
-  // whose own diff looks like a tidy-up. Nothing in the suite would have said a
-  // word: the HTML was valid, the files existed, the tests passed.
+  // publish-gate.ts is deny-by-default, and its own header says the asymmetry is
+  // deliberate: media extensions are allowed anywhere, documents and code are
+  // not, because "adding a .txt is a decision". The cost of that design is that
+  // adding a file and referencing it are two different acts, and nothing used to
+  // check they agreed.
   //
-  // It checks BOTH halves, because either alone is a false negative. A file
-  // present in the repository but denied by the gate is a 404 in production. A
-  // file the gate would allow but which does not exist is a 404 too. The
-  // gate's own logic is replayed from its source, the same way SS-101/SS-105
-  // replay ALLOW_HTML, so this cannot drift from what actually ships.
+  // TWO MISSES, ONE COMMIT APART, SAME BUG:
   //
-  // Off-site stylesheets are deliberately NOT checked for existence -- a Google
-  // Fonts URL is a third-party request, which is a privacy question rather than
-  // a missing-file question. They are reported so that question stays visible.
+  //   .css  Phase 5 moved 22 pages onto /assets/site.<hash>.css. ALLOW_EXT is
+  //         media-only. All three stylesheets would have 404'd and every page
+  //         would have rendered unstyled, from a commit whose diff reads as a
+  //         tidy-up. Caught before shipping, and this rule was written for it.
+  //   .txt  Phase 6 shipped assets/fonts/OFL.txt to discharge an Open Font
+  //         License obligation. Denied. The licence existed in the repository
+  //         and was unreachable on the web. NOT caught -- because the rule
+  //         written after the first miss only looked at <link rel="stylesheet">.
+  //
+  // Fixing the instance twice is how a rule ends up narrower than the defect it
+  // is named for. This checks EVERY same-origin URL a page references -- link,
+  // script, img/source/video, srcset candidates, and anchors that point at a
+  // file rather than a route -- AND every url() inside the stylesheets those
+  // pages load, which is where @font-face lives.
+  //
+  // The gate's logic is replayed from its own source (scripts/lib/gate-replay.mjs)
+  // rather than restated here. A second copy of the allow-lists would drift, and
+  // drift means this rule says a file is servable while production 404s it --
+  // which is the failure it exists to catch, one level up.
   {
-    const gateSrc = has('netlify/edge-functions/publish-gate.ts') ? rd('netlify/edge-functions/publish-gate.ts') : null;
-    let assetRe = null;
-    if (gateSrc) {
-      const m = gateSrc.match(/const ALLOW_ASSET_CSS = (\/[^;]*\/i);/);
-      if (m) { try { assetRe = new RegExp(m[1].slice(1, -2), 'i'); } catch { assetRe = null; } }
-    }
-    if (!gateSrc) {
-      skip('SS-106', 'publish-gate.ts is not readable, so whether a stylesheet would be served cannot be replayed.');
-    } else if (!assetRe) {
-      error('SS-106', 'netlify/edge-functions/publish-gate.ts',
-        'Could not find ALLOW_ASSET_CSS in publish-gate.ts. This rule replays that pattern to decide whether a stylesheet would actually be served; without it the check would pass by looking at nothing.',
-        'expected: const ALLOW_ASSET_CSS = /.../i;');
+    const gate = parseGate(ROOT);
+    if (!gate.ok) {
+      skip('SS-106', `Cannot replay publish-gate.ts, so whether a referenced file would actually be served is unknown: ${gate.why}`);
     }
 
-    for (const p of PAGES) {
-      for (const href of p.localStylesheets ?? []) {
-        const file = href.replace(/^\//, '').split('?')[0];
-        if (!has(file)) {
-          error('SS-106', p.route, 'Page links a stylesheet that is not in the repository.', href);
-          continue;
-        }
-        if (assetRe && !assetRe.test(href.split('?')[0])) {
-          error('SS-106', p.route,
-            'Stylesheet exists but publish-gate.ts would DENY it, so it 404s in production and the page renders unstyled. .css is not in ALLOW_EXT; it is allowed only under /assets/.',
-            href);
+    // THE MIRROR CHECK. The rule above asks whether everything referenced is
+    // servable. This asks whether everything the gate is told to serve exists.
+    // An ALLOW_EXACT entry naming a file that is gone is dead config: it reads
+    // as a deliberate decision and guards nothing, which is how the IndexNow key
+    // line would rot if the key were ever renamed. It also means the two licence
+    // files stay guarded even though no page links to them -- OFL-1.1 requires
+    // them to be distributed with the fonts, and an obligation nothing checks is
+    // one that quietly stops being met.
+    if (gate.ok) {
+      for (const entry of gate.parts.ALLOW_EXACT) {
+        if (!/\.[a-z0-9]{2,5}$/i.test(entry)) continue;  // /audit has no extension and is a route
+        const f = entry.replace(/^\//, '');
+        if (!has(f)) {
+          error('SS-106', 'netlify/edge-functions/publish-gate.ts',
+            'ALLOW_EXACT names a file that is not in the repository. The entry reads as a deliberate decision to serve something and serves nothing.',
+            entry);
         }
       }
+    }
+
+    const seen = new Set();
+    const checkRef = (route, url, where) => {
+      const key = `${route}|${url}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const file = url.replace(/^\//, '');
+      const onDisk = has(file) || has(`${file}.html`) || has(`${file}/index.html`);
+      if (!onDisk) {
+        error('SS-106', route, `Page references a file that is not in the repository (${where}).`, url);
+        return;
+      }
+      if (gate.ok && !gate.isAllowed(url)) {
+        error('SS-106', route,
+          `File exists but publish-gate.ts would DENY it, so it 404s in production (${where}). The gate is deny-by-default: adding a file and referencing it are two separate acts.`,
+          url);
+      }
+    };
+
+    for (const p of PAGES) {
+      for (const ref of p.assetRefs ?? []) checkRef(p.route, ref.url, ref.where);
+
+      // Inside the stylesheets themselves -- @font-face src, background images.
+      for (const href of p.localStylesheets ?? []) {
+        const file = href.split('?')[0].replace(/^\//, '');
+        if (!has(file)) continue; // already reported above
+        for (const m of rd(file).matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) {
+          const u = m[1].trim();
+          if (!u.startsWith('/') || u.startsWith('//')) continue;
+          checkRef(p.route, u.split('#')[0].split('?')[0], `url() in ${href}`);
+        }
+      }
+
       for (const href of p.externalStylesheets ?? []) {
         warn('SS-106', p.route,
           'Page loads a stylesheet from another origin. Every visitor\'s IP reaches that host on every page load, which is a third-party disclosure question rather than a broken-link one.',

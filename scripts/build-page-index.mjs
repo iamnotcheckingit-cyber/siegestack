@@ -417,6 +417,44 @@ for (const file of htmlFiles) {
   const localStylesheets = stylesheets.filter((h) => h.startsWith('/'));
   const externalStylesheets = stylesheets.filter((h) => !h.startsWith('/'));
 
+  // EVERY same-origin URL the page asks a browser to fetch, or offers a reader.
+  //
+  // The stylesheet list above was written after .css turned out to be denied by
+  // publish-gate.ts. One commit later assets/fonts/OFL.txt was denied too -- an
+  // Open Font License obligation, in the repository, unreachable on the web --
+  // and the stylesheet-only rule could not see it. Same bug, different
+  // extension. This collects the class instead: link, script, img, source,
+  // video/audio, and anchors pointing at a FILE rather than a route.
+  //
+  // `raw` is the HTML before <script> and <style> are stripped, because a
+  // <script src> lives on the tag itself and `clean` has already removed it.
+  const seenRef = new Set();
+  const assetRefs = [];
+  const addRef = (u, where) => {
+    if (!u) return;
+    const url = u.trim();
+    if (!url.startsWith('/') || url.startsWith('//')) return;  // same-origin, path-absolute only
+    const p = url.split('#')[0].split('?')[0];
+    if (!p || p === '/') return;
+    const key = p + '|' + where;
+    if (seenRef.has(key)) return;
+    seenRef.add(key);
+    assetRefs.push({ url: p, where });
+  };
+  for (const m of raw.matchAll(/<link\b[^>]*href="([^"]+)"/g)) addRef(m[1], 'link');
+  for (const m of raw.matchAll(/<script\b[^>]*src="([^"]+)"/g)) addRef(m[1], 'script');
+  for (const m of raw.matchAll(/<(?:img|source|video|audio|track|embed)\b[^>]*src="([^"]+)"/g)) addRef(m[1], 'media');
+  for (const m of raw.matchAll(/<(?:img|source)\b[^>]*srcset="([^"]+)"/g)) {
+    for (const cand of m[1].split(',')) addRef(cand.trim().split(/\s+/)[0], 'media');
+  }
+  // Anchors only when the last path segment looks like a file. A route has no
+  // extension here (/about, /services/bi-dashboards) and is already governed by
+  // SS-401 and ALLOW_HTML; a link to /assets/fonts/OFL.txt is not.
+  for (const m of raw.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
+    const p = m[1].split('#')[0].split('?')[0];
+    if (/\/[^/]+\.[a-z0-9]{2,5}$/i.test(p)) addRef(m[1], 'anchor');
+  }
+
   const requiresReceipt = [
     ...new Set([...clean.matchAll(/\bdata-requires-receipt="([a-z0-9-]+)"/g)].map((m) => m[1])),
   ];
@@ -502,6 +540,7 @@ for (const file of htmlFiles) {
     visibleUpdated: visibleUpdatedValue,
     localStylesheets,
     externalStylesheets,
+    assetRefs,
     requiresReceipt,
     sitemapLastmod: sm?.lastmod ?? null,
     sitemapPriority: sm?.priority ?? null,

@@ -113,6 +113,18 @@ const ALLOW_EXACT = new Set([
   // .txt is denied by default, so without this line the key 404s and every
   // IndexNow submission comes back 403 "key not found".
   "/0374ea43379b487e8fa886bf520fbdcc.txt",
+  // The Open Font License text and the notice naming each family. Shipping
+  // these is what OFL-1.1 requires in return for self-hosting the fonts, and
+  // an obligation discharged into a directory nobody can reach is not
+  // discharged. They were DENIED for one commit -- .txt is denied by default,
+  // ALLOW_EXT is media-only, and ALLOW_ASSET_CSS has no slash in its character
+  // class so nothing under /assets/fonts/ matched it either.
+  //
+  // Listed individually rather than by prefix because the filenames are stable
+  // (no content hash: a licence does not change) and because this file says
+  // adding a .txt is a decision. Two decisions, visible in a diff.
+  "/assets/fonts/OFL.txt",
+  "/assets/fonts/NOTICE.txt",
 ]);
 
 // The function surfaces, which must never be gated here — they carry their own
