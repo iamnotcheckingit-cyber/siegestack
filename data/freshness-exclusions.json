@@ -42,6 +42,11 @@
       "sha": "64e5550",
       "reason": "Repointed <link rel=\"alternate icon\"> from /favicon.ico, which has never existed in this repository, to /favicon.png, which does. One attribute on 23 pages, no copy changed. The rest of that commit is the publish gate and the validator.",
       "addedOn": "2026-08-26"
+    },
+    {
+      "sha": "0876b27",
+      "reason": "Reverted 25 pages to the system font stack and removed the fonts.css link from them. Presentation only -- no copy changed. The counterpart to a60e0d8, which is excluded for the same reason.",
+      "addedOn": "2026-08-26"
     }
   ]
 }
