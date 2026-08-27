@@ -273,6 +273,24 @@
         </ul>
         <h2>See it in detail</h2>
         <p><a href="/sql-server-erp-performance">SQL Server performance for ERP reporting</a> is the full method. <a href="/case-studies/month-to-date-timeout">The month-to-date timeout</a> is one worked instance of it.</p>
+<h2>Who this is for</h2>
+        <p>Anyone with a report that is quick for a day and dies on a month, or a nightly job whose window has quietly closed. Typically the complaint arrives described as a volume problem, and the hardware has already been discussed.</p>
+        <p>It is the wrong service if the report returns the wrong rows quickly. That is a <a href="/services/bi-dashboards">definitional</a> problem, and making it quicker makes it wrong sooner.</p>
+
+        <h2>What we would look at first</h2>
+        <ul>
+            <li><strong>What exactly the date filter filters on, and whether anything indexes it.</strong> That single question resolves a large share of these before anything else is examined.</li>
+            <li><strong>Logical reads, not runtime.</strong> Runtime moves with server load and cache state; pages touched does not, so it is the only number worth comparing before and after.</li>
+            <li><strong>Whether an expression wraps an indexed column.</strong> If so, moving the arithmetic to the constant restores the seek with no schema change at all &mdash; the cheapest available fix and the one most often missed.</li>
+            <li><strong>Whose schema it is</strong>, because that determines whether an index is a change you are permitted to keep through an upgrade.</li>
+        </ul>
+
+        <h2>What determines the cost</h2>
+        <p>Whether a baseline exists. If nothing was captured before, capturing it is the first work and it is not optional &mdash; without it any claim about the result is an opinion, and this site does not publish those. Then: whether the fix is a predicate rewrite or a schema change, whether the schema belongs to a vendor, and how many reports share the same underlying access path, which is frequently more than anyone expects and is the reason one diagnosis sometimes settles several complaints.</p>
+<h2>Proof</h2>
+        <p><a href="/case-studies/month-to-date-timeout">The month-to-date timeout</a> is one instance start to finish, and <a href="/erp-report-slow-month-to-date">the technical write-up</a> carries the confirmation steps as well as the diagnosis &mdash; including what was checked to rule out volume before anything was changed. <a href="/sql-server-erp-performance">The method</a> is written out independently of any one report, so it can be applied without engaging anybody.</p>
+
+
         <p><a href="/contact">Talk about a slow report</a></p>
     </div>
     </main>

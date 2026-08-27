@@ -273,6 +273,21 @@
         </ul>
         <h2>See it in detail</h2>
         <p><a href="/etl-showcase">The integration showcase</a> covers the patterns with real code. <a href="/case-studies/label-service">The label service</a> is one example of the shape: a program per label became one configuration-driven service.</p>
+<h2>Who this is for</h2>
+        <p>Operations where a real process depends on somebody running something. The workstation macro, the export that gets reshaped in Excel, the folder a file has to land in by seven. It works, and it works until the person is away or the machine is replaced.</p>
+        <p>The tell that this is the right service rather than <a href="/services/erp-integration">integration</a>: the data does not need to move in both directions, it needs to move reliably in one.</p>
+
+        <h2>What we would look at first</h2>
+        <ul>
+            <li><strong>Where the process actually lives.</strong> Frequently a machine under a desk, and frequently nobody knows which one until it is asked.</li>
+            <li><strong>What the failure looks like from outside.</strong> If a late source and a successful empty run are indistinguishable downstream, that is the problem, not the transformation.</li>
+            <li><strong>What is already unmatched.</strong> Every identity chain has rows that reach the end unresolved; the question is whether anything currently displays them.</li>
+            <li><strong>Whether the output is re-runnable.</strong> If yesterday cannot be produced again on demand, nothing about it can be verified after the fact.</li>
+        </ul>
+
+        <h2>What determines the cost</h2>
+        <p>How many sources, and whether their formats are owned by you or by somebody else. Whether the existing logic is written down anywhere or only in one person's habit &mdash; recovering an undocumented process is its own piece of work and is scoped separately rather than absorbed quietly. Whether the destination needs history or only the current state. And whether anyone has ever specified what a correct run looks like, because that specification is what makes the monitoring possible at all.</p>
+
         <p><a href="/contact">Talk about a pipeline</a></p>
     </div>
     </main>

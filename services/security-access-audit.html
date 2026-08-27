@@ -277,6 +277,24 @@
         <p>By probing the live system rather than reading the config, because the whole category is faults that configuration review cannot see. Findings come with the reproduction, not just the claim.</p>
         <h2>See it in detail</h2>
         <p>This work is written up at length, including the errors found in the author's own sites, in <a href="/working-with-claude-blog">the long-form write-up</a>.</p>
+<h2>Who this is for</h2>
+        <p>Anyone who has shipped something publicly and has not since checked what it actually serves, as opposed to what it was configured to serve. Particularly relevant where a form collects anything, where a database is reachable from a browser, or where a redirect or header rule is doing security work.</p>
+        <p>It is not a penetration test and does not pretend to be. It is an audit of the category of fault that returns no error, which is a different exercise and finds different things.</p>
+
+        <h2>What we would look at first</h2>
+        <ul>
+            <li><strong>What an anonymous request actually gets back.</strong> Established by making the request, at more than one casing and encoding, rather than by reading the rule that is supposed to stop it.</li>
+            <li><strong>Whether a rule that looks active matches anything.</strong> A policy matching zero rows and a policy correctly permitting nothing are identical from the outside, and only one of them is doing its job.</li>
+            <li><strong>What a failing path does.</strong> Specifically whether a notification failure can destroy the thing it was notifying about, which is the most common quiet data-loss shape in a small application.</li>
+            <li><strong>Whether measurement is telling the truth</strong> &mdash; pages tagged twice, one property fed by several sites, staging counted as real traffic.</li>
+        </ul>
+
+        <h2>What determines the cost</h2>
+        <p>How many surfaces are public, and how many distinct rule systems sit in front of them &mdash; a redirect file, a header file and an edge function disagreeing with each other is three times the work of any one of them. Whether there is a written statement of what access is supposed to be, because an audit with no declared intent can only report what is, not what is wrong. And whether findings need reproductions attached, which they do here by default.</p>
+
+        <h2>Proof</h2>
+        <p><a href="/delivery-config-audit">The config was mine and the fix on paper was still wrong</a> is this service applied to this site: a rule that read correctly, deployed cleanly, returned no error and did nothing, plus two more found the same day that were a different species again.</p>
+
         <p><a href="/contact">Talk about an audit</a></p>
     </div>
     </main>

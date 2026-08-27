@@ -275,6 +275,21 @@
         <p>The schema usually belongs to the vendor. That makes supportability a question you answer before a technical one, and it is why the integration sits alongside the ERP rather than inside it wherever that is possible.</p>
         <h2>See it in detail</h2>
         <p><a href="/etl-showcase">The integration showcase</a> has production-shaped code for these patterns across Salesforce, HubSpot, Zoho, Epicor P21 and Kinetic, Infor and Dynamics NAV. <a href="/prophet-21">Prophet 21 and Kinetic</a> covers the platform-specific traps.</p>
+<h2>Who this is for</h2>
+        <p>Distributors and manufacturers where the ERP is the system of record and something else &mdash; a CRM, a webstore, a WMS, a trading partner &mdash; needs the same data and currently gets it from a file. Usually there is already an integration; the question is whether anyone would know the night it stops.</p>
+        <p>It is the wrong service if the two systems do not yet agree on what a customer or an item <em>is</em>. That is <a href="/services/bi-dashboards">definition work</a>, and doing it after the integration is built means building it twice.</p>
+
+        <h2>What we would look at first</h2>
+        <ul>
+            <li><strong>What happens on a failure today.</strong> Not what the runbook says &mdash; what happened the last time, and who found out first.</li>
+            <li><strong>Whether a partial load is possible.</strong> If a run can stop halfway and leave rows behind, that is the finding, and it usually predates every other symptom.</li>
+            <li><strong>How identity is resolved between the two systems</strong>, and what the code does when the match is missing rather than wrong.</li>
+            <li><strong>What the vendor supports.</strong> Whether there is a supported extension point, and what an upgrade does to anything that does not use one.</li>
+        </ul>
+
+        <h2>What determines the cost</h2>
+        <p>How many systems have to agree, and whether any of them is a system of record for the same field. Whether the identity mapping already exists or has to be established. Whether the work can sit alongside the ERP or has to reach inside it &mdash; the second is more expensive to support for years, which is a decision made early and in the open. And whether there is any monitoring today, because an integration with no alerting is two projects rather than one. <a href="/industries/distribution#what-determines-the-cost">The same four variables</a> apply across all of this work.</p>
+
         <p><a href="/contact">Talk about an integration</a></p>
     </div>
     </main>

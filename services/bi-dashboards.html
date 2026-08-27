@@ -273,6 +273,24 @@
         </ul>
         <h2>See it in detail</h2>
         <p><a href="/case-studies/kpi-console">The KPI console case study</a> is this service in full: two audiences, two trust levels, and the identity chain that had to show its misses.</p>
+<h2>Who this is for</h2>
+        <p>Operations where two people can pull the same measure and get two answers, and where the meeting to reconcile them happens often enough that somebody has stopped attending. Also anywhere a number faces an audience it was not scoped for &mdash; a floor display showing something cost-bearing is the common one.</p>
+        <p>It is the wrong service if the underlying report already times out. Fix <a href="/services/performance-tuning">the access path</a> first; a dashboard on a query that cannot finish is a slower way to discover the same thing.</p>
+
+        <h2>What we would look at first</h2>
+        <ul>
+            <li><strong>Which rows currently count.</strong> Open versus posted, credits against the original period, and which of two date columns the business actually means. Almost always unwritten.</li>
+            <li><strong>Who is allowed to see what</strong>, and whether that is enforced where the report is defined or merely where it is drawn.</li>
+            <li><strong>What the number does when data is missing</strong> &mdash; whether an undated line becomes an on-time success, and whether an unmapped row disappears or is shown as unmapped.</li>
+            <li><strong>How old the figure on screen is</strong>, and whether the screen says so.</li>
+        </ul>
+
+        <h2>What determines the cost</h2>
+        <p>Overwhelmingly the definitions, not the rendering. If the business has never ruled on what counts as an on-time line, that ruling is a series of conversations with the people who own the answer, and it is the bulk of the engagement. After that: how many audiences need separating and whether the separation has to hold at the definition layer, how many source systems the measure crosses, and whether a trustworthy history exists or has to be rebuilt.</p>
+<h2>Proof</h2>
+        <p><a href="/case-studies/kpi-console">The KPI console</a> is this service end to end, and it is worth reading for the part that is not the dashboard: two audiences at two trust levels, with the refusal enforced where the report is defined rather than where it is drawn, and an identity chain built to display the rows it could not match instead of dropping them. The measures were the short part. Ruling on which rows counted was the engagement.</p>
+
+
         <p><a href="/contact">Talk about a dashboard</a></p>
     </div>
     </main>

@@ -2875,6 +2875,26 @@ The schema usually belongs to the vendor. That makes supportability a question y
 
 [The integration showcase](https://siegestack.com/etl-showcase) has production-shaped code for these patterns across Salesforce, HubSpot, Zoho, Epicor P21 and Kinetic, Infor and Dynamics NAV. [Prophet 21 and Kinetic](https://siegestack.com/prophet-21) covers the platform-specific traps.
 
+### Who this is for
+
+Distributors and manufacturers where the ERP is the system of record and something else — a CRM, a webstore, a WMS, a trading partner — needs the same data and currently gets it from a file. Usually there is already an integration; the question is whether anyone would know the night it stops.
+
+It is the wrong service if the two systems do not yet agree on what a customer or an item *is*. That is [definition work](https://siegestack.com/services/bi-dashboards), and doing it after the integration is built means building it twice.
+
+### What we would look at first
+
+- **What happens on a failure today.** Not what the runbook says — what happened the last time, and who found out first.
+
+- **Whether a partial load is possible.** If a run can stop halfway and leave rows behind, that is the finding, and it usually predates every other symptom.
+
+- **How identity is resolved between the two systems**, and what the code does when the match is missing rather than wrong.
+
+- **What the vendor supports.** Whether there is a supported extension point, and what an upgrade does to anything that does not use one.
+
+### What determines the cost
+
+How many systems have to agree, and whether any of them is a system of record for the same field. Whether the identity mapping already exists or has to be established. Whether the work can sit alongside the ERP or has to reach inside it — the second is more expensive to support for years, which is a decision made early and in the open. And whether there is any monitoring today, because an integration with no alerting is two projects rather than one. [The same four variables](https://siegestack.com/industries/distribution#what-determines-the-cost) apply across all of this work.
+
 [Talk about an integration](https://siegestack.com/contact)
 
 ---
@@ -2903,6 +2923,26 @@ The pipeline that needs building is rarely the interesting part. The part that m
 
 [The integration showcase](https://siegestack.com/etl-showcase) covers the patterns with real code. [The label service](https://siegestack.com/case-studies/label-service) is one example of the shape: a program per label became one configuration-driven service.
 
+### Who this is for
+
+Operations where a real process depends on somebody running something. The workstation macro, the export that gets reshaped in Excel, the folder a file has to land in by seven. It works, and it works until the person is away or the machine is replaced.
+
+The tell that this is the right service rather than [integration](https://siegestack.com/services/erp-integration): the data does not need to move in both directions, it needs to move reliably in one.
+
+### What we would look at first
+
+- **Where the process actually lives.** Frequently a machine under a desk, and frequently nobody knows which one until it is asked.
+
+- **What the failure looks like from outside.** If a late source and a successful empty run are indistinguishable downstream, that is the problem, not the transformation.
+
+- **What is already unmatched.** Every identity chain has rows that reach the end unresolved; the question is whether anything currently displays them.
+
+- **Whether the output is re-runnable.** If yesterday cannot be produced again on demand, nothing about it can be verified after the fact.
+
+### What determines the cost
+
+How many sources, and whether their formats are owned by you or by somebody else. Whether the existing logic is written down anywhere or only in one person's habit — recovering an undocumented process is its own piece of work and is scoped separately rather than absorbed quietly. Whether the destination needs history or only the current state. And whether anyone has ever specified what a correct run looks like, because that specification is what makes the monitoring possible at all.
+
 [Talk about a pipeline](https://siegestack.com/contact)
 
 ---
@@ -2930,6 +2970,30 @@ A dashboard is not hard to build. Deciding *which rows count as evidence* is the
 ### See it in detail
 
 [The KPI console case study](https://siegestack.com/case-studies/kpi-console) is this service in full: two audiences, two trust levels, and the identity chain that had to show its misses.
+
+### Who this is for
+
+Operations where two people can pull the same measure and get two answers, and where the meeting to reconcile them happens often enough that somebody has stopped attending. Also anywhere a number faces an audience it was not scoped for — a floor display showing something cost-bearing is the common one.
+
+It is the wrong service if the underlying report already times out. Fix [the access path](https://siegestack.com/services/performance-tuning) first; a dashboard on a query that cannot finish is a slower way to discover the same thing.
+
+### What we would look at first
+
+- **Which rows currently count.** Open versus posted, credits against the original period, and which of two date columns the business actually means. Almost always unwritten.
+
+- **Who is allowed to see what**, and whether that is enforced where the report is defined or merely where it is drawn.
+
+- **What the number does when data is missing** — whether an undated line becomes an on-time success, and whether an unmapped row disappears or is shown as unmapped.
+
+- **How old the figure on screen is**, and whether the screen says so.
+
+### What determines the cost
+
+Overwhelmingly the definitions, not the rendering. If the business has never ruled on what counts as an on-time line, that ruling is a series of conversations with the people who own the answer, and it is the bulk of the engagement. After that: how many audiences need separating and whether the separation has to hold at the definition layer, how many source systems the measure crosses, and whether a trustworthy history exists or has to be rebuilt.
+
+### Proof
+
+[The KPI console](https://siegestack.com/case-studies/kpi-console) is this service end to end, and it is worth reading for the part that is not the dashboard: two audiences at two trust levels, with the refusal enforced where the report is defined rather than where it is drawn, and an identity chain built to display the rows it could not match instead of dropping them. The measures were the short part. Ruling on which rows counted was the engagement.
 
 [Talk about a dashboard](https://siegestack.com/contact)
 
@@ -2963,6 +3027,30 @@ Automating a report nobody trusts produces a distrusted report on a schedule. Wh
 
 [Operations modernization](https://siegestack.com/operations-modernization) covers where reporting sits in a larger programme.
 
+### Who this is for
+
+Anywhere a period close, a board pack or a Monday summary is assembled by hand, and the same hands do it every time. The cost is not the hours; it is that the process stops entirely when one person is away, and that nobody else can say whether the output was right.
+
+It is the wrong service if the measures themselves are disputed. Automating a distrusted report produces a distrusted report on a schedule, which is why [the definition work](https://siegestack.com/services/bi-dashboards) comes first.
+
+### What we would look at first
+
+- **What the current process actually does**, step by step, including the adjustments made in the spreadsheet after the export — those are usually the business rules and they are usually undocumented.
+
+- **Whether a missed run is visible.** A report that silently did not run looks exactly like a quiet week, and that is the failure mode worth designing against first.
+
+- **What ties out to what.** Whether the pack reconciles to a source anyone else can query, and what currently happens when it does not.
+
+- **Who is still on the distribution list**, which is usually a shorter conversation than expected and occasionally an access finding.
+
+### What determines the cost
+
+How much of the process exists only as habit. Whether reconciliation has a source of truth to reconcile against. How many outputs and formats are genuinely needed rather than inherited. And whether delivery has to be provable — a record of what was sent to whom is straightforward to build in from the start and awkward to add afterwards.
+
+### Proof
+
+There is no standalone case study for this one, and inventing a figure to fill the gap is the thing this site refuses to do. What exists instead: [operations modernization](https://siegestack.com/operations-modernization) shows where scheduled reporting sits inside a larger programme and what has to be true before it is worth automating, and [the KPI console](https://siegestack.com/case-studies/kpi-console) covers the definition work that has to come first.
+
 [Talk about reporting](https://siegestack.com/contact)
 
 ---
@@ -2990,6 +3078,30 @@ A report that is fast on a single day and dead on a month range is the most comm
 ### See it in detail
 
 [SQL Server performance for ERP reporting](https://siegestack.com/sql-server-erp-performance) is the full method. [The month-to-date timeout](https://siegestack.com/case-studies/month-to-date-timeout) is one worked instance of it.
+
+### Who this is for
+
+Anyone with a report that is quick for a day and dies on a month, or a nightly job whose window has quietly closed. Typically the complaint arrives described as a volume problem, and the hardware has already been discussed.
+
+It is the wrong service if the report returns the wrong rows quickly. That is a [definitional](https://siegestack.com/services/bi-dashboards) problem, and making it quicker makes it wrong sooner.
+
+### What we would look at first
+
+- **What exactly the date filter filters on, and whether anything indexes it.** That single question resolves a large share of these before anything else is examined.
+
+- **Logical reads, not runtime.** Runtime moves with server load and cache state; pages touched does not, so it is the only number worth comparing before and after.
+
+- **Whether an expression wraps an indexed column.** If so, moving the arithmetic to the constant restores the seek with no schema change at all — the cheapest available fix and the one most often missed.
+
+- **Whose schema it is**, because that determines whether an index is a change you are permitted to keep through an upgrade.
+
+### What determines the cost
+
+Whether a baseline exists. If nothing was captured before, capturing it is the first work and it is not optional — without it any claim about the result is an opinion, and this site does not publish those. Then: whether the fix is a predicate rewrite or a schema change, whether the schema belongs to a vendor, and how many reports share the same underlying access path, which is frequently more than anyone expects and is the reason one diagnosis sometimes settles several complaints.
+
+### Proof
+
+[The month-to-date timeout](https://siegestack.com/case-studies/month-to-date-timeout) is one instance start to finish, and [the technical write-up](https://siegestack.com/erp-report-slow-month-to-date) carries the confirmation steps as well as the diagnosis — including what was checked to rule out volume before anything was changed. [The method](https://siegestack.com/sql-server-erp-performance) is written out independently of any one report, so it can be applied without engaging anybody.
 
 [Talk about a slow report](https://siegestack.com/contact)
 
@@ -3026,6 +3138,30 @@ By probing the live system rather than reading the config, because the whole cat
 ### See it in detail
 
 This work is written up at length, including the errors found in the author's own sites, in [the long-form write-up](https://siegestack.com/working-with-claude-blog).
+
+### Who this is for
+
+Anyone who has shipped something publicly and has not since checked what it actually serves, as opposed to what it was configured to serve. Particularly relevant where a form collects anything, where a database is reachable from a browser, or where a redirect or header rule is doing security work.
+
+It is not a penetration test and does not pretend to be. It is an audit of the category of fault that returns no error, which is a different exercise and finds different things.
+
+### What we would look at first
+
+- **What an anonymous request actually gets back.** Established by making the request, at more than one casing and encoding, rather than by reading the rule that is supposed to stop it.
+
+- **Whether a rule that looks active matches anything.** A policy matching zero rows and a policy correctly permitting nothing are identical from the outside, and only one of them is doing its job.
+
+- **What a failing path does.** Specifically whether a notification failure can destroy the thing it was notifying about, which is the most common quiet data-loss shape in a small application.
+
+- **Whether measurement is telling the truth** — pages tagged twice, one property fed by several sites, staging counted as real traffic.
+
+### What determines the cost
+
+How many surfaces are public, and how many distinct rule systems sit in front of them — a redirect file, a header file and an edge function disagreeing with each other is three times the work of any one of them. Whether there is a written statement of what access is supposed to be, because an audit with no declared intent can only report what is, not what is wrong. And whether findings need reproductions attached, which they do here by default.
+
+### Proof
+
+[The config was mine and the fix on paper was still wrong](https://siegestack.com/delivery-config-audit) is this service applied to this site: a rule that read correctly, deployed cleanly, returned no error and did nothing, plus two more found the same day that were a different species again.
 
 [Talk about an audit](https://siegestack.com/contact)
 
