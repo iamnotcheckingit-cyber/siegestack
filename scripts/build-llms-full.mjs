@@ -174,14 +174,74 @@ const out = parts.join('');
 fs.writeFileSync(path.join(ROOT, 'llms-full.txt'), out);
 console.log(`\n  ${pages} pages, ${out.length} chars (${(out.length / 1024).toFixed(0)} KB) -> llms-full.txt`);
 
-// A private page reaching this file is the one failure that matters.
-const FORBIDDEN = ['/jesse', '/nicole', '/secret', 'consultant-expertise', 'DADS_PIN', 'JESSES_PIN', 'NICOLES_PIN'];
-const leaked = FORBIDDEN.filter((t) => out.includes(t));
-if (leaked.length) {
-  console.error(`\n  FATAL: private material reached llms-full.txt: ${leaked.join(', ')}`);
+/**
+ * A private page reaching this file is the one failure that matters -- but
+ * "reaching" is two different questions, and scanning for both the same way
+ * failed the build the first time it mattered.
+ *
+ * SECRET NAMES must not appear here in any form. A raw substring scan is
+ * exactly right for those: there is no legitimate reason for the string to be
+ * in this file, a prose mention included.
+ *
+ * PRIVATE ROUTES are the other question, and what must not be published is
+ * their CONTENT, not their NAME. On 2026-08-26 a correction notice on
+ * /corrections announced that /consultant-expertise had been closed to
+ * submissions. It named the route, in prose, correctly. The substring scan read
+ * that as a leak and exited 1, so a clean file could not be built and the day's
+ * commits could not deploy. The rule was right about the string and wrong about
+ * the question -- the worse of the two failures, because it gave advice
+ * ("private material reached llms-full.txt") that was false about a file that
+ * was fine, and the advice pointed away from the actual defect.
+ *
+ * The question a private route needs asked is whether the page is IN THE
+ * CORPUS, and there are two independent answers available here:
+ *
+ *   1. Does PAGES name it, by route or by file? The allowlist is the thing an
+ *      author edits, so this is the realistic failure and the one worth
+ *      catching at its source.
+ *   2. Does the output carry the section header this script emits for a page?
+ *      That is a fact about the artifact rather than about how PAGES was read,
+ *      so it survives a refactor that stops emitting from PAGES.
+ *
+ * Neither fires on prose, because prose does not put a bare canonical URL alone
+ * on a line the way the emitter does.
+ */
+const SECRETS = ['DADS_PIN', 'JESSES_PIN', 'NICOLES_PIN'];
+const PRIVATE = [
+  ['/jesse', 'jesse.html'],
+  ['/nicole', 'nicole.html'],
+  ['/secret', 'secret.html'],
+  ['/consultant-expertise', 'consultant-expertise.html'],
+];
+
+const secretsFound = SECRETS.filter((t) => out.includes(t));
+if (secretsFound.length) {
+  console.error(`\n  FATAL: a secret name reached llms-full.txt: ${secretsFound.join(', ')}`);
   process.exit(1);
 }
-console.log('  private-page check: clean');
+console.log(`  secret-name scan: clean (${SECRETS.length} names)`);
+
+// A renamed or deleted private page would leave PRIVATE naming something that
+// cannot be published, and the check below would pass for the wrong reason.
+// Say so rather than counting it clean -- the same reasoning as SS-602 in the
+// page validator, where a policy check whose input is missing reports SKIPPED
+// instead of passing.
+const unverifiable = PRIVATE.filter(([, file]) => !fs.existsSync(path.join(ROOT, file)));
+const published = [];
+for (const [route, file] of PRIVATE) {
+  if (PAGES.some(([f, u]) => u === route || f === file)) published.push(`${route} (listed in PAGES)`);
+  if (out.includes(`\nhttps://siegestack.com${route}\n`)) published.push(`${route} (section header in output)`);
+}
+if (published.length) {
+  console.error(`\n  FATAL: a private page is published in llms-full.txt: ${published.join(', ')}`);
+  process.exit(1);
+}
+if (unverifiable.length) {
+  console.error(`\n  FATAL: PRIVATE names ${unverifiable.map(([r]) => r).join(', ')}, whose file is missing.`);
+  console.error('  Either the page was renamed and this list is stale, or it was deleted and the entry should go.');
+  process.exit(1);
+}
+console.log(`  private-page check: clean (${PRIVATE.length} routes, none published)`);
 
 /**
  * Derived-value check: any page saying "N-slide" must agree with the deck.
