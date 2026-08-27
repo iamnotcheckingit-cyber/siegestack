@@ -106,17 +106,17 @@
     {
       "route": "/working-with-claude-blog",
       "field": "og:title",
-      "pageValue": "How to Use Claude AI Effectively | SiegeStack",
+      "pageValue": "How We Use AI in Production Engineering | SiegeStack",
       "ogValue": "How to Use Claude AI Effectively: A Real Workflow That Ships Production Work",
-      "reason": "Intentional: suffix dropped and the subtitle restored. \"A Real Workflow That Ships Production Work\" is what the page is about and does not fit inside 60 characters. NOTE: this route is being retitled to make its relationship to the business explicit; re-read this entry then.",
+      "reason": "Intentional: suffix dropped, and the subtitle restored. \"The Method Behind the Case Studies\" does not fit inside SS-301's 60 characters and is the half that says what the page is for. RETITLED 2026-08-26 -- the previous note on this entry said the retitle was coming and to re-read it then, which is what this is. The page no longer leads with the vendor name.",
       "reviewed": "2026-08-26"
     },
     {
       "route": "/working-with-claude-blog",
       "field": "og:description",
-      "pageValue": "How to use Claude AI effectively, from someone who ships real work with it daily. The workflow, the iteration loop, the mistakes, and a template you can steal.",
+      "pageValue": "The working method behind the engagements on this site: define the outcome, draft, test against reality, give precise feedback, ship or repeat.",
       "ogValue": "Stop treating Claude like a chatbot. Here",
-      "reason": "Intentional: opens on the objection (\"Stop treating Claude like a chatbot\") instead of the topic, and names Claude vs ChatGPT, which is a query people actually type. NOTE: this value was truncated at an apostrophe in data/pages.json until 2026-08-26; the page was always correct.",
+      "reason": "Intentional: opens on the objection rather than the topic, and names Claude vs ChatGPT, which is a query people type. The page title no longer does, deliberately -- the article kept its search surface while the title stopped competing for the site's primary entity.",
       "reviewed": "2026-08-26"
     },
     {

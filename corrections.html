@@ -93,6 +93,30 @@
 
         <h2>2026</h2>
 
+        <h3 id="google-fonts-undisclosed">Two pages sent every visitor&rsquo;s IP address to Google, and the privacy policy did not say so</h3>
+        <p><strong>26 August 2026 &middot; <a href="/working-with-claude-blog">The AI method article</a> and <a href="/working-with-claude">the slide deck</a></strong></p>
+        <p>Both pages loaded their typefaces from <code>fonts.googleapis.com</code> and
+        <code>fonts.gstatic.com</code>. A webfont request is an ordinary HTTP request, which means
+        every visitor to either page had their IP address, user agent and referring page sent to
+        Google &mdash; on every page load, whether or not they had ever heard of Google Fonts.</p>
+        <p>That is a third party processing visitor data, and <a href="/privacy-policy">the privacy
+        policy</a> named only Google Analytics and Calendly. The omission was not deliberate; the
+        fonts arrived with the page design and nobody counted them as a service. That is exactly
+        how this kind of gap happens, and it is why it is written down rather than quietly closed.</p>
+        <p><strong>Fixed by removal, not by disclosure.</strong> On 26 August 2026 the three
+        families were self-hosted from this domain and every reference to both Google hosts was
+        deleted. The request no longer happens, so there is nothing left to disclose &mdash; which
+        is a better outcome than a policy line saying it does. The fonts are unchanged; readers
+        see the same typefaces.</p>
+        <p>The pending privacy policy amendment, which will describe what the contact form stores
+        and for how long, therefore contains no Google Fonts line. Had the order been reversed it
+        would have disclosed a third party and then removed it days later.</p>
+        <p><em>No inline marker on either page.</em> The site&rsquo;s convention is that a correction
+        is also marked where the claim was &mdash; but the claim here was an omission in the privacy
+        policy, not a statement on those two pages. Marking the article with a notice about a font
+        request that no longer happens would put the notice where the cause was rather than where
+        the error was. The policy amendment carries it instead.</p>
+
         <h3 id="consultant-form-stored-nothing">A form that could not be submitted, for six months</h3>
         <p><strong>26 August 2026 &middot; Consultant expertise form (<code>/consultant-expertise</code>, noindex)</strong></p>
         <p>From <strong>10 February 2026 to 16 August 2026</strong>, the consultant expertise form

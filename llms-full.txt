@@ -1669,7 +1669,7 @@ https://siegestack.com/working-with-claude-blog
 
 Claude AI Workflow · Real Case Study
 
-## How to Use Claude AI Effectively
+## How We Use AI in Production Engineering
 
 **Most people are using Claude wrong.** They treat it like a chatbot. I use it like a production system — and it ships hours of real work every week.
 
@@ -3631,6 +3631,36 @@ not permanently explaining an absence to people who never saw the presence.
 Collapsing moves the text. It never shortens it and never deletes it.
 
 ### 2026
+
+#### Two pages sent every visitor’s IP address to Google, and the privacy policy did not say so
+
+**26 August 2026 · [The AI method article](https://siegestack.com/working-with-claude-blog) and [the slide deck](https://siegestack.com/working-with-claude)**
+
+Both pages loaded their typefaces from `fonts.googleapis.com` and
+`fonts.gstatic.com`. A webfont request is an ordinary HTTP request, which means
+every visitor to either page had their IP address, user agent and referring page sent to
+Google — on every page load, whether or not they had ever heard of Google Fonts.
+
+That is a third party processing visitor data, and [the privacy
+policy](https://siegestack.com/privacy-policy) named only Google Analytics and Calendly. The omission was not deliberate; the
+fonts arrived with the page design and nobody counted them as a service. That is exactly
+how this kind of gap happens, and it is why it is written down rather than quietly closed.
+
+**Fixed by removal, not by disclosure.** On 26 August 2026 the three
+families were self-hosted from this domain and every reference to both Google hosts was
+deleted. The request no longer happens, so there is nothing left to disclose — which
+is a better outcome than a policy line saying it does. The fonts are unchanged; readers
+see the same typefaces.
+
+The pending privacy policy amendment, which will describe what the contact form stores
+and for how long, therefore contains no Google Fonts line. Had the order been reversed it
+would have disclosed a third party and then removed it days later.
+
+*No inline marker on either page.* The site’s convention is that a correction
+is also marked where the claim was — but the claim here was an omission in the privacy
+policy, not a statement on those two pages. Marking the article with a notice about a font
+request that no longer happens would put the notice where the cause was rather than where
+the error was. The policy amendment carries it instead.
 
 #### A form that could not be submitted, for six months
 

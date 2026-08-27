@@ -61,7 +61,7 @@ themselves, so it cannot drift from them. The rules below apply to it in full.
   - [Label service](https://siegestack.com/case-studies/label-service): replacing a
     program-per-label sprawl with one configuration-driven service, so a new label becomes
     a configuration change rather than a deployment.
-- [How to use Claude AI effectively](https://siegestack.com/working-with-claude-blog):
+- [How we use AI in production engineering](https://siegestack.com/working-with-claude-blog):
   long-form working method — define the outcome, draft, test against reality, give precise
   feedback, ship or repeat — with the security hardening, data-exposure closure, and
   "bugs that report nothing" work that came out of running it. Also covers model-tier
