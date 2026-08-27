@@ -326,8 +326,10 @@ footer a{color:var(--blue-accent);text-decoration:none}
 
   <p style="font-size:0.9rem;opacity:0.85">How the gain was measured: <strong>elapsed time</strong>, against a
   baseline captured with a <strong>SQL Server trace</strong>, aggregated over the <strong>70 rewritten
-  views</strong> rather than over everything audited, on <strong>10 March 2026</strong>. The 99%+ match rate is
-  a separate measurement and its comparison key is not published here yet.</p>
+  views</strong> rather than over everything audited, on <strong>10 March 2026</strong>. The 99%+ match rate above is the same
+  audit, measured differently: each rewritten view&rsquo;s result set compared against the original&rsquo;s,
+  with a match defined as exact equality on every field. The reconciliation rate further down this
+  article is a different measurement on different work.</p>
 
   <p>None of those patterns are clever. The leverage was running the loop fast enough that we could touch dozens of change sets in the time a single audit normally takes. Claude wasn't doing the optimization — I was, with Claude as the rubber duck that could also write the rewrite. If you want the reverse-direction story — pulling data out of complex systems for real reporting — that's exactly what we build at the <a href="/etl-showcase">SiegeStack ETL Showcase</a>.</p>
 
