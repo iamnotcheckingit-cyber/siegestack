@@ -71,11 +71,13 @@ performance gain
 
 views audited
 
-[99%+](https://siegestack.com/working-with-claude-blog#macros)
+[99%+](https://siegestack.com/working-with-claude-blog#perf-gain)
 
-automation match rate
+match rate
 
 All three come from one write-up of how we work, not from separate client engagements.
+
+**Corrected 27 August 2026.** The **99%+** figure was labelled *automation match rate* and linked to the section on replacing spreadsheet macros. It comes from the database view audit, so it now carries that section’s own label and links there, beside the two figures it was measured with. The article separately reports a reconciliation rate for the macro-replacement work; the two are different measurements that happen to share a figure, and the link went to the wrong one.
 
 **Corrected 21 August 2026.** A fourth figure — a B → A+ security grade — was removed from this row. It came from a personal project, and standing it beside professional results without saying so overstated what it was. It is still in [the article](https://siegestack.com/working-with-claude-blog#security-grade), labelled.
 
@@ -3631,6 +3633,26 @@ not permanently explaining an absence to people who never saw the presence.
 Collapsing moves the text. It never shortens it and never deletes it.
 
 ### 2026
+
+#### A match rate credited to the wrong engagement
+
+**27 August 2026 · [Home](https://siegestack.com/)**
+
+The third figure in the row under “Proof, Not Promises” read
+**99%+ automation match rate** and linked to
+[the section on replacing nine spreadsheet macros](https://siegestack.com/working-with-claude-blog#macros).
+The figure comes from the database view audit, not from that work.
+
+It now reads *match rate* — the label the source uses — and links to
+[the view audit](https://siegestack.com/working-with-claude-blog#perf-gain), alongside the two figures on
+either side of it, which were already pointing there.
+
+Worth stating plainly, because it is why the error survived review: the article reports
+*two* separate 99%+ figures. One is the view-audit match rate. The other is a
+reconciliation rate for the macro-replacement work, in the section the homepage was linking to.
+Both are real and both were measured on different work. The homepage was quoting one and
+linking to the other, and every internal check the site runs saw a live anchor to a section
+that did contain the figure.
 
 #### Two pages sent every visitor’s IP address to Google, and the privacy policy did not say so
 

@@ -85,7 +85,36 @@ Answer this before touching M1's 99%+ component, row 23, or the homepage stat ro
 are genuinely separate measurements that happen to share a figure, say so — then M1 and M2 stay
 separate and each needs its own basis.
 
-### Leading hypothesis — UNCONFIRMED, do not act on it
+### ANSWERED 2026-08-27 — the view audit
+
+**The operator's answer: the 99%+ on the homepage came from the database view audit.** That is
+the recollection this question needed and the hypothesis below did not have, so the hypothesis
+is refuted and W5 is unblocked. Row 11 is done: the homepage anchor now points at `#perf-gain`
+and the label reads "match rate", carried on the page as a correction
+(`homepage-match-rate-provenance`).
+
+**Two things found while applying it, both of which change what the question was about.**
+
+*One.* The reason given below and in row 11 for calling the anchor wrong — that `#macros`
+"contains no match rate at all" — **is false.** `#macros` ends with "Reconciliation runs at
+99%+." That sentence was there the whole time. Every argument in this section that leans on the
+absence of a match rate in `#macros` was leaning on something that is not so, including the
+third bullet of the hypothesis.
+
+*Two.* It follows that **the article publishes two separate 99%+ figures**, on two different
+engagements: a view-audit match rate at `#perf-gain` and a reconciliation rate at `#macros`.
+The homepage was quoting the first and linking to the second. This is not one figure with two
+stories, which is the shape this section assumed throughout — so the framing "at most one is
+right" in the table above was wrong too: both were right, about different work.
+
+**What is still open, and it is not what row 23 says.** Row 23 (the deck: "Tested against
+legacy output until we hit 99%+ match") was blocked on the premise that it and row 16 were
+competing accounts of one measurement. With two real measurements established, the deck slide
+may simply be a third, or it may be `#macros`'s reconciliation restated. **Nobody has said
+which, so row 23 stays open** — and so does row 20, which is a single registry row covering
+*both* blog occurrences and therefore cannot take one basis. Neither was touched.
+
+### Superseded hypothesis — kept because it was wrong in an instructive way
 
 **The 99%+ belongs to the script-replacement engagement, not the view audit.** This is a
 reading of the page text, not a recollection, and nobody has confirmed it. It is written down
@@ -102,7 +131,10 @@ The reasoning, all of it internal evidence:
   sets · 99%+ match rate" — three of the four items measure the same object and the fourth
   does not. It reads like a figure appended to a list it does not belong to.
 
-**What it would mean if it holds.** The homepage tile is correct exactly as it stands —
+**What it would mean if it holds.** (Refuted 2026-08-27 — the operator's recollection says the
+view audit. Kept as written, because the reasoning failed on a checkable fact rather than on
+judgement: its third bullet and the reading below both depend on `#macros` having no match
+rate, and `#macros` has one.) The homepage tile is correct exactly as it stands —
 right anchor (`#macros`) and right label ("automation match rate"), because replacing manual
 macros with a scheduled script *is* the automation. The defect shrinks to **one item on the
 `#perf-gain` summary line that belongs to a different engagement**. That inverts W5: the fix
@@ -132,7 +164,7 @@ needs its own basis.
 | 8 | `99.97%` | 1 | `/etl-showcase` | Example dashboard, "**API Uptime 99.97%**"; panel now marked "Example — not live data" | — | Nothing needed. Same as row 7. |
 | 9 | `~27%` | 1 | `/` | Stat row, "~27% performance gain" | `/working-with-claude-blog#perf-gain` | What was measured (elapsed time? logical reads? CPU?), across how many views, against what baseline capture, with what tool, on what date. The article says "aggregate gain" — say aggregated over what population. |
 | 10 | `100%` | 1 | `/` | FAQ, "Do we own the code you write?" → "100%. Everything we build is yours." | — | Not a measurement — it is an ownership answer. Candidate for `not-a-claim`. |
-| 11 | `99%` | 1 | `/` | Stat row, "99%+ automation match rate" | `#macros`, which contains no match rate — **W5 is HELD, see Q1** | Blocked by **Q1**. The anchor is wrong and the label is wrong, but which provenance is correct is unknown, so the anchor cannot be re-pointed yet. Answer Q1, then M1. |
+| 11 | `99%` | 1 | `/` | Stat row, "99%+ match rate" | `#perf-gain` | **DONE 2026-08-27.** Q1 answered: the view audit. Anchor re-pointed from `#macros`, label was "automation match rate". Correction `homepage-match-rate-provenance`. Basis recorded; `dateMeasured` still open. The old source-anchor note in this row — "`#macros`, which contains no match rate" — was FALSE; see Q1. |
 | 12 | `100%` | 1 | `/label-tool` | Print settings, "set it to 100% or 'Actual size'" | — | A print-dialog instruction, not a claim. Candidate for `not-a-claim`. |
 | 13 | `cut` | 1 | `/label-tool` | "The version this was cut down from does the other half…" | — | "cut down from" is prose. Candidate for `not-a-claim`. |
 | 14 | `faster` | 1 | `/operations-modernization` | "People who have followed the work adopt the result faster than people handed a finished workbook on go-live day." | — | Either an adoption measure (what was counted, over what period, for which two groups) or `not-a-claim` if this is an observation rather than a measurement. Worth a deliberate decision — it reads as a claim. |

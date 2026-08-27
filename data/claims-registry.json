@@ -108,12 +108,13 @@
     {
       "claim": "99%",
       "route": "/",
-      "occurrences": 1,
-      "measurementBasis": "TODO(pappy)",
+      "occurrences": 2,
+      "measurementBasis": "The database view audit -- the same measurement the two figures beside it come from. Confirmed 2026-08-27 by the operator, against a written hypothesis in docs/claims-basis-worksheet.md that argued the opposite. The article reports a second, separate 99%+ (a reconciliation rate for the macro-replacement work); this row is NOT that one.",
       "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
         "…tudy → ~27% performance gain 300+ views audited B → A+ security grade, one site 99%+ automation match rate What We Build Solutions that solve real problems and del…"
-      ]
+      ],
+      "reason": "Two instances, one measured and one quoted. The stat tile is the claim and its basis is above. The second instance is inside the on-page correction notice (homepage-match-rate-provenance), which restates the figure only to say the label and link were wrong -- it is the not-a-claim half of this row."
     },
     {
       "claim": "100%",
@@ -277,6 +278,16 @@
       "reason": "A quotation of a retracted figure inside the record that retracts it. Publishing the corrections record necessarily republishes the wording being corrected; that is the point of the record.",
       "contextOnPage": [
         "An earlier version put a number on it — “roughly 20% of the time”. It was removed, because it was never measured."
+      ]
+    },
+    {
+      "claim": "99%",
+      "route": "/corrections",
+      "occurrences": 2,
+      "disposition": "not-a-claim",
+      "reason": "The corrections log quoting the figure whose provenance it is correcting (homepage-match-rate-provenance, 27 August 2026). Both instances are inside that entry, which exists to say WHICH engagement the figure came from -- it asserts no new result. Same disposition as the figures quoted inside their own correction notices elsewhere in this registry.",
+      "contextOnPage": [
+        "The homepage-match-rate-provenance entry, which names both of the article's 99%+ figures in order to distinguish them."
       ]
     }
   ]
