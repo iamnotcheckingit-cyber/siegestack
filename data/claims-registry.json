@@ -322,6 +322,46 @@
       "contextOnPage": [
         "The perf-gain-population entry."
       ]
+    },
+    {
+      "claim": "300+",
+      "route": "/",
+      "occurrences": 1,
+      "measurementBasis": "TODO(pappy) -- what counts as an AUDITED view, and how 300+ was counted. Note the ~27% beside it is measured over the 70 REWRITTEN views, so these two figures have different populations and the row does not say so.",
+      "dateMeasured": "TODO(pappy)",
+      "contextOnPage": [
+        "Stat row under 'Proof, Not Promises': '300+ views audited', linked to /working-with-claude-blog#perf-gain."
+      ]
+    },
+    {
+      "claim": "300+",
+      "route": "/working-with-claude-blog",
+      "occurrences": 1,
+      "measurementBasis": "TODO(pappy) -- what counts as an audited view, and how 300+ was counted. This is the source instance; the homepage and the deck both restate it.",
+      "dateMeasured": "TODO(pappy)",
+      "contextOnPage": [
+        "Summary line at #perf-gain: '300+ views audited - ~27% aggregate gain - 70 change sets - 99%+ match rate'."
+      ]
+    },
+    {
+      "claim": "300+",
+      "route": "/working-with-claude",
+      "occurrences": 1,
+      "measurementBasis": "TODO(pappy) -- same figure as the article's summary line, restated as a slide title.",
+      "dateMeasured": "TODO(pappy)",
+      "contextOnPage": [
+        "Deck slide title: 'Auditing 300+ Database Views'."
+      ]
+    },
+    {
+      "claim": "50+",
+      "route": "/etl-showcase",
+      "occurrences": 1,
+      "measurementBasis": "TODO(pappy) -- NOT PART OF M1, M2 OR M3 and not previously tracked anywhere; surfaced 2026-08-27 when SS-601 learned to see bare counts. Needs: what counts as a platform integrated with, over what period, and counted from what. This one asserts the size of the practice's experience rather than the result of one engagement, so it carries more weight with a reader than the figures that have had all the attention.",
+      "dateMeasured": "TODO(pappy)",
+      "contextOnPage": [
+        "'Don't see your system? We've integrated with 50+ platforms. If it has an API, we can connect it.'"
+      ]
     }
   ]
 }

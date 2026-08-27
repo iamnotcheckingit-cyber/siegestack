@@ -811,7 +811,26 @@ for (const [entity, fields] of identityIndex) {
 // ===========================================================================
 // SS-6xx — Content policy
 // ===========================================================================
-const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\bfaster\b|\breduced\b|\bimproved\b|\bcut\b)/gi;
+/**
+ * What counts as a claim worth registering.
+ *
+ * BARE COUNTS WITH A TRAILING + WERE INVISIBLE UNTIL 2026-08-27. The homepage
+ * published "300+ views audited" beside two registered percentages, and this
+ * regex tokenised the percentages and walked past the count -- so the figure was
+ * unanswered AND unenforced, and the worksheet had to track it by hand as N1.
+ * It was found the same way as the ~27% population error: by answering what a
+ * number was measured against, not by any check firing.
+ *
+ * THE + IS LOAD-BEARING AND THE PATTERN STOPS THERE ON PURPOSE. A trailing +
+ * means "at least this many", which is an assertion about a quantity someone
+ * has to have counted. A bare number is not: this file, these pages and every
+ * date, version, port and list position on the site are bare numbers, and
+ * matching them would bury the real claims under noise and train whoever reads
+ * the output to mark things not-a-claim to make it stop. Letter grades ("B ->
+ * A+") stay out for the same reason -- no digit, and the one on this site is
+ * already disclosed where it appears.
+ */
+const CLAIM_RE = /(~?\d+(?:\.\d+)?\s*%|\b\d+(?:\.\d+)?x\b|\b\d[\d,]*\+|\bfaster\b|\breduced\b|\bimproved\b|\bcut\b)/gi;
 
 {
   const registered = new Map();

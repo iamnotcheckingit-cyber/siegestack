@@ -66,9 +66,24 @@ summary line. **Note what found it: not a reader and not a validator, but being 
 down what the number was measured against.** The wrong population had been on the page since it
 was written and every check passed over it.
 
-**`300+` is still not registered at all.** SS-601 tokenises digit-percent, digit-x and four
-verbs, so a bare count is invisible to it — recorded here as N1. The audited-view definition is
-therefore unenforced as well as unanswered.
+**`300+` is registered and enforced as of 2026-08-27.** It had been invisible because SS-601
+tokenised only digit-percent, digit-x and four verbs; the pattern now also matches a bare count
+carrying a trailing `+`, which is the form that asserts "at least this many". Three `300+` rows
+were seeded (`/`, the article, the deck) with no basis invented, so the audited-view definition
+is now *unanswered but enforced* rather than invisible. **N1 is retired as a manual tracking
+slot** — the registry holds it.
+
+**The same pattern found a figure nobody was tracking at all:** `/etl-showcase` says "We've
+integrated with **50+ platforms**." It is not M1, M2 or M3, it was on no list on this sheet, and
+it asserts the size of the practice's experience rather than the result of one engagement —
+which makes it weigh more with a reader than any of the figures that have had all the attention
+here. Needs: what counts as a platform integrated with, over what period, counted from what.
+
+**The `+` is where the pattern stops, deliberately.** A bare number with no `+` is not a claim —
+dates, versions, ports, list positions and the site's own rule numbers are all bare numbers, and
+matching them would bury the real claims and train a reader to mark things `not-a-claim` to make
+the noise stop. Letter grades (`B → A+`) stay out for the same reason. Proven against `C++`,
+`A+`, `port 8080` and `version 3`: none register.
 
 **"Elapsed time" answers the ~27%, not the 99%+.** A match rate is not measured in elapsed
 time, so the last row above is untouched by this answer and row 11's basis was re-opened rather
