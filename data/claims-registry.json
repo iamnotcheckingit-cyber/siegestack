@@ -357,10 +357,20 @@
       "claim": "50+",
       "route": "/etl-showcase",
       "occurrences": 1,
-      "measurementBasis": "TODO(pappy) -- NOT PART OF M1, M2 OR M3 and not previously tracked anywhere; surfaced 2026-08-27 when SS-601 learned to see bare counts. Needs: what counts as a platform integrated with, over what period, and counted from what. This one asserts the size of the practice's experience rather than the result of one engagement, so it carries more weight with a reader than the figures that have had all the attention.",
-      "dateMeasured": "TODO(pappy)",
       "contextOnPage": [
-        "'Don't see your system? We've integrated with 50+ platforms. If it has an API, we can connect it.'"
+        "The integrations-platform-count correction notice, quoting the removed line."
+      ],
+      "disposition": "not-a-claim",
+      "reason": "RETRACTED 2026-08-27, not answered. The operator confirmed the platforms were never counted, so the assertion was removed from the page rather than given a basis. The only surviving instance is the correction notice quoting the retracted wording (integrations-platform-count), which is why this row stays here instead of being deleted -- the token is still on the page, the claim is not."
+    },
+    {
+      "claim": "50+",
+      "route": "/corrections",
+      "occurrences": 2,
+      "disposition": "not-a-claim",
+      "reason": "The corrections log quoting a RETRACTED figure. The integrations-platform-count entry (27 August 2026) records that '50+ platforms' was never counted and was removed from /etl-showcase; both instances here are that entry naming the wording it retired. The log has to be able to say what a claim used to be without re-asserting it.",
+      "contextOnPage": [
+        "The integrations-platform-count entry, quoting the removed line and describing how it was found."
       ]
     }
   ]
